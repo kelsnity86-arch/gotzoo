@@ -1,14 +1,18 @@
 // 효과음 (Web Audio 합성, 외부 음원 없음). 첫 터치 후에 켜진다.
-type Sfx = 'coin' | 'tip' | 'draw' | 'reveal' | 'rare' | 'fuseWin' | 'fuseFail' | 'buy' | 'click' | 'deny' | 'feed';
+type Sfx = 'coin' | 'tip' | 'draw' | 'reveal' | 'rare' | 'fuseWin' | 'fuseFail' | 'buy' | 'click' | 'deny' | 'feed' | 'legend' | 'event';
+const KEY = 'bbopzoo.settings';
 class Audio {
   private ctx: AudioContext | null = null;
   private last = 0;
   muted = false;
+  volume = 0.8;
+  constructor() { try { const v = JSON.parse(localStorage.getItem(KEY) ?? '{}'); this.muted = !!v.muted; this.volume = typeof v.volume === 'number' ? v.volume : 0.8; } catch { /* 저장소 없음 */ } }
+  setSettings(p: { muted?: boolean; volume?: number }) { Object.assign(this, p); try { localStorage.setItem(KEY, JSON.stringify({ muted: this.muted, volume: this.volume })); } catch { /* 저장소 없음 */ } }
   unlock() { if (!this.ctx) try { this.ctx = new AudioContext(); } catch { /* 미지원 */ } else void this.ctx.resume(); }
   private tone(t: number, f: number, d: number, v: number, type: OscillatorType = 'square', f2?: number) {
     const c = this.ctx!; const o = c.createOscillator(); const g = c.createGain();
     o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
-    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    g.gain.setValueAtTime(Math.max(0.0002, v * this.volume * 1.4), t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + 0.02);
   }
   sfx(id: Sfx) {
@@ -26,6 +30,8 @@ class Audio {
       case 'buy': this.tone(t, m(76), 0.06, 0.06); this.tone(t + 0.06, m(88), 0.12, 0.06); break;
       case 'click': this.tone(t, m(84), 0.03, 0.04); break;
       case 'deny': this.tone(t, 150, 0.12, 0.06); break;
+      case 'legend': [0, 4, 7, 12, 16, 19, 24].forEach((d, i) => this.tone(t + i * 0.09, m(60 + d), 0.4, 0.08, 'triangle')); break;
+      case 'event': [0, 7, 12].forEach((d, i) => this.tone(t + i * 0.08, m(72 + d), 0.12, 0.06)); break;
       case 'feed': this.tone(t, m(72), 0.06, 0.05, 'triangle'); this.tone(t + 0.07, m(76), 0.08, 0.05, 'triangle'); break;
     }
   }

@@ -5,16 +5,16 @@ export const GACHA = {
   /** 뽑기에서 직원 카드가 나올 확률 (나머지는 동물) */
   staffChance: 0.08,
   /** 진행 단계(1~8)별 1장 가격. 5·10회는 장수만큼 (할인 없음) */
-  price: [100, 160, 260, 420, 680, 1100, 1800, 2900],
+  price: [100, 200, 450, 1000, 2200, 5000, 11000, 24000],
 } as const;
 
 /** 진행 단계 승급 조건 [전시 마리 수, 총 매력도]. index = 올라갈 단계 - 2 */
 export const STAGE_REQ: readonly [number, number][] = [
-  [5, 120], [12, 400], [25, 1200], [45, 3000], [70, 7000], [100, 15000], [150, 30000],
+  [5, 120], [12, 450], [25, 1500], [45, 4000], [70, 9000], [110, 20000], [160, 40000],
 ];
 export const MAX_STAGE = GACHA.price.length;
 /** 단계마다 관람객 투척액 배율 (유명세) */
-export const STAGE_TIP_MUL = 1.2;
+export const STAGE_TIP_MUL = 1.12;
 
 /** 합성: 같은 등급 n장 → 다음 등급 1장 성공 확률. index = 장수 */
 export const FUSION_CHANCE = [0, 0, 0.2, 0.33, 0.45, 0.56, 0.66, 0.75, 0.83, 0.9, 1];
@@ -53,7 +53,7 @@ export const VISITOR = {
   /** 수거 보너스 = 투척액 × 이 값 */
   pickupBonus: 0.5,
   /** 수요가 게이트 한도를 넘으면 넘친 만큼 투척액이 오른다 (최대 배율) */
-  overflowMaxMul: 3,
+  overflowMaxMul: 1.6,
   walkSpeed: 16,
   viewSecMin: 2, viewSecMax: 4,
 } as const;

@@ -48,3 +48,13 @@ export function fmt(n: number): string {
   for (const [u, v] of units) if (n >= v) { const x = n / v; return `${x >= 100 ? Math.floor(x) : Math.floor(x * 10) / 10}${u}`; }
   return String(n);
 }
+
+/** 그림 자리: 그림을 다 불러온 뒤 fillIcons()로 채운다 (시작할 때 만든 HUD·탭용) */
+export function iconSlot(key: string, px: number): HTMLElement {
+  return h('span', { class: 'icon-slot', 'data-icon': key, 'data-px': px });
+}
+export function fillIcons(root: ParentNode = document) {
+  for (const el of root.querySelectorAll<HTMLElement>('.icon-slot[data-icon]')) {
+    el.replaceChildren(pix(el.dataset.icon!, Number(el.dataset.px)));
+  }
+}

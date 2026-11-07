@@ -3,7 +3,10 @@ import { ANIMALS, animalsOfGrade } from '../data/animals';
 import { GRADES, type Grade } from '../data/grades';
 import { STAFF, type StaffKind } from '../data/staff';
 import { FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
-import type { Card, SaveData } from './state';
+import type { Card, MissionKind, SaveData } from './state';
+import { DEX_SETS, dexSetMembers } from '../data/dex';
+import { MISSION_BONUS, MISSION_POOL, MISSION_REWARD } from '../data/missions';
+import { STAFF_FX } from '../data/staff';
 
 export type Rng = () => number;
 
@@ -55,12 +58,26 @@ export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | n
   if (s.coins < cost) return null;
   s.coins -= cost;
   s.stats.draws += n;
+  return rollCards(s, n, rng);
+}
+
+function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
   const out: Card[] = [];
   for (let i = 0; i < n; i++) {
     if (rng() < GACHA.staffChance) out.push(addCard(s, { kind: 'staff', staff: pick(STAFF, rng).kind as StaffKind }));
     else out.push(addCard(s, { kind: 'animal', animal: pick(animalsOfGrade(rollGrade(rng)), rng).id }));
   }
+  bumpMission(s, 'draw', n);
+  bumpMission(s, 'rare', out.filter((c) => c.kind === 'animal' && ANIMALS[c.animal].grade >= 2).length);
   return out;
+}
+
+/** 무료 뽑기권 1장으로 1회 뽑기 */
+export function ticketDraw(s: SaveData, rng: Rng = Math.random): Card[] | null {
+  if (s.tickets <= 0) return null;
+  s.tickets--;
+  s.stats.draws++;
+  return rollCards(s, 1, rng);
 }
 
 // ── 합성 ──
@@ -98,6 +115,7 @@ export function fuse(s: SaveData, uids: number[], rng: Rng = Math.random): Fusio
   const keepUid = success ? -1 : set[Math.floor(rng() * set.length)];
   s.cards = s.cards.filter((c) => !set.includes(c.uid) || c.uid === keepUid);
   s.stats.fusions++;
+  bumpMission(s, 'fuse', 1);
   if (success) {
     s.stats.fusionWins++;
     const card = addCard(s, { kind: 'animal', animal: pick(animalsOfGrade((grade + 1) as Grade), rng).id });
@@ -224,7 +242,7 @@ export function penAttract(s: SaveData, pen: number, fedMul = 1): number {
   for (const a of ids) {
     const n = count.get(a)!;
     const sp = SAME_SPECIES_BONUS.find(([at]) => n >= at)?.[1] ?? 0;
-    total += GRADES[ANIMALS[a].grade].attract * (1 + sp + sameHab);
+    total += GRADES[ANIMALS[a].grade].attract * (1 + sp + sameHab + habitatDexBonus(s, ANIMALS[a].habitat));
   }
   return total * fedMul;
 }
@@ -236,6 +254,76 @@ export function totalAttract(s: SaveData, fed: (pen: number) => number = () => 1
 }
 
 export const stageTipMul = (s: SaveData) => Math.pow(STAGE_TIP_MUL, s.stage - 1);
+
+// ── 직원 효과 ──
+const placedStaff = (s: SaveData, kind: string) => s.staffSlots.filter((u, i) => u !== null && i < staffSlotCount(s) && (cardById(s, u) as { staff?: string } | undefined)?.staff === kind).length;
+/** 안내원 수만큼 투척액 + · 도감 등급 보상 */
+export const staffTipMul = (s: SaveData) => 1 + STAFF_FX.guideTip * placedStaff(s, 'guide') + dexTipBonus(s);
+/** 관리인 수만큼 바닥 동전 수명 + */
+export const coinLifeBonus = (s: SaveData) => STAFF_FX.janitorLife * placedStaff(s, 'janitor');
+
+// ── 도감 보상 ──
+export const dexSetDone = (s: SaveData, id: string) => { const set = DEX_SETS.find((x) => x.id === id)!; return dexSetMembers(set).every((a) => s.dex[a.id]); };
+export function habitatDexBonus(s: SaveData, h: string): number {
+  let b = 0;
+  for (const id of s.dexClaimed) { const set = DEX_SETS.find((x) => x.id === id); if (set?.bonus.habitat === h) b += set.bonus.attract ?? 0; }
+  return b;
+}
+export function dexTipBonus(s: SaveData): number {
+  let b = 0;
+  for (const id of s.dexClaimed) b += DEX_SETS.find((x) => x.id === id)?.bonus.tip ?? 0;
+  return b;
+}
+export function claimDexSet(s: SaveData, id: string): number {
+  const set = DEX_SETS.find((x) => x.id === id);
+  if (!set || s.dexClaimed.includes(id) || !dexSetDone(s, id)) return 0;
+  s.dexClaimed.push(id);
+  s.coins += set.reward;
+  return set.reward;
+}
+
+// ── 오늘의 미션 ──
+export const todayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+export function ensureMissions(s: SaveData, date = todayKey(), rng: Rng = Math.random) {
+  if (s.missions && s.missions.date === date) return s.missions;
+  const pool = MISSION_POOL.slice();
+  const list = [];
+  for (let i = 0; i < 3 && pool.length; i++) {
+    const t = pool.splice(Math.floor(rng() * pool.length), 1)[0];
+    list.push({ kind: t.kind, target: t.targets[Math.min(t.targets.length - 1, Math.floor(rng() * t.targets.length))], progress: 0, claimed: false });
+  }
+  s.missions = { date, list, bonusClaimed: false };
+  return s.missions;
+}
+export function bumpMission(s: SaveData, kind: MissionKind, n: number) {
+  if (!s.missions || n <= 0) return;
+  for (const m of s.missions.list) if (m.kind === kind) m.progress = Math.min(m.target, m.progress + n);
+}
+export const missionText = (kind: MissionKind, n: number) => MISSION_POOL.find((m) => m.kind === kind)!.text(n);
+export function claimMission(s: SaveData, i: number): boolean {
+  const m = s.missions?.list[i];
+  if (!m || m.claimed || m.progress < m.target) return false;
+  m.claimed = true; s.tickets += MISSION_REWARD;
+  return true;
+}
+export function claimMissionBonus(s: SaveData): boolean {
+  const ms = s.missions;
+  if (!ms || ms.bonusClaimed || !ms.list.every((m) => m.claimed)) return false;
+  ms.bonusClaimed = true; s.tickets += MISSION_BONUS;
+  return true;
+}
+
+// ── 자리 비움 수익 ──
+export const OFFLINE = { rate: 0.3, maxHours: 8, minMinutes: 2 } as const;
+/** 닫혀 있던 동안의 수익: 분당 예상 기본 수입 × 분 × 30% (최대 8시간) */
+export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: number; amount: number } | null {
+  if (!s.lastSeen || placedAnimals(s) === 0) return null;
+  const minutes = Math.min(OFFLINE.maxHours * 60, (now - s.lastSeen) / 60000);
+  if (minutes < OFFLINE.minMinutes) return null;
+  const A = totalAttract(s);
+  const perMin = Math.min(upValue(s, 'gate'), 3 + 0.2 * A) * 15 * upValue(s, 'quality') * stageTipMul(s) * staffTipMul(s);
+  return { minutes, amount: Math.floor(perMin * minutes * OFFLINE.rate) };
+}
 
 // ── 업그레이드 · 승급 ──
 export function upgradeCost(s: SaveData, id: UpgradeId): number | null {
@@ -252,6 +340,7 @@ export function buyUpgrade(s: SaveData, id: UpgradeId): boolean {
   s.coins -= cost;
   s.upgrades[id]++;
   syncSlots(s);
+  bumpMission(s, 'upgrade', 1);
   return true;
 }
 

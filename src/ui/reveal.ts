@@ -24,6 +24,15 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     h('div', { class: 'reveal-box' }, h('div', { class: 'reveal-title' }, `카드 ${cards.length}장`), machine, grid, h('div', { class: 'row-btns' }, skip, close)));
   root.append(back);
   audio.sfx('draw');
+  // 전설: 화면 가득 금빛 연출을 먼저
+  const legend = cards.find((c) => c.kind === 'animal' && cardGrade(c) === 4);
+  if (legend && legend.kind === 'animal' && !reduce) {
+    const show = h('div', { class: 'legend-burst' }, h('div', { class: 'rays' }), pix(`animal_${String(legend.animal).padStart(3, '0')}`, 176), h('div', { class: 'legend-text' }, '전설 등장!'));
+    back.append(show);
+    window.setTimeout(() => audio.sfx('legend'), 600);
+    show.addEventListener('click', () => show.remove());
+    window.setTimeout(() => show.remove(), 3200);
+  }
   let shown = 0, timer = 0;
   const showOne = () => {
     if (shown >= cards.length) { finish(); return; }

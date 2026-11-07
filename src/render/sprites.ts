@@ -144,7 +144,8 @@ export function sprite(key: string): Sprite {
   let s = cache.get(key);
   if (s) return s;
   s = make(key);
-  cache.set(key, s);
+  // PNG가 아직 안 불러졌으면 임시 그림을 저장해 두지 않는다 (불러온 뒤 진짜 그림이 쓰이게)
+  if (!(key in URLS)) cache.set(key, s);
   return s;
 }
 
@@ -161,8 +162,7 @@ function make(key: string): HTMLCanvasElement {
   m = /^coin_(\d)$/.exec(key);
   if (m) return coin(Number(m[1]) % 4);
   const cv = document.createElement('canvas'); cv.width = 8; cv.height = 8;
-  const c = cv.getContext('2d')!; c.fillStyle = '#ff00ff'; c.fillRect(0, 0, 8, 8);
-  return cv;
+  return cv; // 빈 그림 (불러오는 중이거나 없는 그림)
 }
 
 /** 애니메이션 프레임: PNG가 한 장뿐이면 같은 그림을 쓰고 그리는 쪽에서 통통 튀게 한다 */

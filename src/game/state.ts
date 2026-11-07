@@ -24,11 +24,23 @@ export interface SaveData {
   lockedSpecies: number[];
   /** 도감: 한 번이라도 얻은 종 */
   dex: boolean[];
-  stats: { draws: number; fusions: number; fusionWins: number; coinsEarned: number; coinsPicked: number };
+  stats: { draws: number; fusions: number; fusionWins: number; coinsEarned: number; coinsPicked: number; vips: number };
   tutorialDone: boolean;
+  /** 무료 뽑기권 (미션 보상) */
+  tickets: number;
+  /** 오늘의 미션 */
+  missions: MissionState | null;
+  /** 받은 도감 보상 id */
+  dexClaimed: string[];
+  /** 마지막으로 본 시각 (자리 비움 수익) */
+  lastSeen: number;
 }
 
-export const SAVE_VERSION = 1;
+export interface Mission { kind: MissionKind; target: number; progress: number; claimed: boolean }
+export type MissionKind = 'draw' | 'fuse' | 'pickup' | 'rare' | 'feed' | 'upgrade' | 'place';
+export interface MissionState { date: string; list: Mission[]; bonusClaimed: boolean }
+
+export const SAVE_VERSION = 2;
 export const SAVE_KEY = 'bbopzoo.save';
 
 export function defaultSave(): SaveData {
@@ -36,7 +48,8 @@ export function defaultSave(): SaveData {
   return {
     version: SAVE_VERSION, coins: 0, cards: [], nextUid: 1, pens: [[], []], staffSlots: [null],
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
-    stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0 }, tutorialDone: false,
+    stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
+    tickets: 0, missions: null, dexClaimed: [], lastSeen: 0,
   };
 }
 
@@ -57,6 +70,12 @@ export function normalize(raw: unknown): SaveData {
   out.dex = ANIMALS.map((_, i) => !!(Array.isArray(r.dex) && r.dex[i]));
   for (const c of out.cards) if (c.kind === 'animal') out.dex[c.animal] = true;
   out.lockedSpecies = Array.isArray(out.lockedSpecies) ? out.lockedSpecies.filter((n) => typeof n === 'number') : [];
+  out.tickets = Number.isFinite(out.tickets) ? Math.max(0, Math.floor(out.tickets)) : 0;
+  out.dexClaimed = Array.isArray(out.dexClaimed) ? out.dexClaimed.filter((x) => typeof x === 'string') : [];
+  out.lastSeen = Number.isFinite(out.lastSeen) ? out.lastSeen : 0;
+  const ms = out.missions as MissionState | null;
+  out.missions = ms && typeof ms.date === 'string' && Array.isArray(ms.list) ? ms : null;
+  out.staffSlots = out.staffSlots.length ? out.staffSlots : [null];
   out.version = SAVE_VERSION;
   return out;
 }

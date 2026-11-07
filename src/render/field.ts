@@ -21,6 +21,27 @@ const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-r
 export class FieldRenderer {
   /** 마지막으로 그린 변환 (입력 좌표 변환용) */
   scale = 1; ox = 0; oy = 0;
+  /** 사용자 확대 (1 = 전체 보기) 와 화면 가운데에 올 월드 좌표 */
+  userZoom = 1; camX = -1; camY = -1;
+  private lastView: View = { x: 0, y: 0, w: 1, h: 1 };
+  private lastFit = 1; private worldW = 1; private worldH = 1;
+
+  /** 화면 좌표 (sx, sy)를 중심으로 확대·축소 */
+  zoomAt(sx: number, sy: number, factor: number) {
+    const before = this.toWorld(sx, sy);
+    this.userZoom = Math.max(1, Math.min(6, this.userZoom * factor));
+    if (this.userZoom === 1) { this.camX = -1; return; }
+    if (this.camX < 0) { this.camX = this.worldW / 2; this.camY = this.worldH / 2; }
+    // 커서 아래 지점이 그대로 있도록 카메라를 옮긴다
+    const z = this.lastFit * this.userZoom;
+    this.camX = before.x - (sx - (this.lastView.x + this.lastView.w / 2)) / z;
+    this.camY = before.y - (sy - (this.lastView.y + this.lastView.h / 2)) / z;
+  }
+  panBy(dx: number, dy: number) {
+    if (this.userZoom <= 1) return;
+    this.camX -= dx / this.scale; this.camY -= dy / this.scale;
+  }
+  resetZoom() { this.userZoom = 1; this.camX = -1; }
   private dev = 1; private dpr = 1;
   selectedPen = -1;
 
@@ -87,11 +108,21 @@ export class FieldRenderer {
     const c = this.ctx, L = world.layout, t = world.time;
     // 배율: 기기 픽셀 기준 정수로 (도트가 고르게)
     const fit = Math.min(view.w / L.w, view.h / L.h);
-    const dev = fit * dpr;
-    const z = dev >= 1 ? Math.max(1, Math.floor(dev)) / dpr : fit;
+    this.lastView = view; this.lastFit = fit; this.worldW = L.w; this.worldH = L.h;
+    const dev = fit * this.userZoom * dpr;
+    const z = dev >= 1 ? Math.max(1, Math.floor(dev)) / dpr : fit * this.userZoom;
     this.scale = z; this.dev = z * dpr; this.dpr = dpr;
-    this.ox = Math.round((view.x + (view.w - L.w * z) / 2) * dpr) / dpr;
-    this.oy = Math.round((view.y + (view.h - L.h * z) / 2) * dpr) / dpr;
+    if (this.userZoom <= 1 || this.camX < 0) {
+      this.ox = Math.round((view.x + (view.w - L.w * z) / 2) * dpr) / dpr;
+      this.oy = Math.round((view.y + (view.h - L.h * z) / 2) * dpr) / dpr;
+    } else {
+      // 확대 중: 카메라가 맵 밖을 보지 않게 붙잡는다
+      const hw = view.w / 2 / z, hh = view.h / 2 / z;
+      this.camX = L.w * z <= view.w ? L.w / 2 : Math.max(hw, Math.min(L.w - hw, this.camX));
+      this.camY = L.h * z <= view.h ? L.h / 2 : Math.max(hh, Math.min(L.h - hh, this.camY));
+      this.ox = Math.round((view.x + view.w / 2 - this.camX * z) * dpr) / dpr;
+      this.oy = Math.round((view.y + view.h / 2 - this.camY * z) * dpr) / dpr;
+    }
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.imageSmoothingEnabled = false;
     c.fillStyle = '#25331f';
@@ -99,6 +130,9 @@ export class FieldRenderer {
     c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
 
     c.save();
+    // 필드 칸 밖으로 그리지 않게 (확대했을 때)
+    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.beginPath(); c.rect(view.x, view.y, view.w, view.h); c.clip();
+    c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
     c.beginPath(); c.rect(0, 0, L.w, L.h); c.clip();
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0); this.drawDynamic(world, save); }
@@ -125,8 +159,9 @@ export class FieldRenderer {
     for (const co of world.coins) {
       const fade = co.age > COIN.lifeSec - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
       c.globalAlpha = fade;
-      const img = sprite(`coin_${(coinFrame + co.id) % 4}`);
-      if (co.count > 1) c.drawImage(sprite('coin_0'), Math.round(co.x - 2), Math.round(co.y - 6 - co.z), 8, 8);
+      // 많이 합쳐진 동전은 동전 더미 그림
+      const img = co.count >= 3 && hasPng('fx_06') ? sprite('fx_06') : sprite(`coin_${(coinFrame + co.id) % 4}`);
+      if (co.count === 2) c.drawImage(sprite('coin_0'), Math.round(co.x - 2), Math.round(co.y - 6 - co.z), 8, 8);
       c.drawImage(img, Math.round(co.x - 4), Math.round(co.y - 5 - co.z), 8, 8);
       c.globalAlpha = 1;
     }
@@ -136,7 +171,11 @@ export class FieldRenderer {
     const list: D[] = [];
     for (const v of world.visitors) {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
-      list.push({ y: v.y, f: () => this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0) });
+      list.push({ y: v.y, f: () => {
+        this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
+        // VIP 손님: 머리 위 별 + 금빛 테두리
+        if (v.vip) { c.drawImage(sprite('fx_15'), Math.round(v.x - 4), Math.round(v.y - 21 + Math.sin(t * 6)), 8, 8); c.strokeStyle = '#f7c948'; c.lineWidth = 1; c.strokeRect(Math.round(v.x - 5) + 0.5, Math.round(v.y - 13) + 0.5, 10, 13); }
+      } });
     }
     for (const e of world.staff) {
       const fr = Math.floor(e.anim * 6) % 2;
@@ -145,13 +184,25 @@ export class FieldRenderer {
     list.sort((a, b) => a.y - b.y);
     for (const d of list) d.f();
 
+    // 동물 말풍선 (하트·음표·먹이)
+    for (const e of world.emotes) {
+      const k = e.t / 1.4;
+      c.globalAlpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
+      c.drawImage(sprite(e.icon), Math.round(e.x - 4), Math.round(e.y - 6 - k * 6), 8, 8);
+    }
+    c.globalAlpha = 1;
+    // 소나기
+    if (world.event?.id === 'rain') {
+      c.fillStyle = 'rgba(115,239,247,0.55)';
+      for (let i = 0; i < 90; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); c.fillRect(Math.round(x), Math.round(y), 1, 3); }
+      c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(0, 0, L.w, L.h);
+    }
     // 손 수거 범위
     if (pointer) {
       c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 1 / z;
       c.beginPath(); c.arc(pointer.x, pointer.y, world.pickupRadius, 0, Math.PI * 2); c.stroke();
     }
 
-    c.restore();
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
@@ -181,6 +232,7 @@ export class FieldRenderer {
       c.fillStyle = world.fedLeft[i] > 0 ? '#ffc8dd' : n ? '#fff3a3' : '#c7cfdd';
       c.fillText(label, sx, sy);
     });
+    c.restore();
   }
 
   /** 타일 바탕 위에: 선택 테두리·먹이 표시·동물 */

@@ -4,7 +4,8 @@ import { ANIMALS } from '../data/animals';
 import { COIN, FEED, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { SaveData } from './state';
-import { cardById, penCount, penSize, stageTipMul, totalAttract, upValue } from './rules';
+import { bumpMission, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
+import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
 /** 등급별 크기 배율 (render/field.ts의 GRADE_SIZE와 같게) */
@@ -54,15 +55,19 @@ export function computeLayout(n: number, cap: number, aspect: number): Layout {
 }
 
 export interface AnimalEnt { uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
-export interface VisitorEnt { x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number }
+export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number }
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number }
 export interface FloatText { x: number; y: number; text: string; t: number; color: string }
 
+export interface Emote { x: number; y: number; t: number; icon: string }
 export type WorldEvent =
   | { type: 'tip'; amount: number; x: number; y: number }
   | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff' }
-  | { type: 'feed'; pen: number; by: 'hand' | 'staff' };
+  | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
+  | { type: 'eventStart'; id: EventId }
+  | { type: 'eventEnd'; id: EventId }
+  | { type: 'vip'; amount: number };
 
 export class World {
   layout: Layout = { w: 100, h: 100, pens: [], cols: 1 };
@@ -71,6 +76,11 @@ export class World {
   coins: CoinEnt[] = [];
   staff: StaffEnt[] = [];
   floats: FloatText[] = [];
+  emotes: Emote[] = [];
+  /** 진행 중인 이벤트 */
+  event: { id: EventId; left: number } | null = null;
+  private eventTimer: number = EVENT_TIMING.firstAt;
+  private emoteAcc = 0;
   events: WorldEvent[] = [];
   /** 우리별 먹이 버프 남은 시간 / 손으로 줄 때 대기 */
   fedLeft: number[] = [];
@@ -144,13 +154,14 @@ export class World {
   get gateCap() { return upValue(this.save, 'gate'); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return VISITOR.basePerMin + VISITOR.perAttract * this.attract; }
-  get visitorRate() { return Math.min(this.gateCap, this.visitorDemand); }
+  get visitorRate() { return Math.min(this.gateCap, this.visitorDemand) * (this.event ? eventDef(this.event.id).rateMul : 1); }
   /** 수요가 한도를 넘친 만큼 투척액이 오른다 */
   get overflowMul() {
     const d = this.visitorDemand, cap = this.gateCap;
-    return d <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + ((d - cap) / cap) * 0.5);
+    return d <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + ((d - cap) / cap) * 0.25);
   }
-  get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul; }
+  get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
+  get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save); }
   get pickupRadius() { return upValue(this.save, 'pickup'); }
 
   incomePerMin() {
@@ -220,17 +231,44 @@ export class World {
       c.age += dt;
       if (c.z > 0 || c.vy !== 0) { c.vy -= COIN.gravity * dt; c.z = Math.max(0, c.z + c.vy * dt); if (c.z === 0) c.vy = 0; }
       if (c.picked) { this.coins.splice(i, 1); continue; }
-      if (c.age > COIN.lifeSec) { this.coins.splice(i, 1); this.missed += c.value; continue; }
+      if (c.age > this.coinLife) { this.coins.splice(i, 1); this.missed += c.value; continue; }
       // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
       if (pointer && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
     }
 
     this.updateStaff(dt);
+    this.updateEvent(dt);
+    // 동물 말풍선: 가끔 하트·음표 (먹이 먹은 우리는 먹이 그림)
+    this.emoteAcc += dt * Math.min(3, this.animals.length / 15);
+    while (this.emoteAcc > 1 && this.animals.length) {
+      this.emoteAcc -= 1;
+      const a = this.animals[Math.floor(this.rng() * this.animals.length)];
+      const fed = this.fedLeft[a.pen] > 0;
+      this.emotes.push({ x: a.x, y: a.y - 10, t: 0, icon: fed ? ['fx_11', 'fx_12', 'fx_13', 'fx_14'][a.animal % 4] : this.rng() < 0.6 ? 'fx_10' : 'fx_17' });
+    }
+    for (let i = this.emotes.length - 1; i >= 0; i--) { this.emotes[i].t += dt; if (this.emotes[i].t > 1.4) this.emotes.splice(i, 1); }
 
     for (let i = this.floats.length - 1; i >= 0; i--) { this.floats[i].t += dt; if (this.floats[i].t > 1.1) this.floats.splice(i, 1); }
   }
 
-  private spawnVisitor() {
+  private updateEvent(dt: number) {
+    if (!this.animals.length) return;
+    if (this.event) {
+      this.event.left -= dt;
+      if (this.event.left <= 0) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; this.eventTimer = EVENT_TIMING.gapMin + this.rng() * (EVENT_TIMING.gapMax - EVENT_TIMING.gapMin); }
+      return;
+    }
+    this.eventTimer -= dt;
+    if (this.eventTimer > 0) return;
+    const total = EVENTS.reduce((a, e) => a + e.weight, 0);
+    let r = this.rng() * total;
+    const ev = EVENTS.find((e) => (r -= e.weight) <= 0) ?? EVENTS[0];
+    this.event = { id: ev.id, left: EVENT_TIMING.durationSec };
+    this.events.push({ type: 'eventStart', id: ev.id });
+    if (ev.id === 'vip') this.spawnVisitor(true);
+  }
+
+  private spawnVisitor(vip = false) {
     const L = this.layout;
     const dir = this.rng() < 0.5 ? 1 : -1;
     // 동물이 있는 우리 앞을 고른다 (위쪽 줄 우리일수록 잘 고름)
@@ -238,13 +276,14 @@ export class World {
     const pi = pens.length ? pens[Math.floor(this.rng() * pens.length)] : 0;
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
-    if (this.visitors.length > 160) return; // 화면이 너무 붐비면 그리기만 생략 (수입은 아래에서 바로)
-    this.visitors.push({ x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: Math.floor(this.rng() * 8),
+    if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
+    this.visitors.push({ vip, x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: Math.floor(this.rng() * 8),
       state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng() });
   }
 
   private throwCoin(v: VisitorEnt) {
-    const tip = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul);
+    const tip = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (v.vip ? EVENT_TIMING.vipTipMul : 1));
+    if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
     this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
     const bonus = Math.max(1, Math.round(tip * VISITOR.pickupBonus));
@@ -261,6 +300,7 @@ export class World {
     c.picked = true;
     this.earn(0, c.value);
     this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by });
+    if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
     this.floats.push({ x: c.x, y: c.y - 4, text: `+${c.value}`, t: 0, color: by === 'hand' ? '#fff3a3' : '#a7d65b' });
   }
 
@@ -269,7 +309,7 @@ export class World {
     if (!this.save.pens[pen]?.length) return false;
     if (by === 'hand' && this.feedCooldown[pen] > 0) return false;
     this.fedLeft[pen] = FEED.sec;
-    if (by === 'hand') this.feedCooldown[pen] = FEED.manualCooldown;
+    if (by === 'hand') { this.feedCooldown[pen] = FEED.manualCooldown; bumpMission(this.save, 'feed', 1); }
     this.events.push({ type: 'feed', pen, by });
     const r = this.layout.pens[pen];
     if (r) this.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: '냠냠! 매력 +10%', t: 0, color: '#ffc8dd' });
@@ -289,6 +329,10 @@ export class World {
         }
         this.moveTo(e, STAFF_AI.collectorSpeed, dt);
         for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) this.pick(c, 'staff');
+      } else if (e.kind === 'guide' || e.kind === 'janitor') {
+        // 안내원·관리인: 길을 천천히 오가며 일한다 (효과는 상시 적용)
+        if (!e.target || this.moveTo(e, 14, dt)) e.target = { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
+        this.moveTo(e, 14, dt);
       } else {
         // 사육사: 동물 있는 우리를 차례로 돌며 먹이
         const pens = this.layout.pens;

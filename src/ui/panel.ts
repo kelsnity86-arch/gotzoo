@@ -1,23 +1,27 @@
 // 오른쪽(가로 화면) / 아래쪽(세로 화면) 패널: 뽑기 · 보관함 · 합성 · 업그레이드 · 직원 · 도감
 import { ANIMALS, HABITAT_NAMES } from '../data/animals';
+import { DEX_SETS, dexSetMembers } from '../data/dex';
+import { MISSION_BONUS, MISSION_REWARD } from '../data/missions';
 import { GRADES, type Grade } from '../data/grades';
 import { STAFF, staffDef } from '../data/staff';
-import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, UPGRADES } from '../data/balance';
+import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } from '../data/balance';
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, autoFusionPick, autoPlace, optimizePlacement, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
-import { animalFrame, staffFrame } from '../render/sprites';
+import { animalFrame, hasPng, staffFrame } from '../render/sprites';
 import { audio } from './audio';
 import { cardEl } from './cardview';
-import { fmt, h, pix, toast } from './dom';
+import { fmt, h, iconSlot, pix, toast } from './dom';
 import { showReveal } from './reveal';
 
 export interface PanelCtx { save: SaveData; world: World; persist: () => void; overlayRoot: HTMLElement }
 type Tab = 'gacha' | 'inv' | 'fuse' | 'up' | 'staff' | 'dex';
 const TABS: [Tab, string][] = [['gacha', '뽑기'], ['inv', '보관함'], ['fuse', '합성'], ['up', '업그레이드'], ['staff', '직원'], ['dex', '도감']];
+const TAB_ICON: Record<Tab, string> = { gacha: 'icons_12', inv: 'icons_10', fuse: 'icons_09', up: 'icons_13', staff: 'icons_07', dex: 'icons_15' };
+const UP_ICON: Record<string, string> = { pens: 'icons_05', size: 'icons_05', quality: 'icons_06', gate: 'icons_03', staff: 'icons_07', pickup: 'icons_08' };
 
 export class Panel {
   readonly el: HTMLElement;
@@ -35,7 +39,7 @@ export class Panel {
       // 세로 화면: 탭을 누르면 서랍이 열리고, 같은 탭을 다시 누르면 닫힌다
       if (this.tab === t && this.isOpen && !document.body.classList.contains('landscape')) { this.setOpen(false); return; }
       this.tab = t; this.setOpen(true); this.render(true);
-    } }, name));
+    } }, hasPng(TAB_ICON[t]) ? iconSlot(TAB_ICON[t], 14) : null, h('span', {}, name)));
     const handle = h('button', { class: 'drawer-close', title: '닫기', onclick: () => this.setOpen(false) }, '▼');
     this.el = h('aside', { class: 'panel closed' }, h('nav', { class: 'ptabs' }, ...this.tabBtns, handle), this.body);
   }
@@ -46,7 +50,7 @@ export class Panel {
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
     const s = this.ctx.save;
-    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}`;
+    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}`;
     if (!force && key === this.lastKey) return;
     // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
@@ -91,8 +95,27 @@ export class Panel {
         this.costBtn(h('span', {}, '1회', h('small', {}, `${fmt(price)}`)), price, () => doDraw(1)),
         this.costBtn(h('span', {}, '5회', h('small', {}, `${fmt(price * 5)}`)), price * 5, () => doDraw(5)),
         this.costBtn(h('span', {}, '10회', h('small', {}, `${fmt(price * 10)}`)), price * 10, () => doDraw(10))),
+      s.tickets > 0 ? h('button', { class: 'btn big ticket', onclick: () => { const before = s.dex.slice(); const out = ticketDraw(s); if (out) this.reveal(out, before); } }, `무료 뽑기권 사용 (${s.tickets}장 남음)`) : null,
+      this.missions(),
       h('div', { class: 'section-title' }, '나오는 확률'), grid,
       h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요.'));
+  }
+
+  /** 오늘의 미션: 하나 = 뽑기권 1장, 셋 다 = 보너스 2장 */
+  private missions() {
+    const s = this.ctx.save;
+    const ms = ensureMissions(s);
+    const rows = ms.list.map((m, i) => {
+      const done = m.progress >= m.target;
+      const b = h('button', { class: 'btn small', onclick: () => { if (claimMission(s, i)) { audio.sfx('buy'); toast(`뽑기권 +${MISSION_REWARD}`, 'gold'); this.changed(); } } }, m.claimed ? '받음' : `뽑기권 ${MISSION_REWARD}`) as HTMLButtonElement;
+      b.disabled = m.claimed || !done;
+      return h('div', { class: `mission${m.claimed ? ' claimed' : ''}` },
+        h('div', { class: 'm-info' }, h('div', {}, missionText(m.kind, m.target)), this.bar(`${m.progress} / ${m.target}`, m.progress / m.target)), b);
+    });
+    const bonus = h('button', { class: 'btn small', onclick: () => { if (claimMissionBonus(s)) { audio.sfx('fuseWin'); toast(`오늘의 미션 완료! 뽑기권 +${MISSION_BONUS}`, 'gold', 2400); this.changed(); } } }, ms.bonusClaimed ? '받음' : `보너스 ${MISSION_BONUS}장`) as HTMLButtonElement;
+    bonus.disabled = ms.bonusClaimed || !ms.list.every((m) => m.claimed);
+    return h('div', {}, h('div', { class: 'section-title' }, `오늘의 미션 · ${ms.date}`), ...rows,
+      h('div', { class: 'mission bonus' }, h('div', { class: 'm-info' }, '3개 모두 받으면'), bonus));
   }
 
   private reveal(cards: Card[], beforeDex: boolean[]) {
@@ -198,6 +221,19 @@ export class Panel {
     if (!r.ok) { toast(r.reason, 'bad'); return; }
     this.fuseSel = [];
     this.ctx.persist();
+    // 캡슐이 흔들리다가 열린다 (재료 등급 색)
+    const g = r.card.kind === 'animal' ? ANIMALS[r.card.animal].grade - (r.success ? 1 : 0) : 0;
+    if (hasPng('gacha_03')) {
+      const cap = h('div', { class: 'overlay' }, h('div', { class: 'fuse-capsule' }, pix(`gacha_${String(3 + Math.max(0, g)).padStart(2, '0')}`, 96), h('div', { class: 'reveal-title', style: 'color:#fff' }, `${n}장 합성 중… ${Math.round(r.chance * 100)}%`)));
+      this.ctx.overlayRoot.append(cap);
+      audio.sfx('draw');
+      window.setTimeout(() => { cap.remove(); this.fuseResult(r, n); }, 1100);
+      return;
+    }
+    this.fuseResult(r, n);
+  }
+
+  private fuseResult(r: Extract<ReturnType<typeof fuse>, { ok: true }>, n: number) {
     audio.sfx(r.success ? 'fuseWin' : 'fuseFail');
     const back = h('div', { class: 'overlay' },
       h('div', { class: `fuse-result ${r.success ? 'win' : 'lose'}` },
@@ -214,7 +250,7 @@ export class Panel {
     const s = this.ctx.save;
     const req = stageReq(s);
     const stageBox = h('div', { class: 'stage-box' },
-      h('div', { class: 'stage-head' }, h('b', {}, `진행 ${s.stage}단계`), h('span', { class: 'sub' }, `뽑기 1장 ${fmt(drawPrice(s))} · 투척액 ×${Math.pow(1.2, s.stage - 1).toFixed(2)}`)),
+      h('div', { class: 'stage-head' }, h('b', {}, `진행 ${s.stage}단계`), h('span', { class: 'sub' }, `뽑기 1장 ${fmt(drawPrice(s))} · 투척액 ×${Math.pow(STAGE_TIP_MUL, s.stage - 1).toFixed(2)}`)),
       req ? h('div', {},
         this.bar(`전시 동물 ${placedAnimals(s)} / ${req[0]}`, placedAnimals(s) / req[0]),
         this.bar(`총 매력도 ${fmt(totalAttract(s))} / ${fmt(req[1])}`, totalAttract(s) / req[1]),
@@ -224,7 +260,7 @@ export class Panel {
       const cost = upgradeCost(s, u.id), lock = upgradeLockedBy(s, u.id);
       const lv = s.upgrades[u.id];
       return h('div', { class: 'up-row' },
-        h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
+        h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, hasPng(UP_ICON[u.id]) ? pix(UP_ICON[u.id], 16) : null, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
           h('div', { class: 'sub' }, cost === null ? u.describe(u.values[lv]) : `${u.describe(u.values[lv])} → ${u.describe(u.values[lv + 1])}`),
           lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
         cost === null ? h('span', { class: 'max' }, '최고') : this.costBtn(`${fmt(cost)}`, cost, () => { if (buyUpgrade(s, u.id)) { audio.sfx('buy'); this.ctx.world.relayout(-1); this.changed(); } }, 'small', !!lock));
@@ -265,8 +301,17 @@ export class Panel {
   private dex() {
     const s = this.ctx.save;
     const found = s.dex.filter(Boolean).length;
+    const sets = DEX_SETS.map((set) => {
+      const mem = dexSetMembers(set), got = mem.filter((a) => s.dex[a.id]).length;
+      const claimed = s.dexClaimed.includes(set.id), ready = !claimed && dexSetDone(s, set.id);
+      const b = h('button', { class: 'btn small', onclick: () => { const r = claimDexSet(s, set.id); if (r) { audio.sfx('fuseWin'); toast(`도감 보상! +${fmt(r)}코인 · ${set.desc}`, 'gold', 2600); this.changed(); } } }, claimed ? '받음' : `+${fmt(set.reward)}`) as HTMLButtonElement;
+      b.disabled = !ready;
+      return h('div', { class: `mission${claimed ? ' claimed' : ready ? ' ready' : ''}` },
+        h('div', { class: 'm-info' }, h('div', {}, set.name, h('span', { class: 'sub' }, ` · ${set.desc}`)), this.bar(`${got} / ${mem.length}`, got / mem.length)), b);
+    });
     return h('div', {},
-      h('div', { class: 'inv-head' }, h('b', {}, `도감 ${found} / ${ANIMALS.length}`), h('span', { class: 'sub' }, GRADES.map((g) => `${g.name} ${ANIMALS.filter((a, i) => a.grade === g.id && s.dex[i]).length}/${ANIMALS.filter((a) => a.grade === g.id).length}`).join(' · '))),
+      h('div', { class: 'section-title' }, '도감 보상 (모으면 영구 보너스)'), ...sets,
+      h('div', { class: 'inv-head', style: 'margin-top:12px' }, h('b', {}, `도감 ${found} / ${ANIMALS.length}`), h('span', { class: 'sub' }, GRADES.map((g) => `${g.name} ${ANIMALS.filter((a, i) => a.grade === g.id && s.dex[i]).length}/${ANIMALS.filter((a) => a.grade === g.id).length}`).join(' · '))),
       ...GRADES.map((g) => h('div', {},
         h('div', { class: `section-title g-${g.key}` }, g.name),
         h('div', { class: 'dex-grid' }, ...ANIMALS.filter((a) => a.grade === g.id).map((a) => {
