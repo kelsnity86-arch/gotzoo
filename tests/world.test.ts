@@ -14,6 +14,8 @@ function setup() {
   return { s, w };
 }
 const run = (w: World, sec: number, pointer: { x: number; y: number } | null = null) => { for (let i = 0; i < sec * 30; i++) w.update(1 / 30, pointer); };
+/** 바닥에 떨어진 동전이 생길 때까지 (최대 2분) */
+const waitCoin = (w: World) => { for (let i = 0; i < 3600 && !w.coins.some((x) => x.z === 0); i++) w.update(1 / 30, null); return w.coins.find((x) => x.z === 0)!; };
 
 describe('필드', () => {
   it('우리 배치는 화면 비율을 따른다', () => {
@@ -29,8 +31,7 @@ describe('필드', () => {
   });
   it('수거 보너스는 동전 하나에 한 번만, 20초 뒤 사라진다', () => {
     const { s, w } = setup();
-    run(w, 25);
-    const c = w.coins.find((x) => x.z === 0)!;
+    const c = waitCoin(w);
     const before = s.coins;
     w.pick(c, 'hand'); w.pick(c, 'staff');
     expect(s.coins - before).toBe(c.value);
@@ -43,8 +44,7 @@ describe('필드', () => {
   });
   it('커서를 대면 줍는다', () => {
     const { s, w } = setup();
-    run(w, 25);
-    const c = w.coins.find((x) => x.z === 0)!;
+    const c = waitCoin(w);
     const before = s.stats.coinsPicked;
     w.update(1 / 30, { x: c.x, y: c.y });
     expect(s.stats.coinsPicked).toBeGreaterThan(before);
