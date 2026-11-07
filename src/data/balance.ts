@@ -58,9 +58,8 @@ export const VISITOR = {
   viewSecMin: 2, viewSecMax: 4,
 } as const;
 
-/** 동전: 관람객이 던지면 위로 살짝 튀었다가 화면 아래까지 쭉 떨어진다. 바닥까지 못 주우면 사라진다.
- *  fallSec = 화면 맨 위에서 맨 아래까지 떨어지는 데 걸리는 시간 (맵이 커져도 같다) */
-export const COIN = { fallSec: 6, popSpeed: 36, gravity: 70, drift: 6 } as const;
+/** 동전: 관람객 발밑(관객존 바닥)에 떨어져 쌓인다. 오래 방치하면(lifeSec) 사라진다. 끝나기 blinkSec 전부터 깜빡인다 */
+export const COIN = { lifeSec: 60, blinkSec: 8, mergeDist: 5, popSpeed: 30, gravity: 150 } as const;
 
 /** 같은 우리 안 같은 종 마릿수 → 매력도 보너스 */
 export const SAME_SPECIES_BONUS: readonly [number, number][] = [[10, 0.3], [5, 0.2], [3, 0.1]];

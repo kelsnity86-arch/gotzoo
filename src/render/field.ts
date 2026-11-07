@@ -1,5 +1,6 @@
 // 필드 그리기: 관객존(길·관람객·동전) + 동물존(우리·동물). 도트 한 칸이 화면 픽셀 정수 개가 되게 배율을 맞춘다.
 import { ANIMALS, type Habitat } from '../data/animals';
+import { COIN } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
@@ -122,7 +123,7 @@ export class FieldRenderer {
     // 동전 (관객존 바닥)
     const coinFrame = Math.floor(t * 8) % 4;
     for (const co of world.coins) {
-      const fade = co.age > 16 ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
+      const fade = co.age > COIN.lifeSec - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
       c.globalAlpha = fade;
       const img = sprite(`coin_${(coinFrame + co.id) % 4}`);
       if (co.count > 1) c.drawImage(sprite('coin_0'), Math.round(co.x - 2), Math.round(co.y - 6 - co.z), 8, 8);

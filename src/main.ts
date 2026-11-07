@@ -111,7 +111,7 @@ function updateHud() {
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
-    : save.stats.coinsPicked === 0 ? '떨어지는 동전을 손으로 받으면 보너스!'
+    : save.stats.coinsPicked === 0 ? '바닥 동전을 커서(손가락)로 쓸어 담으면 보너스!'
     : '';
   hint.textContent = msg;
   hint.classList.toggle('hidden', !msg);
