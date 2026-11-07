@@ -55,7 +55,7 @@ export function computeLayout(n: number, cap: number, aspect: number): Layout {
 
 export interface AnimalEnt { uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
 export interface VisitorEnt { x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number }
-export interface CoinEnt { id: number; x: number; y: number; value: number; count: number; age: number; z: number; vz: number; picked: boolean }
+export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number }
 export interface FloatText { x: number; y: number; text: string; t: number; color: string }
 
@@ -82,6 +82,8 @@ export class World {
   /** 최근 1분 수입 (HUD) */
   private incomeLog: { t: number; base: number; bonus: number }[] = [];
   private keeperIdx = 0;
+  /** 바닥까지 떨어져 놓친 보너스 합계 */
+  missed = 0;
 
   constructor(private save: SaveData, private rng: () => number = Math.random) {}
 
@@ -212,14 +214,17 @@ export class World {
       }
     }
 
-    // 동전: 튀어 떨어진 뒤 바닥에서 20초
+    // 동전: 위로 살짝 튀었다가 화면 아래까지 떨어진다. 바닥에 닿으면 사라진다 (보너스를 놓침)
+    const terminal = Math.max(24, L.h / COIN.fallSec);
     for (let i = this.coins.length - 1; i >= 0; i--) {
       const c = this.coins[i];
       c.age += dt;
-      if (c.z > 0 || c.vz > 0) { c.vz -= 160 * dt; c.z = Math.max(0, c.z + c.vz * dt); if (c.z === 0) c.vz = 0; }
-      if (c.picked || c.age > COIN.lifeSec) { this.coins.splice(i, 1); continue; }
-      // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
-      if (pointer && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
+      c.vy = Math.min(terminal, c.vy + COIN.gravity * dt);
+      c.x = Math.max(4, Math.min(L.w - 4, c.x + c.vx * dt));
+      c.y += c.vy * dt;
+      if (c.picked) { this.coins.splice(i, 1); continue; }
+      if (c.y > L.h + 4) { this.coins.splice(i, 1); this.missed += c.value; continue; }
+      if (pointer && Math.hypot(c.x - pointer.x, c.y - 1 - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
     }
 
     this.updateStaff(dt);
@@ -245,12 +250,8 @@ export class World {
     this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
     const bonus = Math.max(1, Math.round(tip * VISITOR.pickupBonus));
-    const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 4, Math.max(PATH_Y0 + 2, v.y + 6 + this.rng() * 6));
-    // 가까운 동전과 합친다 (화면이 동전으로 덮이지 않게)
-    // 합친 동전도 처음 동전의 20초를 그대로 따른다 (오래된 동전과는 합치지 않음)
-    const near = this.coins.find((c) => !c.picked && c.z === 0 && c.age < COIN.lifeSec / 2 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
-    if (near) { near.value += bonus; near.count++; return; }
-    this.coins.push({ id: this.coinId++, x, y, value: bonus, count: 1, age: 0, z: 10, vz: 40, picked: false });
+    // 위로 살짝 튀었다가 아래로 쭉 떨어진다
+    this.coins.push({ id: this.coinId++, x: v.x, y: v.y - 10, vx: (this.rng() - 0.5) * 2 * COIN.drift, vy: -COIN.popSpeed * (0.7 + this.rng() * 0.6), value: bonus, count: 1, age: 0, z: 0, picked: false });
   }
 
   /** 동전 줍기: 먼저 닿은 쪽만 보너스 (picked로 한 번만) */
@@ -282,11 +283,13 @@ export class World {
         if (!e.target || e.t > 1) {
           e.t = 0;
           let best: CoinEnt | null = null, bd: number = STAFF_AI.collectorSearch;
-          for (const c of this.coins) { if (c.picked || c.z > 0) continue; const d = Math.hypot(c.x - e.x, c.y - e.y); if (d < bd) { bd = d; best = c; } }
-          e.target = best ? { x: best.x, y: best.y } : { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
+          // 떨어지는 동전: 0.6초 뒤 올 자리로 간다
+          for (const c of this.coins) { if (c.picked || c.vy < 0) continue; const ty = c.y + c.vy * 0.6; if (ty < e.y - 4) continue; const d = Math.hypot(c.x - e.x, ty - e.y); if (d < bd) { bd = d; best = c; } }
+          e.target = best ? { x: best.x, y: Math.min(this.layout.h - 6, best.y + best.vy * 0.6) } : { x: 10 + this.rng() * (this.layout.w - 20), y: this.layout.h * (0.45 + this.rng() * 0.45) };
+          e.t = best ? 0.7 : 0;
         }
         this.moveTo(e, STAFF_AI.collectorSpeed, dt);
-        for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) this.pick(c, 'staff');
+        for (const c of this.coins) if (!c.picked && Math.hypot(c.x - e.x, c.y - (e.y - 6)) < STAFF_AI.collectorReach) this.pick(c, 'staff');
       } else {
         // 사육사: 동물 있는 우리를 차례로 돌며 먹이
         const pens = this.layout.pens;

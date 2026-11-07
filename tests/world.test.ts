@@ -15,7 +15,7 @@ function setup() {
 }
 const run = (w: World, sec: number, pointer: { x: number; y: number } | null = null) => { for (let i = 0; i < sec * 30; i++) w.update(1 / 30, pointer); };
 /** 바닥에 떨어진 동전이 생길 때까지 (최대 2분) */
-const waitCoin = (w: World) => { for (let i = 0; i < 3600 && !w.coins.some((x) => x.z === 0); i++) w.update(1 / 30, null); return w.coins.find((x) => x.z === 0)!; };
+const waitCoin = (w: World) => { for (let i = 0; i < 3600 && !w.coins.length; i++) w.update(1 / 30, null); return w.coins[0]; };
 
 describe('필드', () => {
   it('우리 배치는 화면 비율을 따른다', () => {
@@ -27,9 +27,9 @@ describe('필드', () => {
     const { s, w } = setup();
     run(w, 30);
     expect(s.coins).toBeGreaterThan(0);
-    expect(w.coins.length).toBeGreaterThan(0);
+    expect(w.coins.length + w.missed).toBeGreaterThan(0);
   });
-  it('수거 보너스는 동전 하나에 한 번만, 20초 뒤 사라진다', () => {
+  it('수거 보너스는 동전 하나에 한 번만, 바닥까지 떨어지면 사라진다', () => {
     const { s, w } = setup();
     const c = waitCoin(w);
     const before = s.coins;
@@ -37,16 +37,17 @@ describe('필드', () => {
     expect(s.coins - before).toBe(c.value);
     const t = defaultSave(); const tc = freeDraw(t)!; placeAnimal(t, tc.uid);
     const w2 = new World(t); w2.relayout(1.6); w2.sync();
-    run(w2, 20);
+    waitCoin(w2);
     const ids = w2.coins.map((x) => x.id);
-    run(w2, COIN.lifeSec + 1);
+    run(w2, COIN.fallSec + 2);
     expect(w2.coins.some((x) => ids.includes(x.id))).toBe(false);
+    expect(w2.missed).toBeGreaterThan(0);
   });
   it('커서를 대면 줍는다', () => {
     const { s, w } = setup();
     const c = waitCoin(w);
     const before = s.stats.coinsPicked;
-    w.update(1 / 30, { x: c.x, y: c.y });
+    w.update(1 / 30, { x: c.x, y: c.y + c.vy / 30 });
     expect(s.stats.coinsPicked).toBeGreaterThan(before);
   });
   it('수거 직원은 동전을 자동으로 줍는다, 직원이 없어도 수입은 생긴다', () => {
@@ -77,7 +78,7 @@ describe('손 수거', () => {
     for (let i = 0; i < 3600 && !w.coins.length; i++) w.update(1 / 30, null);
     const c = w.coins[0];
     const before = s.stats.coinsPicked;
-    w.update(1 / 60, { x: c.x, y: c.y - 1 - c.z });
+    w.update(1 / 60, { x: c.x, y: c.y - 1 });
     expect(s.stats.coinsPicked).toBeGreaterThan(before);
   });
 });

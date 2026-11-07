@@ -145,7 +145,7 @@ export class FieldRenderer {
     for (const d of list) d.f();
 
     // 손 수거 범위
-    if (pointer && pointer.y < ZONE_H + 6) {
+    if (pointer) {
       c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 1 / z;
       c.beginPath(); c.arc(pointer.x, pointer.y, world.pickupRadius, 0, Math.PI * 2); c.stroke();
     }
@@ -153,24 +153,30 @@ export class FieldRenderer {
     c.restore();
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.font = '11px Galmuri11, sans-serif'; c.textAlign = 'center';
+    // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
+    const outlined = (text: string, x: number, y: number, color: string) => {
+      c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
+      c.fillStyle = color; c.fillText(text, x, y);
+    };
+    c.font = '15px Galmuri14, Galmuri11, sans-serif'; c.textAlign = 'center';
     for (const f of world.floats) {
       const k = f.t / 1.1;
       const sx = this.ox + f.x * z, sy = this.oy + (f.y - k * 10) * z;
       c.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
-      c.fillStyle = '#1a1c2c'; c.fillText(f.text, sx + 1, sy + 1);
-      c.fillStyle = f.color; c.fillText(f.text, sx, sy);
+      outlined(f.text, sx, sy, f.color);
     }
     c.globalAlpha = 1;
     // 우리 이름표: 매력도
-    c.font = '10px Galmuri11, sans-serif';
+    // 우리 이름표: 매력도 (큰 글씨, 진한 배경)
+    c.font = '13px Galmuri14, Galmuri11, sans-serif';
     L.pens.forEach((r, i) => {
       const n = save.pens[i]?.length ?? 0;
-      const label = n ? `♥${Math.round(penAttract(save, i, world.fedLeft[i] > 0 ? 1.1 : 1))}` : '빈 우리';
-      const sx = this.ox + (r.x + r.w / 2) * z, sy = this.oy + (r.y + 1) * z - 2;
-      c.fillStyle = 'rgba(26,28,44,0.65)';
-      const tw = c.measureText(label).width + 8;
-      c.fillRect(sx - tw / 2, sy - 10, tw, 12);
+      const label = n ? `♥ ${Math.round(penAttract(save, i, world.fedLeft[i] > 0 ? 1.1 : 1)).toLocaleString('ko-KR')}` : '빈 우리';
+      const sx = this.ox + (r.x + r.w / 2) * z, sy = this.oy + (r.y + 4) * z + 5;
+      const tw = c.measureText(label).width + 12;
+      c.fillStyle = 'rgba(18,20,30,0.88)';
+      c.beginPath(); c.roundRect(sx - tw / 2, sy - 13, tw, 17, 5); c.fill();
+      c.strokeStyle = world.fedLeft[i] > 0 ? '#f08cbe' : n ? '#e0a526' : '#566c86'; c.lineWidth = 1.5; c.stroke();
       c.fillStyle = world.fedLeft[i] > 0 ? '#ffc8dd' : n ? '#fff3a3' : '#c7cfdd';
       c.fillText(label, sx, sy);
     });

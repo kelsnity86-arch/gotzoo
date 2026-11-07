@@ -58,7 +58,9 @@ export const VISITOR = {
   viewSecMin: 2, viewSecMax: 4,
 } as const;
 
-export const COIN = { lifeSec: 20, mergeDist: 5 } as const;
+/** 동전: 관람객이 던지면 위로 살짝 튀었다가 화면 아래까지 쭉 떨어진다. 바닥까지 못 주우면 사라진다.
+ *  fallSec = 화면 맨 위에서 맨 아래까지 떨어지는 데 걸리는 시간 (맵이 커져도 같다) */
+export const COIN = { fallSec: 6, popSpeed: 36, gravity: 70, drift: 6 } as const;
 
 /** 같은 우리 안 같은 종 마릿수 → 매력도 보너스 */
 export const SAME_SPECIES_BONUS: readonly [number, number][] = [[10, 0.3], [5, 0.2], [3, 0.1]];
@@ -68,4 +70,4 @@ export const SAME_HABITAT_BONUS = 0.1;
 export const FEED = { bonus: 0.1, sec: 30, manualCooldown: 20 } as const;
 
 /** 직원 */
-export const STAFF_AI = { collectorSpeed: 34, collectorReach: 6, collectorSearch: 140, keeperSpeed: 26, keeperFeedEvery: 6 } as const;
+export const STAFF_AI = { collectorSpeed: 42, collectorReach: 9, collectorSearch: 140, keeperSpeed: 26, keeperFeedEvery: 6 } as const;

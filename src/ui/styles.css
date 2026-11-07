@@ -190,3 +190,19 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .machine.art.open .cap-closed { display: none; } .machine.art.open .cap-open { display: block; animation: pop2 0.3s ease-out; }
 @keyframes drop { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes pop2 { from { transform: scale(0.6); } 60% { transform: scale(1.3); } to { transform: none; } }
+
+/* 글자 잘 보이게: 숫자·보조 글씨를 키우고 대비를 높인다 */
+.hud-coins b { font-size: 19px; }
+.hud-stats { font-size: 13px; gap: 4px 14px; color: #f6efd8; }
+.hud-stats span { padding: 1px 8px; border-radius: 999px; background: rgba(0,0,0,0.35); }
+.sub, .hint, .inv-sub { font-size: 12px; color: #6b5536; }
+.inv-sub { font-size: 11.5px; }
+.card-sub { font-size: 11px; color: #6b5536; }
+.card-name { font-size: 13px; }
+.draw-btns small { font-size: 13px; }
+.odd { font-size: 12px; }
+.gauge span, .pbar span { font-size: 12px; font-weight: 400; }
+.ptab { font-size: 13px; }
+.toast { font-size: 13px; }
+.field-hint { font-size: 13px; }
+@media (max-width: 380px) { .hud-stats { font-size: 12px; } .ptab { font-size: 12px; } }
