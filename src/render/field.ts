@@ -106,11 +106,13 @@ export class FieldRenderer {
 
   draw(world: World, save: SaveData, view: View, dpr: number, pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
-    // 배율: 기기 픽셀 기준 정수로 (도트가 고르게)
+    // 배율: 기기 픽셀 기준 정수로 (도트가 고르게). 내림하면 10% 넘게 작아질 때는 소수 배율 그대로
+    // (예: 1.9배 → 1배로 내리면 화면이 절반으로 줄어든다)
     const fit = Math.min(view.w / L.w, view.h / L.h);
     this.lastView = view; this.lastFit = fit; this.worldW = L.w; this.worldH = L.h;
     const dev = fit * this.userZoom * dpr;
-    const z = dev >= 1 ? Math.max(1, Math.floor(dev)) / dpr : fit * this.userZoom;
+    const snapped = Math.floor(dev);
+    const z = snapped >= 1 && snapped / dev >= 0.9 ? snapped / dpr : dev / dpr;
     this.scale = z; this.dev = z * dpr; this.dpr = dpr;
     if (this.userZoom <= 1 || this.camX < 0) {
       this.ox = Math.round((view.x + (view.w - L.w * z) / 2) * dpr) / dpr;
