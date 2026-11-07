@@ -2,7 +2,7 @@
 import { ANIMALS, animalsOfGrade } from '../data/animals';
 import { GRADES, type Grade } from '../data/grades';
 import { STAFF, type StaffKind } from '../data/staff';
-import { FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
+import { DAY, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
 import type { Card, MissionKind, SaveData } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_POOL, MISSION_REWARD } from '../data/missions';
@@ -322,7 +322,9 @@ export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: numbe
   if (minutes < OFFLINE.minMinutes) return null;
   const A = totalAttract(s);
   const perMin = Math.min(upValue(s, 'gate'), 3 + 0.2 * A) * 15 * upValue(s, 'quality') * stageTipMul(s) * staffTipMul(s);
-  return { minutes, amount: Math.floor(perMin * minutes * OFFLINE.rate) };
+  // 낮 시간 몫만 (하루 중 관람객이 오는 비율)
+  const dayShare = (DAY.dayLen - DAY.duskLen) / (DAY.dayLen + DAY.nightMax / 2);
+  return { minutes, amount: Math.floor(perMin * minutes * OFFLINE.rate * dayShare) };
 }
 
 // ── 업그레이드 · 승급 ──

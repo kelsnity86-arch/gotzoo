@@ -40,8 +40,13 @@ it('경제 곡선', () => {
     const ups = UPGRADES.map((u) => ({ id: u.id, cost: upgradeCost(s, u.id) })).filter((u) => u.cost !== null && upgradeLockedBy(s, u.id) === null) as { id: typeof UPGRADES[number]['id']; cost: number }[];
     ups.sort((a, b) => a.cost - b.cost);
     const price = drawPrice(s);
-    if (ups[0] && ups[0].cost <= s.coins && ups[0].cost <= price * 8) buyUpgrade(s, ups[0].id);
-    else if (s.coins >= price * 10) { draw(s, 10); draws += 10; }
+    // 업그레이드는 밤에만: 밤이 되면 살 수 있는 만큼 사고 바로 개장
+    if (w.isNight) {
+      for (let k = 0; k < 10 && ups[0] && ups[0].cost <= s.coins && ups[0].cost <= price * 8; k++) {
+        buyUpgrade(s, ups[0].id); ups.shift(); ups.sort((a, b) => a.cost - b.cost);
+      }
+      w.openPark();
+    } else if (s.coins >= price * 10 && !(ups[0] && ups[0].cost <= price * 8 && s.coins < ups[0].cost + price * 10)) { draw(s, 10); draws += 10; }
     else if (s.coins >= price && placedAnimals(s) < 6) { draw(s, 1); draws++; if (secondDraw < 0) secondDraw = t; }
     for (const c of s.cards) if (c.kind === 'staff') assignStaff(s, c.uid);
     optimizePlacement(s);

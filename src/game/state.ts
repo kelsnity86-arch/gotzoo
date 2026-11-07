@@ -34,6 +34,8 @@ export interface SaveData {
   dexClaimed: string[];
   /** 마지막으로 본 시각 (자리 비움 수익) */
   lastSeen: number;
+  /** 며칠째 */
+  day: number;
 }
 
 export interface Mission { kind: MissionKind; target: number; progress: number; claimed: boolean }
@@ -49,7 +51,7 @@ export function defaultSave(): SaveData {
     version: SAVE_VERSION, coins: 0, cards: [], nextUid: 1, pens: [[], []], staffSlots: [null],
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
-    tickets: 0, missions: null, dexClaimed: [], lastSeen: 0,
+    tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
   };
 }
 
@@ -73,6 +75,7 @@ export function normalize(raw: unknown): SaveData {
   out.tickets = Number.isFinite(out.tickets) ? Math.max(0, Math.floor(out.tickets)) : 0;
   out.dexClaimed = Array.isArray(out.dexClaimed) ? out.dexClaimed.filter((x) => typeof x === 'string') : [];
   out.lastSeen = Number.isFinite(out.lastSeen) ? out.lastSeen : 0;
+  out.day = Number.isFinite(out.day) && out.day >= 1 ? Math.floor(out.day) : 1;
   const ms = out.missions as MissionState | null;
   out.missions = ms && typeof ms.date === 'string' && Array.isArray(ms.list) ? ms : null;
   out.staffSlots = out.staffSlots.length ? out.staffSlots : [null];

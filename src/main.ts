@@ -33,18 +33,22 @@ function persist() { if (replacing) return; save.lastSeen = Date.now(); if (!wri
 const hudCoins = h('b', {}), hudIncome = h('b', {}), hudAttract = h('b', {}), hudStage = h('b', {}), hudAnimals = h('b', {}), hudTickets = h('b', {});
 const stat = (icon: string, val: HTMLElement, title: string) => h('span', { class: 'stat', title }, hasPng(icon) ? iconSlot(icon, 14) : null, val);
 const ticketChip = stat('icons_12', hudTickets, '무료 뽑기권');
+const clockText = h('b', {}), clockFill = h('i', {});
+const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
   h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins),
-  h('div', { class: 'hud-stats' }, stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'), stat('icons_02', hudAttract, '총 매력도'), stat('icons_05', hudAnimals, '전시 / 수용'), stat('icons_04', hudStage, '진행 단계'), ticketChip));
+  h('div', { class: 'hud-stats' }, stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'), stat('icons_02', hudAttract, '총 매력도'), stat('icons_05', hudAnimals, '전시 / 수용'), stat('icons_04', hudStage, '진행 단계'), ticketChip, clock));
 const hint = h('div', { class: 'field-hint' });
 const eventBanner = h('div', { class: 'event-banner hidden' });
+const openLeft = h('small', {});
+const openBtn = h('div', { class: 'open-btn hidden' }, h('button', { class: 'btn', onclick: () => { world.openPark(); audio.sfx('event'); } }, '☀ 개장하기'), openLeft);
 const zoomReset = h('button', { class: 'zoom-reset hidden', onclick: () => { field.resetZoom(); audio.sfx('click'); } }, '전체 보기');
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
 hud.append(settingsBtn);
 
 const panel = new Panel({ save, world, persist, overlayRoot: ui });
-ui.append(hud, hint, eventBanner, zoomReset, panel.el);
+ui.append(hud, hint, eventBanner, zoomReset, openBtn, panel.el);
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
 
@@ -105,6 +109,8 @@ canvas.addEventListener('pointerdown', (e) => {
   if (touches.size >= 2) { pinch = null; return; }
   downAt = { ...p, t: performance.now() }; dragging = false;
   pointer = field.toWorld(p.sx, p.sy);
+  // 누른 자리의 동전 줍기 (주웠으면 우리 창은 열지 않는다)
+  if (world.clickAt(pointer.x, pointer.y) > 0) downAt = null;
 });
 const endTouch = (e: PointerEvent) => { touches.delete(e.pointerId); if (touches.size < 2) pinch = null; };
 canvas.addEventListener('pointercancel', endTouch);
@@ -184,6 +190,24 @@ function showTitle(onStart?: () => void) {
   ui.append(back);
 }
 
+// ── 하루 정산 ──
+function showReport(r: import('./game/world').DayReport) {
+  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+    h('div', { class: 'fuse-result' },
+      h('div', { class: 'reveal-title' }, `${r.day}일째 영업 끝!`),
+      h('div', { class: 'report' },
+        h('div', {}, h('b', {}, fmt(r.base + r.bonus + r.janitor)), h('span', {}, '오늘 번 코인')),
+        h('div', {}, h('b', {}, fmt(r.visitors)), h('span', {}, '다녀간 관람객')),
+        h('div', {}, h('b', {}, fmt(r.coins)), h('span', {}, '주운 동전')),
+        h('div', {}, h('b', {}, fmt(r.bonus + r.janitor)), h('span', {}, '줍기 보너스')),
+        h('div', { class: 'wide' }, h('b', {}, `우리 ${r.topPen + 1} · ♥${fmt(r.topAttract)}`), h('span', {}, '오늘의 인기 우리')),
+        r.janitor ? h('div', { class: 'wide' }, h('b', {}, `+${fmt(r.janitor)}`), h('span', {}, '관리인이 폐장 후 주운 동전')) : null,
+        r.lost ? h('div', { class: 'wide' }, h('b', {}, `-${fmt(r.lost)}`), h('span', {}, '못 주워서 사라진 동전 (관리인이 있으면 절반을 주워요)')) : null),
+      h('div', { class: 'sub' }, '밤에는 관람객이 없어요. 업그레이드로 시설을 고치고 개장하기를 누르세요.'),
+      h('button', { class: 'btn', onclick: () => back.remove() }, '밤 정비 시작')));
+  ui.append(back);
+}
+
 // ── 자리 비움 수익 ──
 function showOffline() {
   const r = offlineEarnings(save);
@@ -209,7 +233,9 @@ function frame(now: number) {
   world.sync();
   world.update(dt, pointer);
   for (const ev of world.events) {
-    if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
+    if (ev.type === 'night') { audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
+    else if (ev.type === 'morning') { toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200); persist(); panel.render(true); }
+    else if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
     else if (ev.type === 'vip') { audio.sfx('rare'); toast(`VIP 손님이 ${fmt(ev.amount)}코인을 던졌어요!`, 'gold', 2200); }
@@ -234,16 +260,28 @@ function updateHud() {
   else eventBanner.classList.add('hidden');
   eventBanner.style.top = `${fieldRect.y + 30}px`; eventBanner.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   zoomReset.classList.toggle('hidden', field.userZoom <= 1);
+  // 하루 시계 · 개장하기
+  const night = world.isNight;
+  clock.classList.toggle('night', night);
+  const left = Math.max(0, Math.ceil(world.phaseLeft));
+  clockText.textContent = `${save.day}일째 ${night ? '🌙 밤' : world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  clockFill.style.width = `${night ? (world.phaseT / 60) * 100 : (world.phaseT / 180) * 100}%`;
+  openBtn.classList.toggle('hidden', !night);
+  openLeft.textContent = `${left}초 뒤 자동으로 열려요 · 지금은 업그레이드 시간`;
+  const openBottom = Math.min(fieldRect.y + fieldRect.h, panel.el.getBoundingClientRect().top);
+  const tight = openBottom - fieldRect.y < 150;
+  openBtn.classList.toggle('tight', tight);
+  openBtn.style.top = `${openBottom - (tight ? 58 : 86)}px`; openBtn.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   zoomReset.style.top = `${fieldRect.y + 6}px`; zoomReset.style.left = `${fieldRect.x + fieldRect.w - 6}px`;
   hudTickets.textContent = `뽑기권 ${save.tickets}`;
   ticketChip.classList.toggle('hidden', save.tickets <= 0);
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
-    : save.stats.coinsPicked === 0 ? '바닥 동전을 커서(손가락)로 쓸어 담으면 보너스!'
+    : save.stats.coinsPicked === 0 ? '바닥 동전을 눌러서 주우면 보너스!'
     : '';
   hint.textContent = msg;
-  hint.classList.toggle('hidden', !msg);
+  hint.classList.toggle('hidden', !msg || night);
   hint.style.top = `${fieldRect.y + 4}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   void ZONE_H; void totalAttract;
 }

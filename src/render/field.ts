@@ -1,6 +1,6 @@
 // 필드 그리기: 관객존(길·관람객·동전) + 동물존(우리·동물). 도트 한 칸이 화면 픽셀 정수 개가 되게 배율을 맞춘다.
 import { ANIMALS, type Habitat } from '../data/animals';
-import { COIN } from '../data/balance';
+import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
@@ -188,9 +188,25 @@ export class FieldRenderer {
     for (const e of world.emotes) {
       const k = e.t / 1.4;
       c.globalAlpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
-      c.drawImage(sprite(e.icon), Math.round(e.x - 4), Math.round(e.y - 6 - k * 6), 8, 8);
+      if (e.icon === 'zz') { c.fillStyle = '#c7cfdd'; c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 6 - k * 6), 3, 1); c.fillRect(Math.round(e.x + 2 + k * 3), Math.round(e.y - 5 - k * 6), 1, 1); c.fillRect(Math.round(e.x + 1 + k * 3), Math.round(e.y - 4 - k * 6), 1, 1); c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 3 - k * 6), 3, 1); }
+      else c.drawImage(sprite(e.icon), Math.round(e.x - 4), Math.round(e.y - 6 - k * 6), 8, 8);
     }
     c.globalAlpha = 1;
+    // 해 질 녘·밤: 붉게 → 남색, 밤에는 가로등 불빛
+    if (world.phase !== 'day') {
+      const k = world.phase === 'dusk' ? Math.min(1, (world.phaseT - (DAY.dayLen - DAY.duskLen)) / DAY.duskLen) : 1;
+      c.fillStyle = world.phase === 'dusk' ? `rgba(239,125,50,${0.22 * k})` : 'rgba(20,24,60,0.55)';
+      c.fillRect(0, 0, L.w, L.h);
+      if (world.phase === 'night') {
+        c.globalCompositeOperation = 'lighter';
+        for (let x = 0, k2 = 0; x < L.w - 4; x += TILE, k2++) if (k2 % 8 === 5) {
+          const g = c.createRadialGradient(x + 4, 8, 0, x + 4, 8, 22);
+          g.addColorStop(0, 'rgba(247,201,72,0.45)'); g.addColorStop(1, 'rgba(247,201,72,0)');
+          c.fillStyle = g; c.fillRect(x - 20, -14, 48, 44);
+        }
+        c.globalCompositeOperation = 'source-over';
+      }
+    }
     // 소나기
     if (world.event?.id === 'rain') {
       c.fillStyle = 'rgba(115,239,247,0.55)';

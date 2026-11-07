@@ -39,8 +39,8 @@ export const UPGRADES: readonly UpgradeDef[] = [
     costs: [800, 2500, 7000, 20000, 55000, 150000], need: [2, 3, 4, 5, 6, 7], describe: (v) => `분당 최대 관람객 ${v}명` },
   { id: 'staff', name: '직원 슬롯', icon: 'icon_badge', values: [1, 2, 3, 4, 5],
     costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명` },
-  { id: 'pickup', name: '수거 범위', icon: 'icon_magnet', values: [3, 4.5, 6, 8, 10.5, 13],
-    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `손으로 줍는 범위 ${v}` },
+  { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [3, 4.5, 6, 8, 10.5, 13],
+    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => (v <= 3 ? '동전을 눌러서 줍기' : `커서를 대면 줍기 · 범위 ${v}`) },
 ];
 export const upgradeDef = (id: UpgradeId) => UPGRADES.find((u) => u.id === id)!;
 
@@ -70,3 +70,7 @@ export const FEED = { bonus: 0.1, sec: 30, manualCooldown: 20 } as const;
 
 /** 직원 */
 export const STAFF_AI = { collectorSpeed: 42, collectorReach: 9, collectorSearch: 140, keeperSpeed: 26, keeperFeedEvery: 6 } as const;
+
+/** 하루: 낮 dayLen초 (마지막 duskLen초는 해 질 녘: 새 관람객 없음), 밤은 '개장하기'를 누르거나 nightMax초가 지나면 아침.
+ *  폐장 때 바닥 동전은 관리인이 있으면 janitorShare만큼 주워 준다. 업그레이드는 밤에만. */
+export const DAY = { dayLen: 180, duskLen: 20, nightMax: 60, janitorShare: 0.5 } as const;

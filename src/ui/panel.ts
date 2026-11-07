@@ -50,7 +50,7 @@ export class Panel {
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
     const s = this.ctx.save;
-    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}`;
+    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${this.ctx.world.phase}`;
     if (!force && key === this.lastKey) return;
     // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
@@ -263,9 +263,12 @@ export class Panel {
         h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, hasPng(UP_ICON[u.id]) ? pix(UP_ICON[u.id], 16) : null, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
           h('div', { class: 'sub' }, cost === null ? u.describe(u.values[lv]) : `${u.describe(u.values[lv])} → ${u.describe(u.values[lv + 1])}`),
           lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
-        cost === null ? h('span', { class: 'max' }, '최고') : this.costBtn(`${fmt(cost)}`, cost, () => { if (buyUpgrade(s, u.id)) { audio.sfx('buy'); this.ctx.world.relayout(-1); this.changed(); } }, 'small', !!lock));
+        cost === null ? h('span', { class: 'max' }, '최고')
+          : !this.ctx.world.isNight ? h('span', { class: 'night-only' }, '🌙 밤에 공사', h('small', {}, fmt(cost)))
+          : this.costBtn(`${fmt(cost)}`, cost, () => { if (buyUpgrade(s, u.id)) { audio.sfx('buy'); this.ctx.world.relayout(-1); this.changed(); } }, 'small', !!lock));
     });
-    return h('div', {}, stageBox, h('div', { class: 'up-list' }, ...rows));
+    const note = this.ctx.world.isNight ? h('p', { class: 'hint night-on' }, '🌙 밤 정비 시간이에요. 지금 업그레이드할 수 있어요.') : h('p', { class: 'hint' }, '시설 공사는 동물원이 문을 닫은 밤에만 할 수 있어요. 뽑기·배치·합성은 언제나 돼요.');
+    return h('div', {}, stageBox, note, h('div', { class: 'up-list' }, ...rows));
   }
   private bar(label: string, k: number) {
     return h('div', { class: 'pbar' }, h('i', { style: `width:${Math.min(100, k * 100)}%` }), h('span', {}, label));

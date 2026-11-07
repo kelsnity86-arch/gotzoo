@@ -1,10 +1,10 @@
 // 동물원 필드 시뮬레이션 (화면 없음). 위쪽 관객존: 관람객이 걷다 멈춰 동전을 던진다. 아래쪽 동물존: 우리 안을 동물이 돌아다닌다.
 // 좌표 단위 = 도트 1칸. 타일 8칸.
 import { ANIMALS } from '../data/animals';
-import { COIN, FEED, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
+import { COIN, DAY, FEED, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { SaveData } from './state';
-import { bumpMission, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
+import { bumpMission, penAttract as totalAttractPen, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -67,7 +67,12 @@ export type WorldEvent =
   | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
   | { type: 'eventStart'; id: EventId }
   | { type: 'eventEnd'; id: EventId }
-  | { type: 'vip'; amount: number };
+  | { type: 'vip'; amount: number }
+  | { type: 'night'; report: DayReport }
+  | { type: 'morning'; day: number };
+
+/** 하루 정산 */
+export interface DayReport { day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number }
 
 export class World {
   layout: Layout = { w: 100, h: 100, pens: [], cols: 1 };
@@ -77,6 +82,10 @@ export class World {
   staff: StaffEnt[] = [];
   floats: FloatText[] = [];
   emotes: Emote[] = [];
+  /** 하루: 낮(day) → 해 질 녘(dusk) → 밤(night) */
+  phase: 'day' | 'dusk' | 'night' = 'day';
+  phaseT = 0;
+  private today = { base: 0, bonus: 0, visitors: 0, coins: 0 };
   /** 진행 중인 이벤트 */
   event: { id: EventId; left: number } | null = null;
   private eventTimer: number = EVENT_TIMING.firstAt;
@@ -163,6 +172,15 @@ export class World {
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save); }
   get pickupRadius() { return upValue(this.save, 'pickup'); }
+  /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
+  get canSweep() { return this.save.upgrades.pickup >= 1; }
+  /** 누른 자리의 동전을 줍는다 (범위 안 모두). 주운 개수 */
+  clickAt(x: number, y: number): number {
+    let n = 0;
+    const r = Math.max(this.pickupRadius, 4);
+    for (const c of this.coins) if (!c.picked && Math.hypot(c.x - x, c.y - 1 - c.z - y) < r) { this.pick(c, 'hand'); n++; }
+    return n;
+  }
 
   incomePerMin() {
     const since = this.time - 60;
@@ -173,6 +191,7 @@ export class World {
   }
 
   private earn(base: number, bonus: number) {
+    this.today.base += base; this.today.bonus += bonus;
     this.save.coins += base + bonus;
     this.save.stats.coinsEarned += base + bonus;
     if (bonus) this.save.stats.coinsPicked += bonus;
@@ -181,8 +200,52 @@ export class World {
   }
 
   /** pointer: 월드 좌표의 커서 (없으면 null) */
+  /** 낮이 끝날 때까지 남은 초 (밤이면 자동 개장까지) */
+  get phaseLeft() { return this.phase === 'night' ? DAY.nightMax - this.phaseT : DAY.dayLen - this.phaseT; }
+  get isNight() { return this.phase === 'night'; }
+
+  /** 밤 → 아침 (개장하기) */
+  openPark() {
+    if (this.phase !== 'night') return;
+    this.phase = 'day'; this.phaseT = 0;
+    this.save.day = (this.save.day ?? 1) + 1;
+    this.today = { base: 0, bonus: 0, visitors: 0, coins: 0 };
+    this.events.push({ type: 'morning', day: this.save.day });
+  }
+
+  private updateDay(dt: number) {
+    if (!this.animals.length && this.phase === 'day') return; // 동물이 없으면 시간이 흐르지 않는다
+    this.phaseT += dt;
+    if (this.phase === 'day' && this.phaseT >= DAY.dayLen - DAY.duskLen) {
+      this.phase = 'dusk';
+      for (const v of this.visitors) if (v.state === 'walk') v.state = 'leave';
+    } else if (this.phase === 'dusk' && this.phaseT >= DAY.dayLen) this.closePark();
+    else if (this.phase === 'night' && this.phaseT >= DAY.nightMax) this.openPark();
+  }
+
+  /** 폐장: 바닥 동전 정리, 정산 */
+  private closePark() {
+    this.phase = 'night'; this.phaseT = 0;
+    if (this.event) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; }
+    const janitors = this.staff.filter((e) => e.kind === 'janitor').length;
+    let janitor = 0, lost = 0;
+    for (const c of this.coins) {
+      if (c.picked) continue;
+      if (janitors) { const v = Math.round(c.value * DAY.janitorShare); janitor += v; } else lost += c.value;
+    }
+    if (janitor) this.earn(0, janitor);
+    this.coins = [];
+    this.visitors = [];
+    let topPen = 0, topAttract = 0;
+    this.layout.pens.forEach((_, i) => { const a = totalAttractPen(this.save, i); if (a > topAttract) { topAttract = a; topPen = i; } });
+    const report: DayReport = { day: this.save.day ?? 1, ...this.today, janitor, lost, topPen, topAttract: Math.round(topAttract) };
+    this.events.push({ type: 'night', report });
+  }
+
   update(dt: number, pointer: { x: number; y: number } | null) {
     this.time += dt;
+    this.updateDay(dt);
+    const night = this.phase === 'night';
     const L = this.layout;
     for (let i = 0; i < this.fedLeft.length; i++) { this.fedLeft[i] = Math.max(0, this.fedLeft[i] - dt); this.feedCooldown[i] = Math.max(0, this.feedCooldown[i] - dt); }
 
@@ -191,6 +254,7 @@ export class World {
       a.t += dt;
       const r = L.pens[a.pen];
       if (!r) continue;
+      if (night) { a.moving = false; continue; } // 밤에는 잔다
       if (a.wait > 0) { a.wait -= dt; a.moving = false; continue; }
       const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy);
       if (d < 1) {
@@ -206,7 +270,7 @@ export class World {
     }
 
     // 관람객 생성
-    if (this.animals.length > 0) {
+    if (this.animals.length > 0 && this.phase === 'day') {
       this.spawnAcc += (this.visitorRate / 60) * dt;
       while (this.spawnAcc >= 1) { this.spawnAcc -= 1; this.spawnVisitor(); }
     }
@@ -233,7 +297,7 @@ export class World {
       if (c.picked) { this.coins.splice(i, 1); continue; }
       if (c.age > this.coinLife) { this.coins.splice(i, 1); this.missed += c.value; continue; }
       // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
-      if (pointer && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
+      if (pointer && this.canSweep && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
     }
 
     this.updateStaff(dt);
@@ -244,7 +308,7 @@ export class World {
       this.emoteAcc -= 1;
       const a = this.animals[Math.floor(this.rng() * this.animals.length)];
       const fed = this.fedLeft[a.pen] > 0;
-      this.emotes.push({ x: a.x, y: a.y - 10, t: 0, icon: fed ? ['fx_11', 'fx_12', 'fx_13', 'fx_14'][a.animal % 4] : this.rng() < 0.6 ? 'fx_10' : 'fx_17' });
+      this.emotes.push({ x: a.x, y: a.y - 10, t: 0, icon: night ? 'zz' : fed ? ['fx_11', 'fx_12', 'fx_13', 'fx_14'][a.animal % 4] : this.rng() < 0.6 ? 'fx_10' : 'fx_17' });
     }
     for (let i = this.emotes.length - 1; i >= 0; i--) { this.emotes[i].t += dt; if (this.emotes[i].t > 1.4) this.emotes.splice(i, 1); }
 
@@ -252,7 +316,7 @@ export class World {
   }
 
   private updateEvent(dt: number) {
-    if (!this.animals.length) return;
+    if (!this.animals.length || this.phase !== 'day') return;
     if (this.event) {
       this.event.left -= dt;
       if (this.event.left <= 0) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; this.eventTimer = EVENT_TIMING.gapMin + this.rng() * (EVENT_TIMING.gapMax - EVENT_TIMING.gapMin); }
@@ -282,6 +346,7 @@ export class World {
   }
 
   private throwCoin(v: VisitorEnt) {
+    this.today.visitors++;
     const tip = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (v.vip ? EVENT_TIMING.vipTipMul : 1));
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
     this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
@@ -301,6 +366,7 @@ export class World {
     this.earn(0, c.value);
     this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by });
     if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
+    this.today.coins += c.count;
     this.floats.push({ x: c.x, y: c.y - 4, text: `+${c.value}`, t: 0, color: by === 'hand' ? '#fff3a3' : '#a7d65b' });
   }
 

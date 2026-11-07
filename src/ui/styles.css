@@ -285,3 +285,22 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .card.art .card-name-in { container-type: inline-size; }
 .card.art .card-name-in.long { font-size: 10px; } .card.art.big .card-name-in.long { font-size: 12px; }
 .card.art .card-name-in.xlong { font-size: 8px; letter-spacing: -0.5px; } .card.art.big .card-name-in.xlong { font-size: 10px; }
+
+/* 낮과 밤 */
+.night-only { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #5d3a24; padding: 3px 8px; border-radius: 8px; background: #e8d6b2; white-space: nowrap; }
+.night-only small { color: #8a7458; }
+.hint.night-on { color: #29366f; background: #dfe6ee; padding: 6px 8px; border-radius: 8px; }
+.clock { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: rgba(0,0,0,0.35); font-size: 13px; color: #fff3a3; }
+.clock.night { color: #c7cfdd; background: #29366f; }
+.clock .bar { width: 46px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); overflow: hidden; }
+.clock .bar i { display: block; height: 100%; background: linear-gradient(90deg, #fff3a3, #ef7d32); }
+.clock.night .bar i { background: #73eff7; }
+.open-btn { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; z-index: 5; }
+.open-btn .btn { min-height: 48px; font-size: 16px; padding: 0 26px; box-shadow: 0 0 0 3px rgba(247,201,72,0.7), inset 0 -3px 0 rgba(0,0,0,0.2); }
+.open-btn.tight small { display: none; }
+.open-btn small { color: #dfe6ee; font-size: 12px; text-shadow: 0 1px 0 #000; }
+.report { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; }
+.report > div { display: flex; flex-direction: column; align-items: center; padding: 8px; border-radius: 8px; background: #fffaf0; }
+.report b { font-weight: 400; font-size: 18px; color: #5d3a24; }
+.report span { font-size: 12px; color: #6b5536; }
+.report .wide { grid-column: 1 / -1; }
