@@ -70,3 +70,14 @@ describe('필드', () => {
     expect(w.visitorRate).toBeCloseTo(VISITOR.basePerMin + 0.2 * 20, 5);
   });
 });
+
+describe('손 수거', () => {
+  it('떨어지는 중인 동전도 커서를 대면 바로 줍는다', () => {
+    const { s, w } = setup();
+    for (let i = 0; i < 3600 && !w.coins.length; i++) w.update(1 / 30, null);
+    const c = w.coins[0];
+    const before = s.stats.coinsPicked;
+    w.update(1 / 60, { x: c.x, y: c.y - 1 - c.z });
+    expect(s.stats.coinsPicked).toBeGreaterThan(before);
+  });
+});

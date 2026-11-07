@@ -218,7 +218,8 @@ export class World {
       c.age += dt;
       if (c.z > 0 || c.vz > 0) { c.vz -= 160 * dt; c.z = Math.max(0, c.z + c.vz * dt); if (c.z === 0) c.vz = 0; }
       if (c.picked || c.age > COIN.lifeSec) { this.coins.splice(i, 1); continue; }
-      if (pointer && c.z === 0 && Math.hypot(c.x - pointer.x, c.y - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
+      // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
+      if (pointer && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
     }
 
     this.updateStaff(dt);
