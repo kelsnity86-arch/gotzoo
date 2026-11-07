@@ -6,7 +6,7 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, UPGRADES } from '../data/bala
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, autoFusionPick, autoPlace, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, autoFusionPick, autoPlace, optimizePlacement, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, staffFrame } from '../render/sprites';
@@ -30,9 +30,18 @@ export class Panel {
   private lastKey = '';
 
   constructor(private ctx: PanelCtx) {
-    this.tabBtns = TABS.map(([t, name]) => h('button', { class: 'ptab', onclick: () => { this.tab = t; audio.sfx('click'); this.render(true); } }, name));
-    this.el = h('aside', { class: 'panel' }, h('nav', { class: 'ptabs' }, ...this.tabBtns), this.body);
+    this.tabBtns = TABS.map(([t, name]) => h('button', { class: 'ptab', onclick: () => {
+      audio.sfx('click');
+      // 세로 화면: 탭을 누르면 서랍이 열리고, 같은 탭을 다시 누르면 닫힌다
+      if (this.tab === t && this.isOpen && !document.body.classList.contains('landscape')) { this.setOpen(false); return; }
+      this.tab = t; this.setOpen(true); this.render(true);
+    } }, name));
+    const handle = h('button', { class: 'drawer-close', title: '닫기', onclick: () => this.setOpen(false) }, '▼');
+    this.el = h('aside', { class: 'panel closed' }, h('nav', { class: 'ptabs' }, ...this.tabBtns, handle), this.body);
   }
+
+  isOpen = false;
+  setOpen(v: boolean) { this.isOpen = v; this.el.classList.toggle('closed', !v); }
 
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
@@ -42,7 +51,7 @@ export class Panel {
     // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
     this.lastKey = key;
-    this.tabBtns.forEach((b, i) => b.classList.toggle('on', TABS[i][0] === this.tab));
+    this.tabBtns.forEach((b, i) => b.classList.toggle('on', TABS[i][0] === this.tab && (this.isOpen || document.body.classList.contains('landscape'))));
     if (onlyCoins) { this.updateAffordable(); return; }
     const top = this.body.scrollTop;
     const view = { gacha: () => this.gacha(), inv: () => this.inventory(), fuse: () => this.fusion(), up: () => this.upgrades(), staff: () => this.staffTab(), dex: () => this.dex() }[this.tab];
@@ -133,7 +142,14 @@ export class Panel {
     return h('div', {},
       h('div', { class: 'inv-head' }, h('div', {}, h('b', {}, `전시 ${placedAnimals(s)} / ${penCount(s) * penSize(s)}`), h('span', { class: 'sub' }, ` · 카드 ${s.cards.length}장`)),
         h('div', { class: 'row-btns' },
-          h('button', { class: 'btn small', onclick: () => { const n = autoPlace(s); toast(n ? `${n}마리 배치` : '빈 칸이 없거나 남은 카드가 없어요', n ? 'good' : 'info'); this.changed(); } }, '빈 칸 자동 배치'))),
+          h('button', { class: 'btn small ghost', onclick: () => { const n = autoPlace(s); toast(n ? `${n}마리 배치` : '빈 칸이 없거나 남은 카드가 없어요', n ? 'good' : 'info'); this.changed(); } }, '빈 칸 채우기'),
+          h('button', { class: 'btn small', onclick: () => {
+            const before = totalAttract(s);
+            const after = optimizePlacement(s);
+            audio.sfx('buy');
+            toast(after > before ? `최대 수익 배치! 매력도 ${fmt(before)} → ${fmt(after)}` : `이미 최고 배치예요 (매력도 ${fmt(after)})`, after > before ? 'gold' : 'info', 2400);
+            this.changed();
+          } }, '최대 수익 배치'))),
       chips,
       rows.length ? h('div', { class: 'inv-list' }, ...rows) : h('p', { class: 'hint' }, '아직 동물 카드가 없어요. 뽑기 탭에서 뽑아 보세요.'),
       staffCards.length ? h('div', { class: 'section-title' }, `직원 카드 ${staffCards.length}장 (직원 탭에서 배치)`) : null);

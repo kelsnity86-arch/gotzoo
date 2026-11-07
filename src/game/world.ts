@@ -7,9 +7,11 @@ import type { SaveData } from './state';
 import { cardById, penCount, penSize, stageTipMul, totalAttract, upValue } from './rules';
 
 export const TILE = 8;
+/** 등급별 크기 배율 (render/field.ts의 GRADE_SIZE와 같게) */
+export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
 export const ZONE_H = 48;      // 관객존 높이
 export const PATH_Y0 = 18, PATH_Y1 = 40; // 관람객이 걷는 길 (관객존 안)
-const GAP = 12;                // 우리 사이 길
+const GAP = 6;                 // 우리 사이 길 (좁게: 동물존을 우리로 꽉 채운다)
 
 export interface PenRect { x: number; y: number; w: number; h: number }
 export interface Layout { w: number; h: number; pens: PenRect[]; cols: number }
@@ -35,11 +37,18 @@ export function computeLayout(n: number, cap: number, aspect: number): Layout {
     if (score < bestScore) { bestScore = score; best = cols; }
   }
   const cols = best, rows = Math.ceil(n / cols);
-  const w = cols * (pw + GAP) + GAP, h = ZONE_H + rows * (ph + GAP) + GAP;
+  let w = cols * (pw + GAP) + GAP, h = ZONE_H + rows * (ph + GAP) + GAP;
+  // 화면 비율에 맞춰 우리를 늘려서 동물존 전체를 채운다 (남는 잔디 없이)
+  let qw = pw, qh = ph;
+  if (w / h < aspect) { const nw = h * aspect; qw = Math.floor((nw - GAP) / cols - GAP); w = cols * (qw + GAP) + GAP; }
+  else { const nh = w / aspect; qh = Math.floor((nh - ZONE_H - GAP) / rows - GAP); h = ZONE_H + rows * (qh + GAP) + GAP; }
   const pens: PenRect[] = [];
   for (let i = 0; i < n; i++) {
-    const c = i % cols, r = Math.floor(i / cols);
-    pens.push({ x: GAP + c * (pw + GAP), y: ZONE_H + GAP + r * (ph + GAP), w: pw, h: ph });
+    const r = Math.floor(i / cols);
+    // 마지막 줄이 덜 차면 그 줄 우리를 넓혀서 빈 곳을 없앤다
+    const inRow = r === rows - 1 ? n - r * cols : cols;
+    const rw = Math.floor((w - GAP) / inRow - GAP);
+    pens.push({ x: GAP + (i - r * cols) * (rw + GAP), y: ZONE_H + GAP + r * (qh + GAP), w: rw, h: qh });
   }
   return { w, h, pens, cols };
 }
@@ -91,9 +100,17 @@ export class World {
   private placeIn(a: AnimalEnt, keep = false) {
     const r = this.layout.pens[a.pen];
     if (!r) return;
-    const x0 = r.x + TILE + 4, x1 = r.x + r.w - TILE - 4, y0 = r.y + TILE + 6, y1 = r.y + r.h - TILE - 2;
+    const [x0, x1, y0, y1] = this.bounds(r, a.animal);
     if (!keep || a.x < x0 || a.x > x1 || a.y < y0 || a.y > y1) { a.x = x0 + this.rng() * (x1 - x0); a.y = y0 + this.rng() * (y1 - y0); }
     a.tx = a.x; a.ty = a.y;
+  }
+
+  /** 동물이 걸어 다닐 수 있는 우리 안 범위 (큰 동물일수록 울타리에서 더 떨어진다) */
+  private bounds(r: PenRect, animal: number): [number, number, number, number] {
+    const half = 4 * GRADE_MUL[ANIMALS[animal].grade];
+    const x0 = r.x + TILE / 2 + half + 1, x1 = Math.max(x0, r.x + r.w - TILE / 2 - half - 1);
+    const y0 = r.y + TILE / 2 + half * 2 + 1, y1 = Math.max(y0, r.y + r.h - TILE / 2 - 1);
+    return [x0, x1, y0, y1];
   }
 
   /** 저장 데이터의 배치와 필드의 동물·직원을 맞춘다 */
@@ -165,7 +182,7 @@ export class World {
       const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy);
       if (d < 1) {
         a.wait = 0.5 + this.rng() * 2.5;
-        const x0 = r.x + TILE + 4, x1 = r.x + r.w - TILE - 4, y0 = r.y + TILE + 6, y1 = r.y + r.h - TILE - 2;
+        const [x0, x1, y0, y1] = this.bounds(r, a.animal);
         a.tx = x0 + this.rng() * (x1 - x0); a.ty = y0 + this.rng() * (y1 - y0);
         continue;
       }

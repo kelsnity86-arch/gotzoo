@@ -148,6 +148,60 @@ export function autoPlace(s: SaveData): number {
   return n;
 }
 
+/** 최대 수익 배치: 전시 중인 동물을 모두 내리고, 매력도 합이 가장 크게 다시 배치한다.
+ *  1) 넣을 카드 고르기: 기본 매력도 높은 순 (같은 종 보너스를 노릴 수 있으면 같은 종을 함께)
+ *  2) 우리 나누기: 같은 서식지끼리 한 우리에, 같은 종은 같은 우리에 모은다 (같은 종·같은 서식지 보너스)
+ *  여러 방법을 시도해 총 매력도가 가장 높은 배치를 고른다. 돌려주는 값: 배치 후 총 매력도 */
+export function optimizePlacement(s: SaveData): number {
+  syncSlots(s);
+  const nPens = penCount(s), size = penSize(s), capacity = nPens * size;
+  const staffUids = new Set(s.staffSlots.filter((u): u is number => u !== null));
+  const animals = s.cards.filter((c): c is Extract<Card, { kind: 'animal' }> => c.kind === 'animal' && !staffUids.has(c.uid));
+  const attractOf = (id: number) => GRADES[ANIMALS[id].grade].attract;
+
+  // 후보 1: 기본 매력도 높은 순 / 후보 2: 같은 종 묶음을 우선(보너스 노림)
+  const bySpecies = new Map<number, number[]>();
+  for (const c of animals) bySpecies.set(c.animal, [...(bySpecies.get(c.animal) ?? []), c.uid]);
+  const plainPick = animals.slice().sort((a, b) => attractOf(b.animal) - attractOf(a.animal) || a.animal - b.animal).slice(0, capacity).map((c) => c.uid);
+  const groupPick: number[] = [];
+  const groups = [...bySpecies.entries()].sort((a, b) => {
+    const va = attractOf(a[0]) * (a[1].length >= 3 ? 1.1 : 1), vb = attractOf(b[0]) * (b[1].length >= 3 ? 1.1 : 1);
+    return vb - va;
+  });
+  for (const [, list] of groups) for (const u of list) if (groupPick.length < capacity) groupPick.push(u);
+
+  const arrange = (uids: number[]): number[][] => {
+    const pens: number[][] = Array.from({ length: nPens }, () => []);
+    // 서식지 → 종 순서로 정렬해서 우리를 차례로 채운다 (같은 종·서식지가 한 우리에 모인다)
+    const sorted = uids.slice().sort((a, b) => {
+      const ca = (cardById(s, a) as { animal: number }).animal, cb = (cardById(s, b) as { animal: number }).animal;
+      return ANIMALS[ca].habitat.localeCompare(ANIMALS[cb].habitat) || attractOf(cb) - attractOf(ca) || ca - cb;
+    });
+    let p = 0;
+    for (let i = 0; i < sorted.length; i++) {
+      // 서식지가 바뀌고 지금 우리가 반 넘게 찼으면 다음 우리로 넘어가서 서식지를 섞지 않는다
+      if (i > 0 && p < nPens - 1 && pens[p].length >= size / 2) {
+        const prev = ANIMALS[(cardById(s, sorted[i - 1]) as { animal: number }).animal].habitat;
+        const cur = ANIMALS[(cardById(s, sorted[i]) as { animal: number }).animal].habitat;
+        const left = nPens - 1 - p, need = Math.ceil((sorted.length - i) / size);
+        if (prev !== cur && left >= need) p++;
+      }
+      if (pens[p].length >= size) p++;
+      if (p >= nPens) break;
+      pens[p].push(sorted[i]);
+    }
+    return pens;
+  };
+  const score = (pens: number[][]) => { const old = s.pens; s.pens = pens; const t = totalAttract(s); s.pens = old; return t; };
+  const tries = [arrange(plainPick), arrange(groupPick)];
+  // 서식지를 섞지 않고 단순히 채운 배치도 비교 (우리가 적을 때 더 나을 수 있다)
+  tries.push(Array.from({ length: nPens }, (_, i) => plainPick.slice(i * size, (i + 1) * size)));
+  let best = tries[0], bestScore = score(best);
+  for (const t of tries.slice(1)) { const sc = score(t); if (sc > bestScore) { best = t; bestScore = sc; } }
+  s.pens = best;
+  return bestScore;
+}
+
 export function assignStaff(s: SaveData, uid: number, slot?: number): boolean {
   syncSlots(s);
   const c = cardById(s, uid);

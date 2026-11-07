@@ -53,9 +53,10 @@ function layout() {
     panel.el.style.cssText = `width:${pw}px`;
     document.body.style.setProperty('--pw', `${pw}px`);
   } else {
-    const ph = Math.round(H * 0.5);
-    fieldRect = { x: 6, y: hudH + 4, w: W - 12, h: H - ph - hudH - 8 };
-    panel.el.style.cssText = `height:${ph}px`;
+    // 세로 화면: 동물원이 아래 화면 전체를 쓰고, 패널은 아래 탭에서 여는 서랍
+    const tabsH = (panel.el.querySelector('.ptabs') as HTMLElement | null)?.offsetHeight || 40;
+    fieldRect = { x: 4, y: hudH + 4, w: W - 8, h: H - hudH - tabsH - 8 };
+    panel.el.style.cssText = '';
     document.body.style.setProperty('--pw', '0px');
   }
   world.relayout(fieldRect.w / fieldRect.h);
@@ -67,7 +68,8 @@ function toLocal(e: PointerEvent) { const r = canvas.getBoundingClientRect(); re
 let downAt: { sx: number; sy: number; t: number } | null = null;
 canvas.addEventListener('pointermove', (e) => { const { sx, sy } = toLocal(e); pointer = field.toWorld(sx, sy); });
 canvas.addEventListener('pointerleave', () => { pointer = null; });
-canvas.addEventListener('pointerdown', (e) => { audio.unlock(); const p = toLocal(e); downAt = { ...p, t: performance.now() }; pointer = field.toWorld(p.sx, p.sy); });
+canvas.addEventListener('pointerdown', (e) => { audio.unlock();
+  if (panel.isOpen && !document.body.classList.contains('landscape')) { panel.setOpen(false); panel.render(true); } const p = toLocal(e); downAt = { ...p, t: performance.now() }; pointer = field.toWorld(p.sx, p.sy); });
 canvas.addEventListener('pointerup', (e) => {
   const p = toLocal(e);
   if (e.pointerType !== 'mouse') pointer = null;
@@ -87,6 +89,8 @@ let last = performance.now(), hudAcc = 0, saveAcc = 0;
 function frame(now: number) {
   const dt = Math.min(0.1, Math.max(0, (now - last) / 1000));
   last = now;
+  world.relayout(fieldRect.w / fieldRect.h);
+  world.sync();
   world.update(dt, pointer);
   for (const ev of world.events) if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
   world.events.length = 0;
@@ -105,13 +109,13 @@ function updateHud() {
   hudAnimals.textContent = `🐾 ${placedAnimals(save)}/${penCount(save) * penSize(save)}`;
   hudStage.textContent = `${save.stage}단계`;
   // 안내: 처음 몇 단계
-  const msg = !save.freeDrawUsed ? '오른쪽(아래) 뽑기 탭에서 무료 뽑기를 눌러 보세요'
+  const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
     : save.stats.coinsPicked === 0 ? '관람객이 던진 동전을 커서(손가락)로 쓸어 담으면 보너스!'
     : '';
   hint.textContent = msg;
   hint.classList.toggle('hidden', !msg);
-  hint.style.top = `${fieldRect.y + fieldRect.h - 30}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
+  hint.style.top = `${fieldRect.y + 4}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   void ZONE_H; void totalAttract;
 }
 
@@ -126,6 +130,7 @@ async function boot() {
   await preloadPngs();
   layout();
   world.sync();
+  if (!save.freeDrawUsed || document.body.classList.contains('landscape')) panel.setOpen(true);
   panel.render(true);
   updateHud();
   requestAnimationFrame((t) => { last = t; frame(t); });

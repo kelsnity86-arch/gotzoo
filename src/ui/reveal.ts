@@ -3,14 +3,20 @@ import { GRADES } from '../data/grades';
 import type { Card } from '../game/state';
 import { audio } from './audio';
 import { cardEl, cardGrade } from './cardview';
-import { h } from './dom';
+import { h, pix } from './dom';
+import { hasPng } from '../render/sprites';
 
 const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /** newSpecies: 이번에 처음 얻은 종 uid 목록 (NEW 표시) */
 export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number>, onClose: () => void) {
   const best = Math.max(...cards.map(cardGrade));
-  const machine = h('div', { class: 'machine' }, h('div', { class: 'dome' }, ...Array.from({ length: 9 }, (_, i) => h('i', { style: `--k:${i}` }))), h('div', { class: 'body' }, h('b', {})));
+  // GPT 그림(뽑기 기계 2프레임 + 등급 캡슐)이 있으면 그걸 쓴다
+  const useArt = hasPng('gacha_01');
+  const capIdx = Math.max(0, best);
+  const machine = useArt
+    ? h('div', { class: 'machine art' }, pix('gacha_01', 128, 'pix m-idle'), pix('gacha_02', 128, 'pix m-shake'), pix(`gacha_${String(3 + capIdx).padStart(2, '0')}`, 40, 'pix cap-closed'), pix(`gacha_${String(8 + capIdx).padStart(2, '0')}`, 40, 'pix cap-open'))
+    : h('div', { class: 'machine' }, h('div', { class: 'dome' }, ...Array.from({ length: 9 }, (_, i) => h('i', { style: `--k:${i}` }))), h('div', { class: 'body' }, h('b', {})));
   const grid = h('div', { class: `reveal-grid n${cards.length}` });
   const skip = h('button', { class: 'btn ghost' }, '모두 보기');
   const close = h('button', { class: 'btn', style: 'display:none' }, '확인');

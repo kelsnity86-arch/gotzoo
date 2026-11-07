@@ -134,3 +134,18 @@ describe('저장', () => {
     expect(s.pens[0]).toEqual([3]); expect(s.staffSlots).toEqual([null]); expect(s.nextUid).toBe(4); expect(s.dex[5]).toBe(true);
   });
 });
+
+describe('최대 수익 배치', () => {
+  it('높은 등급을 먼저, 같은 종은 같은 우리에, 자동 배치보다 매력도가 낮지 않다', async () => {
+    const { optimizePlacement } = await import('../src/game/rules');
+    const s = defaultSave(); s.coins = 1e9;
+    for (let i = 0; i < 40; i++) s.cards.push({ uid: s.nextUid++, kind: 'animal', animal: i % 3 === 0 ? 60 : i % 3 === 1 ? 2 : 33 });
+    s.cards.push({ uid: s.nextUid++, kind: 'animal', animal: 95 });
+    autoPlace(s);
+    const before = totalAttract(s);
+    const after = optimizePlacement(s);
+    expect(after).toBeGreaterThanOrEqual(before);
+    expect(s.pens.flat()).toContain(s.cards.find((c) => c.kind === 'animal' && c.animal === 95)!.uid);
+    expect(s.pens.flat().length).toBe(8);
+  });
+});

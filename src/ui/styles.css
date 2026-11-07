@@ -167,3 +167,26 @@ body:not(.landscape) .ptabs { padding-top: 6px; }
 .toast.out { opacity: 0; transform: translateY(-6px); }
 @media (prefers-reduced-motion: reduce) { .btn.pulse, .field-hint, .machine.shake, .reveal-cell { animation: none; } }
 @media (max-width: 380px) { .odds { grid-template-columns: repeat(2, 1fr); } .ptab { font-size: 11px; } }
+
+/* 세로 화면: 패널은 아래 서랍 (탭 막대만 보이다가 누르면 열림) */
+.drawer-close { display: none; }
+body:not(.landscape) .panel { box-shadow: 0 -4px 12px rgba(0,0,0,0.35); }
+body:not(.landscape) .panel .panel-body { flex: none; height: min(62vh, 560px); }
+body:not(.landscape) .panel.closed .panel-body { display: none; }
+body:not(.landscape) .panel .ptabs { padding-bottom: 0; }
+body:not(.landscape) .panel.closed .ptabs { padding-bottom: max(4px, env(safe-area-inset-bottom)); }
+body:not(.landscape) .panel.closed .ptab { border-radius: 6px; }
+body:not(.landscape) .drawer-close { display: grid; place-items: center; flex: none; width: 32px; border: none; border-radius: 6px 6px 0 0; background: #6e4a2f; color: #f6e6c8; font-size: 11px; }
+body:not(.landscape) .panel.closed .drawer-close { display: none; }
+
+/* GPT 뽑기 기계 그림 */
+.machine.art { width: 128px; height: 160px; }
+.machine.art .pix { position: absolute; left: 0; top: 0; }
+.machine.art .m-shake { display: none; }
+.machine.art.shake .m-idle { display: none; } .machine.art.shake .m-shake { display: block; }
+.machine.art.open .m-idle { display: block; } .machine.art.open .m-shake { display: none; }
+.machine.art .cap-closed, .machine.art .cap-open { left: 44px; top: 120px; display: none; }
+.machine.art.shake .cap-closed { display: block; animation: drop 0.5s ease-in 0.4s both; }
+.machine.art.open .cap-closed { display: none; } .machine.art.open .cap-open { display: block; animation: pop2 0.3s ease-out; }
+@keyframes drop { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pop2 { from { transform: scale(0.6); } 60% { transform: scale(1.3); } to { transform: none; } }

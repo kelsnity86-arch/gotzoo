@@ -6,19 +6,46 @@ import { STAFF } from '../data/staff';
 
 export type Sprite = HTMLCanvasElement | HTMLImageElement;
 
-const files = import.meta.glob('../../assets/**/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+// GPT 제작 원본(assets/sprites/**, 원본 픽셀 크기, 배경 #FF00FF). 시트(assets/spritesheets)는 쓰지 않는다.
+const files = import.meta.glob('../../assets/sprites/**/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** 게임 이름 → URL. 동물은 시트 번호·칸 순서대로 animal_000~099 (data/animals.ts 순서와 같다) */
 const URLS: Record<string, string> = {};
-for (const [path, url] of Object.entries(files)) URLS[path.split('/').pop()!.replace(/\.png$/i, '')] = url;
+{
+  const num = (p: string, re: RegExp) => Number(re.exec(p)?.[1] ?? 0);
+  const animals = Object.keys(files).filter((p) => p.includes('/sprites/animals/'))
+    .sort((a, b) => num(a, /animals_(\d+)/) - num(b, /animals_(\d+)/) || num(a, /\/(\d+)_[^/]+\.png$/) - num(b, /\/(\d+)_[^/]+\.png$/));
+  animals.forEach((p, i) => { URLS[`animal_${String(i).padStart(3, '0')}`] = files[p]; });
+  const STAFF_AT: Record<number, string> = { 9: 'staff_collector', 10: 'staff_keeper', 11: 'staff_guide', 12: 'staff_janitor' };
+  for (const [p, url] of Object.entries(files)) {
+    const idx = num(p, /\/(\d+)_[^/]+\.png$/);
+    const group = /\/sprites\/[^/]+\/([^/]+)\//.exec(p)?.[1] ?? '';
+    if (p.includes('/sprites/people/')) URLS[idx <= 8 ? `person_${String(idx - 1).padStart(2, '0')}` : STAFF_AT[idx]] = url;
+    else if (p.includes('/sprites/effects/') && idx <= 4) URLS[`coin_${idx - 1}`] = url;
+    if (!p.includes('/sprites/animals/')) URLS[`${group}_${String(idx).padStart(2, '0')}`] = url; // tiles_01, icons_05, cards_07 …
+  }
+}
 
 const cache = new Map<string, Sprite>();
 export const hasPng = (key: string) => key in URLS;
+
+/** 배경색(#FF00FF)을 투명으로 바꾼 캔버스 */
+function keyed(img: HTMLImageElement): HTMLCanvasElement {
+  const cv = document.createElement('canvas');
+  cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+  const c = cv.getContext('2d')!;
+  c.drawImage(img, 0, 0);
+  const d = c.getImageData(0, 0, cv.width, cv.height);
+  for (let i = 0; i < d.data.length; i += 4) if (d.data[i] > 240 && d.data[i + 1] < 16 && d.data[i + 2] > 240) d.data[i + 3] = 0;
+  c.putImageData(d, 0, 0);
+  return cv;
+}
 
 export async function preloadPngs(onProgress?: (p: number) => void) {
   const list = Object.entries(URLS);
   let done = 0;
   await Promise.all(list.map(([key, url]) => new Promise<void>((res) => {
     const img = new Image();
-    img.onload = () => { cache.set(key, img); done++; onProgress?.(done / list.length); res(); };
+    img.onload = () => { cache.set(key, keyed(img)); done++; onProgress?.(done / list.length); res(); };
     img.onerror = () => { done++; res(); };
     img.src = url;
   })));
