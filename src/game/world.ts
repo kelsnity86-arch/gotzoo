@@ -229,8 +229,9 @@ export class World {
     const bonus = Math.max(1, Math.round(tip * VISITOR.pickupBonus));
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 4, Math.max(PATH_Y0 + 2, v.y + 6 + this.rng() * 6));
     // 가까운 동전과 합친다 (화면이 동전으로 덮이지 않게)
-    const near = this.coins.find((c) => !c.picked && c.z === 0 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
-    if (near) { near.value += bonus; near.count++; near.age = Math.min(near.age, 4); return; }
+    // 합친 동전도 처음 동전의 20초를 그대로 따른다 (오래된 동전과는 합치지 않음)
+    const near = this.coins.find((c) => !c.picked && c.z === 0 && c.age < COIN.lifeSec / 2 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
+    if (near) { near.value += bonus; near.count++; return; }
     this.coins.push({ id: this.coinId++, x, y, value: bonus, count: 1, age: 0, z: 10, vz: 40, picked: false });
   }
 
