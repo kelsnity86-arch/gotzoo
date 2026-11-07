@@ -38,16 +38,20 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     if (shown >= cards.length) { finish(); return; }
     const c = cards[shown++];
     const g = cardGrade(c);
-    const wrap = h('div', { class: `reveal-cell${g >= 2 ? ' shine' : ''}`, style: g >= 0 ? `--glow:${GRADES[g].color}` : '--glow:#ef7d32' }, cardEl(c, { isNew: newUids.has(c.uid) }));
+    const wrap = h('div', { class: `reveal-cell${g >= 2 ? ' shine' : ''}`, style: g >= 0 ? `--glow:${GRADES[g].color}` : '--glow:#ef7d32' }, cardEl(c, { isNew: newUids.has(c.uid), size: cards.length > 5 ? 'r' : 'l' }));
     grid.append(wrap);
     audio.sfx(g >= 2 ? 'rare' : 'reveal');
     timer = window.setTimeout(showOne, reduce ? 0 : cards.length > 1 ? 220 : 0);
   };
-  const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid) }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
+  const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: cards.length > 5 ? 'r' : 'l' }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
   // 기계 흔들림 → 캡슐 색(가장 높은 등급) → 카드
   machine.classList.add('shake');
   if (best >= 0) machine.style.setProperty('--cap', GRADES[best].color);
   timer = window.setTimeout(() => { machine.classList.add('open'); timer = window.setTimeout(showOne, reduce ? 0 : 350); }, reduce ? 0 : 700);
-  skip.addEventListener('click', () => { audio.sfx('click'); finish(); });
-  close.addEventListener('click', () => { audio.sfx('click'); back.remove(); onClose(); });
+  let closed = false;
+  const closeAll = () => { if (closed) return; closed = true; audio.sfx('click'); back.remove(); onClose(); };
+  skip.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('click'); finish(); });
+  close.addEventListener('click', (e) => { e.stopPropagation(); closeAll(); });
+  // 아무 곳이나 누르면: 공개 중이면 모두 보기, 다 보였으면 확인
+  back.addEventListener('click', () => { if (close.style.display === 'none') finish(); else closeAll(); });
 }

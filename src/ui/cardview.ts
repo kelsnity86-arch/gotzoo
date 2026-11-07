@@ -21,19 +21,22 @@ function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
   return cv;
 }
 
-export function cardEl(c: Card, opts: { size?: 'l' | 'm'; isNew?: boolean } = {}): HTMLElement {
-  const big = opts.size === 'l';
+export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean } = {}): HTMLElement {
+  // l = 크게(한두 장), r = 뽑기 결과 여러 장, m = 작게
+  const big = opts.size === 'l' || opts.size === 'r';
   const isStaff = c.kind === 'staff';
   const g = isStaff ? null : GRADES[ANIMALS[c.animal].grade];
   const key = isStaff ? 'staff' : g!.key;
   const name = isStaff ? staffDef(c.staff).name : ANIMALS[c.animal].name;
-  const sub = isStaff ? (big ? staffDef(c.staff).desc : '') : `♥${g!.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
+  const sub = isStaff ? (opts.size === 'l' ? staffDef(c.staff).desc : '') : `♥${g!.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
   const art = isStaff ? staffFrame(c.staff, 0) : animalFrame(c.animal, 0);
   if (hasPng('cards_01')) {
     const frame = `cards_0${isStaff ? 6 : g!.id + 1}`;
-    const px = big ? 120 : 72;
+    // 여러 장일 때는 화면 폭에 3장이 들어가게
+    const rPx = typeof window !== 'undefined' ? Math.min(160, Math.floor((window.innerWidth - 70) / 3.6), Math.floor(window.innerHeight / 4.2)) : 160;
+    const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
     return h('div', { class: `card art g-${key}${big ? ' big' : ''}` },
-      h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: 'card-name-in' }, name)),
+      h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
       h('div', { class: 'card-grade' }, isStaff ? '직원' : g!.name),
       sub ? h('div', { class: 'card-sub' }, sub) : null,
       opts.isNew ? h('span', { class: 'card-new' }, 'NEW') : null);

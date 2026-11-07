@@ -273,3 +273,15 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
   .hud-stats { font-size: 12px; gap: 4px 6px; }
   .hud-stats .stat { padding: 1px 6px; }
 }
+
+/* 뽑기 결과: 카드 크게, 아무 곳이나 누르면 확인 */
+.reveal-box { width: min(720px, 100%); cursor: pointer; }
+.reveal-grid { gap: 10px; }
+.card.art.big .card-name-in { font-size: 15px; }
+.card.art .card-grade { font-size: 12px; padding: 1px 10px; }
+.card.art.big .card-sub { font-size: 12px; }
+.reveal-box .row-btns::after { content: '아무 곳이나 눌러도 돼요'; flex-basis: 100%; text-align: center; font-size: 11px; color: #8a7458; }
+.reveal-box > * { flex-shrink: 0; }
+.card.art .card-name-in { container-type: inline-size; }
+.card.art .card-name-in.long { font-size: 10px; } .card.art.big .card-name-in.long { font-size: 12px; }
+.card.art .card-name-in.xlong { font-size: 8px; letter-spacing: -0.5px; } .card.art.big .card-name-in.xlong { font-size: 10px; }
