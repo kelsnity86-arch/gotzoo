@@ -1,8 +1,8 @@
 // 관람객 수입 · 동전 보너스 · 직원
 import { describe, expect, it } from 'vitest';
 import { defaultSave } from '../src/game/state';
-import { World, computeLayout } from '../src/game/world';
-import { freeDraw, placeAnimal, assignStaff } from '../src/game/rules';
+import { World, computeLayout, type DayReport } from '../src/game/world';
+import { freeDraw, placeAnimal, assignStaff, closeZoo } from '../src/game/rules';
 import { COIN, VISITOR } from '../src/data/balance';
 
 function setup() {
@@ -108,10 +108,59 @@ describe('낮과 밤', () => {
     expect(w.isNight).toBe(false);
     expect(s.day).toBe(2);
   });
-  it('밤은 1분이 지나면 저절로 아침', async () => {
+  it('밤은 시간 제한이 없다 (개장하기를 눌러야 아침)', async () => {
     const { DAY } = await import('../src/data/balance');
     const { w } = setup();
-    run(w, DAY.dayLen + DAY.nightMax + 1);
-    expect(w.isNight).toBe(false);
+    run(w, DAY.dayLen + 600);
+    expect(w.isNight).toBe(true);
+  });
+  it('낮에 맞은 관람객만 미션에 센다', async () => {
+    const { DAY } = await import('../src/data/balance');
+    const { s, w } = setup();
+    s.missions = { day: 1, list: [{ kind: 'visitors', target: 9999, progress: 0, claimed: false }], bonusClaimed: false };
+    run(w, DAY.dayLen + 1);
+    const p = s.missions!.list[0].progress;
+    expect(p).toBeGreaterThan(0);
+    run(w, 60);
+    expect(s.missions!.list[0].progress).toBe(p);
+  });
+});
+
+describe('라이벌 동물원', () => {
+  async function playDays(n: number, boost: number) {
+    const { DAY } = await import('../src/data/balance');
+    const { s, w } = setup();
+    const reports: DayReport[] = [];
+    for (let d = 0; d < n; d++) {
+      for (let i = 0; i < 30 * (DAY.dayLen + 1); i++) { w.update(1 / 30, null); for (const e of w.events) if (e.type === 'night') reports.push(e.report); w.events.length = 0; }
+      s.season.mine += boost; // 수입을 부풀리거나 그대로
+      w.openPark();
+    }
+    return { s, w, reports };
+  }
+  it('7일째에 라이벌보다 많이 벌면 승리하고 다음 시즌', async () => {
+    const { s, reports } = await playDays(7, 1e6);
+    const last = reports[reports.length - 1];
+    expect(last.seasonDay).toBe(7);
+    expect(last.season?.result).toBe('win');
+    expect(s.season.n).toBe(2);
+    expect(s.season.start).toBe(8);
+    expect(s.records.bestSeasons).toBe(1);
+  });
+  it('지면 폐원 표시가 남고 시간이 멈춘다', async () => {
+    const { s, reports } = await playDays(7, 0);
+    expect(reports[6].season?.result).toBe('lose');
+    expect(s.season.lost).toBe(true);
+  });
+  it('폐원 후 새 동물원: 도감 · 기록만 남는다', async () => {
+    const { s } = await playDays(7, 0);
+    s.dex[5] = true;
+    const n = closeZoo(s);
+    expect(n.cards).toHaveLength(0);
+    expect(n.coins).toBe(0);
+    expect(n.dex[5]).toBe(true);
+    expect(n.records.closures).toBe(1);
+    expect(n.records.bestDay).toBe(7);
+    expect(n.season.lost).toBeUndefined();
   });
 });

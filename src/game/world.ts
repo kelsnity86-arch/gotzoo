@@ -3,8 +3,9 @@
 import { ANIMALS } from '../data/animals';
 import { COIN, DAY, FEED, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
-import type { SaveData } from './state';
-import { bumpMission, penAttract as totalAttractPen, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
+import type { Mission, SaveData } from './state';
+import { SEASON, rivalDaily, rivalOf } from '../data/rivals';
+import { bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -72,7 +73,14 @@ export type WorldEvent =
   | { type: 'morning'; day: number };
 
 /** 하루 정산 */
-export interface DayReport { day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number }
+export interface DayReport {
+  day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number;
+  missions: Mission[]; missionTickets: number;
+  /** 라이벌: 시즌 며칠째, 내 누적 · 라이벌 누적 (오늘까지) */
+  rivalName: string; seasonDay: number; mine: number; rival: number;
+  /** 시즌 마지막 날이면 결과 */
+  season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number } | null;
+}
 
 export class World {
   layout: Layout = { w: 100, h: 100, pens: [], cols: 1 };
@@ -104,7 +112,11 @@ export class World {
   /** 바닥까지 떨어져 놓친 보너스 합계 */
   missed = 0;
 
-  constructor(private save: SaveData, private rng: () => number = Math.random) {}
+  constructor(private save: SaveData, private rng: () => number = Math.random) {
+    // 다시 열어도 하루를 이어서
+    if (save.atNight) this.phase = 'night';
+    else { this.phaseT = Math.min(save.dayT, DAY.dayLen - 1); if (this.phaseT >= DAY.dayLen - DAY.duskLen) this.phase = 'dusk'; }
+  }
 
   /** 화면 비율이 바뀌거나 우리가 늘면 다시 배치 */
   relayout(aspect: number) {
@@ -192,6 +204,7 @@ export class World {
 
   private earn(base: number, bonus: number) {
     this.today.base += base; this.today.bonus += bonus;
+    if (this.phase !== 'night') { this.save.season.mine += base + bonus; bumpMission(this.save, 'earn', base + bonus); }
     this.save.coins += base + bonus;
     this.save.stats.coinsEarned += base + bonus;
     if (bonus) this.save.stats.coinsPicked += bonus;
@@ -200,32 +213,42 @@ export class World {
   }
 
   /** pointer: 월드 좌표의 커서 (없으면 null) */
-  /** 낮이 끝날 때까지 남은 초 (밤이면 자동 개장까지) */
-  get phaseLeft() { return this.phase === 'night' ? DAY.nightMax - this.phaseT : DAY.dayLen - this.phaseT; }
+  /** 낮이 끝날 때까지 남은 초 (밤은 시간 제한 없음) */
+  get phaseLeft() { return this.phase === 'night' ? Infinity : DAY.dayLen - this.phaseT; }
+  /** 시즌 며칠째 (1 ~ SEASON.days) */
+  get seasonDay() { return this.save.day - this.save.season.start + 1; }
+  /** 라이벌 누적 수입 (낮 동안 조금씩 오른다) */
+  get rivalNow() {
+    const s = this.save.season;
+    if (this.phase === 'night') return s.rival;
+    return s.rival + rivalDaily(this.save.day) * Math.min(1, this.phaseT / (DAY.dayLen - DAY.duskLen));
+  }
   get isNight() { return this.phase === 'night'; }
 
   /** 밤 → 아침 (개장하기) */
   openPark() {
-    if (this.phase !== 'night') return;
+    if (this.phase !== 'night' || this.save.season.lost) return; // 폐원하면 더 못 연다
     this.phase = 'day'; this.phaseT = 0;
     this.save.day = (this.save.day ?? 1) + 1;
+    this.save.atNight = false; this.save.dayT = 0;
     this.today = { base: 0, bonus: 0, visitors: 0, coins: 0 };
+    ensureMissions(this.save, this.rng);
     this.events.push({ type: 'morning', day: this.save.day });
   }
 
   private updateDay(dt: number) {
     if (!this.animals.length && this.phase === 'day') return; // 동물이 없으면 시간이 흐르지 않는다
+    if (this.phase === 'night' || this.save.season.lost) return; // 밤은 '개장하기'를 누를 때까지
     this.phaseT += dt;
+    this.save.dayT = this.phaseT;
     if (this.phase === 'day' && this.phaseT >= DAY.dayLen - DAY.duskLen) {
       this.phase = 'dusk';
       for (const v of this.visitors) if (v.state === 'walk') v.state = 'leave';
     } else if (this.phase === 'dusk' && this.phaseT >= DAY.dayLen) this.closePark();
-    else if (this.phase === 'night' && this.phaseT >= DAY.nightMax) this.openPark();
   }
 
   /** 폐장: 바닥 동전 정리, 정산 */
   private closePark() {
-    this.phase = 'night'; this.phaseT = 0;
     if (this.event) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; }
     const janitors = this.staff.filter((e) => e.kind === 'janitor').length;
     let janitor = 0, lost = 0;
@@ -234,11 +257,36 @@ export class World {
       if (janitors) { const v = Math.round(c.value * DAY.janitorShare); janitor += v; } else lost += c.value;
     }
     if (janitor) this.earn(0, janitor);
+    this.phase = 'night'; this.phaseT = 0;
+    const sv = this.save;
+    sv.atNight = true; sv.dayT = 0;
     this.coins = [];
     this.visitors = [];
     let topPen = 0, topAttract = 0;
-    this.layout.pens.forEach((_, i) => { const a = totalAttractPen(this.save, i); if (a > topAttract) { topAttract = a; topPen = i; } });
-    const report: DayReport = { day: this.save.day ?? 1, ...this.today, janitor, lost, topPen, topAttract: Math.round(topAttract) };
+    this.layout.pens.forEach((_, i) => { const a = totalAttractPen(sv, i); if (a > topAttract) { topAttract = a; topPen = i; } });
+    // 미션 정산
+    const missions = (sv.missions?.day === sv.day ? sv.missions.list : []).map((m) => ({ ...m }));
+    const missionTickets = settleMissions(sv);
+    // 라이벌 정산
+    const se = sv.season;
+    se.rival += rivalDaily(sv.day);
+    sv.records.bestDay = Math.max(sv.records.bestDay, sv.day);
+    const seasonDay = this.seasonDay;
+    const base = { rivalName: rivalOf(se.n).name, seasonDay, mine: Math.round(se.mine), rival: Math.round(se.rival) };
+    let season: DayReport['season'] = null;
+    if (seasonDay >= SEASON.days) {
+      if (se.mine >= se.rival) {
+        const coins = Math.round(se.mine * SEASON.winCoinShare), tickets = SEASON.winTickets;
+        sv.coins += coins; sv.tickets += tickets;
+        sv.records.bestSeasons = Math.max(sv.records.bestSeasons, se.n);
+        season = { result: 'win', n: se.n, coins, tickets };
+        sv.season = { n: se.n + 1, start: sv.day + 1, mine: 0, rival: 0 };
+      } else {
+        season = { result: 'lose', n: se.n, coins: 0, tickets: 0 };
+        se.lost = true;
+      }
+    }
+    const report: DayReport = { day: sv.day, ...this.today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets, ...base, season };
     this.events.push({ type: 'night', report });
   }
 
@@ -347,6 +395,7 @@ export class World {
 
   private throwCoin(v: VisitorEnt) {
     this.today.visitors++;
+    bumpMission(this.save, 'visitors', 1);
     const tip = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (v.vip ? EVENT_TIMING.vipTipMul : 1));
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
     this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
@@ -372,7 +421,7 @@ export class World {
 
   /** 손으로 먹이 주기 (우리별 대기 시간) */
   feed(pen: number, by: 'hand' | 'staff' = 'hand'): boolean {
-    if (!this.save.pens[pen]?.length) return false;
+    if (!this.save.pens[pen]?.length || this.phase === 'night') return false; // 밤엔 동물이 잔다
     if (by === 'hand' && this.feedCooldown[pen] > 0) return false;
     this.fedLeft[pen] = FEED.sec;
     if (by === 'hand') { this.feedCooldown[pen] = FEED.manualCooldown; bumpMission(this.save, 'feed', 1); }

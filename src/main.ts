@@ -6,7 +6,8 @@ import { defaultSave, loadSave, writeSave } from './game/state';
 import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
 import { World, ZONE_H } from './game/world';
-import { syncSlots, totalAttract, placedAnimals, penCount, penSize, offlineEarnings, ensureMissions } from './game/rules';
+import { syncSlots, totalAttract, placedAnimals, penCount, penSize, offlineEarnings, ensureMissions, missionText, closeZoo } from './game/rules';
+import { SEASON, rivalOf } from './data/rivals';
 import { FieldRenderer } from './render/field';
 import { hasPng, preloadPngs } from './render/sprites';
 import { Panel, openPenSheet } from './ui/panel';
@@ -35,14 +36,17 @@ const stat = (icon: string, val: HTMLElement, title: string) => h('span', { clas
 const ticketChip = stat('icons_12', hudTickets, '무료 뽑기권');
 const clockText = h('b', {}), clockFill = h('i', {});
 const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
+const rivalText = h('b', {}), rivalFill = h('i', {});
+const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: ${SEASON.days}일 동안 번 코인이 더 많아야 버틸 수 있어요` }, rivalText, h('span', { class: 'bar' }, rivalFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
   h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins),
-  h('div', { class: 'hud-stats' }, stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'), stat('icons_02', hudAttract, '총 매력도'), stat('icons_05', hudAnimals, '전시 / 수용'), stat('icons_04', hudStage, '진행 단계'), ticketChip, clock));
+  h('div', { class: 'hud-stats' }, stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'), stat('icons_02', hudAttract, '총 매력도'), stat('icons_05', hudAnimals, '전시 / 수용'), stat('icons_04', hudStage, '진행 단계'), ticketChip, clock, rivalChip));
 const hint = h('div', { class: 'field-hint' });
 const eventBanner = h('div', { class: 'event-banner hidden' });
 const openLeft = h('small', {});
 const openBtn = h('div', { class: 'open-btn hidden' }, h('button', { class: 'btn', onclick: () => { world.openPark(); audio.sfx('event'); } }, '☀ 개장하기'), openLeft);
+openLeft.textContent = '정비를 다 했으면 눌러서 다음 날 영업 시작';
 const zoomReset = h('button', { class: 'zoom-reset hidden', onclick: () => { field.resetZoom(); audio.sfx('click'); } }, '전체 보기');
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
 hud.append(settingsBtn);
@@ -192,7 +196,12 @@ function showTitle(onStart?: () => void) {
 
 // ── 하루 정산 ──
 function showReport(r: import('./game/world').DayReport) {
-  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+  const ahead = r.mine >= r.rival;
+  const left = SEASON.days - r.seasonDay;
+  const missions = r.missions.map((m) => h('div', { class: `mrow${m.progress >= m.target ? ' ok' : ''}` },
+    h('span', {}, `${m.progress >= m.target ? '✔' : '✘'} ${missionText(m.kind, m.target)}`), h('small', {}, `${fmt(m.progress)} / ${fmt(m.target)}`)));
+  const close = () => { back.remove(); if (r.season) showSeason(r); };
+  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) close(); } },
     h('div', { class: 'fuse-result' },
       h('div', { class: 'reveal-title' }, `${r.day}일째 영업 끝!`),
       h('div', { class: 'report' },
@@ -202,9 +211,47 @@ function showReport(r: import('./game/world').DayReport) {
         h('div', {}, h('b', {}, fmt(r.bonus + r.janitor)), h('span', {}, '줍기 보너스')),
         h('div', { class: 'wide' }, h('b', {}, `우리 ${r.topPen + 1} · ♥${fmt(r.topAttract)}`), h('span', {}, '오늘의 인기 우리')),
         r.janitor ? h('div', { class: 'wide' }, h('b', {}, `+${fmt(r.janitor)}`), h('span', {}, '관리인이 폐장 후 주운 동전')) : null,
-        r.lost ? h('div', { class: 'wide' }, h('b', {}, `-${fmt(r.lost)}`), h('span', {}, '못 주워서 사라진 동전 (관리인이 있으면 절반을 주워요)')) : null),
-      h('div', { class: 'sub' }, '밤에는 관람객이 없어요. 업그레이드로 시설을 고치고 개장하기를 누르세요.'),
-      h('button', { class: 'btn', onclick: () => back.remove() }, '밤 정비 시작')));
+        r.lost ? h('div', { class: 'wide' }, h('b', {}, `-${fmt(r.lost)}`), h('span', {}, '못 주워서 사라진 동전 (관리인이 있으면 절반을 주워요)')) : null,
+        h('div', { class: `wide vs${ahead ? ' ahead' : ' behind'}` },
+          h('b', {}, `나 ${fmt(r.mine)} vs ${r.rivalName} ${fmt(r.rival)}`),
+          h('span', {}, r.season ? '시즌 마지막 날 결과는…' : `${ahead ? `${fmt(r.mine - r.rival)} 앞서는 중` : `${fmt(r.rival - r.mine)} 뒤지는 중`} · 시즌 ${r.seasonDay}/${SEASON.days}일`))),
+      !r.season && !ahead && left === 1 ? h('div', { class: 'warn' }, '⚠ 내일이 마지막 날! 지면 동물원이 문을 닫아요') : null,
+      missions.length ? h('div', { class: 'mlist' }, h('div', { class: 'section-title' }, `영업 미션 ${r.missionTickets ? `· 뽑기권 +${r.missionTickets}` : ''}`), ...missions) : null,
+      h('button', { class: 'btn', onclick: close }, r.season ? '결과 보기' : '밤 정비 시작')));
+  ui.append(back);
+}
+
+// ── 시즌 결과: 승리 / 폐원 ──
+function showSeason(r: import('./game/world').DayReport) {
+  const se = r.season!;
+  if (se.result === 'win') {
+    audio.sfx('legend');
+    const next = rivalOf(se.n + 1);
+    const back = h('div', { class: 'overlay' },
+      h('div', { class: 'fuse-result win' },
+        h('div', { class: 'reveal-title' }, `시즌 ${se.n} 승리!`),
+        h('div', { class: 'sub' }, `${r.rivalName}을(를) ${fmt(r.mine - r.rival)}코인 차이로 이겼어요`),
+        h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
+        h('div', { class: 'sub' }, `다음 라이벌: ${next.name} (${next.owner}) · 더 강해졌어요`),
+        h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
+    ui.append(back);
+  } else showClosure();
+}
+
+function showClosure() {
+  audio.sfx('fuseFail');
+  const rc = save.records;
+  const back = h('div', { class: 'overlay closure' },
+    h('div', { class: 'fuse-result' },
+      h('div', { class: 'reveal-title' }, '동물원 폐원…'),
+      h('div', { class: 'sub' }, `${rivalOf(save.season.n).name}에게 손님을 빼앗겼어요 (나 ${fmt(save.season.mine)} vs ${fmt(save.season.rival)})`),
+      h('div', { class: 'report' },
+        h('div', {}, h('b', {}, `${save.day}일`), h('span', {}, '버틴 날')),
+        h('div', {}, h('b', {}, `${save.season.n - 1}번`), h('span', {}, '이긴 라이벌')),
+        h('div', {}, h('b', {}, `${Math.max(rc.bestDay, save.day)}일`), h('span', {}, '최고 기록')),
+        h('div', {}, h('b', {}, `${save.dex.filter(Boolean).length}종`), h('span', {}, '도감 (그대로 남아요)'))),
+      h('div', { class: 'sub' }, '동물원·코인·카드는 처음부터 다시 시작해요. 도감과 기록은 남아요.'),
+      h('button', { class: 'btn big', onclick: () => replaceSave(closeZoo(save)) }, '새 동물원 열기')));
   ui.append(back);
 }
 
@@ -234,7 +281,13 @@ function frame(now: number) {
   world.update(dt, pointer);
   for (const ev of world.events) {
     if (ev.type === 'night') { audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
-    else if (ev.type === 'morning') { toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200); persist(); panel.render(true); }
+    else if (ev.type === 'morning') {
+      const sd = world.seasonDay;
+      if (sd === 1) toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! ${SEASON.days}일 안에 더 많이 벌어야 해요`, 'gold', 3200);
+      else if (sd === SEASON.days) toast(`${ev.day}일째 아침 · 시즌 마지막 날! 오늘 결판나요`, 'bad', 3000);
+      else toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200);
+      persist(); panel.render(true);
+    }
     else if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
@@ -263,12 +316,19 @@ function updateHud() {
   // 하루 시계 · 개장하기
   const night = world.isNight;
   clock.classList.toggle('night', night);
-  const left = Math.max(0, Math.ceil(world.phaseLeft));
-  clockText.textContent = `${save.day}일째 ${night ? '🌙 밤' : world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
-  clockFill.style.width = `${night ? (world.phaseT / 60) * 100 : (world.phaseT / 180) * 100}%`;
-  openBtn.classList.toggle('hidden', !night);
-  openLeft.textContent = `${left}초 뒤 자동으로 열려요 · 지금은 업그레이드 시간`;
-  const openBottom = Math.min(fieldRect.y + fieldRect.h, panel.el.getBoundingClientRect().top);
+  const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));
+  clockText.textContent = night ? `${save.day}일째 🌙 밤 정비 중` : `${save.day}일째 ${world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  clockFill.parentElement!.classList.toggle('hidden', night);
+  clockFill.style.width = `${(world.phaseT / 180) * 100}%`;
+  openBtn.classList.toggle('hidden', !night || !!save.season.lost);
+  // 라이벌
+  const mine = save.season.mine, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
+  rivalChip.classList.toggle('losing', mine < rv);
+  rivalText.textContent = `🏆 나 ${fmt(mine)} vs ${rivalOf(save.season.n).name} ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`;
+  rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;
+  const pr = panel.el.getBoundingClientRect();
+  // 세로 화면 서랍이 필드를 덮을 때만 서랍 위로
+  const openBottom = pr.left < fieldRect.x + fieldRect.w && pr.top > fieldRect.y ? Math.min(fieldRect.y + fieldRect.h, pr.top) : fieldRect.y + fieldRect.h;
   const tight = openBottom - fieldRect.y < 150;
   openBtn.classList.toggle('tight', tight);
   openBtn.style.top = `${openBottom - (tight ? 58 : 86)}px`; openBtn.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
@@ -303,7 +363,7 @@ async function boot() {
   panel.render(true);
   updateHud();
   requestAnimationFrame((t) => { last = t; frame(t); });
-  showTitle(() => showOffline());
+  showTitle(() => { if (save.season.lost) showClosure(); else showOffline(); });
   // 개발·검증용 핸들 (?debug)
   if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist };
 }

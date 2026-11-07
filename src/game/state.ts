@@ -36,11 +36,20 @@ export interface SaveData {
   lastSeen: number;
   /** 며칠째 */
   day: number;
+  /** 밤인지 · 낮이 흐른 초 (다시 열어도 이어서) */
+  atNight: boolean;
+  dayT: number;
+  /** 이번 시즌: 몇 번째, 시작한 날, 내 누적 수입, 라이벌 누적 수입 (지난 날까지) */
+  season: { n: number; start: number; mine: number; rival: number; lost?: boolean };
+  /** 폐원해도 남는 기록 */
+  records: { bestSeasons: number; bestDay: number; closures: number };
 }
 
 export interface Mission { kind: MissionKind; target: number; progress: number; claimed: boolean }
-export type MissionKind = 'draw' | 'fuse' | 'pickup' | 'rare' | 'feed' | 'upgrade' | 'place';
-export interface MissionState { date: string; list: Mission[]; bonusClaimed: boolean }
+export type MissionKind = 'visitors' | 'pickup' | 'earn' | 'feed';
+const MISSION_KINDS: MissionKind[] = ['visitors', 'pickup', 'earn', 'feed'];
+/** day: 게임 속 며칠째의 미션인지 */
+export interface MissionState { day: number; list: Mission[]; bonusClaimed: boolean }
 
 export const SAVE_VERSION = 2;
 export const SAVE_KEY = 'bbopzoo.save';
@@ -52,6 +61,7 @@ export function defaultSave(): SaveData {
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
+    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0 },
   };
 }
 
@@ -77,7 +87,15 @@ export function normalize(raw: unknown): SaveData {
   out.lastSeen = Number.isFinite(out.lastSeen) ? out.lastSeen : 0;
   out.day = Number.isFinite(out.day) && out.day >= 1 ? Math.floor(out.day) : 1;
   const ms = out.missions as MissionState | null;
-  out.missions = ms && typeof ms.date === 'string' && Array.isArray(ms.list) ? ms : null;
+  out.missions = ms && typeof ms.day === 'number' && Array.isArray(ms.list) && ms.list.every((m) => MISSION_KINDS.includes(m.kind)) ? ms : null;
+  out.atNight = !!out.atNight;
+  out.dayT = Number.isFinite(out.dayT) ? Math.max(0, out.dayT) : 0;
+  const se = (r.season ?? {}) as Partial<SaveData['season']>;
+  const num = (v: unknown, def: number) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
+  out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}) };
+  if (out.season.start > out.day) out.season.start = out.day;
+  const rc = (r.records ?? {}) as Partial<SaveData['records']>;
+  out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)) };
   out.staffSlots = out.staffSlots.length ? out.staffSlots : [null];
   out.version = SAVE_VERSION;
   return out;

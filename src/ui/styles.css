@@ -304,3 +304,16 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .report b { font-weight: 400; font-size: 18px; color: #5d3a24; }
 .report span { font-size: 12px; color: #6b5536; }
 .report .wide { grid-column: 1 / -1; }
+
+/* 라이벌 */
+.rival { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: #2d5a3a; font-size: 13px; color: #d7f5c0; }
+.rival.losing { background: #7a2f2f; color: #ffd6d6; }
+.rival .bar { width: 46px; height: 6px; border-radius: 3px; background: #c94c4c; overflow: hidden; }
+.rival .bar i { display: block; height: 100%; background: #7ad35a; }
+.clock .bar.hidden { display: none; }
+.report .vs.ahead { background: #e7f6dc; } .report .vs.behind { background: #fbe1df; }
+.warn { padding: 6px 10px; border-radius: 8px; background: #c94c4c; color: #fff; font-size: 13px; }
+.mlist { width: 100%; display: flex; flex-direction: column; gap: 3px; }
+.mrow { display: flex; justify-content: space-between; gap: 8px; padding: 4px 8px; border-radius: 6px; background: #f3e6cf; color: #8b7a62; font-size: 13px; }
+.mrow.ok { background: #e7f6dc; color: #3d6b2a; }
+.mrow small { font-size: 12px; }

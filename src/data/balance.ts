@@ -71,6 +71,6 @@ export const FEED = { bonus: 0.1, sec: 30, manualCooldown: 20 } as const;
 /** 직원 */
 export const STAFF_AI = { collectorSpeed: 42, collectorReach: 9, collectorSearch: 140, keeperSpeed: 26, keeperFeedEvery: 6 } as const;
 
-/** 하루: 낮 dayLen초 (마지막 duskLen초는 해 질 녘: 새 관람객 없음), 밤은 '개장하기'를 누르거나 nightMax초가 지나면 아침.
- *  폐장 때 바닥 동전은 관리인이 있으면 janitorShare만큼 주워 준다. 업그레이드는 밤에만. */
-export const DAY = { dayLen: 180, duskLen: 20, nightMax: 60, janitorShare: 0.5 } as const;
+/** 하루: 낮 dayLen초 (마지막 duskLen초는 해 질 녘: 새 관람객 없음), 밤은 시간 제한 없이 '개장하기'를 누르면 아침.
+ * nightAvg: 자리 비움 수익 계산용 평균 밤 길이 */
+export const DAY = { dayLen: 180, duskLen: 20, nightAvg: 30, janitorShare: 0.5 } as const;

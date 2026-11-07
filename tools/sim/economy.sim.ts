@@ -18,6 +18,7 @@ it('경제 곡선', () => {
   const w = new World(s, Math.random);
   w.relayout(1.6);
   const log: string[] = [];
+  const dayLog: string[] = [];
   let t = 0, draws = 0, secondDraw = -1, lastStage = 1, think = 0, pickAcc = 0;
   freeDraw(s); optimizePlacement(s); w.sync();
   const dt = 0.1;
@@ -26,6 +27,7 @@ it('경제 곡선', () => {
     t += dt;
     w.relayout(1.6); w.sync();
     w.update(dt, null);
+    for (const e of w.events) if (e.type === 'night') { const r = e.report; dayLog.push(`${r.day}일 ${(t/60).toFixed(1)}분 단계${s.stage}: 수입 ${r.base + r.bonus + r.janitor} · 관람객 ${r.visitors} · 동전 ${r.coins} · 시즌 ${r.mine} vs ${r.rival}${r.season ? ` → ${r.season.result}` : ''}`); if (r.season?.result === 'lose') t = MIN * 60; }
     w.events.length = 0;
     // 손으로 줍기: 초당 바닥 동전의 PICK 비율
     pickAcc += dt;
@@ -59,4 +61,5 @@ it('경제 곡선', () => {
   }
   console.log(`두 번째 뽑기: ${secondDraw >= 0 ? `${secondDraw.toFixed(0)}초` : '없음'}`);
   console.log(log.join('\n'));
+  console.log(dayLog.join('\n'));
 }, 600_000);

@@ -3,9 +3,9 @@ import { ANIMALS, animalsOfGrade } from '../data/animals';
 import { GRADES, type Grade } from '../data/grades';
 import { STAFF, type StaffKind } from '../data/staff';
 import { DAY, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
-import type { Card, MissionKind, SaveData } from './state';
+import { defaultSave, type Card, type MissionKind, type SaveData } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
-import { MISSION_BONUS, MISSION_POOL, MISSION_REWARD } from '../data/missions';
+import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/missions';
 import { STAFF_FX } from '../data/staff';
 
 export type Rng = () => number;
@@ -67,8 +67,6 @@ function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
     if (rng() < GACHA.staffChance) out.push(addCard(s, { kind: 'staff', staff: pick(STAFF, rng).kind as StaffKind }));
     else out.push(addCard(s, { kind: 'animal', animal: pick(animalsOfGrade(rollGrade(rng)), rng).id }));
   }
-  bumpMission(s, 'draw', n);
-  bumpMission(s, 'rare', out.filter((c) => c.kind === 'animal' && ANIMALS[c.animal].grade >= 2).length);
   return out;
 }
 
@@ -115,7 +113,6 @@ export function fuse(s: SaveData, uids: number[], rng: Rng = Math.random): Fusio
   const keepUid = success ? -1 : set[Math.floor(rng() * set.length)];
   s.cards = s.cards.filter((c) => !set.includes(c.uid) || c.uid === keepUid);
   s.stats.fusions++;
-  bumpMission(s, 'fuse', 1);
   if (success) {
     s.stats.fusionWins++;
     const card = addCard(s, { kind: 'animal', animal: pick(animalsOfGrade((grade + 1) as Grade), rng).id });
@@ -282,22 +279,30 @@ export function claimDexSet(s: SaveData, id: string): number {
   return set.reward;
 }
 
-// ── 오늘의 미션 ──
-export const todayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-export function ensureMissions(s: SaveData, date = todayKey(), rng: Rng = Math.random) {
-  if (s.missions && s.missions.date === date) return s.missions;
+// ── 오늘 영업 미션 (게임 속 하루마다) ──
+export function ensureMissions(s: SaveData, rng: Rng = Math.random) {
+  if (s.missions && s.missions.day === s.day) return s.missions;
   const pool = MISSION_POOL.slice();
   const list = [];
   for (let i = 0; i < 3 && pool.length; i++) {
     const t = pool.splice(Math.floor(rng() * pool.length), 1)[0];
-    list.push({ kind: t.kind, target: t.targets[Math.min(t.targets.length - 1, Math.floor(rng() * t.targets.length))], progress: 0, claimed: false });
+    const k = MISSION_K[Math.min(MISSION_K.length - 1, Math.floor(rng() * MISSION_K.length))];
+    list.push({ kind: t.kind, target: t.target(s.day, s.stage, k), progress: 0, claimed: false });
   }
-  s.missions = { date, list, bonusClaimed: false };
+  s.missions = { day: s.day, list, bonusClaimed: false };
   return s.missions;
 }
+/** 미션 진행: 낮에 한 일만 (World가 부른다) */
 export function bumpMission(s: SaveData, kind: MissionKind, n: number) {
-  if (!s.missions || n <= 0) return;
+  if (!s.missions || s.missions.day !== s.day || n <= 0) return;
   for (const m of s.missions.list) if (m.kind === kind) m.progress = Math.min(m.target, m.progress + n);
+}
+/** 영업 끝: 달성한 미션을 모두 받는다. 받은 뽑기권 수 */
+export function settleMissions(s: SaveData): number {
+  const before = s.tickets;
+  s.missions?.list.forEach((_, i) => claimMission(s, i));
+  claimMissionBonus(s);
+  return s.tickets - before;
 }
 export const missionText = (kind: MissionKind, n: number) => MISSION_POOL.find((m) => m.kind === kind)!.text(n);
 export function claimMission(s: SaveData, i: number): boolean {
@@ -313,6 +318,16 @@ export function claimMissionBonus(s: SaveData): boolean {
   return true;
 }
 
+// ── 폐원 ──
+/** 폐원하고 새 동물원: 동물원·코인·카드는 처음부터, 도감과 기록만 남는다 */
+export function closeZoo(s: SaveData): SaveData {
+  const n = defaultSave();
+  n.dex = s.dex.slice();
+  n.dexClaimed = s.dexClaimed.slice();
+  n.records = { bestSeasons: s.records.bestSeasons, bestDay: Math.max(s.records.bestDay, s.day), closures: s.records.closures + 1 };
+  return n;
+}
+
 // ── 자리 비움 수익 ──
 export const OFFLINE = { rate: 0.3, maxHours: 8, minMinutes: 2 } as const;
 /** 닫혀 있던 동안의 수익: 분당 예상 기본 수입 × 분 × 30% (최대 8시간) */
@@ -323,7 +338,7 @@ export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: numbe
   const A = totalAttract(s);
   const perMin = Math.min(upValue(s, 'gate'), 3 + 0.2 * A) * 15 * upValue(s, 'quality') * stageTipMul(s) * staffTipMul(s);
   // 낮 시간 몫만 (하루 중 관람객이 오는 비율)
-  const dayShare = (DAY.dayLen - DAY.duskLen) / (DAY.dayLen + DAY.nightMax / 2);
+  const dayShare = (DAY.dayLen - DAY.duskLen) / (DAY.dayLen + DAY.nightAvg);
   return { minutes, amount: Math.floor(perMin * minutes * OFFLINE.rate * dayShare) };
 }
 
@@ -342,7 +357,6 @@ export function buyUpgrade(s: SaveData, id: UpgradeId): boolean {
   s.coins -= cost;
   s.upgrades[id]++;
   syncSlots(s);
-  bumpMission(s, 'upgrade', 1);
   return true;
 }
 

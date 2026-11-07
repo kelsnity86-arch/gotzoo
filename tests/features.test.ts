@@ -6,26 +6,33 @@ import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, draw, ensureMissions, freeDraw, habitatDexBonus,
+  assignStaff, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
-describe('오늘의 미션 · 뽑기권', () => {
-  it('날짜마다 3개, 진행하면 받고 뽑기권으로 뽑는다', () => {
+describe('오늘 영업 미션 · 뽑기권', () => {
+  it('게임 속 하루마다 3개, 달성하면 받고 뽑기권으로 뽑는다', () => {
     const s = defaultSave(); s.coins = 1e6;
-    const ms = ensureMissions(s, '2026-11-07', () => 0);
+    const ms = ensureMissions(s, () => 0);
     expect(ms.list).toHaveLength(3);
-    const drawM = ms.list.findIndex((m) => m.kind === 'draw');
-    expect(drawM).toBeGreaterThanOrEqual(0);
-    draw(s, 10); draw(s, 10); draw(s, 10);
-    expect(claimMission(s, drawM)).toBe(true);
-    expect(claimMission(s, drawM)).toBe(false);
+    expect(ms.day).toBe(1);
+    expect(ensureMissions(s)).toBe(ms); // 같은 날이면 그대로
+    ms.list[0].progress = ms.list[0].target;
+    expect(claimMission(s, 0)).toBe(true);
+    expect(claimMission(s, 0)).toBe(false);
     expect(s.tickets).toBe(1);
     const out = ticketDraw(s)!;
     expect(out).toHaveLength(1); expect(s.tickets).toBe(0);
     expect(ticketDraw(s)).toBeNull();
     expect(claimMissionBonus(s)).toBe(false);
-    expect(ensureMissions(s, '2026-11-08').date).toBe('2026-11-08');
+    s.day = 2;
+    expect(ensureMissions(s).day).toBe(2);
+  });
+  it('영업이 끝나면 달성한 미션은 자동으로 받는다', () => {
+    const s = defaultSave();
+    const ms = ensureMissions(s, () => 0);
+    for (const m of ms.list) m.progress = m.target;
+    expect(settleMissions(s)).toBe(3 + 2);
   });
 });
 

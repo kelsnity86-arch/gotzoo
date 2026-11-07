@@ -101,7 +101,7 @@ export class Panel {
       h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요.'));
   }
 
-  /** 오늘의 미션: 하나 = 뽑기권 1장, 셋 다 = 보너스 2장 */
+  /** 오늘 영업 미션: 하나 = 뽑기권 1장, 셋 다 = 보너스 2장 (영업이 끝나면 자동 정산) */
   private missions() {
     const s = this.ctx.save;
     const ms = ensureMissions(s);
@@ -112,10 +112,12 @@ export class Panel {
       return h('div', { class: `mission${m.claimed ? ' claimed' : ''}` },
         h('div', { class: 'm-info' }, h('div', {}, missionText(m.kind, m.target)), this.bar(`${m.progress} / ${m.target}`, m.progress / m.target)), b);
     });
-    const bonus = h('button', { class: 'btn small', onclick: () => { if (claimMissionBonus(s)) { audio.sfx('fuseWin'); toast(`오늘의 미션 완료! 뽑기권 +${MISSION_BONUS}`, 'gold', 2400); this.changed(); } } }, ms.bonusClaimed ? '받음' : `보너스 ${MISSION_BONUS}장`) as HTMLButtonElement;
+    const bonus = h('button', { class: 'btn small', onclick: () => { if (claimMissionBonus(s)) { audio.sfx('fuseWin'); toast(`영업 미션 완료! 뽑기권 +${MISSION_BONUS}`, 'gold', 2400); this.changed(); } } }, ms.bonusClaimed ? '받음' : `보너스 ${MISSION_BONUS}장`) as HTMLButtonElement;
     bonus.disabled = ms.bonusClaimed || !ms.list.every((m) => m.claimed);
-    return h('div', {}, h('div', { class: 'section-title' }, `오늘의 미션 · ${ms.date}`), ...rows,
-      h('div', { class: 'mission bonus' }, h('div', { class: 'm-info' }, '3개 모두 받으면'), bonus));
+    const night = this.ctx.world.isNight;
+    return h('div', {}, h('div', { class: 'section-title' }, `오늘 영업 미션 · ${ms.day}일째`), ...rows,
+      h('div', { class: 'mission bonus' }, h('div', { class: 'm-info' }, '3개 모두 받으면'), bonus),
+      h('p', { class: 'hint' }, night ? '오늘 영업은 끝났어요. 개장하면 새 미션이 나와요.' : '낮 동안 한 일만 세요. 영업이 끝나면 달성한 미션은 자동으로 받고, 못 한 미션은 사라져요.'));
   }
 
   private reveal(cards: Card[], beforeDex: boolean[]) {
