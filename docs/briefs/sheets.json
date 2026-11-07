@@ -1,0 +1,119 @@
+{
+  "rules": "You are drawing game sprites for a cute pixel-art zoo collection game.\nRules for EVERY image in this conversation:\n- True pixel art. Each sprite is drawn on an exact 8x8 pixel grid (unless told otherwise), then scaled up so every art pixel is one solid square block (about 24x24 image pixels). No anti-aliasing, no gradients, no blur, no dithering noise, no soft shadows.\n- 1-pixel dark outline (#1a1c2c) around each sprite. Cute, chunky, readable at tiny size. Front-facing or 3/4 view, all sprites facing the same direction (left).\n- Use only this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd\n- Solid flat magenta background (#FF00FF) everywhere outside the sprites. Do not use magenta inside sprites.\n- Sprites are laid out in a clean grid with lots of empty magenta space between them. Never touch or overlap.\n- Absolutely no text, numbers, labels, letters, watermarks, frames or borders in the image.",
+  "sheets": [
+    {
+      "number": 1,
+      "filename": "animals_01.png",
+      "path": "assets/spritesheets/animals/common/animals_01.png",
+      "description": "Sprite sheet 01: 10 common-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. rabbit\n2. duck\n3. chicken\n4. baby chick\n5. hamster\n6. squirrel\n7. mouse\n8. cat\n9. puppy\n10. pigeon\nStyle for this rarity: simple, mostly 2-3 colors, plain everyday look.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 2,
+      "filename": "animals_02.png",
+      "path": "assets/spritesheets/animals/common/animals_02.png",
+      "description": "Sprite sheet 02: 10 common-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. sparrow\n2. frog\n3. tortoise\n4. snail\n5. pig\n6. sheep\n7. goat\n8. dairy cow\n9. pony\n10. donkey\nStyle for this rarity: simple, mostly 2-3 colors, plain everyday look.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 3,
+      "filename": "animals_03.png",
+      "path": "assets/spritesheets/animals/common/animals_03.png",
+      "description": "Sprite sheet 03: 10 common-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. goose\n2. turkey\n3. guinea pig\n4. hedgehog\n5. raccoon\n6. goldfish\n7. budgie parakeet\n8. badger\n9. mole\n10. honeybee\nStyle for this rarity: simple, mostly 2-3 colors, plain everyday look.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 4,
+      "filename": "animals_04.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_04.png",
+      "description": "Sprite sheet 04: 10 uncommon-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. red fox\n2. penguin\n3. koala\n4. spotted deer\n5. alpaca\n6. river otter\n7. beaver\n8. meerkat\n9. kangaroo\n10. monkey\nStyle for this rarity: a little more detail, 3-4 colors, one distinctive feature.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 5,
+      "filename": "animals_05.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_05.png",
+      "description": "Sprite sheet 05: 10 uncommon-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. owl\n2. scarlet macaw\n3. harbor seal\n4. platypus\n5. armadillo\n6. sloth\n7. skunk\n8. gray wolf\n9. brown bear\n10. zebra\nStyle for this rarity: a little more detail, 3-4 colors, one distinctive feature.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 6,
+      "filename": "animals_06.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_06.png",
+      "description": "Sprite sheet 06: 6 uncommon-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. camel\n2. ostrich\n3. crocodile\n4. hippo\n5. anteater\n6. toucan\nStyle for this rarity: a little more detail, 3-4 colors, one distinctive feature.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 7,
+      "filename": "animals_07.png",
+      "path": "assets/spritesheets/animals/rare/animals_07.png",
+      "description": "Sprite sheet 07: 10 rare-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. capybara\n2. red panda\n3. flamingo\n4. giant panda\n5. giraffe\n6. elephant\n7. lion\n8. tiger\n9. leopard\n10. cheetah\nStyle for this rarity: clear iconic silhouette, 4-5 colors, a bright accent color.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 8,
+      "filename": "animals_08.png",
+      "path": "assets/spritesheets/animals/rare/animals_08.png",
+      "description": "Sprite sheet 08: 10 rare-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. gorilla\n2. orangutan\n3. polar bear\n4. rhino\n5. dolphin\n6. orca\n7. sea turtle\n8. octopus\n9. chameleon\n10. fennec fox\nStyle for this rarity: clear iconic silhouette, 4-5 colors, a bright accent color.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 9,
+      "filename": "animals_09.png",
+      "path": "assets/spritesheets/animals/rare/animals_09.png",
+      "description": "Sprite sheet 09: 2 rare-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 1 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. quokka\n2. tapir\nStyle for this rarity: clear iconic silhouette, 4-5 colors, a bright accent color.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 10,
+      "filename": "animals_10.png",
+      "path": "assets/spritesheets/animals/epic/animals_10.png",
+      "description": "Sprite sheet 10: 10 epic-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. white tiger\n2. snow leopard\n3. peacock with open tail\n4. black panther\n5. bald eagle\n6. okapi\n7. komodo dragon\n8. white lion\n9. whale shark\n10. humpback whale\nStyle for this rarity: striking and majestic, rich colors, one tiny sparkle pixel allowed.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 11,
+      "filename": "animals_11.png",
+      "path": "assets/spritesheets/animals/epic/animals_11.png",
+      "description": "Sprite sheet 11: 4 epic-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 1 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. golden snub-nosed monkey\n2. aye-aye\n3. pangolin\n4. bird of paradise\nStyle for this rarity: striking and majestic, rich colors, one tiny sparkle pixel allowed.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 12,
+      "filename": "animals_12.png",
+      "path": "assets/spritesheets/animals/legendary/animals_12.png",
+      "description": "Sprite sheet 12: 8 legendary-rarity zoo animals, 8x8 pixels each.\nLayout: 5 columns x 2 rows grid, left-to-right then top-to-bottom, in exactly this order:\n1. unicorn\n2. phoenix\n3. golden dragon\n4. griffin\n5. pegasus\n6. nine-tailed fox\n7. haetae (Korean lion-like guardian beast)\n8. three-legged sun crow\nStyle for this rarity: mythical creature, gold and glowing accents, the most impressive sprites in the game.\nEach animal must be recognizable at 8x8: exaggerate the key feature (ears, horn, stripes, beak, tail, color pattern). Whole body visible, facing left, centered in its cell.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 13,
+      "filename": "people.png",
+      "path": "assets/spritesheets/people/people.png",
+      "description": "Sprite sheet \"people\": 12 tiny chibi humans for a zoo game, each 8 pixels wide x 12 pixels tall (head 4px, body below).\nLayout: 6 columns x 2 rows, in order:\n1. child visitor in red shirt  2. child visitor in yellow raincoat  3. adult visitor in blue jacket  4. adult visitor in green dress\n5. elderly visitor with hat and cane  6. teenager with backpack  7. parent in pink sweater  8. tourist with camera\n9. zoo coin collector staff: orange cap and vest, holding a small bag\n10. zookeeper staff: khaki uniform, holding a food bucket\n11. zoo guide staff: purple uniform, holding a little flag\n12. zoo janitor staff: gray overalls, holding a broom\nAll facing left, standing pose, same outline style as the animals.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 14,
+      "filename": "tiles.png",
+      "path": "assets/spritesheets/tiles/tiles.png",
+      "description": "Tile sheet \"tiles\": 24 top-down zoo tiles and props, each exactly 8x8 pixels.\nLayout: 6 columns x 4 rows, in order:\n1. grass tile  2. grass tile with tiny flowers  3. dirt path tile  4. stone path tile  5. wooden fence horizontal  6. wooden fence vertical\n7. wooden fence corner  8. fence gate  9. enclosure floor: short grass  10. enclosure floor: sand  11. enclosure floor: water  12. enclosure floor: snow\n13. enclosure floor: rock  14. enclosure floor: magic clouds (for legendary animals)  15. round tree  16. bush  17. flower patch  18. park bench\n19. small sign board (blank, no text)  20. food bowl  21. trash bin  22. potted plant  23. lamp post  24. small pond edge\nFloor tiles (1-4, 9-14) must tile seamlessly and fill the whole 8x8 square edge to edge (no outline on floor tiles).\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 15,
+      "filename": "fx.png",
+      "path": "assets/spritesheets/effects/fx.png",
+      "description": "Effect sheet \"fx\": 18 small game effect sprites, each exactly 8x8 pixels.\nLayout: 6 columns x 3 rows, in order:\n1-4. gold coin spinning animation, 4 frames (front, turning, edge, turning back)\n5. big gold coin  6. small pile of 3 coins\n7-9. white-yellow sparkle burst animation, 3 frames (small, big, fading)\n10. pink heart  11. meat on bone  12. fish  13. carrot  14. green leaf bundle\n15. yellow star  16. red exclamation mark shape (no letters, just the symbol shape)  17. music note  18. white puff of dust\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 16,
+      "filename": "icons.png",
+      "path": "assets/spritesheets/icons/icons.png",
+      "description": "Icon sheet \"icons\": 16 UI icons, each exactly 8x8 pixels, bold and readable.\nLayout: 8 columns x 2 rows, in order:\n1. gold coin  2. heart (attraction)  3. person silhouette (visitors)  4. star (zoo stage)  5. small cage (enclosure capacity)  6. ticket (visitor quality)\n7. name badge (staff slot)  8. horseshoe magnet (pickup range)  9. three cards merging into one (fusion)  10. backpack (inventory)  11. padlock\n12. gacha capsule (half red, half white)  13. green up arrow (upgrade)  14. gear (settings)  15. green check mark  16. red X (close)\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 17,
+      "filename": "cards.png",
+      "path": "assets/spritesheets/cards/cards.png",
+      "description": "Card sheet \"cards\": 7 collectible card frames, each exactly 24 pixels wide x 32 pixels tall.\nLayout: 4 columns x 2 rows, in order:\n1. common card frame: gray border  2. uncommon: green border  3. rare: blue border with small corner gems\n4. epic: purple border with ornate corners  5. legendary: gold border with sparkles and ornate crown top  6. special staff card: orange border with a small badge motif\n7. card back: dark green with a paw print pattern in the center\nFrames 1-6: thick 2px border, a light inner area, and an EMPTY square window of 16x16 pixels in the upper center (an animal sprite will be placed there later), plus an empty strip at the bottom for the name (leave blank, no text).\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 18,
+      "filename": "gacha.png",
+      "path": "assets/spritesheets/gacha/gacha.png",
+      "description": "Sheet \"gacha\": a capsule gacha machine and capsules.\nTop row: 2 frames of a cute zoo-themed capsule gacha machine, each exactly 32x32 pixels: glass dome full of colorful capsules, red body, coin slot and a big crank handle, a little paw print on the front.\n  Frame 1 = idle. Frame 2 = shaking (tilted a bit, crank turned).\nBottom two rows: capsules, each exactly 8x8 pixels.\n  Row 2 (closed capsules): gray, green, blue, purple, gold.\n  Row 3 (opened capsules, top half popped up, light shining out): gray, green, blue, purple, gold.\nImage size 1536x1024, solid #FF00FF background, no text."
+    },
+    {
+      "number": 19,
+      "filename": "ui9.png",
+      "path": "assets/spritesheets/ui/ui9.png",
+      "description": "Sheet \"ui9\": 9-slice UI pieces for a cozy zoo game, each exactly 16x16 pixels, designed to stretch (corners 4px, edges repeat cleanly).\nLayout: 4 columns x 2 rows, in order:\n1. light wooden sign panel (cream center, brown wood border)  2. dark green panel (for overlays)\n3. green button normal  4. green button pressed (darker, shifted down 1px)  5. gray button disabled\n6. tab selected (cream)  7. tab unselected (tan)  8. progress bar frame with a green fill section\nFlat colors, 1px dark outline, no text.\nImage size 1536x1024, solid #FF00FF background."
+    }
+  ]
+}

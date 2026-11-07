@@ -1,0 +1,262 @@
+{
+  "sheets": 19,
+  "sprites": 197,
+  "animals": 100,
+  "automated_checks_passed": true,
+  "checks": [
+    {
+      "sheet": "animals_01.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_02.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_03.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_04.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_05.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_06.png",
+      "count": 6,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_07.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_08.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_09.png",
+      "count": 2,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_10.png",
+      "count": 10,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_11.png",
+      "count": 4,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "animals_12.png",
+      "count": 8,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "people.png",
+      "count": 12,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "tiles.png",
+      "count": 24,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "fx.png",
+      "count": 18,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "icons.png",
+      "count": 16,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "cards.png",
+      "count": 7,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "gacha.png",
+      "count": 12,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    },
+    {
+      "sheet": "ui9.png",
+      "count": 8,
+      "canvas": [
+        1536,
+        1024
+      ],
+      "native_dimensions": true,
+      "palette_only": true,
+      "solid_integer_pixels": true,
+      "no_overlap": true,
+      "magenta_gutters": true
+    }
+  ],
+  "seamless_floor_tiles": 10,
+  "distinct_coin_frames": 4,
+  "rare_animals_with_4_to_5_colors": 22,
+  "notes": [
+    "Recognition at an 8x8 grid is a visual judgement, not an automated pass.",
+    "No image-generation concept pixels are used in production PNGs."
+  ]
+}

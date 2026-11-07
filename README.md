@@ -20,6 +20,9 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 ## 그림 넣기
 그림이 없으면 코드로 그린 임시 8×8 도트를 쓴다. `assets/` 아래에 `animal_000.png`~`animal_099.png`, `person_00`~`07`, `staff_collector`, `staff_keeper`, `coin_0`~`3` 이름으로 PNG를 넣으면 자동으로 바뀐다.
 
+## 분류된 스프라이트 자료
+요청한 시트 19장과 개별 PNG 197개를 `assets/spritesheets/`, `assets/sprites/`에 분류했습니다. [전체 자산 목록과 사용 규격](ART_ASSETS.md), [좌표·크기 카탈로그](assets/catalog.json)를 참고하세요. 이 자료는 위 게임 로더의 파일명으로 아직 연결하지 않았으며, 원본 배경색은 요청한 `#FF00FF`입니다.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|

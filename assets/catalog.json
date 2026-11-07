@@ -1,0 +1,3418 @@
+{
+  "schema": 1,
+  "background": "#FF00FF",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd"
+  ],
+  "sheets": [
+    {
+      "number": 1,
+      "filename": "animals_01.png",
+      "path": "assets/spritesheets/animals/common/animals_01.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "rabbit",
+          "source": "assets/sprites/animals/common/animals_01/01_rabbit.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "duck",
+          "source": "assets/sprites/animals/common/animals_01/02_duck.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "chicken",
+          "source": "assets/sprites/animals/common/animals_01/03_chicken.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "baby_chick",
+          "source": "assets/sprites/animals/common/animals_01/04_baby_chick.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "hamster",
+          "source": "assets/sprites/animals/common/animals_01/05_hamster.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "squirrel",
+          "source": "assets/sprites/animals/common/animals_01/06_squirrel.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "mouse",
+          "source": "assets/sprites/animals/common/animals_01/07_mouse.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "cat",
+          "source": "assets/sprites/animals/common/animals_01/08_cat.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "puppy",
+          "source": "assets/sprites/animals/common/animals_01/09_puppy.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "pigeon",
+          "source": "assets/sprites/animals/common/animals_01/10_pigeon.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "064a23d767ad84b00677c3a6242d12675d8fb762ee10ae0700336ac01281002c"
+    },
+    {
+      "number": 2,
+      "filename": "animals_02.png",
+      "path": "assets/spritesheets/animals/common/animals_02.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "sparrow",
+          "source": "assets/sprites/animals/common/animals_02/01_sparrow.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "frog",
+          "source": "assets/sprites/animals/common/animals_02/02_frog.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "tortoise",
+          "source": "assets/sprites/animals/common/animals_02/03_tortoise.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "snail",
+          "source": "assets/sprites/animals/common/animals_02/04_snail.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "pig",
+          "source": "assets/sprites/animals/common/animals_02/05_pig.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "sheep",
+          "source": "assets/sprites/animals/common/animals_02/06_sheep.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "goat",
+          "source": "assets/sprites/animals/common/animals_02/07_goat.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "dairy_cow",
+          "source": "assets/sprites/animals/common/animals_02/08_dairy_cow.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "pony",
+          "source": "assets/sprites/animals/common/animals_02/09_pony.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "donkey",
+          "source": "assets/sprites/animals/common/animals_02/10_donkey.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "f16945916ab6cb517a39773eb50e58242e215592dd3365c43dbfcb1f2b1872f9"
+    },
+    {
+      "number": 3,
+      "filename": "animals_03.png",
+      "path": "assets/spritesheets/animals/common/animals_03.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "goose",
+          "source": "assets/sprites/animals/common/animals_03/01_goose.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "turkey",
+          "source": "assets/sprites/animals/common/animals_03/02_turkey.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "guinea_pig",
+          "source": "assets/sprites/animals/common/animals_03/03_guinea_pig.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "hedgehog",
+          "source": "assets/sprites/animals/common/animals_03/04_hedgehog.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "raccoon",
+          "source": "assets/sprites/animals/common/animals_03/05_raccoon.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "goldfish",
+          "source": "assets/sprites/animals/common/animals_03/06_goldfish.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "budgie",
+          "source": "assets/sprites/animals/common/animals_03/07_budgie.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "badger",
+          "source": "assets/sprites/animals/common/animals_03/08_badger.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "mole",
+          "source": "assets/sprites/animals/common/animals_03/09_mole.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "honeybee",
+          "source": "assets/sprites/animals/common/animals_03/10_honeybee.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "1d32756d4bc81fc6e96a7dfefe467e245beccb0603fb0d120ec25bb2eed8bc84"
+    },
+    {
+      "number": 4,
+      "filename": "animals_04.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_04.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "red_fox",
+          "source": "assets/sprites/animals/uncommon/animals_04/01_red_fox.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "penguin",
+          "source": "assets/sprites/animals/uncommon/animals_04/02_penguin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "koala",
+          "source": "assets/sprites/animals/uncommon/animals_04/03_koala.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "spotted_deer",
+          "source": "assets/sprites/animals/uncommon/animals_04/04_spotted_deer.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "alpaca",
+          "source": "assets/sprites/animals/uncommon/animals_04/05_alpaca.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "river_otter",
+          "source": "assets/sprites/animals/uncommon/animals_04/06_river_otter.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "beaver",
+          "source": "assets/sprites/animals/uncommon/animals_04/07_beaver.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "meerkat",
+          "source": "assets/sprites/animals/uncommon/animals_04/08_meerkat.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "kangaroo",
+          "source": "assets/sprites/animals/uncommon/animals_04/09_kangaroo.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "monkey",
+          "source": "assets/sprites/animals/uncommon/animals_04/10_monkey.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "b873b5b0aa67b2c463b399bd4a45afe50a622d635abe9fa1a1a2d7d60b7f3937"
+    },
+    {
+      "number": 5,
+      "filename": "animals_05.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_05.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "owl",
+          "source": "assets/sprites/animals/uncommon/animals_05/01_owl.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "scarlet_macaw",
+          "source": "assets/sprites/animals/uncommon/animals_05/02_scarlet_macaw.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "harbor_seal",
+          "source": "assets/sprites/animals/uncommon/animals_05/03_harbor_seal.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "platypus",
+          "source": "assets/sprites/animals/uncommon/animals_05/04_platypus.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "armadillo",
+          "source": "assets/sprites/animals/uncommon/animals_05/05_armadillo.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "sloth",
+          "source": "assets/sprites/animals/uncommon/animals_05/06_sloth.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "skunk",
+          "source": "assets/sprites/animals/uncommon/animals_05/07_skunk.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "gray_wolf",
+          "source": "assets/sprites/animals/uncommon/animals_05/08_gray_wolf.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "brown_bear",
+          "source": "assets/sprites/animals/uncommon/animals_05/09_brown_bear.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "zebra",
+          "source": "assets/sprites/animals/uncommon/animals_05/10_zebra.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "829c6128d5e30fc225060bd29fee1757b86c7dbfdc79d9eb755f128fd0d5003f"
+    },
+    {
+      "number": 6,
+      "filename": "animals_06.png",
+      "path": "assets/spritesheets/animals/uncommon/animals_06.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "camel",
+          "source": "assets/sprites/animals/uncommon/animals_06/01_camel.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "ostrich",
+          "source": "assets/sprites/animals/uncommon/animals_06/02_ostrich.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "crocodile",
+          "source": "assets/sprites/animals/uncommon/animals_06/03_crocodile.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "hippo",
+          "source": "assets/sprites/animals/uncommon/animals_06/04_hippo.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "anteater",
+          "source": "assets/sprites/animals/uncommon/animals_06/05_anteater.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "toucan",
+          "source": "assets/sprites/animals/uncommon/animals_06/06_toucan.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "fa957a946163fbd5445ae696e399898e55117e8d12b92d4036fcb961a2d867a2"
+    },
+    {
+      "number": 7,
+      "filename": "animals_07.png",
+      "path": "assets/spritesheets/animals/rare/animals_07.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "capybara",
+          "source": "assets/sprites/animals/rare/animals_07/01_capybara.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "red_panda",
+          "source": "assets/sprites/animals/rare/animals_07/02_red_panda.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "flamingo",
+          "source": "assets/sprites/animals/rare/animals_07/03_flamingo.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "giant_panda",
+          "source": "assets/sprites/animals/rare/animals_07/04_giant_panda.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "giraffe",
+          "source": "assets/sprites/animals/rare/animals_07/05_giraffe.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "elephant",
+          "source": "assets/sprites/animals/rare/animals_07/06_elephant.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "lion",
+          "source": "assets/sprites/animals/rare/animals_07/07_lion.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "tiger",
+          "source": "assets/sprites/animals/rare/animals_07/08_tiger.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "leopard",
+          "source": "assets/sprites/animals/rare/animals_07/09_leopard.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "cheetah",
+          "source": "assets/sprites/animals/rare/animals_07/10_cheetah.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "b8cdccadd9861c868a3f032990a8d052c08998ddde438744aa881350a745cb1d"
+    },
+    {
+      "number": 8,
+      "filename": "animals_08.png",
+      "path": "assets/spritesheets/animals/rare/animals_08.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "gorilla",
+          "source": "assets/sprites/animals/rare/animals_08/01_gorilla.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "orangutan",
+          "source": "assets/sprites/animals/rare/animals_08/02_orangutan.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "polar_bear",
+          "source": "assets/sprites/animals/rare/animals_08/03_polar_bear.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "rhino",
+          "source": "assets/sprites/animals/rare/animals_08/04_rhino.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "dolphin",
+          "source": "assets/sprites/animals/rare/animals_08/05_dolphin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "orca",
+          "source": "assets/sprites/animals/rare/animals_08/06_orca.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "sea_turtle",
+          "source": "assets/sprites/animals/rare/animals_08/07_sea_turtle.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "octopus",
+          "source": "assets/sprites/animals/rare/animals_08/08_octopus.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "chameleon",
+          "source": "assets/sprites/animals/rare/animals_08/09_chameleon.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "fennec_fox",
+          "source": "assets/sprites/animals/rare/animals_08/10_fennec_fox.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "e004e3359f64c1ff684fff8c1790704ec66345be0bdbecfadb2182bbfddce36f"
+    },
+    {
+      "number": 9,
+      "filename": "animals_09.png",
+      "path": "assets/spritesheets/animals/rare/animals_09.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "quokka",
+          "source": "assets/sprites/animals/rare/animals_09/01_quokka.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "tapir",
+          "source": "assets/sprites/animals/rare/animals_09/02_tapir.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            416,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "cd8fe9940f316f5de564728916f168ed72d27720ee256b7cd6cf8acbbbec6695"
+    },
+    {
+      "number": 10,
+      "filename": "animals_10.png",
+      "path": "assets/spritesheets/animals/epic/animals_10.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "white_tiger",
+          "source": "assets/sprites/animals/epic/animals_10/01_white_tiger.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "snow_leopard",
+          "source": "assets/sprites/animals/epic/animals_10/02_snow_leopard.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "peacock",
+          "source": "assets/sprites/animals/epic/animals_10/03_peacock.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "black_panther",
+          "source": "assets/sprites/animals/epic/animals_10/04_black_panther.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "bald_eagle",
+          "source": "assets/sprites/animals/epic/animals_10/05_bald_eagle.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "okapi",
+          "source": "assets/sprites/animals/epic/animals_10/06_okapi.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "komodo_dragon",
+          "source": "assets/sprites/animals/epic/animals_10/07_komodo_dragon.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "white_lion",
+          "source": "assets/sprites/animals/epic/animals_10/08_white_lion.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "whale_shark",
+          "source": "assets/sprites/animals/epic/animals_10/09_whale_shark.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "humpback_whale",
+          "source": "assets/sprites/animals/epic/animals_10/10_humpback_whale.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "d3d08755d774e5e1fd38715c86cbac286b62b1e87567f185262e6052f1e2bde8"
+    },
+    {
+      "number": 11,
+      "filename": "animals_11.png",
+      "path": "assets/spritesheets/animals/epic/animals_11.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "golden_snub_nosed_monkey",
+          "source": "assets/sprites/animals/epic/animals_11/01_golden_snub_nosed_monkey.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "aye_aye",
+          "source": "assets/sprites/animals/epic/animals_11/02_aye_aye.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "pangolin",
+          "source": "assets/sprites/animals/epic/animals_11/03_pangolin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "bird_of_paradise",
+          "source": "assets/sprites/animals/epic/animals_11/04_bird_of_paradise.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            416,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "e3cda11161818377710646aba836249a144e692aaea556137d8cfbcd573dee66"
+    },
+    {
+      "number": 12,
+      "filename": "animals_12.png",
+      "path": "assets/spritesheets/animals/legendary/animals_12.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "unicorn",
+          "source": "assets/sprites/animals/legendary/animals_12/01_unicorn.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "phoenix",
+          "source": "assets/sprites/animals/legendary/animals_12/02_phoenix.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "golden_dragon",
+          "source": "assets/sprites/animals/legendary/animals_12/03_golden_dragon.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "griffin",
+          "source": "assets/sprites/animals/legendary/animals_12/04_griffin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            979,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "pegasus",
+          "source": "assets/sprites/animals/legendary/animals_12/05_pegasus.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1286,
+            160,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "nine_tailed_fox",
+          "source": "assets/sprites/animals/legendary/animals_12/06_nine_tailed_fox.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            58,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "haetae",
+          "source": "assets/sprites/animals/legendary/animals_12/07_haetae.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            365,
+            672,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "three_legged_sun_crow",
+          "source": "assets/sprites/animals/legendary/animals_12/08_three_legged_sun_crow.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            672,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "df9ee2d6db38b4eeea484041ece967bf96f5227401520e25faa664a480e56a73"
+    },
+    {
+      "number": 13,
+      "filename": "people.png",
+      "path": "assets/spritesheets/people/people.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "child_red",
+          "source": "assets/sprites/people/people/01_child_red.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 2,
+          "id": "child_raincoat",
+          "source": "assets/sprites/people/people/02_child_raincoat.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 3,
+          "id": "adult_blue",
+          "source": "assets/sprites/people/people/03_adult_blue.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 4,
+          "id": "adult_green_dress",
+          "source": "assets/sprites/people/people/04_adult_green_dress.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 5,
+          "id": "elder_cane",
+          "source": "assets/sprites/people/people/05_elder_cane.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 6,
+          "id": "teen_backpack",
+          "source": "assets/sprites/people/people/06_teen_backpack.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            112,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 7,
+          "id": "parent_pink",
+          "source": "assets/sprites/people/people/07_parent_pink.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            624,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 8,
+          "id": "tourist_camera",
+          "source": "assets/sprites/people/people/08_tourist_camera.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            624,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 9,
+          "id": "coin_collector",
+          "source": "assets/sprites/people/people/09_coin_collector.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            624,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 10,
+          "id": "zookeeper",
+          "source": "assets/sprites/people/people/10_zookeeper.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            624,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 11,
+          "id": "guide",
+          "source": "assets/sprites/people/people/11_guide.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            624,
+            192,
+            288
+          ]
+        },
+        {
+          "index": 12,
+          "id": "janitor",
+          "source": "assets/sprites/people/people/12_janitor.png",
+          "native_size": [
+            8,
+            12
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            624,
+            192,
+            288
+          ]
+        }
+      ],
+      "sha256": "3fb41e2fccf786464c6cb06658bc51e49e8817900055ed0cecd39c16175cb7c2"
+    },
+    {
+      "number": 14,
+      "filename": "tiles.png",
+      "path": "assets/spritesheets/tiles/tiles.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "grass",
+          "source": "assets/sprites/tiles/tiles/01_grass.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "grass_flowers",
+          "source": "assets/sprites/tiles/tiles/02_grass_flowers.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "dirt_path",
+          "source": "assets/sprites/tiles/tiles/03_dirt_path.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "stone_path",
+          "source": "assets/sprites/tiles/tiles/04_stone_path.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "fence_horizontal",
+          "source": "assets/sprites/tiles/tiles/05_fence_horizontal.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "fence_vertical",
+          "source": "assets/sprites/tiles/tiles/06_fence_vertical.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            32,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "fence_corner",
+          "source": "assets/sprites/tiles/tiles/07_fence_corner.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "fence_gate",
+          "source": "assets/sprites/tiles/tiles/08_fence_gate.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "floor_short_grass",
+          "source": "assets/sprites/tiles/tiles/09_floor_short_grass.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "floor_sand",
+          "source": "assets/sprites/tiles/tiles/10_floor_sand.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 11,
+          "id": "floor_water",
+          "source": "assets/sprites/tiles/tiles/11_floor_water.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 12,
+          "id": "floor_snow",
+          "source": "assets/sprites/tiles/tiles/12_floor_snow.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            288,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 13,
+          "id": "floor_rock",
+          "source": "assets/sprites/tiles/tiles/13_floor_rock.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 14,
+          "id": "floor_magic_clouds",
+          "source": "assets/sprites/tiles/tiles/14_floor_magic_clouds.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 15,
+          "id": "tree",
+          "source": "assets/sprites/tiles/tiles/15_tree.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 16,
+          "id": "bush",
+          "source": "assets/sprites/tiles/tiles/16_bush.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 17,
+          "id": "flowers",
+          "source": "assets/sprites/tiles/tiles/17_flowers.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 18,
+          "id": "bench",
+          "source": "assets/sprites/tiles/tiles/18_bench.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            544,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 19,
+          "id": "blank_sign",
+          "source": "assets/sprites/tiles/tiles/19_blank_sign.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            800,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 20,
+          "id": "food_bowl",
+          "source": "assets/sprites/tiles/tiles/20_food_bowl.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            800,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 21,
+          "id": "trash_bin",
+          "source": "assets/sprites/tiles/tiles/21_trash_bin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            800,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 22,
+          "id": "potted_plant",
+          "source": "assets/sprites/tiles/tiles/22_potted_plant.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            800,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 23,
+          "id": "lamp_post",
+          "source": "assets/sprites/tiles/tiles/23_lamp_post.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            800,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 24,
+          "id": "pond_edge",
+          "source": "assets/sprites/tiles/tiles/24_pond_edge.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            800,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "c1750b0a4cf910f2e1769b3d5609980fc6bd17f3206778a93c9251eeb55813e5"
+    },
+    {
+      "number": 15,
+      "filename": "fx.png",
+      "path": "assets/spritesheets/effects/fx.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "coin_front",
+          "source": "assets/sprites/effects/fx/01_coin_front.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 2,
+          "id": "coin_turn",
+          "source": "assets/sprites/effects/fx/02_coin_turn.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 3,
+          "id": "coin_edge",
+          "source": "assets/sprites/effects/fx/03_coin_edge.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "coin_turn_back",
+          "source": "assets/sprites/effects/fx/04_coin_turn_back.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "coin_big",
+          "source": "assets/sprites/effects/fx/05_coin_big.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "coin_pile",
+          "source": "assets/sprites/effects/fx/06_coin_pile.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            75,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "sparkle_small",
+          "source": "assets/sprites/effects/fx/07_sparkle_small.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "sparkle_big",
+          "source": "assets/sprites/effects/fx/08_sparkle_big.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "sparkle_fade",
+          "source": "assets/sprites/effects/fx/09_sparkle_fade.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "heart",
+          "source": "assets/sprites/effects/fx/10_heart.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 11,
+          "id": "meat",
+          "source": "assets/sprites/effects/fx/11_meat.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 12,
+          "id": "fish",
+          "source": "assets/sprites/effects/fx/12_fish.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            416,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 13,
+          "id": "carrot",
+          "source": "assets/sprites/effects/fx/13_carrot.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            32,
+            757,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 14,
+          "id": "leaf_bundle",
+          "source": "assets/sprites/effects/fx/14_leaf_bundle.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            288,
+            757,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 15,
+          "id": "star",
+          "source": "assets/sprites/effects/fx/15_star.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            544,
+            757,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 16,
+          "id": "exclamation",
+          "source": "assets/sprites/effects/fx/16_exclamation.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            800,
+            757,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 17,
+          "id": "music_note",
+          "source": "assets/sprites/effects/fx/17_music_note.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1056,
+            757,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 18,
+          "id": "dust",
+          "source": "assets/sprites/effects/fx/18_dust.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1312,
+            757,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "b57fb96ed9eecf1a3eca6591ae5d82635a595d1c4d4ded1c198864cd920b1e82"
+    },
+    {
+      "number": 16,
+      "filename": "icons.png",
+      "path": "assets/spritesheets/icons/icons.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "coin",
+          "source": "assets/sprites/icons/icons/01_coin.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            32,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 2,
+          "id": "heart",
+          "source": "assets/sprites/icons/icons/02_heart.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            224,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 3,
+          "id": "visitors",
+          "source": "assets/sprites/icons/icons/03_visitors.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            416,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 4,
+          "id": "zoo_stage",
+          "source": "assets/sprites/icons/icons/04_zoo_stage.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            608,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 5,
+          "id": "enclosure_capacity",
+          "source": "assets/sprites/icons/icons/05_enclosure_capacity.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            800,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 6,
+          "id": "ticket",
+          "source": "assets/sprites/icons/icons/06_ticket.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            992,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 7,
+          "id": "staff_badge",
+          "source": "assets/sprites/icons/icons/07_staff_badge.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            1184,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 8,
+          "id": "pickup_magnet",
+          "source": "assets/sprites/icons/icons/08_pickup_magnet.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            1376,
+            192,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 9,
+          "id": "fusion",
+          "source": "assets/sprites/icons/icons/09_fusion.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            32,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 10,
+          "id": "backpack",
+          "source": "assets/sprites/icons/icons/10_backpack.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            224,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 11,
+          "id": "padlock",
+          "source": "assets/sprites/icons/icons/11_padlock.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            416,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 12,
+          "id": "gacha_capsule",
+          "source": "assets/sprites/icons/icons/12_gacha_capsule.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            608,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 13,
+          "id": "upgrade",
+          "source": "assets/sprites/icons/icons/13_upgrade.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            800,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 14,
+          "id": "settings",
+          "source": "assets/sprites/icons/icons/14_settings.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            992,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 15,
+          "id": "check",
+          "source": "assets/sprites/icons/icons/15_check.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            1184,
+            704,
+            128,
+            128
+          ]
+        },
+        {
+          "index": 16,
+          "id": "close",
+          "source": "assets/sprites/icons/icons/16_close.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 16,
+          "rect": [
+            1376,
+            704,
+            128,
+            128
+          ]
+        }
+      ],
+      "sha256": "e6b28520f95a3630b5abee9ef39e3ce86355584e479a01dc4961c66ae3415bf6"
+    },
+    {
+      "number": 17,
+      "filename": "cards.png",
+      "path": "assets/spritesheets/cards/cards.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "common",
+          "source": "assets/sprites/cards/cards/01_common.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            48,
+            64,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 2,
+          "id": "uncommon",
+          "source": "assets/sprites/cards/cards/02_uncommon.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            432,
+            64,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 3,
+          "id": "rare",
+          "source": "assets/sprites/cards/cards/03_rare.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            816,
+            64,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 4,
+          "id": "epic",
+          "source": "assets/sprites/cards/cards/04_epic.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            1200,
+            64,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 5,
+          "id": "legendary",
+          "source": "assets/sprites/cards/cards/05_legendary.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            48,
+            576,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 6,
+          "id": "staff",
+          "source": "assets/sprites/cards/cards/06_staff.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            432,
+            576,
+            288,
+            384
+          ]
+        },
+        {
+          "index": 7,
+          "id": "back",
+          "source": "assets/sprites/cards/cards/07_back.png",
+          "native_size": [
+            24,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            816,
+            576,
+            288,
+            384
+          ]
+        }
+      ],
+      "sha256": "edb064901f5541fa6f96ec616923aff62dda2ca75215d2d5af1e60d345cd0dea"
+    },
+    {
+      "number": 18,
+      "filename": "gacha.png",
+      "path": "assets/spritesheets/gacha/gacha.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "machine_idle",
+          "source": "assets/sprites/gacha/gacha/01_machine_idle.png",
+          "native_size": [
+            32,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            192,
+            48,
+            384,
+            384
+          ]
+        },
+        {
+          "index": 2,
+          "id": "machine_shaking",
+          "source": "assets/sprites/gacha/gacha/02_machine_shaking.png",
+          "native_size": [
+            32,
+            32
+          ],
+          "scale": 12,
+          "rect": [
+            960,
+            48,
+            384,
+            384
+          ]
+        },
+        {
+          "index": 3,
+          "id": "capsule_gray",
+          "source": "assets/sprites/gacha/gacha/03_capsule_gray.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            160,
+            504,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 4,
+          "id": "capsule_green",
+          "source": "assets/sprites/gacha/gacha/04_capsule_green.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            416,
+            504,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 5,
+          "id": "capsule_blue",
+          "source": "assets/sprites/gacha/gacha/05_capsule_blue.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            504,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 6,
+          "id": "capsule_purple",
+          "source": "assets/sprites/gacha/gacha/06_capsule_purple.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            928,
+            504,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 7,
+          "id": "capsule_gold",
+          "source": "assets/sprites/gacha/gacha/07_capsule_gold.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1184,
+            504,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 8,
+          "id": "opened_gray",
+          "source": "assets/sprites/gacha/gacha/08_opened_gray.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            160,
+            760,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 9,
+          "id": "opened_green",
+          "source": "assets/sprites/gacha/gacha/09_opened_green.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            416,
+            760,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 10,
+          "id": "opened_blue",
+          "source": "assets/sprites/gacha/gacha/10_opened_blue.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            672,
+            760,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 11,
+          "id": "opened_purple",
+          "source": "assets/sprites/gacha/gacha/11_opened_purple.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            928,
+            760,
+            192,
+            192
+          ]
+        },
+        {
+          "index": 12,
+          "id": "opened_gold",
+          "source": "assets/sprites/gacha/gacha/12_opened_gold.png",
+          "native_size": [
+            8,
+            8
+          ],
+          "scale": 24,
+          "rect": [
+            1184,
+            760,
+            192,
+            192
+          ]
+        }
+      ],
+      "sha256": "4d6c4ce453d4d8d797fef5f6400f17a3c75167acfa2f8580c2339d905c40b213"
+    },
+    {
+      "number": 19,
+      "filename": "ui9.png",
+      "path": "assets/spritesheets/ui/ui9.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "sprites": [
+        {
+          "index": 1,
+          "id": "wood_panel",
+          "source": "assets/sprites/ui/ui9/01_wood_panel.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            64,
+            128,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 2,
+          "id": "dark_green_panel",
+          "source": "assets/sprites/ui/ui9/02_dark_green_panel.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            448,
+            128,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 3,
+          "id": "button_normal",
+          "source": "assets/sprites/ui/ui9/03_button_normal.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            832,
+            128,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 4,
+          "id": "button_pressed",
+          "source": "assets/sprites/ui/ui9/04_button_pressed.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            1216,
+            128,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 5,
+          "id": "button_disabled",
+          "source": "assets/sprites/ui/ui9/05_button_disabled.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            64,
+            640,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 6,
+          "id": "tab_selected",
+          "source": "assets/sprites/ui/ui9/06_tab_selected.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            448,
+            640,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 7,
+          "id": "tab_unselected",
+          "source": "assets/sprites/ui/ui9/07_tab_unselected.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            832,
+            640,
+            256,
+            256
+          ]
+        },
+        {
+          "index": 8,
+          "id": "progress_bar",
+          "source": "assets/sprites/ui/ui9/08_progress_bar.png",
+          "native_size": [
+            16,
+            16
+          ],
+          "scale": 16,
+          "rect": [
+            1216,
+            640,
+            256,
+            256
+          ]
+        }
+      ],
+      "sha256": "cdcd63b8349eb1db640bb6fa984c4ea326193727fce10259eafd83ead858dfb4"
+    }
+  ]
+}
