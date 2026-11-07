@@ -1,0 +1,23 @@
+{
+  "name": "gotzoo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "sim": "vitest run --config tools/sim/vitest.sim.config.mts",
+    "build:artifact": "node tools/build-artifact.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.4.5",
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "galmuri": "^2.40.3"
+  }
+}

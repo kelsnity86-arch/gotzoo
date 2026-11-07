@@ -1,0 +1,290 @@
+// 오른쪽(가로 화면) / 아래쪽(세로 화면) 패널: 뽑기 · 보관함 · 합성 · 업그레이드 · 직원 · 도감
+import { ANIMALS, HABITAT_NAMES } from '../data/animals';
+import { GRADES, type Grade } from '../data/grades';
+import { STAFF, staffDef } from '../data/staff';
+import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, UPGRADES } from '../data/balance';
+import type { Card, SaveData } from '../game/state';
+import type { World } from '../game/world';
+import {
+  assignStaff, autoFusionPick, autoPlace, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
+} from '../game/rules';
+import { animalFrame, staffFrame } from '../render/sprites';
+import { audio } from './audio';
+import { cardEl } from './cardview';
+import { fmt, h, pix, toast } from './dom';
+import { showReveal } from './reveal';
+
+export interface PanelCtx { save: SaveData; world: World; persist: () => void; overlayRoot: HTMLElement }
+type Tab = 'gacha' | 'inv' | 'fuse' | 'up' | 'staff' | 'dex';
+const TABS: [Tab, string][] = [['gacha', '뽑기'], ['inv', '보관함'], ['fuse', '합성'], ['up', '업그레이드'], ['staff', '직원'], ['dex', '도감']];
+
+export class Panel {
+  readonly el: HTMLElement;
+  private body = h('div', { class: 'panel-body' });
+  private tabBtns: HTMLButtonElement[];
+  tab: Tab = 'gacha';
+  private fuseGrade: Grade = 0;
+  private fuseSel: number[] = [];
+  private invGrade = -1;
+  private lastKey = '';
+
+  constructor(private ctx: PanelCtx) {
+    this.tabBtns = TABS.map(([t, name]) => h('button', { class: 'ptab', onclick: () => { this.tab = t; audio.sfx('click'); this.render(true); } }, name));
+    this.el = h('aside', { class: 'panel' }, h('nav', { class: 'ptabs' }, ...this.tabBtns), this.body);
+  }
+
+  /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
+  render(force = false) {
+    const s = this.ctx.save;
+    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}`;
+    if (!force && key === this.lastKey) return;
+    // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
+    const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
+    this.lastKey = key;
+    this.tabBtns.forEach((b, i) => b.classList.toggle('on', TABS[i][0] === this.tab));
+    if (onlyCoins) { this.updateAffordable(); return; }
+    const top = this.body.scrollTop;
+    const view = { gacha: () => this.gacha(), inv: () => this.inventory(), fuse: () => this.fusion(), up: () => this.upgrades(), staff: () => this.staffTab(), dex: () => this.dex() }[this.tab];
+    this.body.replaceChildren(view());
+    this.body.scrollTop = top;
+  }
+
+  /** data-cost가 있는 버튼은 코인이 모자라면 꺼 둔다 */
+  private updateAffordable() {
+    for (const b of this.body.querySelectorAll<HTMLButtonElement>('button[data-cost]')) b.disabled = this.ctx.save.coins < Number(b.dataset.cost) || b.dataset.lock === '1';
+  }
+  private costBtn(label: Node | string, cost: number, onclick: () => void, extraClass = '', locked = false) {
+    const b = h('button', { class: `btn ${extraClass}`, 'data-cost': cost, 'data-lock': locked ? '1' : '0', onclick }, label) as HTMLButtonElement;
+    b.disabled = this.ctx.save.coins < cost || locked;
+    return b;
+  }
+  private changed() { this.ctx.persist(); this.ctx.world.sync(); this.render(true); }
+
+  // ── 뽑기 ──
+  private gacha() {
+    const s = this.ctx.save;
+    const price = drawPrice(s);
+    const doDraw = (n: number) => {
+      const beforeDex = s.dex.slice();
+      const out = draw(s, n);
+      if (!out) { audio.sfx('deny'); toast('코인이 모자라요', 'bad'); return; }
+      this.reveal(out, beforeDex);
+    };
+    const free = !s.freeDrawUsed ? h('button', { class: 'btn big pulse', onclick: () => { const before = s.dex.slice(); const c = freeDraw(s); if (c) this.reveal([c], before); } }, '무료 뽑기! (일반 동물 확정)') : null;
+    const grid = h('div', { class: 'odds' }, ...GRADES.map((g) => h('div', { class: `odd g-${g.key}` }, h('b', {}, g.name), `${(g.chance * (1 - GACHA.staffChance) * 100).toFixed(1)}%`)),
+      h('div', { class: 'odd g-staff' }, h('b', {}, '직원'), `${(GACHA.staffChance * 100).toFixed(0)}%`));
+    return h('div', { class: 'tab-gacha' },
+      h('div', { class: 'gacha-hero' }, h('div', { class: 'mini-machine' }, h('i', {}), h('i', {}), h('i', {})),
+        h('div', {}, h('div', { class: 'title' }, '동물 카드 뽑기'), h('div', { class: 'sub' }, `진행 ${s.stage}단계 · 1장 ${fmt(price)}코인`))),
+      free,
+      h('div', { class: 'draw-btns' },
+        this.costBtn(h('span', {}, '1회', h('small', {}, `${fmt(price)}`)), price, () => doDraw(1)),
+        this.costBtn(h('span', {}, '5회', h('small', {}, `${fmt(price * 5)}`)), price * 5, () => doDraw(5)),
+        this.costBtn(h('span', {}, '10회', h('small', {}, `${fmt(price * 10)}`)), price * 10, () => doDraw(10))),
+      h('div', { class: 'section-title' }, '나오는 확률'), grid,
+      h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요.'));
+  }
+
+  private reveal(cards: Card[], beforeDex: boolean[]) {
+    const s = this.ctx.save;
+    const newUids = new Set<number>();
+    const seen = new Set<number>();
+    for (const c of cards) if (c.kind === 'animal' && !beforeDex[c.animal] && !seen.has(c.animal)) { newUids.add(c.uid); seen.add(c.animal); }
+    this.ctx.persist();
+    showReveal(this.ctx.overlayRoot, cards, newUids, () => {
+      // 빈 칸이 있으면 바로 채우기를 권한다
+      const free = penCount(s) * penSize(s) - placedAnimals(s);
+      if (free > 0 && cards.some((c) => c.kind === 'animal')) { const n = autoPlace(s); if (n) toast(`빈 우리에 ${n}마리 배치했어요`, 'good'); }
+      if (cards.some((c) => c.kind === 'staff') && s.staffSlots.some((u, i) => u === null && i < staffSlotCount(s))) {
+        const st = cards.find((c) => c.kind === 'staff')!;
+        if (assignStaff(s, st.uid)) toast(`${staffDef((st as { staff: 'collector' }).staff).name} 배치!`, 'gold');
+      }
+      this.changed();
+    });
+  }
+
+  // ── 보관함 ──
+  private inventory() {
+    const s = this.ctx.save;
+    const placed = placedSet(s);
+    const groups = new Map<number, { all: number; free: number[]; placed: number }>();
+    for (const c of s.cards) {
+      if (c.kind !== 'animal') continue;
+      if (this.invGrade >= 0 && ANIMALS[c.animal].grade !== this.invGrade) continue;
+      const g = groups.get(c.animal) ?? { all: 0, free: [], placed: 0 };
+      g.all++; if (placed.has(c.uid)) g.placed++; else g.free.push(c.uid);
+      groups.set(c.animal, g);
+    }
+    const capLeft = penCount(s) * penSize(s) - placedAnimals(s);
+    const rows = [...groups.entries()].sort((a, b) => ANIMALS[b[0]].grade - ANIMALS[a[0]].grade || a[0] - b[0]).map(([id, g]) => {
+      const a = ANIMALS[id], gr = GRADES[a.grade];
+      const locked = s.lockedSpecies.includes(id);
+      return h('div', { class: `inv-row g-${gr.key}` },
+        h('div', { class: 'inv-art' }, pix(animalFrame(id, 0), 32)),
+        h('div', { class: 'inv-info' }, h('div', { class: 'inv-name' }, a.name, h('span', { class: 'gtag' }, gr.name)),
+          h('div', { class: 'inv-sub' }, `보유 ${g.all} · 전시 ${g.placed} · ♥${gr.attract} · ${HABITAT_NAMES[a.habitat]}`)),
+        h('div', { class: 'inv-act' },
+          h('button', { class: `icon ${locked ? 'on' : ''}`, title: locked ? '잠금 해제' : '합성 재료에서 빼기(잠금)', onclick: () => { s.lockedSpecies = locked ? s.lockedSpecies.filter((x) => x !== id) : [...s.lockedSpecies, id]; this.changed(); } }, locked ? '🔒' : '🔓'),
+          (() => { const b = h('button', { class: 'btn small', onclick: () => { if (placeAnimal(s, g.free[0])) { audio.sfx('click'); this.changed(); } } }, '배치') as HTMLButtonElement; b.disabled = !g.free.length || capLeft <= 0; return b; })()));
+    });
+    const staffCards = s.cards.filter((c) => c.kind === 'staff');
+    const chips = h('div', { class: 'chips' }, ...[-1, 0, 1, 2, 3, 4].map((g) => h('button', { class: `chip${this.invGrade === g ? ' on' : ''}`, onclick: () => { this.invGrade = g; this.render(true); } }, g < 0 ? '전체' : GRADES[g].name)));
+    return h('div', {},
+      h('div', { class: 'inv-head' }, h('div', {}, h('b', {}, `전시 ${placedAnimals(s)} / ${penCount(s) * penSize(s)}`), h('span', { class: 'sub' }, ` · 카드 ${s.cards.length}장`)),
+        h('div', { class: 'row-btns' },
+          h('button', { class: 'btn small', onclick: () => { const n = autoPlace(s); toast(n ? `${n}마리 배치` : '빈 칸이 없거나 남은 카드가 없어요', n ? 'good' : 'info'); this.changed(); } }, '빈 칸 자동 배치'))),
+      chips,
+      rows.length ? h('div', { class: 'inv-list' }, ...rows) : h('p', { class: 'hint' }, '아직 동물 카드가 없어요. 뽑기 탭에서 뽑아 보세요.'),
+      staffCards.length ? h('div', { class: 'section-title' }, `직원 카드 ${staffCards.length}장 (직원 탭에서 배치)`) : null);
+  }
+
+  // ── 합성 ──
+  private fusion() {
+    const s = this.ctx.save;
+    const cands = fusionCandidates(s, this.fuseGrade);
+    const candSet = new Set(cands.map((c) => c.uid));
+    this.fuseSel = this.fuseSel.filter((u) => candSet.has(u));
+    const n = this.fuseSel.length, chance = fusionChance(n);
+    const bySpecies = new Map<number, number[]>();
+    for (const c of cands) if (c.kind === 'animal') bySpecies.set(c.animal, [...(bySpecies.get(c.animal) ?? []), c.uid]);
+    const chips = h('div', { class: 'chips' }, ...[0, 1, 2, 3].map((g) => h('button', { class: `chip g-${GRADES[g].key}${this.fuseGrade === g ? ' on' : ''}`, onclick: () => { this.fuseGrade = g as Grade; this.fuseSel = []; this.render(true); } }, `${GRADES[g].name} → ${GRADES[g + 1].name}`)));
+    const rows = [...bySpecies.entries()].map(([id, uids]) => {
+      const inSel = uids.filter((u) => this.fuseSel.includes(u)).length;
+      const minus = h('button', { class: 'icon', onclick: () => { const u = uids.find((x) => this.fuseSel.includes(x)); if (u !== undefined) { this.fuseSel = this.fuseSel.filter((x) => x !== u); this.render(true); } } }, '−') as HTMLButtonElement;
+      const plus = h('button', { class: 'icon', onclick: () => { const u = uids.find((x) => !this.fuseSel.includes(x)); if (u !== undefined && this.fuseSel.length < FUSION_MAX) { this.fuseSel.push(u); audio.sfx('click'); this.render(true); } } }, '+') as HTMLButtonElement;
+      minus.disabled = !inSel; plus.disabled = inSel >= uids.length || n >= FUSION_MAX;
+      return h('div', { class: `fuse-row${inSel ? ' sel' : ''}` }, pix(animalFrame(id, 0), 24), h('span', { class: 'fuse-name' }, ANIMALS[id].name), h('span', { class: 'sub' }, `${uids.length}장`),
+        h('div', { class: 'stepper' }, minus, h('b', {}, inSel), plus));
+    });
+    const gauge = h('div', { class: 'gauge' }, h('i', { style: `width:${chance * 100}%` }), h('span', {}, n < FUSION_MIN ? `${FUSION_MIN}장부터 합성할 수 있어요` : `성공 확률 ${Math.round(chance * 100)}%`));
+    const go = h('button', { class: 'btn big', onclick: () => this.doFuse() }, `${n}장 합성하기`) as HTMLButtonElement;
+    go.disabled = n < FUSION_MIN;
+    return h('div', {},
+      chips,
+      h('div', { class: 'fuse-slots' }, ...Array.from({ length: FUSION_MAX }, (_, i) => {
+        const u = this.fuseSel[i];
+        const c = u !== undefined ? s.cards.find((x) => x.uid === u) : undefined;
+        return h('div', { class: `slot${c ? ' full' : ''}` }, c && c.kind === 'animal' ? pix(animalFrame(c.animal, 0), 20) : null);
+      })),
+      gauge,
+      h('div', { class: 'row-btns' },
+        h('button', { class: 'btn small ghost', onclick: () => { this.fuseSel = autoFusionPick(s, this.fuseGrade, FUSION_MAX); this.render(true); } }, '자동으로 채우기'),
+        h('button', { class: 'btn small ghost', onclick: () => { this.fuseSel = []; this.render(true); } }, '비우기'), go),
+      h('p', { class: 'hint' }, '실패해도 넣은 카드 중 1장은 돌려받아요. 전시 중인 카드와 잠근 종은 들어가지 않아요.'),
+      rows.length ? h('div', { class: 'fuse-list' }, ...rows) : h('p', { class: 'hint' }, `넣을 수 있는 ${GRADES[this.fuseGrade].name} 카드가 없어요.`));
+  }
+
+  private doFuse() {
+    const s = this.ctx.save;
+    const n = this.fuseSel.length;
+    const r = fuse(s, this.fuseSel);
+    if (!r.ok) { toast(r.reason, 'bad'); return; }
+    this.fuseSel = [];
+    this.ctx.persist();
+    audio.sfx(r.success ? 'fuseWin' : 'fuseFail');
+    const back = h('div', { class: 'overlay' },
+      h('div', { class: `fuse-result ${r.success ? 'win' : 'lose'}` },
+        h('div', { class: 'reveal-title' }, r.success ? '합성 성공!' : '합성 실패…'),
+        h('div', { class: 'sub' }, `${n}장 · 확률 ${Math.round(r.chance * 100)}%`),
+        cardEl(r.card, { size: 'l' }),
+        h('div', { class: 'sub' }, r.success ? '다음 등급 카드를 얻었어요' : '넣은 카드 중 1장을 돌려받았어요'),
+        h('button', { class: 'btn', onclick: () => { back.remove(); this.changed(); } }, '확인')));
+    this.ctx.overlayRoot.append(back);
+  }
+
+  // ── 업그레이드 ──
+  private upgrades() {
+    const s = this.ctx.save;
+    const req = stageReq(s);
+    const stageBox = h('div', { class: 'stage-box' },
+      h('div', { class: 'stage-head' }, h('b', {}, `진행 ${s.stage}단계`), h('span', { class: 'sub' }, `뽑기 1장 ${fmt(drawPrice(s))} · 투척액 ×${Math.pow(1.2, s.stage - 1).toFixed(2)}`)),
+      req ? h('div', {},
+        this.bar(`전시 동물 ${placedAnimals(s)} / ${req[0]}`, placedAnimals(s) / req[0]),
+        this.bar(`총 매력도 ${fmt(totalAttract(s))} / ${fmt(req[1])}`, totalAttract(s) / req[1]),
+        (() => { const b = h('button', { class: 'btn', onclick: () => { if (promote(s)) { audio.sfx('fuseWin'); toast(`${s.stage}단계 승급! 투척액이 올라가고 새 업그레이드가 열려요`, 'gold', 2600); this.changed(); } } }, `${s.stage + 1}단계 승급 (뽑기 1장 ${fmt(GACHA.price[s.stage])})`) as HTMLButtonElement; b.disabled = !canPromote(s); return b; })())
+        : h('div', { class: 'sub' }, `최고 단계(${MAX_STAGE})예요!`));
+    const rows = UPGRADES.map((u) => {
+      const cost = upgradeCost(s, u.id), lock = upgradeLockedBy(s, u.id);
+      const lv = s.upgrades[u.id];
+      return h('div', { class: 'up-row' },
+        h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
+          h('div', { class: 'sub' }, cost === null ? u.describe(u.values[lv]) : `${u.describe(u.values[lv])} → ${u.describe(u.values[lv + 1])}`),
+          lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
+        cost === null ? h('span', { class: 'max' }, '최고') : this.costBtn(`${fmt(cost)}`, cost, () => { if (buyUpgrade(s, u.id)) { audio.sfx('buy'); this.ctx.world.relayout(-1); this.changed(); } }, 'small', !!lock));
+    });
+    return h('div', {}, stageBox, h('div', { class: 'up-list' }, ...rows));
+  }
+  private bar(label: string, k: number) {
+    return h('div', { class: 'pbar' }, h('i', { style: `width:${Math.min(100, k * 100)}%` }), h('span', {}, label));
+  }
+
+  // ── 직원 ──
+  private staffTab() {
+    const s = this.ctx.save;
+    const placed = placedSet(s);
+    const slots = Array.from({ length: staffSlotCount(s) }, (_, i) => {
+      const u = s.staffSlots[i];
+      const c = u !== null && u !== undefined ? s.cards.find((x) => x.uid === u) : undefined;
+      if (!c || c.kind !== 'staff') return h('div', { class: 'staff-slot empty' }, h('span', { class: 'sub' }, `슬롯 ${i + 1} · 비어 있음`));
+      const d = staffDef(c.staff);
+      return h('div', { class: 'staff-slot' }, pix(staffFrame(c.staff, 0), 28), h('div', { class: 'up-info' }, h('b', {}, d.name), h('div', { class: 'sub' }, d.desc)),
+        h('button', { class: 'btn small ghost', onclick: () => { unplace(s, c.uid); this.changed(); } }, '빼기'));
+    });
+    const free = s.cards.filter((c): c is Extract<Card, { kind: 'staff' }> => c.kind === 'staff' && !placed.has(c.uid));
+    const freeRows = STAFF.map((d) => {
+      const list = free.filter((c) => c.staff === d.kind);
+      if (!list.length) return null;
+      const b = h('button', { class: 'btn small', onclick: () => { if (assignStaff(s, list[0].uid)) { audio.sfx('click'); this.changed(); } else toast('빈 직원 슬롯이 없어요 (업그레이드에서 늘려요)', 'info'); } }, '배치') as HTMLButtonElement;
+      return h('div', { class: 'staff-slot' }, pix(staffFrame(d.kind, 0), 28), h('div', { class: 'up-info' }, h('b', {}, `${d.name} ×${list.length}`), h('div', { class: 'sub' }, d.desc)), b);
+    }).filter(Boolean) as HTMLElement[];
+    return h('div', {},
+      h('div', { class: 'section-title' }, `직원 슬롯 ${s.staffSlots.filter((u, i) => u !== null && i < staffSlotCount(s)).length} / ${staffSlotCount(s)}`), ...slots,
+      h('div', { class: 'section-title' }, '보유한 직원 카드'),
+      freeRows.length ? h('div', {}, ...freeRows) : h('p', { class: 'hint' }, '직원 카드는 뽑기에서 8% 확률로 나와요. 직원이 없어도 관람객 수입은 계속 들어와요.'),
+      h('p', { class: 'hint' }, '먹이는 우리를 눌러 직접 줄 수도 있어요 (20초마다).'));
+  }
+
+  // ── 도감 ──
+  private dex() {
+    const s = this.ctx.save;
+    const found = s.dex.filter(Boolean).length;
+    return h('div', {},
+      h('div', { class: 'inv-head' }, h('b', {}, `도감 ${found} / ${ANIMALS.length}`), h('span', { class: 'sub' }, GRADES.map((g) => `${g.name} ${ANIMALS.filter((a, i) => a.grade === g.id && s.dex[i]).length}/${ANIMALS.filter((a) => a.grade === g.id).length}`).join(' · '))),
+      ...GRADES.map((g) => h('div', {},
+        h('div', { class: `section-title g-${g.key}` }, g.name),
+        h('div', { class: 'dex-grid' }, ...ANIMALS.filter((a) => a.grade === g.id).map((a) => {
+          const known = s.dex[a.id];
+          return h('button', { class: `dex-cell${known ? '' : ' unknown'}`, title: known ? a.name : '???', onclick: () => toast(known ? `${a.name} · ${g.name} · ♥${g.attract} · ${HABITAT_NAMES[a.habitat]}` : '아직 못 만난 동물이에요', 'info') },
+            pix(animalFrame(a.id, 0), 24), h('span', {}, known ? a.name : '???'));
+        })))));
+  }
+}
+
+/** 우리를 눌렀을 때: 우리 안 동물, 매력도, 먹이 주기 */
+export function openPenSheet(ctx: PanelCtx, pen: number, onClose: () => void) {
+  const s = ctx.save, w = ctx.world;
+  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) close(); } });
+  const close = () => { back.remove(); onClose(); };
+  const render = () => {
+    const uids = s.pens[pen] ?? [];
+    const groups = new Map<number, number[]>();
+    for (const u of uids) { const c = s.cards.find((x) => x.uid === u); if (c?.kind === 'animal') groups.set(c.animal, [...(groups.get(c.animal) ?? []), u]); }
+    const feed = h('button', { class: 'btn small', onclick: () => { if (w.feed(pen)) { audio.sfx('feed'); render(); } } }, w.feedCooldown[pen] > 0 ? `먹이 (${Math.ceil(w.feedCooldown[pen])}초)` : '먹이 주기') as HTMLButtonElement;
+    feed.disabled = !uids.length || w.feedCooldown[pen] > 0;
+    back.replaceChildren(h('div', { class: 'sheet' },
+      h('div', { class: 'sheet-head' }, h('b', {}, `우리 ${pen + 1}`), h('span', { class: 'sub' }, `${uids.length} / ${penSize(s)}마리`), feed),
+      groups.size ? h('div', { class: 'inv-list' }, ...[...groups.entries()].map(([id, list]) => h('div', { class: `inv-row g-${GRADES[ANIMALS[id].grade].key}` },
+        h('div', { class: 'inv-art' }, pix(animalFrame(id, 0), 28)),
+        h('div', { class: 'inv-info' }, h('div', { class: 'inv-name' }, `${ANIMALS[id].name} ×${list.length}`), h('div', { class: 'inv-sub' }, list.length >= 3 ? `같은 종 보너스 +${list.length >= 10 ? 30 : list.length >= 5 ? 20 : 10}%` : '3마리부터 같은 종 보너스')),
+        h('button', { class: 'btn small ghost', onclick: () => { unplace(s, list[0]); ctx.persist(); w.sync(); render(); } }, '빼기')))) : h('p', { class: 'hint' }, '빈 우리예요. 보관함에서 배치하거나 "빈 칸 자동 배치"를 눌러요.'),
+      h('div', { class: 'row-btns' },
+        h('button', { class: 'btn small ghost', onclick: () => { for (const u of [...uids]) unplace(s, u); ctx.persist(); w.sync(); render(); } }, '모두 빼기'),
+        h('button', { class: 'btn small', onclick: close }, '닫기'))));
+  };
+  render();
+  ctx.overlayRoot.append(back);
+  return close;
+}
+
+export { upValue };
