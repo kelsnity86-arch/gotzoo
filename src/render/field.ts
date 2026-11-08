@@ -57,6 +57,8 @@ export class FieldRenderer {
   private autoZoomed = false;
   /** 시안 모드 (?mock): 산책로 · 산책하는 손님 */
   mock = false;
+  /** 입구 간판 이름 · 별 */
+  zooName = '뽑ZOO'; zooStars = 0;
   /** (시안 loop) 주운 동전이 날아갈 화면 좌표 (CSS px) */
   hudTarget: { x: number; y: number } | null = null;
   private walkTiles: [number, number][] = [];
@@ -118,7 +120,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${this.zooName}|${this.zooStars}|${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -202,11 +204,13 @@ export class FieldRenderer {
       obj(`gate_${tier4}`, gx, gb);
       c.save();
       c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
-      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = tier4 === 2 ? 'ZOO' : '뽑ZOO';
+      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = this.zooName;
+      c.font = `${Math.min(tier4 === 2 ? 4.2 : 5.2, (tier4 === 2 ? 22 : 34) / Math.max(1, [...name].length) * 1.6)}px Jua, sans-serif`;
       c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = '#fff6e0'; c.strokeText(name, gx, ty);
       c.fillStyle = '#5d3a24'; c.fillText(name, gx, ty);
       c.restore();
       obj(`gatedeco_${season}_arch`, gx, gt + gh * 0.5);
+      if (this.zooStars) { c.save(); c.font = '4px Jua, sans-serif'; c.textAlign = 'center'; c.fillStyle = '#f7c948'; c.strokeStyle = '#5d3a24'; c.lineWidth = 1; const st = '★'.repeat(this.zooStars); c.strokeText(st, gx, gt - 1); c.fillText(st, gx, gt - 1); c.restore(); }
       obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
       obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);
     }

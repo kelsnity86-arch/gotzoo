@@ -7,7 +7,7 @@ import { UPGRADES } from '../../src/data/balance';
 import { FACILITIES } from '../../src/data/facilities';
 import {
   assignStaff, autoFusionPick, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, optimizePlacement, placedAnimals,
-  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts,
+  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts, expandCost,
 } from '../../src/game/rules';
 import type { Grade } from '../../src/data/grades';
 
@@ -38,13 +38,15 @@ it('경제 곡선', () => {
     think = 0;
     // 합성: 10장 모이면 100%
     for (const g of [0, 1, 2, 3] as Grade[]) if (fusionCandidates(s, g).length >= 10) fuse(s, autoFusionPick(s, g, 10));
-    if (canPromote(s)) promote(s);
     // 업그레이드: 5회 뽑기 값보다 싸면 가장 싼 것부터
     const price = drawPrice(s);
     // 돈(입장료): 밤에 하루 비용 2일치를 남기고 업그레이드 · 관객 건물을 싼 것부터
     const landBefore = s.upgrades.land;
     if (w.isNight) {
-      const reserve = dailyCosts(s).total * 2;
+      // 확장 조건을 채웠으면 공사비부터 (모자라면 업그레이드를 미루고 모은다)
+      if (canPromote(s)) { const ec = expandCost(s); if (ec !== null && s.coins >= ec) promote(s); }
+      const saving = canPromote(s) ? (expandCost(s) ?? 0) : 0;
+      const reserve = dailyCosts(s).total * 1 + saving;
       for (let k = 0; k < 12; k++) {
         const opts: { cost: number; buy: () => void }[] = [
           ...UPGRADES.map((u) => ({ cost: upgradeLockedBy(s, u.id) === null ? upgradeCost(s, u.id) : null, buy: () => buyUpgrade(s, u.id) })),
@@ -58,7 +60,7 @@ it('경제 곡선', () => {
       void landBefore;
       w.openPark();
     } else if ((s.tokens ?? 0) >= price * 10) { draw(s, 10); draws += 10; }
-    else if ((s.tokens ?? 0) >= price && placedAnimals(s) < 6) { draw(s, 1); draws++; if (secondDraw < 0) secondDraw = t; }
+    else if ((s.tokens ?? 0) >= price) { draw(s, 1); draws++; if (secondDraw < 0) secondDraw = t; }
     for (const c of s.cards) if (c.kind === 'staff') assignStaff(s, c.uid);
     optimizePlacement(s);
     if (s.stage !== lastStage) { lastStage = s.stage; log.push(`${(t / 60).toFixed(1)}분: ${s.stage}단계`); }

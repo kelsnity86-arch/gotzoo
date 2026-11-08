@@ -7,15 +7,9 @@ import type { Habitat } from './animals';
 export const BLOCK_TILES = 4;
 /** 블록 1칸당 수용 마릿수 */
 export const CAP_PER_CELL = 1.6;
-/** 부지 크기 (부지 넓히기 레벨별, 블록 칸) */
-const BOARD_NOW: [number, number][] = [[8, 4], [9, 5], [10, 5], [11, 6], [12, 6], [13, 7], [15, 7], [17, 8], [20, 9]];
-/** 시안용 (?board=wide | wide24): 옆으로 넓어지는 부지. 실제 게임은 BOARD_NOW */
-const BOARD_ALT: Record<string, [number, number][]> = {
-  wide: [[8, 4], [11, 4], [13, 4], [13, 5], [15, 5], [18, 5], [18, 6], [23, 6], [30, 6]],
-  wide24: [[8, 4], [10, 4], [12, 4], [12, 5], [14, 5], [16, 5], [16, 6], [20, 6], [24, 6]],
-};
-const boardParam = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('board') : null;
-export const BOARD: readonly [number, number][] = (boardParam && BOARD_ALT[boardParam]) || BOARD_NOW;
+
+/** 동물원 규모 단계별 부지 (가로로 넓어진다). 마지막 24×6은 별 3개부터 */
+export const BOARD: readonly [number, number][] = [[8, 4], [10, 4], [12, 4], [12, 5], [14, 5], [16, 5], [16, 6], [20, 6], [24, 6]];
 
 /** 안쪽을 둥글게·팔각으로 깎는 모양 (타일 단위) */
 export type Carve = 'round' | 'octagon';

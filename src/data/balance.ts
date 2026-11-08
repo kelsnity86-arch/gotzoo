@@ -9,9 +9,15 @@ export const GACHA = {
 
 /** 진행 단계 승급 조건 [전시 마리 수, 총 매력도]. index = 올라갈 단계 - 2 */
 export const STAGE_REQ: readonly [number, number][] = [
-  [5, 120], [12, 450], [25, 1500], [45, 4000], [70, 9000], [110, 20000], [160, 40000],
+  [5, 120], [12, 450], [22, 1100], [35, 2000], [50, 4500], [70, 10000], [95, 22000],
 ];
 export const MAX_STAGE = GACHA.price.length;
+/** 동물원 규모 이름 (진행 단계) */
+export const STAGE_NAMES = ['작은 동물원', '동네 동물원', '시립 동물원', '도시 동물원', '테마 동물원', '국립 동물원', '대륙 동물원', '세계 동물원'] as const;
+/** 확장 공사비 (돈): 다음 단계로 · 마지막 = 별 3개 특별 확장 */
+export const EXPAND_COST = [300, 1200, 3500, 9000, 22000, 50000, 110000, 240000] as const;
+/** 동물원 별 등급: 1년(4시즌)마다 평가 · 점수 기준 (100점 만점) */
+export const STAR_NEED = [20, 40, 60, 75, 90] as const;
 /** 단계마다 관람객 투척액 배율 (유명세) */
 export const STAGE_TIP_MUL = 1.12;
 
@@ -23,7 +29,7 @@ export const FUSION_MIN = 2, FUSION_MAX = 10;
 export interface UpgradeDef {
   id: UpgradeId; name: string; icon: string;
   /** 업그레이드 탭 묶음 */
-  group?: 'zoo' | 'pick' | 'gacha' | 'ops';
+  group?: 'zoo' | 'pick' | 'gacha' | 'ops' | 'hidden';
   values: readonly number[]; costs: readonly number[]; need: readonly number[];
   describe: (v: number) => string;
 }
@@ -34,7 +40,7 @@ export type UpgradeId = 'land' | 'deco' | 'quality' | 'gate' | 'staff' | 'pickup
 
 export const UPGRADES: readonly UpgradeDef[] = [
   { id: 'land', name: '부지 넓히기', icon: 'icon_cage', values: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸`, group: 'zoo' },
+    costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸`, group: 'hidden' },
   { id: 'deco', name: '울타리·입구 꾸미기', icon: 'icon_cage', values: [0, 1, 2, 3],
     costs: [3000, 15000, 70000], need: [2, 4, 6], describe: (v) => `${['나무', '돌', '철', '황금'][v]} 울타리 · 모든 동물 매력 +${v * 3}%`, group: 'zoo' },
   { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.25, 1.6, 2.1, 2.7, 3.5, 4.5, 6],
@@ -57,8 +63,8 @@ export const UPGRADES: readonly UpgradeDef[] = [
   { id: 'coinLife', name: '동전 오래 남기', icon: '', group: 'pick', values: [0, 15, 30, 45, 60],
     costs: [800, 3000, 10000, 35000], need: [1, 3, 4, 6], describe: (v) => `바닥 동전 +${v}초` },
   // ── 뽑기 · 기계 ──
-  { id: 'machine', name: '기계 정비', icon: '', group: 'gacha', values: [1, 1.25, 1.5, 2],
-    costs: [5000, 25000, 100000], need: [3, 5, 7], describe: (v) => `특별한 기계 확률 ×${v}` },
+  { id: 'machine', name: '기계 정비', icon: '', group: 'gacha', values: [1, 1.25, 1.5, 2, 2.5],
+    costs: [5000, 25000, 100000, 250000], need: [3, 5, 7, 8], describe: (v) => `특별한 기계 확률 ×${v}` },
   { id: 'shiny', name: '반짝이 연구', icon: '', group: 'gacha', values: [0.01, 0.0125, 0.015, 0.0175, 0.02],
     costs: [4000, 15000, 50000, 150000], need: [3, 4, 6, 7], describe: (v) => `반짝이 확률 ${+(v * 100).toFixed(2)}%` },
   { id: 'seasonPick', name: '계절 픽업', icon: '', group: 'gacha', values: [0.2, 0.25, 0.3, 0.35],
@@ -117,7 +123,7 @@ export const DAY = { dayLen: 180, duskLen: 20, nightAvg: 30, janitorShare: 0.5 }
 
 /** 유지비 (매일 영업이 끝날 때). unit = 단계별 비용 단위(코인): 1~2단계는 작게, 뒤로는 수입이 느는 만큼만 (뽑기 가격보다 완만).
  * 우리 하나당 고정비 + 전시 동물 사료비(등급별). 직원 월급도 이 단위 × 3 × 카드의 월급 비율 */
-export const UPKEEP = { perCell: 0.06, feed: [0.012, 0.025, 0.05, 0.09, 0.16], unit: [30, 120, 450, 1000, 1500, 2000, 2700, 3600] } as const;
+export const UPKEEP = { perCell: 0.045, feed: [0.012, 0.025, 0.05, 0.09, 0.16], unit: [30, 120, 400, 750, 1100, 1500, 2000, 2700] } as const;
 
 /** 동물원 규모 점수: 전시 동물(등급별) + 배치 직원(staff.ts STAFF_SCALE) + 놓은 우리(pieces.ts PEN_SCALE) + 업그레이드 레벨 − 빚 감점 */
 export const SCALE = { animal: [1, 3, 8, 20, 50], upgradeLv: 10, debtPerDraw: 5 } as const;

@@ -9,7 +9,7 @@ import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -130,6 +130,8 @@ export interface DayReport {
   rivalName: string; seasonDay: number; mine: number; rival: number;
   /** 시즌 마지막 날이면 결과 */
   season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number; year: number } | null;
+  /** 해가 바뀌면 동물원 별 등급 평가 */
+  yearEval?: YearEval | null;
 }
 
 /** 점 (px, py)와 선분 a–b 사이 거리 */
@@ -502,6 +504,7 @@ export class World {
     const seasonDay = this.seasonDay;
     const mine = zooScale(sv), rival = rivalScale(seasonDay, se.n);
     let season: DayReport['season'] = null;
+    let yearEval: YearEval | null = null;
     if (seasonDay >= SEASON.days) {
       if (mine >= rival) {
         // 겨울(4시즌마다)을 이기면 1년 버틴 것: 1주년 보너스
@@ -512,6 +515,7 @@ export class World {
         sv.records.bestSeasons = Math.max(sv.records.bestSeasons, se.n);
         if (year) sv.records.bestYears = Math.max(sv.records.bestYears, year);
         season = { result: 'win', n: se.n, coins, tickets, year };
+        if (year) yearEval = evaluateYear(sv, mine, rival);
         sv.season = { n: se.n + 1, start: sv.day + 1, mine: 0, rival: 0 };
       } else {
         season = { result: 'lose', n: se.n, coins: 0, tickets: 0, year: 0 };
@@ -522,6 +526,7 @@ export class World {
     const { stolen, ...today } = this.today;
     const report: DayReport = {
       day: sv.day, ...today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets,
+      yearEval,
       income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, climate: c.climate, climateName: c.climateName, facility: c.facility, total: c.total }, net, coinsAfter: Math.round(sv.coins),
       debtDays: sv.debtDays, strikeNext: sv.strike,
       rivalName: rivalOf(se.n).name, seasonDay, mine, rival, season,
@@ -733,7 +738,7 @@ export class World {
     const star = here.some((a) => a.shiny || ANIMALS[a.animal].grade >= 3);
     const playing = here.some((a) => a.act === 'play' || a.act === 'splash');
     const r = this.rng();
-    if ((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) return 'sad';
+    if ((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) { if (this.save.yearStats) this.save.yearStats.sad++; return 'sad'; }
     if (v.vip || (star && r < 0.45) || ((evId === 'blossom' || evId === 'maple' || evId === 'firstsnow' || evId === 'xmas' || evId === 'halloween') && r < 0.5)) return 'photo';
     if (((evId === 'festival' || evId === 'kids' || evId === 'bus' || evId === 'chuseok' || evId === 'xmas') && r < 0.7) || (evId === 'splash' && this.geo[pen]?.theme === 'water' && r < 0.8) || (playing && r < 0.6)) return 'cheer';
     if (facSum(this.save, 'snack') > 0 && r < 0.3) return 'snack';
@@ -773,6 +778,7 @@ export class World {
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
     // 입장료(돈): 문을 들어오는 순간. 매표원 · 기념품점이 늘려 준다
     this.today.visitors++; bumpMission(this.save, 'visitors', 1);
+    if (this.save.yearStats) this.save.yearStats.visitors++;
     const fee = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (vip ? EVENT_TIMING.vipTipMul : 1) * (1 + staffSum(this.save, 'ticket') + facSum(this.save, 'souvenir')));
     this.earn(fee, 0);
     const gx = gateX(L.w), dir = targetX >= gx ? 1 : -1;

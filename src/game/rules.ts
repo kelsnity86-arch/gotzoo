@@ -6,7 +6,7 @@ import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, 
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
 import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
-import { DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
+import { EXPAND_COST, STAGE_NAMES, STAR_NEED, DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
 import { defaultSave, type Card, type MissionKind, type PenCard, type SaveData, type StaffCard } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/missions';
@@ -275,9 +275,9 @@ export const MACHINE_TIERS = [
   { name: '금빛 기계', key: 'gold', chance: 0.025, luck: 0.03, shiny: 1 },
   { name: '무지개 기계', key: 'rainbow', chance: 0.005, luck: 0.06, shiny: 2 },
 ] as const;
-export function rollMachine(rng: Rng, mul = 1): number {
+export function rollMachine(rng: Rng, mul = 1, rainbowPlus = 0): number {
   let r = rng();
-  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { const c = MACHINE_TIERS[i].chance * mul; if (r < c) return i; r -= c; }
+  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { const c = MACHINE_TIERS[i].chance * mul + (i === 3 ? rainbowPlus : 0); if (r < c) return i; r -= c; }
   return 0;
 }
 /** 마지막 뽑기의 기계 등급 (연출용) */
@@ -285,7 +285,7 @@ export let lastTier = 0;
 export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
   const cost = drawPrice(s) * n;
   if ((s.tokens ?? 0) < cost) return null;
-  const tier = rollMachine(rng, upValue(s, 'machine'));
+  const tier = rollMachine(rng, upValue(s, 'machine'), (s.stars ?? 0) >= 4 ? 0.005 : 0);
   lastTier = tier;
   s.tokens -= cost;
   s.stats.draws += n;
@@ -686,7 +686,7 @@ export function closingShare(s: SaveData): number {
   return js.length ? Math.max(...js.map((c) => JANITOR_SHARE[c.grade])) : 0;
 }
 /** 관람객 수 배율: 홍보 담당 + '인기인' */
-export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0) + facSum(s, 'photo');
+export const visitorMul = (s: SaveData) => starVisitorMul(s) + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0) + facSum(s, 'photo');
 /** 먹이 효과 */
 export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'));
 /** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
@@ -824,6 +824,8 @@ export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: numbe
 // ── 업그레이드 · 승급 ──
 export function upgradeCost(s: SaveData, id: UpgradeId): number | null {
   const u = upgradeDef(id), lv = s.upgrades[id] ?? 0;
+  if (id === 'land') return null; // 부지는 규모 확장(promote)으로만
+  if (id === 'machine' && lv >= 3 && (s.stars ?? 0) < 2) return null; // 마지막 단계는 별 2개부터
   return lv < u.costs.length ? Math.round(u.costs[lv] * (1 - (id === 'buildCut' ? 0 : upValue(s, 'buildCut')))) : null;
 }
 export function upgradeLockedBy(s: SaveData, id: UpgradeId): number | null {
@@ -844,14 +846,55 @@ export function buyUpgrade(s: SaveData, id: UpgradeId): boolean {
 export function stageReq(s: SaveData): [number, number] | null {
   return s.stage < MAX_STAGE ? STAGE_REQ[s.stage - 1] : null;
 }
+/** 다음 확장 공사비 (최고면 null). 8단계 다음은 별 3개 특별 확장(24×6) */
+export function expandCost(s: SaveData): number | null {
+  if (s.stage < MAX_STAGE) return Math.round(EXPAND_COST[s.stage - 1] * (1 - upValue(s, 'buildCut')));
+  if (!s.bigLand && (s.stars ?? 0) >= 3) return Math.round(EXPAND_COST[MAX_STAGE - 1] * (1 - upValue(s, 'buildCut')));
+  return null;
+}
+/** 조건(전시 · 매력)을 채웠는지 (공사비는 따로) */
 export function canPromote(s: SaveData): boolean {
+  if (s.stage >= MAX_STAGE) return !s.bigLand && (s.stars ?? 0) >= 3;
   const req = stageReq(s);
   return !!req && placedAnimals(s) >= req[0] && totalAttract(s) >= req[1];
 }
+/** 규모 확장: 단계 +1 · 부지 확장 · 일반 우리 선물 (공사비를 낸다) */
 export function promote(s: SaveData): boolean {
-  if (!canPromote(s)) return false;
-  s.stage++;
+  const cost = expandCost(s);
+  if (!canPromote(s) || cost === null || s.coins < cost) return false;
+  s.coins -= cost;
+  if (s.stage < MAX_STAGE) s.stage++; else s.bigLand = true;
+  s.upgrades.land = Math.min(BOARD.length - 1, s.stage - 1 + (s.bigLand ? 1 : 0));
+  addCard(s, rollPen(Math.random, 0));
+  syncSlots(s);
   return true;
 }
+export const stageName = (s: SaveData) => STAGE_NAMES[Math.min(s.stage, STAGE_NAMES.length) - 1];
+
+// ── 별 등급: 1년(4시즌)마다 평가, 올라가기만 ──
+export interface YearEval { items: { name: string; score: number; note: string }[]; total: number; before: number; after: number }
+export function evaluateYear(s: SaveData, mine: number, rival: number): YearEval {
+  const clamp = (v: number) => Math.max(0, Math.min(20, Math.round(v)));
+  const ys = s.yearStats ?? { visitors: 0, sad: 0 };
+  const placed = s.pens.flat().map((u) => cardById(s, u)).filter((c): c is Extract<Card, { kind: 'animal' }> => c?.kind === 'animal');
+  const legends = placed.filter((c) => ANIMALS[c.animal].grade >= 4).length, shinies = placed.filter((c) => c.shiny).length;
+  const facLv = Object.values(s.facLv ?? {}).reduce((a, b) => a + b, 0);
+  const dex = s.dex.filter(Boolean).length;
+  const items = [
+    { name: '규모', score: clamp(10 + (mine / Math.max(1, rival) - 1) * 40), note: `라이벌 대비 ${Math.round((mine / Math.max(1, rival)) * 100)}%` },
+    { name: '도감', score: clamp((dex / 150) * 20), note: `${dex}종` },
+    { name: '손님 만족', score: clamp((ys.visitors / 5000) * 20 * (1 - Math.min(1, ys.sad / Math.max(1, ys.visitors)))), note: `손님 ${ys.visitors.toLocaleString('ko-KR')}명 · 실망 ${Math.round((ys.sad / Math.max(1, ys.visitors)) * 100)}%` },
+    { name: '꾸밈', score: clamp(((facLv + (s.upgrades.deco ?? 0) * 3) / 45) * 20), note: `건물 단계 ${facLv} · 울타리 ${s.upgrades.deco ?? 0}` },
+    { name: '특별함', score: clamp(legends * 2 + shinies * 2 + s.synergyFound.length), note: `전설 ${legends} · 반짝이 ${shinies} · 시너지 ${s.synergyFound.length}` },
+  ];
+  const total = items.reduce((a, b) => a + b.score, 0);
+  const before = s.stars ?? 0;
+  let earned = 0; STAR_NEED.forEach((n, i) => { if (total >= n) earned = i + 1; });
+  s.stars = Math.max(before, earned);
+  s.yearStats = { visitors: 0, sad: 0 };
+  return { items, total, before, after: s.stars };
+}
+/** 별 보상: 손님 배율 (★1 +5% · ★5 +15%) */
+export const starVisitorMul = (s: SaveData) => 1 + ((s.stars ?? 0) >= 5 ? 0.15 : (s.stars ?? 0) >= 1 ? 0.05 : 0);
 
 export { UPGRADES };

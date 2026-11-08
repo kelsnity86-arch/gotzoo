@@ -104,13 +104,9 @@ describe('직원 뽑기 · 해고', () => {
     expect(out.some((c) => c.kind === 'pen')).toBe(true);
     expect(out.every((c) => c.kind === 'animal' || (c.grade >= 0 && c.grade <= 4))).toBe(true);
   });
-  it('부지를 넓히면 일반 우리를 하나 선물로 받는다', () => {
+  it('부지 넓히기 업그레이드는 규모 확장으로 합쳐져 따로 살 수 없다', () => {
     const s = defaultSave(); s.coins = 1e6;
-    const n = s.cards.filter((c) => c.kind === 'pen').length;
-    expect(buyUpgrade(s, 'land')).toBe(true);
-    const pens = s.cards.filter((c) => c.kind === 'pen');
-    expect(pens.length).toBe(n + 1);
-    expect(pens[pens.length - 1].kind === 'pen' && pens[pens.length - 1].grade).toBe(0);
+    expect(buyUpgrade(s, 'land')).toBe(false);
   });
   it('해고하면 등급별로 돌려받고 슬롯에서 빠진다', () => {
     const s = defaultSave();

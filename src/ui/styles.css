@@ -623,3 +623,52 @@ body.hud-xxs .hud .gacha-gauge b:not(.gg-coins) { display: none; }
 .gacha-gauge.fever .gg-bar i { background: linear-gradient(90deg, #f08cbe, #f7c948, #fff3a3); }
 body.reduce-motion .gacha-gauge.fever { animation: none; }
 .chip .chip-n { margin-left: 4px; font-size: 11px; background: #d83a3a; color: #fff; border-radius: 999px; padding: 0 5px; }
+/* 홈 탭 */
+.home { display: flex; flex-direction: column; gap: 10px; }
+.home-box { background: #fffaf0; border: 2px solid #e2d3b5; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.home-box .gacha-hero { margin: 0; }
+.hb-head { display: flex; align-items: center; gap: 6px; }
+.hb-head b { font: 17px 'Jua', sans-serif; }
+.hb-head small { margin-left: auto; font-size: 12px; color: #7a6a55; }
+.home-box .thumbs { display: flex; flex-wrap: wrap; gap: 4px; }
+.home-box .thumbs span { width: 34px; height: 34px; border-radius: 8px; background: #f3ead6; border: 2px solid #e2d3b5; display: grid; place-items: center; }
+.home-box .thumbs span.more { font: 13px 'Jua', sans-serif; color: #7a6a55; }
+.home-box .row-btns .btn { flex: 1; }
+.home-box .row-btns.tray span { flex: 1; font: 14px 'Jua', sans-serif; color: #8a5a3b; }
+.home-box .row-btns.tray .btn { flex: none; }
+.home-box .expand-btn { width: 100%; }
+.home-box .mission { padding: 4px 0; }
+.btn.gold { background: #f7c948; border-color: #b8862a; color: #3b2a1a; }
+.season-banner { margin-top: 0; }
+/* 패널 접었을 때 미션 표시 */
+.mission-chip { position: absolute; display: flex; align-items: center; gap: 6px; padding: 4px 12px 4px 6px; background: #fffaf0; border: 2px solid #8a5a3b; border-radius: 999px; font: 14px 'Jua', sans-serif; box-shadow: 0 3px 0 #5d3a24; cursor: pointer; z-index: 4; }
+.mission-chip .dots { display: flex; gap: 3px; }
+.mission-chip .dots i { width: 9px; height: 9px; border-radius: 50%; background: #d9cdb4; border: 1px solid #a8916b; }
+.mission-chip .dots i.on { background: #38a35b; border-color: #1f5d3a; }
+.mission-chip.done { border-color: #f7c948; box-shadow: 0 0 10px #f7c948, 0 3px 0 #5d3a24; }
+/* 아치 (시즌 결과 · 이름 정하기) */
+.arch { position: relative; display: inline-block; }
+.arch .pix { display: block; }
+.arch-sign { position: absolute; left: 50%; transform: translate(-50%, -50%); margin-top: 6px; font-family: 'Jua', sans-serif; color: #5d3a24; white-space: nowrap; text-shadow: -1px -1px 0 #fff6e0, 1px -1px 0 #fff6e0, -1px 1px 0 #fff6e0, 1px 1px 0 #fff6e0; }
+.arch-sign.t2 { font-size: 13px !important; }
+.arch-stars { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); color: #f7c948; font-size: 16px; text-shadow: 1px 1px 0 #5d3a24; letter-spacing: 1px; }
+.season-vs { width: min(640px, 100%); }
+.season-vs .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: end; width: 100%; }
+.season-vs .side { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.season-vs .side b { font: 16px 'Jua', sans-serif; }
+.season-vs .num { font: 26px 'Jua', sans-serif; } .season-vs .num.mine { color: #2f7a4b; } .season-vs .num.rival { color: #b8452e; }
+.season-vs .vsx { font: 32px 'Jua', sans-serif; color: #d83a3a; align-self: center; }
+.season-vs .scalebar { width: 100%; height: 14px; display: flex; border-radius: 7px; overflow: hidden; border: 2px solid #5d3a24; }
+.season-vs .scalebar i { display: block; height: 100%; }
+.year-eval { width: min(520px, 100%); }
+.year-eval .stars-big { display: flex; gap: 6px; font-size: 38px; color: #d9cdb4; text-shadow: 2px 2px 0 #8a7458; }
+.year-eval .stars-big .on { color: #f7c948; } .year-eval .stars-big .new { animation: legendPop 0.8s ease-out both; }
+.year-eval .ye-row { display: grid; grid-template-columns: 70px 1fr; gap: 2px 8px; width: 100%; align-items: center; }
+.year-eval .ye-row small { grid-column: 2; color: #7a6a55; font-size: 12px; }
+.year-eval .ye-total { font: 20px 'Jua', sans-serif; }
+.name-ask .sheet { width: min(520px, 100%); }
+.name-ask .name-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+.name-ask .name-input { flex: 1; font: 22px 'Jua', sans-serif; padding: 8px 12px; border: 3px solid #8a5a3b; border-radius: 12px; background: #fff; user-select: text; -webkit-user-select: text; }
+.name-ask .name-row .cnt { font-size: 13px; color: #7a6a55; white-space: nowrap; }
+.name-ask .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.name-ask .arch-wrap { display: grid; place-items: center; }

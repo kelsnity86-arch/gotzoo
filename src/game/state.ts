@@ -27,6 +27,12 @@ export interface SaveData {
   tokens: number;
   /** 지난 뽑기 뒤로 모은 코인 (기계 등급: 많이 모았다 뽑을수록 좋은 기계) */
   charge?: number;
+  /** 동물원 이름 (비면 뽑ZOO) · 물어봤는지 */
+  zooName?: string; zooNameAsked?: boolean;
+  /** 별 3개 특별 확장(24×6)을 했는지 */
+  bigLand?: boolean;
+  /** 동물원 별 등급 0~5 (올라가기만) · 올해 손님 · 실망 손님 */
+  stars?: number; yearStats?: { visitors: number; sad: number };
   cards: Card[];
   nextUid: number;
   /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
@@ -164,6 +170,13 @@ export function normalize(raw: unknown): SaveData {
   out.lockedSpecies = Array.isArray(out.lockedSpecies) ? out.lockedSpecies.filter((n) => typeof n === 'number') : [];
   out.tickets = Number.isFinite(out.tickets) ? Math.max(0, Math.floor(out.tickets)) : 0;
   // 코인(뽑기용)이 없던 예전 저장: 10회 뽑기 1번 분량을 선물
+  out.zooName = typeof rr.zooName === 'string' ? (rr.zooName as string).slice(0, 8) : '';
+  out.zooNameAsked = !!rr.zooNameAsked;
+  out.stars = Math.max(0, Math.min(5, Math.floor(Number(rr.stars) || 0)));
+  out.yearStats = { visitors: 0, sad: 0, ...((rr.yearStats as object) ?? {}) };
+  // 부지는 규모 단계를 따른다 (부지 넓히기 업그레이드는 규모 확장으로 합쳐졌다)
+  out.upgrades.land = Math.max(0, Math.min(out.stage - 1 + ((out.stars ?? 0) >= 3 && (rr.bigLand as boolean) ? 1 : 0), 8));
+  out.bigLand = !!rr.bigLand;
   out.charge = Number.isFinite(rr.charge as number) ? Math.max(0, rr.charge as number) : 0;
   out.tokens = Number.isFinite(rr.tokens as number) ? Math.max(0, Math.floor(rr.tokens as number)) : (rr.coins !== undefined ? GACHA.price[Math.min(out.stage, GACHA.price.length) - 1] * 10 : 0);
   out.dexClaimed = Array.isArray(out.dexClaimed) ? out.dexClaimed.filter((x) => typeof x === 'string') : [];

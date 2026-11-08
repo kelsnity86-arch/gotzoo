@@ -90,12 +90,32 @@ describe('배치 · 매력도', () => {
     for (let i = 0; i < 3; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 0 }); s.pens[0].push(s.nextUid++); }
     expect(penAttract(s, 0)).toBeCloseTo(3 * 20 * 1.55, 5); // + 일반 풀밭 우리 +10%
   });
-  it('부지 넓히기를 하면 부지가 바로 커진다', () => {
+  it('규모 확장: 조건 + 공사비 → 단계 · 부지 · 우리 선물, 부지 넓히기 업그레이드는 따로 못 산다', async () => {
+    const { promote, expandCost, canPromote, stageName } = await import('../src/game/rules');
     const s = defaultSave(); s.coins = 300;
-    const [w0, h0] = boardDims(s);
-    expect(buyUpgrade(s, 'land')).toBe(true);
+    expect(buyUpgrade(s, 'land')).toBe(false);
+    for (let i = 0; i < 8; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 90 + (i % 4) }); s.pens[i % 4].push(s.nextUid++); }
+    expect(canPromote(s)).toBe(true);
+    expect(expandCost(s)).toBe(300);
+    const [w0, h0] = boardDims(s), pens = s.cards.filter((c) => c.kind === 'pen').length;
+    expect(promote(s)).toBe(true);
+    expect(s.stage).toBe(2); expect(stageName(s)).toBe('동네 동물원'); expect(s.coins).toBe(0);
     const [w1, h1] = boardDims(s);
-    expect(w1 * h1).toBeGreaterThan(w0 * h0); expect(s.coins).toBe(0);
+    expect(w1 * h1).toBeGreaterThan(w0 * h0); expect(h1).toBe(4);
+    expect(s.cards.filter((c) => c.kind === 'pen').length).toBe(pens + 1);
+  });
+  it('별 등급: 해마다 평가, 올라가기만, 별 3개면 마지막 특별 확장(24×6)', async () => {
+    const { evaluateYear, promote, canPromote } = await import('../src/game/rules');
+    const s = defaultSave();
+    s.dex = s.dex.map(() => true); s.yearStats = { visitors: 6000, sad: 0 }; s.facLv.snack = 3;
+    const e = evaluateYear(s, 2000, 1000);
+    expect(e.after).toBeGreaterThanOrEqual(3);
+    const low = evaluateYear(s, 100, 1000);
+    expect(low.after).toBe(e.after); // 내려가지 않는다
+    s.stage = 8; s.upgrades.land = 7; s.coins = 1e9;
+    expect(canPromote(s)).toBe(true);
+    expect(promote(s)).toBe(true);
+    expect(boardDims(s)).toEqual([24, 6]);
   });
   it('승급: 조건을 채워야 하고, 올리면 가격이 오른다', () => {
     const s = defaultSave(); s.coins = 1e9;

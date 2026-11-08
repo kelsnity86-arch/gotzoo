@@ -12,13 +12,14 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { drawPrice, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
+import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
 import { hasPng, preloadPngs } from './render/sprites';
 import { Panel, openPenSheet } from './ui/panel';
 import { motion } from './ui/motion';
+import { STAR_NEED } from './data/balance';
 import { audio } from './ui/audio';
 import { fillIcons, fmt, h, iconSlot, pix, toast } from './ui/dom';
 
@@ -144,11 +145,15 @@ const gaugeFill = h('i', {}), gaugeCoins = h('b', { class: 'gg-coins' });
 const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } },
   hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 16) : null, gaugeCoins, h('span', { class: 'gg-bar', title: '피버 게이지: 동전을 주울수록 차요' }, gaugeFill));
 const comboEl = h('div', { class: 'combo-pop hidden' });
+// 패널을 접었을 때: 오늘 미션 n/3 (누르면 홈)
+const mDots = [0, 1, 2].map(() => h('i', {}));
+const mText = h('span', {});
+const missionChip = h('button', { class: 'mission-chip hidden', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } }, hasPng('v2_ui_mission') ? iconSlot('v2_ui_mission', 20) : null, mText, h('span', { class: 'dots' }, ...mDots));
 /** 폰 세로: 가로로 돌려 달라는 안내 · PC 마우스 말풍선 */
 const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
 const tip = h('div', { class: 'hover-tip hidden' });
 const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, startPlaceItem, reports });
-ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip, comboEl);
+ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip, comboEl, missionChip);
 if (LOOP) { world.loop = true; hud.insertBefore(gauge, hud.children[2] ?? null); gauge.classList.remove('hidden'); }
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
@@ -408,6 +413,7 @@ function openSettings() {
     h('div', { class: 'sheet settings' },
       h('div', { class: 'sheet-head' }, h('b', {}, '설정'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
       h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
+      h('div', { class: 'section-title' }, '동물원 이름'), h('div', { class: 'row-btns' }, h('span', { class: 'sub' }, zooName()), h('button', { class: 'btn small ghost', onclick: () => { back.remove(); askZooName(); } }, '이름 바꾸기')),
       h('div', { class: 'section-title' }, '연출'), h('div', { class: 'row-btns' }, h('span', { class: 'sub' }, '흔들림 · 날아가는 효과를 줄여요'), fxBtn),
       h('div', { class: 'section-title' }, '저장 코드 (다른 기기로 옮기기)'), area, h('div', { class: 'row-btns' }, copy, load),
       h('div', { class: 'section-title' }, '초기화'), h('div', { class: 'row-btns' }, reset), msg,
@@ -473,21 +479,81 @@ function showReport(r: import('./game/world').DayReport) {
   ui.append(back);
 }
 
-// ── 시즌 결과: 승리 / 폐원 ──
+// ── 시즌 결과: 우리 아치 vs 라이벌 아치 (색만 바꾼 게이트 + 이름) ──
+const RIVAL_HUE = [290, 140, 190, 30, 330, 230];
+const archTier = (scale: number) => (scale < 300 ? 0 : scale < 700 ? 1 : scale < 1200 ? 2 : 3);
+/** 아치 한 개: 게이트 그림 + 간판 이름 (+ 별) */
+function archEl(tier: number, name: string, hue: number | null, stars = 0) {
+  const key = `v2_gate_${tier}`;
+  const im = hasPng(key) ? pix(key, 214) : h('div', {});
+  if (hue !== null) im.style.filter = `hue-rotate(${hue}deg) saturate(1.3)`;
+  const top = [0.15, 0.15, 0.1, 0.25][tier];
+  return h('div', { class: 'arch' }, im, h('div', { class: `arch-sign t${tier}`, style: `top:${top * 100}%;font-size:${name.length > 5 ? 15 : 20}px` }, name), stars ? h('div', { class: 'arch-stars' }, '★'.repeat(stars)) : null);
+}
 function showSeason(r: import('./game/world').DayReport) {
   const se = r.season!;
   if (se.result === 'win') {
     audio.sfx('legend');
     const next = rivalOf(se.n + 1);
+    const rIdx = (se.n - 1) % RIVAL_HUE.length;
+    const total = Math.max(1, r.mine + r.rival);
     const back = h('div', { class: 'overlay' },
-      h('div', { class: 'fuse-result win' },
+      h('div', { class: 'fuse-result win season-vs' },
         h('div', { class: 'reveal-title' }, se.year ? `🎂 ${se.year}주년! 1년을 버텼어요` : `${seasonOf(se.n).icon} ${seasonOf(se.n).name} 시즌 승리!`),
-        h('div', { class: 'sub' }, `${r.rivalName}을(를) 규모 ${fmt(r.mine - r.rival)} 차이로 이겼어요`),
+        h('div', { class: 'vs' },
+          h('div', { class: 'side' }, archEl(save.upgrades.deco ?? 0, zooName(), null, save.stars ?? 0), h('b', {}, '우리 동물원'), h('div', { class: 'num mine' }, fmt(r.mine))),
+          h('div', { class: 'vsx' }, 'VS'),
+          h('div', { class: 'side' }, archEl(archTier(r.rival), r.rivalName, RIVAL_HUE[rIdx]), h('b', {}, `라이벌 · ${rivalOf(se.n).owner}`), h('div', { class: 'num rival' }, fmt(r.rival)))),
+        h('div', { class: 'scalebar' }, h('i', { style: `width:${(r.mine / total) * 100}%;background:#38a35b` }), h('i', { style: `width:${(r.rival / total) * 100}%;background:hsl(${(330 + RIVAL_HUE[rIdx]) % 360},70%,70%)` })),
         h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
         h('div', { class: 'sub' }, `다음 계절 ${seasonOf(se.n + 1).icon}${seasonOf(se.n + 1).name} · 라이벌 ${next.name} (${next.owner}) · 더 강해졌어요`),
-        h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
+        h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); if (r.yearEval) showYearEval(r.yearEval); } }, r.yearEval ? '올해의 동물원 평가 보기' : '좋아!')));
     ui.append(back);
   } else showClosure();
+}
+/** 1년 평가: 항목 막대 · 별 (올라가기만) · 다음 별까지 */
+function showYearEval(e: YearEval) {
+  audio.sfx(e.after > e.before ? 'legend' : 'fuseWin');
+  const next = STAR_NEED[e.after];
+  const rewards = ['', '입구 간판에 별 · 손님 +5%', '기계 정비 마지막 단계가 열려요', '마지막 특별 확장(24×6)이 열려요', '무지개 기계 확률 +0.5%p', '손님 +15% · 황금 별 간판'];
+  const back = h('div', { class: 'overlay' },
+    h('div', { class: 'fuse-result year-eval' },
+      h('div', { class: 'reveal-title' }, '올해의 동물원 평가'),
+      h('div', { class: 'stars-big' }, ...[0, 1, 2, 3, 4].map((i) => h('span', { class: i < e.after ? (i >= e.before ? 'on new' : 'on') : '' }, '★'))),
+      ...e.items.map((it) => h('div', { class: 'ye-row' }, h('b', {}, it.name), h('div', { class: 'pbar' }, h('i', { style: `width:${it.score * 5}%` }), h('span', {}, `${it.score} / 20`)), h('small', {}, it.note))),
+      h('div', { class: 'ye-total' }, `합계 ${e.total}점`, next !== undefined ? h('small', {}, ` · 다음 별까지 ${next - e.total}점`) : h('small', {}, ' · 최고 등급!')),
+      e.after > e.before ? h('div', { class: 'offline-amount' }, `★${e.after} 달성! ${rewards[e.after]}`) : h('div', { class: 'sub' }, '별은 내려가지 않아요. 내년에 더 높여 봐요!'),
+      h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
+  ui.append(back);
+}
+/** 동물원 이름 (비면 뽑ZOO) */
+function zooName() { return save.zooName || '뽑ZOO'; }
+/** 이름 정하기 창: 처음 시작 · 예전 저장 처음 · 설정에서 */
+function askZooName(then?: () => void) {
+  const SUGGEST = ['해피주', '몽글동물원', '뽀짝파크', '냥이숲', '꼬물농장', '별빛주', '말랑파크', '두근동물원'];
+  const input = h('input', { class: 'name-input', maxlength: 8, value: save.zooName || '', placeholder: '뽑ZOO', id: 'zoo-name' }) as HTMLInputElement;
+  const count = h('span', { class: 'cnt' }, `${input.value.length} / 8자`);
+  const preview = h('div', { class: 'arch-wrap' });
+  const draw = () => { count.textContent = `${[...input.value].length} / 8자`; preview.replaceChildren(archEl(save.upgrades.deco ?? 0, input.value.trim() || '뽑ZOO', null)); };
+  input.addEventListener('input', () => { if ([...input.value].length > 8) input.value = [...input.value].slice(0, 8).join(''); draw(); });
+  const done = () => { save.zooName = [...input.value.trim()].slice(0, 8).join(''); save.zooNameAsked = true; persist(); applyZooName(); back.remove(); audio.sfx('buy'); then?.(); };
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') done(); });
+  const back = h('div', { class: 'overlay name-ask' },
+    h('div', { class: 'sheet' },
+      h('div', { class: 'reveal-title' }, '동물원 이름을 지어 주세요'),
+      preview,
+      h('div', { class: 'name-row' }, input, count),
+      h('div', { class: 'chips' }, ...SUGGEST.slice(0, 4).map((n) => h('button', { class: 'chip', onclick: () => { input.value = n; draw(); } }, n)),
+        h('button', { class: 'chip', onclick: () => { input.value = SUGGEST[Math.floor(Math.random() * SUGGEST.length)]; draw(); } }, '🎲 랜덤')),
+      h('p', { class: 'sub' }, '입구 간판 · 정보 줄 · 시즌 결과에 쓰여요. 설정에서 바꿀 수 있어요.'),
+      h('button', { class: 'btn big', onclick: done }, '이 이름으로 시작')));
+  ui.append(back);
+  draw();
+  window.setTimeout(() => input.focus(), 50);
+}
+function applyZooName() {
+  logo.replaceChildren(save.zooName ? save.zooName : h('span', {}, '뽑', h('span', {}, 'ZOO')));
+  field.zooName = zooName(); field.zooStars = save.stars ?? 0;
 }
 
 function showClosure() {
@@ -570,6 +636,16 @@ function frame(now: number) {
 function updateHud() {
   const inc = world.incomePerMin();
   hudCoins.textContent = fmt(save.coins);
+  {
+    const ms = save.missions?.list ?? [];
+    const done = ms.filter((m) => m.progress >= m.target).length;
+    mText.textContent = `미션 ${done}/${ms.length || 3}`;
+    mDots.forEach((d, i) => d.classList.toggle('on', i < done));
+    missionChip.classList.toggle('done', ms.length > 0 && ms.some((m) => m.progress >= m.target && !m.claimed));
+    missionChip.classList.toggle('hidden', panel.isOpen || !ms.length || !document.body.classList.contains('landscape'));
+    missionChip.style.left = upx(fieldRect.x + 10); missionChip.style.top = upx(fieldRect.y + 10);
+    if ((save.stars ?? 0) !== field.zooStars) applyZooName();
+  }
   if (LOOP) {
     // 동전이 날아갈 곳 = 코인 칸 · 뽑기 게이지 (다음 1회 / 10회)
     const r = gaugeCoins.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
@@ -650,8 +726,11 @@ async function boot() {
   panel.render(true);
   updateHud();
   requestAnimationFrame((t) => { last = t; frame(t); });
-  showTitle(() => { if (save.season.lost) showClosure(); else showOffline(); });
+  showTitle(() => { const go = () => { if (save.season.lost) showClosure(); else showOffline(); }; if (!save.zooNameAsked) askZooName(go); else go(); });
+  applyZooName();
+  // 부지 모양이 바뀐 예전 저장: 부지 밖으로 나간 우리가 있으면 다시 배치
+  { const [bw, bh] = boardDims(save); if (save.board.some((_, i) => penCells(save, i).some(([x, y]) => x >= bw || y >= bh))) { autoArrangePens(save); world.relayout(-1); persist(); toast('동물원 부지가 새 모양으로 바뀌어 우리를 다시 놓았어요', 'info', 3200); } }
   // 개발·검증용 핸들 (?debug)
-  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field };
+  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval };
 }
 boot();
