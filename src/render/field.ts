@@ -55,6 +55,11 @@ export class FieldRenderer {
   /** 처음 화면의 확대: 월드 1칸 = 화면 몇 px */
   static readonly START_PX = 3;
   private autoZoomed = false;
+  /** 시안 모드 (?mock): 산책로 · 산책하는 손님 */
+  mock = false;
+  private walkTiles: [number, number][] = [];
+  private walkers: { x: number; y: number; tx: number; ty: number; kind: number; face: number; t: number }[] = [];
+  private walkT = -1;
   /** 깔끔한 스타일 (턱 테두리 · 벽돌 광장 · 단색 바닥 · 관객 건물 줄) */
   private wc: HTMLCanvasElement | null = null;
   private bg: HTMLCanvasElement | null = null;
@@ -111,7 +116,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -203,12 +208,31 @@ export class FieldRenderer {
       obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
       obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);
     }
-    for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
+    for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2 && !(this.mock && Math.abs(x + 8 - gx) < 14)) obj('park_hedge', x + 8, ZONE_H - 1);
 
     // 4. 우리: 바닥 → 울타리. 우리마다 자기 둘레를 다 친다 (맞닿은 쪽은 두 줄이 나란히 붙어 끊김이 없다)
     const owner = new Map<string, number>();
     L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) owner.set(`${g.gx / TILE + x},${g.gy / TILE + y}`, i); })); });
     const tier = Math.max(0, Math.min(3, this.decoTier));
+    // (시안 ?mock) 산책로: 우리 둘레 한 칸 + 생울타리 아래 한 줄, 입구 앞에서 관객 길과 이어진다
+    const walk = new Set<string>();
+    if (this.mock) {
+      const t0x = L.bx0 / TILE, t1x = (L.bx0 + L.bw * BLOCK) / TILE, t0y = L.by0 / TILE - 1, t1y = (L.by0 + L.bh * BLOCK) / TILE;
+      for (let ty = t0y; ty < t1y; ty++) for (let tx = t0x; tx < t1x; tx++) {
+        if (owner.has(`${tx},${ty}`)) continue;
+        let near = ty === t0y;
+        for (let dy = -1; dy <= 1 && !near; dy++) for (let dx = -1; dx <= 1; dx++) if (owner.has(`${tx + dx},${ty + dy}`)) { near = true; break; }
+        if (near) walk.add(`${tx},${ty}`);
+      }
+      const gtx = Math.floor(gx / TILE);
+      for (let ty = p1 + 1; ty < t0y; ty++) for (const tx of [gtx - 1, gtx]) walk.add(`${tx},${ty}`);
+      const onWalk = (tx: number, ty: number) => walk.has(`${tx},${ty}`) || onPath(tx, ty);
+      for (const k of walk) { const [tx, ty] = k.split(',').map(Number); autotile(onWalk, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true); }
+      // 길가 가로등: 산책로 가장자리 몇 곳
+      let n = 0;
+      for (const k of walk) { const [tx, ty] = k.split(',').map(Number); if (ty > t0y && !walk.has(`${tx},${ty + 1}`) && !owner.has(`${tx},${ty + 1}`) && hash(tx, ty) < 0.12 && n++ < 24) obj('park_lamp', tx * TILE + TILE / 2, (ty + 1) * TILE + 2); }
+      this.walkTiles = [...walk].map((k) => k.split(',').map(Number) as [number, number]);
+    }
     L.pens.forEach((_, i) => {
       const g = world.geo[i];
       if (!g) return;
@@ -237,6 +261,7 @@ export class FieldRenderer {
       let empty = true;
       for (let ty = 0; ty < 4 && empty; ty++) for (let tx = 0; tx < 4; tx++) if (owner.has(`${(bx0 + bx * BLOCK) / TILE + tx},${(by0 + by * BLOCK) / TILE + ty}`)) { empty = false; break; }
       if (!empty) continue;
+      if (this.mock) { let onW = false; for (let ty = 0; ty < 4 && !onW; ty++) for (let tx = 0; tx < 4; tx++) if (walk.has(`${(bx0 + bx * BLOCK) / TILE + tx},${(by0 + by * BLOCK) / TILE + ty}`)) { onW = true; break; } if (onW) continue; }
       const look = looks[Math.floor(hash(bx, by + 7) * looks.length)];
       const X = bx0 + bx * BLOCK, Y = by0 + by * BLOCK;
       if (look.length === 1) obj(look[0], X + BLOCK / 2, Y + BLOCK * 0.75);
@@ -524,6 +549,25 @@ export class FieldRenderer {
       void save;
       this.animalsIn(world, i);
     });
+    if (this.mock && this.walkTiles.length) this.drawWalkers(world, save);
+  }
+  /** (시안) 산책로 손님: 길 칸에서 이웃 길 칸으로 천천히 */
+  private drawWalkers(world: World, save: SaveData) {
+    const dt = this.walkT < 0 ? 0 : Math.min(0.1, world.time - this.walkT); this.walkT = world.time;
+    const tiles = this.walkTiles, set = new Set(tiles.map(([x, y]) => `${x},${y}`));
+    const want = Math.min(40, Math.round(tiles.length / 6));
+    while (this.walkers.length < want) { const [x, y] = tiles[Math.floor(Math.random() * tiles.length)]; this.walkers.push({ x: (x + 0.5) * TILE, y: (y + 0.8) * TILE, tx: x, ty: y, kind: Math.floor(Math.random() * 8), face: -1, t: Math.random() * 5 }); }
+    const se = seasonOf(save.season.n).key;
+    for (const w of this.walkers.sort((a, b) => a.y - b.y)) {
+      w.t += dt;
+      const gx = (w.tx + 0.5) * TILE, gy = (w.ty + 0.8) * TILE, d = Math.hypot(gx - w.x, gy - w.y);
+      if (d < 0.5) {
+        const nb = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [w.tx + dx, w.ty + dy]).filter(([x, y]) => set.has(`${x},${y}`));
+        if (nb.length) { const pick = nb.find(([x]) => Math.sign(x - w.tx) === w.face && Math.random() < 0.7) ?? nb[Math.floor(Math.random() * nb.length)]; w.tx = pick[0]; w.ty = pick[1]; }
+      } else { const sp = 9 * dt; w.x += ((gx - w.x) / d) * Math.min(sp, d); w.y += ((gy - w.y) / d) * Math.min(sp, d); if (Math.abs(gx - w.x) > 0.2) w.face = gx > w.x ? 1 : -1; }
+      const k = `v2_pw_${se}_${w.kind}_f${Math.floor(w.t * 6) % 2}`;
+      if (hasPng(k)) { const im = sprite(k); this.blitDev(im, w.x, w.y, im.height / FieldRenderer.R, w.face > 0, 0); }
+    }
   }
 
   private animalsIn(world: World, i: number) {

@@ -31,6 +31,7 @@ finishLegacy(save); // 예전 저장(우리 늘리기·넓히기) → 우리 조
 syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
+field.mock = new URLSearchParams(location.search).has("mock");
 let dpr = 1, W = 0, H = 0;
 let fieldRect = { x: 0, y: 0, w: 1, h: 1 };
 let pointer: { x: number; y: number } | null = null;
