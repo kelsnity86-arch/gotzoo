@@ -1,0 +1,19 @@
+Create a production pixel-art game sprite sheet for BbopZOO, matching cute, clean, chunky handheld-console zoo assets. Each requested object has its EXACT native pixel grid described below, enlarged with NEAREST NEIGHBOR so every pixel is a solid square. ONE native pixel outline in #1a1c2c, simple 1–2 tone FLAT shading. Allowed palette ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely NO antialiasing, blur, gradients, soft shadows, dither/noise or tiny high-resolution painted details. Background everywhere outside the sprites is ONE SOLID #FF00FF magenta. No magenta or pink-magenta inside objects; pastel cherry pink must be #ffb7d0 or #ffc8dd, clearly distinct from magenta. Clean invisible row/cell layout with generous gutters, no overlap, everything wholly inside canvas. NO printed text, numbers, letters, labels, watermarks, visible grid lines or sheet border. Requested object frames, cards and banners are part of the art; do not add a frame around the sheet.
+FILE cards16.png — never print filename. OUTPUT EXACTLY 1536x1024.
+Seven columns by two rows. Staff faces have lanyard/name-badge top motif. Row2 column6 is EMPTY magenta, not a card. All front frames thick 2px border, light inner area, EMPTY 20x20 upper-center window and blank bottom name strip. Back designs use centered emblem instead of a window. No animals/people or writing in windows.
+ROW 1: EXACTLY 7 columns. Default native size 32x44.
+1. common animal card: gray border
+2. uncommon animal card: green border
+3. rare animal card: blue border and corner gems
+4. epic animal card: purple ornate corners
+5. legendary animal card: gold, sparkles, small crown
+6. shiny overlay frame: rainbow border and star sparkles
+7. animal card back: dark green with paw print
+ROW 2: EXACTLY 7 columns. Default native size 32x44.
+1. common staff card: gray
+2. uncommon staff card: green
+3. rare staff card: blue
+4. epic staff card: purple
+5. legendary staff card: gold
+6. EMPTY CELL: pure magenta, nothing drawn
+7. staff card back: navy with badge emblem

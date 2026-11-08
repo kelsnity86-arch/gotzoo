@@ -1,0 +1,444 @@
+{
+  "project": "BbopZOO",
+  "background": "#FF00FF",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "style": "True pixel art; exact native grids scaled with solid square pixels; 1-native-pixel outline #1a1c2c; flat 1–2 tone shading; no antialiasing, blur, soft shadows, smooth gradients, grid lines, labels, letters or watermarks. Isolated sprites with ample magenta gaps.",
+  "sheets": [
+    {
+      "filename": "gacha16.png",
+      "group": "gacha",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        6,
+        6
+      ],
+      "native_by_row": [
+        [
+          48,
+          48
+        ],
+        [
+          48,
+          48
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "spring idle machine: pink body, cherry blossoms on top",
+          "summer idle machine: watermelon-striped body, sun on top",
+          "autumn idle machine: orange body, maple leaves on top",
+          "winter idle machine: white-blue body, snow cap and icicles"
+        ],
+        [
+          "spring shaking machine",
+          "summer shaking machine",
+          "autumn shaking machine",
+          "winter shaking machine"
+        ],
+        [
+          "closed gray capsule",
+          "closed green capsule",
+          "closed blue capsule",
+          "closed purple capsule",
+          "closed gold capsule",
+          "closed rainbow shiny capsule"
+        ],
+        [
+          "opened gray capsule",
+          "opened green capsule",
+          "opened blue capsule",
+          "opened purple capsule",
+          "opened gold capsule",
+          "opened rainbow shiny capsule"
+        ]
+      ],
+      "description": "Four seasonal machines in idle row and the same four in shaking row. Glass dome full of colorful capsules, coin slot, large crank, paw print on front. Shaking: slight tilt, turned crank, small motion marks. Capsules have their colored top halves and light lower halves; opened top halves pop up with light shining out."
+    },
+    {
+      "filename": "staffgacha16.png",
+      "group": "hiring",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        5,
+        5
+      ],
+      "native_by_row": [
+        [
+          32,
+          32
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          16,
+          24
+        ]
+      ],
+      "native_overrides": {
+        "1:4": [
+          48,
+          48
+        ]
+      },
+      "rows": [
+        [
+          "closed job application envelope",
+          "envelope opening with paper sliding out",
+          "blank application paper with photo box; no writing",
+          "interview desk with small bell",
+          "coin money bag"
+        ],
+        [
+          "gray round stamp impression with paw-and-star emblem",
+          "green round stamp impression with paw-and-star emblem",
+          "blue round stamp impression with paw-and-star emblem",
+          "purple round stamp impression with paw-and-star emblem",
+          "gold round stamp impression with paw-and-star emblem"
+        ],
+        [
+          "gray approved stamp handle tool",
+          "green approved stamp handle tool",
+          "blue approved stamp handle tool",
+          "purple approved stamp handle tool",
+          "gold approved stamp handle tool"
+        ]
+      ],
+      "description": "Hiring interview gacha. No letters anywhere, including papers and stamp impressions. The desk is 48x48 while other first-row items are 32x32. Row 2 flat stamp impressions, row 3 physical stamp tools in corresponding colors."
+    },
+    {
+      "filename": "cards16.png",
+      "group": "cards",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        7,
+        7
+      ],
+      "native_by_row": [
+        [
+          32,
+          44
+        ],
+        [
+          32,
+          44
+        ]
+      ],
+      "empty_slots": [
+        [
+          2,
+          6
+        ]
+      ],
+      "rows": [
+        [
+          "common animal card: gray border",
+          "uncommon animal card: green border",
+          "rare animal card: blue border and corner gems",
+          "epic animal card: purple ornate corners",
+          "legendary animal card: gold, sparkles, small crown",
+          "shiny overlay frame: rainbow border and star sparkles",
+          "animal card back: dark green with paw print"
+        ],
+        [
+          "common staff card: gray",
+          "uncommon staff card: green",
+          "rare staff card: blue",
+          "epic staff card: purple",
+          "legendary staff card: gold",
+          null,
+          "staff card back: navy with badge emblem"
+        ]
+      ],
+      "description": "Seven columns by two rows. Staff faces have lanyard/name-badge top motif. Row2 column6 is EMPTY magenta, not a card. All front frames thick 2px border, light inner area, EMPTY 20x20 upper-center window and blank bottom name strip. Back designs use centered emblem instead of a window. No animals/people or writing in windows."
+    },
+    {
+      "filename": "icons16.png",
+      "group": "icons",
+      "size": [
+        1024,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "gold coin",
+          "heart",
+          "person (visitors)",
+          "star (stage)",
+          "small cage (capacity)",
+          "ticket",
+          "name badge (staff slot)",
+          "horseshoe magnet"
+        ],
+        [
+          "three cards merging into one (fusion)",
+          "backpack",
+          "padlock",
+          "gacha capsule",
+          "green up arrow",
+          "gear",
+          "green check mark",
+          "red X"
+        ],
+        [
+          "job application envelope",
+          "money bag with coin (salary)",
+          "wrench with coin (upkeep)",
+          "cracked red coin (debt)",
+          "small castle (zoo scale)",
+          "building (facility)",
+          "paint brush (decoration)",
+          "cherry blossom (spring)"
+        ],
+        [
+          "sun (summer)",
+          "maple leaf (autumn)",
+          "snowflake (winter)",
+          "two linked hearts (synergy)",
+          "rainbow sparkle (shiny)",
+          "blank protest sign (strike)",
+          "exit door with arrow (fire staff)",
+          "gold trophy"
+        ],
+        [
+          "two crossed flags (rival)",
+          "calendar (no numbers)",
+          "rain cloud",
+          "star badge (special option)",
+          "birthday cake (anniversary)",
+          "hourglass (limited)",
+          "megaphone",
+          "stethoscope"
+        ]
+      ],
+      "description": "40 bold readable 16x16 icons, exact 8 columns x 5 rows. Symbols such as X/check/arrows are graphic shapes. Calendar, protest sign, badge and ticket have no text/numbers."
+    },
+    {
+      "filename": "fx16.png",
+      "group": "effects",
+      "size": [
+        1536,
+        1280
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "gold coin spin frame 1 (front)",
+          "gold coin spin frame 2 (turning)",
+          "gold coin spin frame 3 (edge)",
+          "gold coin spin frame 4 (turning back)",
+          "big gold coin",
+          "pile of coins"
+        ],
+        [
+          "white-yellow sparkle burst frame 1 (small)",
+          "white-yellow sparkle burst frame 2 (big)",
+          "white-yellow sparkle burst frame 3 (fading)",
+          "pink heart",
+          "meat on bone",
+          "fish"
+        ],
+        [
+          "carrot",
+          "leaf bundle",
+          "yellow star",
+          "red exclamation shape (symbol only)",
+          "music note",
+          "dust puff"
+        ],
+        [
+          "sleeping bubble with two small zigzag shapes, not letters",
+          "cherry petal",
+          "raindrop",
+          "falling maple leaf",
+          "snowflake",
+          "rainbow sparkle frame 1"
+        ],
+        [
+          "rainbow sparkle frame 2",
+          "coin with ribbon (gift)",
+          "cracked broken coin",
+          "firework burst frame 1",
+          "firework burst frame 2",
+          "confetti pieces"
+        ]
+      ],
+      "description": "30 effects, 6 columns x 5 rows. Distinct readable animation frames. Sleep marks are two small zigzag shapes, never typed letters. Light is flat colors, no glow blur."
+    },
+    {
+      "filename": "fxbig16.png",
+      "group": "effects",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        3,
+        4
+      ],
+      "native_by_row": [
+        [
+          24,
+          96
+        ],
+        [
+          96,
+          96
+        ],
+        [
+          96,
+          24
+        ]
+      ],
+      "native_overrides": {
+        "2:2": [
+          128,
+          48
+        ],
+        "2:3": [
+          64,
+          32
+        ]
+      },
+      "rows": [
+        [
+          "green vertical light pillar",
+          "blue vertical light pillar",
+          "purple vertical light pillar",
+          "gold vertical light pillar",
+          "rainbow vertical light pillar"
+        ],
+        [
+          "legendary burst: radiating gold rays and sparkles",
+          "cut-in background banner: diagonal gold speed lines on deep purple",
+          "silhouette spotlight circle on floor"
+        ],
+        [
+          "blank pink season ribbon with cherry blossoms",
+          "blank sky-blue season ribbon with suns and waves",
+          "blank orange season ribbon with maple leaves",
+          "blank white-blue season ribbon with snowflakes"
+        ]
+      ],
+      "description": "12 large gacha effects on three rows with 5/3/4 items. Pillars 24x96 have bright core with blocky stepped edge bands (no smooth gradients). Burst 96x96, diagonal banner 128x48, floor spotlight 64x32. Bottom ribbons 96x24, empty centers and no titles."
+    }
+  ]
+}
