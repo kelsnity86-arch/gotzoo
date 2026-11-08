@@ -1,0 +1,30 @@
+{
+  "readable_png": true,
+  "asset_kind": "image_generator_source_sheet",
+  "engine_ready": false,
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "path": "assets/spritesheets16/buildings-large/buildings_big16.png",
+  "sha256": "4793d394e4027483268fcf37cd029297312dce9b4de1f8d4e25b4c37f7aedc01",
+  "actual_size": [
+    1254,
+    1254
+  ],
+  "requested_size": [
+    1536,
+    1536
+  ],
+  "canvas_pass": false,
+  "square_canvas_pass": true,
+  "unique_rgb_colors": 332269,
+  "off_palette_pixels": 1572504,
+  "palette_pass": false,
+  "exact_magenta_perimeter_pass": false,
+  "native_48_64_80_grid": "NOT_CERTIFIED",
+  "one_pixel_outline_and_flat_two_tones": "NOT_CERTIFIED",
+  "door_scale_vs_26px_visitors": "NOT_TESTED_IN_GAME",
+  "common_pixel_scale_and_gutters": "NOT_CERTIFIED",
+  "reference": "assets/spritesheets16/world-life/buildings/buildings16.png",
+  "reference_sha256": "d01292e429219001df31d661309a928baa3601e37836c95006168aa62b0631af",
+  "visual_review": "6 columns x 3 rows inspected; family colors and bear cutout retained; side-wall depth, windows, blank plaques and pavilion access added.",
+  "correction": "Initial wide, near-reference output was superseded by square architectural redraw."
+}

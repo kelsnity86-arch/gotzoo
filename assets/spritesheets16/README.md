@@ -1,5 +1,7 @@
 # BbopZOO 그림 자료 — 최신 모음과 제작 기록
 
+신규 확대 건물: [6종×3단계 시트](buildings-large/README.md) · [건물 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-buildings-big16-source.zip). 아래 79장 스냅샷 이후 추가된 생성 원본이며 정확한 크기·픽셀 규격은 HOLD입니다.
+
 **[전체 그림 최신 파일 ZIP — 79장, 약 119MB](https://codeload.github.com/kelsnity86-arch/gotzoo/zip/refs/heads/art-bundle-20261108-378033f)** · [구성과 검증 기록](../../downloads/ALL_ART_LATEST.md). 최근 세트·기능 보충 63장과 이전 디자인 참고 16장을 구분한 생성 원본 모음입니다. 아래 31장 ZIP은 초기 묶음입니다.
 
 UI·날씨 추가: [아이콘 72개·날씨/야간 24개 원본 3장](ui-weather/README.md) · [3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-ui-weather16-sources.zip). 정확한 픽셀 격자·팔레트는 HOLD이며 UI 2장의 출력 크기도 요청과 다릅니다.

@@ -1,0 +1,8 @@
+{
+  "filename": "buildings_big16.png",
+  "reference": "assets/spritesheets16/world-life/buildings/buildings16.png",
+  "initial_source": "/workspace/generated_images/exec-42703dcb-365b-48fa-96c1-597a8465ee79.png",
+  "final_source": "/workspace/generated_images/exec-ee33536d-f177-48ba-a124-95bc6232de9a.png",
+  "destination": "assets/spritesheets16/buildings-large/buildings_big16.png",
+  "edits": "Square layout; deeper architectural structure, taller facades, side windows, blank plaques and pergola access."
+}

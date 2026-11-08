@@ -1,0 +1,52 @@
+{
+  "project": "BbopZOO",
+  "filename": "buildings_big16.png",
+  "requested_size": [
+    1536,
+    1536
+  ],
+  "grid": [
+    6,
+    3
+  ],
+  "native_by_row": [
+    [
+      48,
+      48
+    ],
+    [
+      64,
+      64
+    ],
+    [
+      80,
+      80
+    ]
+  ],
+  "columns": [
+    "snack stand",
+    "restroom with two doors",
+    "bear photo cutout",
+    "fountain plaza",
+    "pergola rest area",
+    "animal clinic"
+  ],
+  "upgrade_levels": [
+    "small",
+    "medium",
+    "large and fancy"
+  ],
+  "reference": "assets/spritesheets16/world-life/buildings/buildings16.png",
+  "visitor_native_height": 26,
+  "background": "#FF00FF",
+  "outline": "#2b1d14",
+  "style": {
+    "view": "front-facing gentle 3/4 top-down",
+    "light": "top-left",
+    "shadow": "solid darker shape down-right",
+    "flat_shading": "two tones",
+    "blank_signs": true,
+    "no_text": true
+  },
+  "request_source": "docs/prompt_buildings_big16.txt"
+}

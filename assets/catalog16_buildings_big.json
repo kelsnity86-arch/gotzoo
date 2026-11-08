@@ -1,0 +1,227 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 1,
+  "requested_slot_count": 18,
+  "sheets": [
+    {
+      "filename": "buildings_big16.png",
+      "path": "assets/spritesheets16/buildings-large/buildings_big16.png",
+      "sha256": "4793d394e4027483268fcf37cd029297312dce9b4de1f8d4e25b4c37f7aedc01",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "requested_grid": [
+        6,
+        3
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "building": "snack stand",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "building": "restroom with two doors",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "building": "bear photo cutout",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "building": "fountain plaza",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "building": "pergola rest area",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "building": "animal clinic",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "building": "snack stand",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "building": "restroom with two doors",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "building": "bear photo cutout",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "building": "fountain plaza",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "building": "pergola rest area",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "building": "animal clinic",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "building": "snack stand",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "building": "restroom with two doors",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "building": "bear photo cutout",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "building": "fountain plaza",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "building": "pergola rest area",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "building": "animal clinic",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ]
+        }
+      ]
+    }
+  ]
+}
