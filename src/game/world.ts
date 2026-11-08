@@ -17,6 +17,8 @@ export const TILE = 8;
 export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
 export const ZONE_H = 80;      // 관객존 높이 (위 = 관객 건물 줄, 아래 = 관람객 길)
 export const PATH_Y0 = 50, PATH_Y1 = 72; // 관람객이 걷는 길 (관객존 안)
+/** 입구 게이트 가운데 x: 왼쪽 손님은 여기서 나오고 여기로 나간다 */
+export const GATE_X = 22;
 
 export interface PenRect { x: number; y: number; w: number; h: number }
 /** 우리 모양: 타일 격자 원점 · 칸 수 · 마스크(우리 칸) · 바닥(테두리 아닌 우리 칸) */
@@ -580,7 +582,7 @@ export class World {
         // 돌아가다 벤치에서 쉬어 간다 (정한 사람만, 비었을 때)
         const b = this.benches[v.bench ?? -1];
         if (b && this.phase === 'day' && !b.busy && Math.abs(b.x - v.x) < 1.5) { b.busy = true; v.state = 'sit'; v.t = 0; v.x = b.x; v.y = b.y; v.pose = 'sit'; continue; }
-        if (v.x < -16 || v.x > L.w + 16) this.visitors.splice(i, 1);
+        if (v.x < GATE_X || v.x > L.w + 16) this.visitors.splice(i, 1);
       }
     }
 
@@ -678,7 +680,7 @@ export class World {
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
-    this.visitors.push({ vip, x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
+    this.visitors.push({ vip, x: dir > 0 ? GATE_X : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
       state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng(),
       bench: this.benches.length && this.rng() < 0.18 ? Math.floor(this.rng() * this.benches.length) : -1 });
   }

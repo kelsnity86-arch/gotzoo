@@ -612,7 +612,7 @@ export class Panel {
     const owned = (n: number) => s.items.filter((it) => it.type === `deco:${se.key}:${n}`).length;
     return h('div', {},
       h('div', { class: 'hero' }, h('div', { class: 'title' }, `울타리 · 입구 꾸미기 · ${DECO_TIERS[tier]}`), h('div', { class: 'sub' }, `모든 동물 매력 +${tier * 3}% · 울타리와 입구 게이트 모양이 바뀌어요`)),
-      h('div', { class: 'row' }, h('div', { class: 'row-art' }, hasPng(`fac_gate${Math.min(3, tier + 1)}`) ? pix(`fac_gate${Math.min(3, tier + 1)}`, 32) : null),
+      h('div', { class: 'row' }, h('div', { class: 'row-art' }, hasPng(`v2_gate_${Math.min(3, tier + 1)}`) ? pix(`v2_gate_${Math.min(3, tier + 1)}`, 44) : null),
         h('div', { class: 'row-info' }, h('div', { class: 'row-name' }, cost === null ? '최고 단계 (황금)' : `다음: ${DECO_TIERS[tier + 1]} 울타리`), h('div', { class: 'sub' }, cost === null ? '모든 동물 매력 +9%' : `모든 동물 매력 +${(tier + 1) * 3}%`), lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
         cost === null ? h('span', { class: 'max' }, '최고') : lock ? h('span', { class: 'max' }, `${lock}단계`) : this.nightBuy(cost, () => { if (buyUpgrade(s, 'deco')) { audio.sfx('buy'); this.changed(); } })),
       h('div', { class: 'section-title' }, `${se.icon} ${se.name} 소품 (이 계절에만 팔아요)`),

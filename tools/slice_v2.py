@@ -146,6 +146,36 @@ def tiles():
     for i, t in enumerate(f): S.save(t, OUT / f'floor_{HABS[i // 4]}_{i % 4 + 1}.png')
 
 
+def gate():
+    """입구 게이트 4단계 · 단계별 부품 5종 · 계절 장식(아치 장식 4, 기둥 장식 쌍 4)"""
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16' / 'entrance'
+    g, _, _ = cells('gates/gate16.png', 2, 2, crop=True)
+    for i, t in enumerate(g):
+        if t is not None: S.save(t, OUT / f'gate_{i}.png')
+    pt, _, _ = cells('parts/gate_parts16.png', 5, 4)
+    names = ['wall', 'post', 'booth', 'turnstile', 'flag']
+    for i, t in enumerate(pt):
+        if t is not None: S.save(t, OUT / f'gatepart_{i // 5}_{names[i % 5]}.png')
+    a, fg, _ = load('seasonal/gate_season16.png')
+    H, W = fg.shape
+    seasons = ['spring', 'summer', 'autumn', 'winter']
+    for k, se in enumerate(seasons):
+        x0, x1 = int(k * W / 4), int((k + 1) * W / 4)
+        bs = [b for b in S.components(fg[:H // 2, x0:x1], 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= 300]
+        if bs:
+            bb = (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs))
+            S.save(fix_shadow(S.extract(a[:H // 2, x0:x1], fg[:H // 2, x0:x1], bb, 5.5)), OUT / f'gatedeco_{se}_arch.png')
+        for j in range(2):
+            c0, c1 = int((k * 2 + j) * W / 8), int((k * 2 + j + 1) * W / 8)
+            sa, sf = a[H // 2:, c0:c1], fg[H // 2:, c0:c1]
+            bs = [b for b in S.components(sf, 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= 300]
+            if bs:
+                bb = (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs))
+                S.save(fix_shadow(S.extract(sa, sf, bb, 5.5)), OUT / f'gatedeco_{se}_base{j}.png')
+    SRC = old
+
+
 def buildings():
     bl, _, _ = cells('buildings/buildings16.png', 6, 3, crop=True)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
@@ -155,6 +185,7 @@ def buildings():
 
 if __name__ == '__main__':
     if sys.argv[1:] == ['buildings']: buildings()
+    elif sys.argv[1:] == ['gate']: gate()
     elif sys.argv[1:] == ['tiles']:
         tiles(); shapes('paths/path16.png', ['path_sq', 'path_ring', 'path_sq_w', 'path_ring_w'])
     else: run()

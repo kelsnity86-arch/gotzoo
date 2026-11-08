@@ -2,7 +2,7 @@
 import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, zoneRow, type VisitorEnt, type World } from '../game/world';
+import { BLOCK, GATE_X, PATH_Y0, PATH_Y1, TILE, ZONE_H, zoneRow, type VisitorEnt, type World } from '../game/world';
 import { penAttract } from '../game/rules';
 import { animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
@@ -181,8 +181,24 @@ export class FieldRenderer {
       if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
     }
     // 8. 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
-    const gk = `fac_gate${this.decoTier}`;
-    if (hasPng(gk)) { const im = sprite(gk); const k = Math.min(2, Math.max(1, Math.floor(((ZONE_H - 20) * R) / im.height))); this.obj(c, im, 4 + (im.width * k) / R / 2, p1 * TILE + TILE - 1, (Math.max(im.width, im.height) * k) / R); }
+    // 앞에서 본 아치 문: 손님은 가운데 열린 문으로 드나든다. 간판에 이름, 계절 장식(아치 · 기둥 밑), 옆에 깃대
+    const tier4 = Math.max(0, Math.min(3, this.decoTier));
+    if (hasPng(`v2_gate_${tier4}`)) {
+      const im = v(`gate_${tier4}`), gw = im.width / R, gh = im.height / R, gb = p1 * TILE + TILE - 1;
+      const gl = GATE_X - gw / 2, gt = gb - gh;
+      obj(`gatepart_${tier4}_flag`, gl + gw + 5, gb - 2);
+      obj(`gate_${tier4}`, GATE_X, gb);
+      // 간판 이름 (2단계 철문은 둥근 표지판이라 짧게)
+      c.save();
+      c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17);
+      c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = '#fff6e0'; c.strokeText(tier4 === 2 ? 'ZOO' : '뽑ZOO', GATE_X, ty);
+      c.fillStyle = '#5d3a24'; c.fillText(tier4 === 2 ? 'ZOO' : '뽑ZOO', GATE_X, ty);
+      c.restore();
+      obj(`gatedeco_${season}_arch`, GATE_X, gt + gh * 0.5);
+      obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
+      obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);
+    }
     this.bg = cv;
     return cv;
   }
@@ -207,7 +223,7 @@ export class FieldRenderer {
     if (!this.autoZoomed && L.w > 64) {
       this.autoZoomed = true;
       const uz = FieldRenderer.START_PX / fit;
-      if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = L.w / 2; this.camY = 0; }
+      if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = 0; this.camY = 0; }
     }
     // 배율: 도트 1개가 기기 픽셀 정수 배가 되게 내림 (28% 넘게 작아지면 소수 배율).
     // 화면 밀도가 높은 기기(dpr ≥ 2)는 소수 배율이어도 고르지 않은 게 안 보여서 꽉 채운다
