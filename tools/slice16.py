@@ -1,0 +1,229 @@
+"""GPT가 그린 16px 시트(도트 1칸이 큰 사각형으로 확대된 그림)를 원래 해상도 스프라이트로 되돌린다.
+
+1) 배경(마젠타 계열)과 그림을 나누고, 붙어 있는 덩어리를 찾아 위→아래, 왼→오 순서로 정렬한다.
+2) 시트 전체에서 색이 바뀌는 경계의 간격(자기상관 주기)으로 도트 1칸 크기를 구한다.
+3) 덩어리마다 격자 위치(위상)를 맞추고, 칸 가운데 색의 중앙값을 뽑는다.
+4) 38색 팔레트로 정리하고, 배경은 투명으로. 정해진 캔버스(예: 16×16)에 맞춘다.
+
+python3 tools/slice16.py  → assets/sprites16/** 에 PNG, reports/SLICE16.json 에 결과
+"""
+from pathlib import Path
+import json, sys
+import numpy as np
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / 'assets' / 'spritesheets16'
+OUT = ROOT / 'assets' / 'sprites16'
+PALETTE = ['#1a1c2c', '#333c57', '#566c86', '#94b0c2', '#f4f4f4', '#2b1d14', '#5d3a24', '#8a5a3b', '#c28a5c', '#e8c39e', '#f6e6c8', '#8b1e2d', '#d83a3a', '#ef7d32', '#f7c948', '#fff3a3', '#e0a526', '#1f5d3a', '#38a35b', '#a7d65b', '#2a9d8f', '#29366f', '#3b5dc9', '#41a6f6', '#73eff7', '#5d275d', '#8e44ad', '#f08cbe', '#ffc8dd', '#c7cfdd', '#ffb7d0', '#b8452e', '#d9822b', '#6b8f2e', '#e9f3ff', '#7fb5d6', '#3e2f5b', '#f2e3a0']
+PAL = np.array([tuple(bytes.fromhex(c[1:])) for c in PALETTE], dtype=np.float32)
+
+
+def bg_mask(a: np.ndarray) -> np.ndarray:
+    r, g, b = a[..., 0].astype(int), a[..., 1].astype(int), a[..., 2].astype(int)
+    return (r > 140) & (b > 140) & (g < 120) & (np.abs(r - b) < 100)
+
+
+def components(fg: np.ndarray, cell: int, dil: int):
+    """덩어리 찾기: cell 크기로 줄여서 dil칸 넓힌 뒤 연결된 묶음"""
+    H, W = fg.shape
+    h, w = (H + cell - 1) // cell, (W + cell - 1) // cell
+    small = np.zeros((h, w), bool)
+    pad = np.zeros((h * cell, w * cell), bool); pad[:H, :W] = fg
+    small = pad.reshape(h, cell, w, cell).sum(axis=(1, 3)) > cell  # 점 몇 개 노이즈는 무시
+    grown = small.copy()
+    for _ in range(dil):
+        g2 = grown.copy()
+        g2[1:] |= grown[:-1]; g2[:-1] |= grown[1:]; g2[:, 1:] |= grown[:, :-1]; g2[:, :-1] |= grown[:, 1:]
+        grown = g2
+    lab = -np.ones((h, w), int); n = 0; boxes = []
+    for y in range(h):
+        for x in range(w):
+            if not grown[y, x] or lab[y, x] >= 0: continue
+            stack = [(y, x)]; lab[y, x] = n; x0 = x1 = x; y0 = y1 = y
+            while stack:
+                cy, cx = stack.pop()
+                x0, x1, y0, y1 = min(x0, cx), max(x1, cx), min(y0, cy), max(y1, cy)
+                for ny, nx in ((cy + 1, cx), (cy - 1, cx), (cy, cx + 1), (cy, cx - 1)):
+                    if 0 <= ny < h and 0 <= nx < w and grown[ny, nx] and lab[ny, nx] < 0:
+                        lab[ny, nx] = n; stack.append((ny, nx))
+            # 넓힌 만큼 되돌린 실제 그림 범위
+            sub = fg[y0 * cell:(y1 + 1) * cell, x0 * cell:(x1 + 1) * cell]
+            ys, xs = np.nonzero(sub)
+            if len(ys) > 30:
+                boxes.append((x0 * cell + xs.min(), y0 * cell + ys.min(), x0 * cell + xs.max() + 1, y0 * cell + ys.max() + 1))
+            n += 1
+    return boxes
+
+
+def order_rows(boxes, tol):
+    """위→아래 줄로 묶고 줄 안에서 왼→오"""
+    boxes = sorted(boxes, key=lambda b: (b[1] + b[3]) / 2)
+    rows = []
+    for b in boxes:
+        cy = (b[1] + b[3]) / 2
+        if rows and abs(cy - rows[-1][0]) < tol: rows[-1][1].append(b); rows[-1][0] = (rows[-1][0] * (len(rows[-1][1]) - 1) + cy) / len(rows[-1][1])
+        else: rows.append([cy, [b]])
+    return [sorted(r[1], key=lambda b: b[0]) for r in rows]
+
+
+def pixel_size(a: np.ndarray, fg: np.ndarray, lo=5.0, hi=40.0) -> float:
+    """색 경계 간격의 주기 = 도트 1칸 크기 (가로·세로 평균)"""
+    f = a.astype(np.float32)
+    res = []
+    for axis in (1, 0):
+        d = np.abs(np.diff(f, axis=axis)).sum(axis=2) > 60
+        m = fg[:, 1:] & fg[:, :-1] if axis == 1 else fg[1:, :] & fg[:-1, :]
+        prof = (d & m).sum(axis=0 if axis == 1 else 1).astype(np.float32)
+        prof -= prof.mean()
+        ac = np.correlate(prof, prof, mode='full')[len(prof) - 1:]
+        best, bv = lo, -1e18
+        for s in np.arange(lo, hi, 0.05):
+            # 주기 s의 배수 위치 자기상관 합 (보간)
+            v = 0.0
+            for k in (1, 2, 3, 4):
+                p = s * k; i = int(p); t = p - i
+                if i + 1 < len(ac): v += ac[i] * (1 - t) + ac[i + 1] * t
+            if v > bv: bv, best = v, s
+        res.append(best)
+    return float(np.mean(res))
+
+
+def extract(a: np.ndarray, fg: np.ndarray, box, s: float):
+    """덩어리 하나를 도트 격자로: 위상을 맞추고 칸 가운데 중앙값"""
+    x0, y0, x1, y1 = box
+    best = None
+    for ox in np.linspace(0, s, 8, endpoint=False):
+        for oy in np.linspace(0, s, 8, endpoint=False):
+            gx0, gy0 = x0 - s + ox, y0 - s + oy
+            nw, nh = int(np.ceil((x1 - gx0) / s)), int(np.ceil((y1 - gy0) / s))
+            err = 0.0
+            for j in range(nh):
+                for i in range(nw):
+                    cx0, cy0 = int(gx0 + i * s + s * 0.2), int(gy0 + j * s + s * 0.2)
+                    cx1, cy1 = int(gx0 + (i + 1) * s - s * 0.2), int(gy0 + (j + 1) * s - s * 0.2)
+                    if cx1 <= cx0 or cy1 <= cy0 or cx0 < 0 or cy0 < 0: continue
+                    blk = a[cy0:cy1, cx0:cx1].reshape(-1, 3).astype(np.float32)
+                    if len(blk): err += blk.std(axis=0).sum()
+            if best is None or err < best[0]: best = (err, gx0, gy0, nw, nh)
+    _, gx0, gy0, nw, nh = best
+    out = np.zeros((nh, nw, 4), np.uint8)
+    for j in range(nh):
+        for i in range(nw):
+            cx0, cy0 = int(gx0 + i * s + s * 0.3), int(gy0 + j * s + s * 0.3)
+            cx1, cy1 = max(cx0 + 1, int(gx0 + (i + 1) * s - s * 0.3)), max(cy0 + 1, int(gy0 + (j + 1) * s - s * 0.3))
+            cx0, cy0 = max(0, cx0), max(0, cy0)
+            blk = a[cy0:cy1, cx0:cx1].reshape(-1, 3); fm = fg[cy0:cy1, cx0:cx1].reshape(-1)
+            if blk.size == 0 or fm.mean() < 0.5: continue
+            c = np.median(blk[fm], axis=0).astype(np.float32)
+            k = int(((PAL - c) ** 2).sum(axis=1).argmin())
+            out[j, i, :3] = PAL[k]; out[j, i, 3] = 255
+    # 빈 가장자리 줄 잘라내기
+    al = out[..., 3] > 0
+    if not al.any(): return out
+    ys, xs = np.nonzero(al)
+    return out[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+def fit(spr: np.ndarray, W: int, H: int, anchor='bottom') -> Image.Image:
+    """캔버스 W×H에 맞춘다 (가로 가운데, 세로는 바닥 또는 가운데). 넘치면 가장자리를 자른다"""
+    h, w = spr.shape[:2]
+    canvas = np.zeros((H, W, 4), np.uint8)
+    sx = max(0, (w - W) // 2); sy = max(0, h - H) if anchor == 'bottom' else max(0, (h - H) // 2)
+    spr = spr[sy:sy + H, sx:sx + W]; h, w = spr.shape[:2]
+    ox = (W - w) // 2; oy = H - h if anchor == 'bottom' else (H - h) // 2
+    canvas[oy:oy + h, ox:ox + w] = spr
+    return Image.fromarray(canvas, 'RGBA')
+
+
+def slice_sheet(path: Path, expect: int, size_px=None, tol=None):
+    a = np.array(Image.open(path).convert('RGB'))
+    fg = ~bg_mask(a)
+    s = pixel_size(a, fg)
+    cell = max(2, int(s / 2))
+    boxes = components(fg, cell, 2)
+    rows = order_rows(boxes, tol or s * 6)
+    flat = [b for r in rows for b in r]
+    return a, fg, s, rows, flat
+
+
+
+
+# ── 격자 시트 일괄 처리 ──
+def grid_cells(a, fg, cols, rows, s, mode='sprite', pairs=False):
+    """시트를 cols×rows 칸으로 나눠 칸마다 스프라이트. mode='tile'이면 칸 안 그림을 16×16 바닥 타일로"""
+    H, W = fg.shape
+    cw, ch = W / cols, H / rows
+    out = []
+    for r in range(rows):
+        for c in range(cols):
+            x0, y0, x1, y1 = int(c * cw), int(r * ch), int((c + 1) * cw), int((r + 1) * ch)
+            sub = fg[y0:y1, x0:x1]
+            # 작은 티끌은 빼고 그림 범위
+            rs, cs = sub.sum(axis=1), sub.sum(axis=0)
+            ys = np.nonzero(rs > max(2, s * 0.6))[0]; xs = np.nonzero(cs > max(2, s * 0.6))[0]
+            if not len(ys) or not len(xs): out.append(None); continue
+            box = (x0 + xs.min(), y0 + ys.min(), x0 + xs.max() + 1, y0 + ys.max() + 1)
+            if mode == 'tile':
+                bw, bh = box[2] - box[0], box[3] - box[1]
+                ts = max(bw, bh) / 16
+                arr = np.zeros((16, 16, 4), np.uint8)
+                for j in range(16):
+                    for i in range(16):
+                        cx0, cy0 = int(box[0] + (i + 0.3) * ts), int(box[1] + (j + 0.3) * ts)
+                        cx1, cy1 = max(cx0 + 1, int(box[0] + (i + 0.7) * ts)), max(cy0 + 1, int(box[1] + (j + 0.7) * ts))
+                        blk = a[cy0:cy1, cx0:cx1].reshape(-1, 3); fm = fg[cy0:cy1, cx0:cx1].reshape(-1)
+                        if not blk.size or fm.mean() < 0.5: continue
+                        col = np.median(blk[fm], axis=0).astype(np.float32)
+                        k = int(((PAL - col) ** 2).sum(axis=1).argmin())
+                        arr[j, i, :3] = PAL[k]; arr[j, i, 3] = 255
+                out.append(arr)
+            else:
+                out.append(extract(a, fg, box, s))
+    return out
+
+
+def save(arr, path: Path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.fromarray(arr, 'RGBA').save(path)
+
+
+# 시트 → (칸, 종류, 저장 이름 규칙)
+SHEETS = []
+for n in range(1, 13):
+    sub = 'permanent' if n <= 10 else 'seasonal'
+    SHEETS.append((f'animals/{sub}/animals16_{n:02d}.png', 5, 5, 'sprite', lambda i, n=n: f'a16/src_{(n - 1) * 25 + i:03d}.png'))
+for se in ('spring', 'summer', 'autumn', 'winter'):
+    SHEETS.append((f'world/people/people16_{se}.png', 8, 4, 'sprite', lambda i, se=se: f'people16/{se}_{i // 2:02d}_f{i % 2}.png'))
+    SHEETS.append((f'world/tiles/tiles16_{se}.png', 4, 4, 'tilemix', lambda i, se=se: f'tiles16/{se}_{i + 1:02d}.png'))
+SHEETS.append(('world/staff/staff16.png', 4, 5, 'sprite', lambda i: f'staff16/{i // 2:02d}_f{i % 2}.png'))
+SHEETS.append(('world/fences/fences16.png', 12, 4, 'tile', lambda i: f'fences16/t{i // 12}_{i % 12 + 1:02d}.png'))
+SHEETS.append(('ui-effects/icons/icons16.png', 8, 5, 'sprite', lambda i: f'icons16/{i + 1:02d}.png'))
+SHEETS.append(('ui-effects/effects/fx16.png', 6, 5, 'sprite', lambda i: f'fx16/{i + 1:02d}.png'))
+
+
+def run():
+    report = {}
+    for rel, cols, rows, mode, name in SHEETS:
+        p = SRC / rel
+        a = np.array(Image.open(p).convert('RGB'))
+        fg = ~bg_mask(a)
+        s = pixel_size(a, fg)
+        if mode == 'tilemix':
+            # 1~10번은 이어 붙는 바닥 (16×16로), 11~16번은 물체 (도트 그대로)
+            tiles = grid_cells(a, fg, cols, rows, s, 'tile')
+            objs = grid_cells(a, fg, cols, rows, s, 'sprite')
+            cells = [t if i < 10 else objs[i] for i, t in enumerate(tiles)]
+        else:
+            cells = grid_cells(a, fg, cols, rows, s, mode)
+        sizes = []
+        for i, arr in enumerate(cells):
+            if arr is None or arr.size == 0: continue
+            save(arr, OUT / name(i)); sizes.append(arr.shape[:2])
+        report[rel] = {'pixel': round(s, 2), 'count': len(sizes), 'expected': cols * rows, 'h_range': [int(min(x[0] for x in sizes)), int(max(x[0] for x in sizes))], 'w_range': [int(min(x[1] for x in sizes)), int(max(x[1] for x in sizes))]}
+        print(rel, report[rel], flush=True)
+    (ROOT / 'reports' / 'SLICE16.json').write_text(json.dumps(report, ensure_ascii=False, indent=1))
+
+
+if __name__ == '__main__':
+    run()

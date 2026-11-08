@@ -1,0 +1,314 @@
+{
+ "animals/permanent/animals16_01.png": {
+  "pixel": 7.5,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   21,
+   34
+  ],
+  "w_range": [
+   21,
+   33
+  ]
+ },
+ "animals/permanent/animals16_02.png": {
+  "pixel": 7.0,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   21,
+   30
+  ],
+  "w_range": [
+   26,
+   33
+  ]
+ },
+ "animals/permanent/animals16_03.png": {
+  "pixel": 8.37,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   13,
+   27
+  ],
+  "w_range": [
+   21,
+   30
+  ]
+ },
+ "animals/permanent/animals16_04.png": {
+  "pixel": 7.17,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   21,
+   36
+  ],
+  "w_range": [
+   23,
+   36
+  ]
+ },
+ "animals/permanent/animals16_05.png": {
+  "pixel": 8.45,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   18,
+   27
+  ],
+  "w_range": [
+   23,
+   31
+  ]
+ },
+ "animals/permanent/animals16_06.png": {
+  "pixel": 7.47,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   20,
+   32
+  ],
+  "w_range": [
+   26,
+   35
+  ]
+ },
+ "animals/permanent/animals16_07.png": {
+  "pixel": 7.62,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   22,
+   30
+  ],
+  "w_range": [
+   25,
+   34
+  ]
+ },
+ "animals/permanent/animals16_08.png": {
+  "pixel": 7.62,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   22,
+   30
+  ],
+  "w_range": [
+   23,
+   33
+  ]
+ },
+ "animals/permanent/animals16_09.png": {
+  "pixel": 6.67,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   24,
+   39
+  ],
+  "w_range": [
+   30,
+   39
+  ]
+ },
+ "animals/permanent/animals16_10.png": {
+  "pixel": 6.32,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   26,
+   36
+  ],
+  "w_range": [
+   32,
+   39
+  ]
+ },
+ "animals/seasonal/animals16_11.png": {
+  "pixel": 6.25,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   21,
+   36
+  ],
+  "w_range": [
+   30,
+   41
+  ]
+ },
+ "animals/seasonal/animals16_12.png": {
+  "pixel": 6.17,
+  "count": 25,
+  "expected": 25,
+  "h_range": [
+   32,
+   38
+  ],
+  "w_range": [
+   30,
+   41
+  ]
+ },
+ "world/people/people16_spring.png": {
+  "pixel": 5.25,
+  "count": 32,
+  "expected": 32,
+  "h_range": [
+   35,
+   41
+  ],
+  "w_range": [
+   21,
+   38
+  ]
+ },
+ "world/tiles/tiles16_spring.png": {
+  "pixel": 11.85,
+  "count": 16,
+  "expected": 16,
+  "h_range": [
+   11,
+   25
+  ],
+  "w_range": [
+   13,
+   23
+  ]
+ },
+ "world/people/people16_summer.png": {
+  "pixel": 5.0,
+  "count": 32,
+  "expected": 32,
+  "h_range": [
+   37,
+   44
+  ],
+  "w_range": [
+   22,
+   39
+  ]
+ },
+ "world/tiles/tiles16_summer.png": {
+  "pixel": 19.25,
+  "count": 16,
+  "expected": 16,
+  "h_range": [
+   7,
+   16
+  ],
+  "w_range": [
+   8,
+   16
+  ]
+ },
+ "world/people/people16_autumn.png": {
+  "pixel": 5.0,
+  "count": 32,
+  "expected": 32,
+  "h_range": [
+   37,
+   44
+  ],
+  "w_range": [
+   22,
+   39
+  ]
+ },
+ "world/tiles/tiles16_autumn.png": {
+  "pixel": 13.12,
+  "count": 16,
+  "expected": 16,
+  "h_range": [
+   10,
+   22
+  ],
+  "w_range": [
+   13,
+   21
+  ]
+ },
+ "world/people/people16_winter.png": {
+  "pixel": 5.32,
+  "count": 32,
+  "expected": 32,
+  "h_range": [
+   35,
+   41
+  ],
+  "w_range": [
+   21,
+   37
+  ]
+ },
+ "world/tiles/tiles16_winter.png": {
+  "pixel": 10.5,
+  "count": 16,
+  "expected": 16,
+  "h_range": [
+   13,
+   28
+  ],
+  "w_range": [
+   12,
+   27
+  ]
+ },
+ "world/staff/staff16.png": {
+  "pixel": 6.0,
+  "count": 20,
+  "expected": 20,
+  "h_range": [
+   43,
+   46
+  ],
+  "w_range": [
+   26,
+   36
+  ]
+ },
+ "world/fences/fences16.png": {
+  "pixel": 5.0,
+  "count": 48,
+  "expected": 48,
+  "h_range": [
+   16,
+   16
+  ],
+  "w_range": [
+   16,
+   16
+  ]
+ },
+ "ui-effects/icons/icons16.png": {
+  "pixel": 6.5,
+  "count": 40,
+  "expected": 40,
+  "h_range": [
+   17,
+   32
+  ],
+  "w_range": [
+   20,
+   27
+  ]
+ },
+ "ui-effects/effects/fx16.png": {
+  "pixel": 6.75,
+  "count": 30,
+  "expected": 30,
+  "h_range": [
+   15,
+   35
+  ],
+  "w_range": [
+   8,
+   35
+  ]
+ }
+}
