@@ -1,0 +1,438 @@
+{
+  "project": "BbopZOO",
+  "batch": "gacha-reveal16",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "background": "#FF00FF",
+  "outline": "#2b1d14",
+  "sheets": [
+    {
+      "filename": "gacha_machine16.png",
+      "group": "machines",
+      "grid": [
+        3,
+        6
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "native": [
+        64,
+        80
+      ],
+      "rows": [
+        [
+          {
+            "name": "spring pink animal machine with cherry blossoms",
+            "action": "idle"
+          },
+          {
+            "name": "spring pink animal machine with cherry blossoms",
+            "action": "shaking"
+          },
+          {
+            "name": "spring pink animal machine with cherry blossoms",
+            "action": "dispensing"
+          }
+        ],
+        [
+          {
+            "name": "summer sky-blue animal machine with little sun and palm leaf",
+            "action": "idle"
+          },
+          {
+            "name": "summer sky-blue animal machine with little sun and palm leaf",
+            "action": "shaking"
+          },
+          {
+            "name": "summer sky-blue animal machine with little sun and palm leaf",
+            "action": "dispensing"
+          }
+        ],
+        [
+          {
+            "name": "autumn orange animal machine with maple leaves",
+            "action": "idle"
+          },
+          {
+            "name": "autumn orange animal machine with maple leaves",
+            "action": "shaking"
+          },
+          {
+            "name": "autumn orange animal machine with maple leaves",
+            "action": "dispensing"
+          }
+        ],
+        [
+          {
+            "name": "winter white/red animal machine with snow cap and tiny wreath",
+            "action": "idle"
+          },
+          {
+            "name": "winter white/red animal machine with snow cap and tiny wreath",
+            "action": "shaking"
+          },
+          {
+            "name": "winter white/red animal machine with snow cap and tiny wreath",
+            "action": "dispensing"
+          }
+        ],
+        [
+          {
+            "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+            "action": "idle"
+          },
+          {
+            "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+            "action": "shaking"
+          },
+          {
+            "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+            "action": "dispensing"
+          }
+        ],
+        [
+          {
+            "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+            "action": "idle"
+          },
+          {
+            "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+            "action": "shaking"
+          },
+          {
+            "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+            "action": "dispensing"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "gacha_capsule16.png",
+      "group": "capsules",
+      "grid": [
+        4,
+        6
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "native": [
+        32,
+        32
+      ],
+      "rows": [
+        [
+          {
+            "name": "common gray capsule",
+            "action": "closed"
+          },
+          {
+            "name": "common gray capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "common gray capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "common gray capsule",
+            "action": "popped open"
+          }
+        ],
+        [
+          {
+            "name": "uncommon green capsule",
+            "action": "closed"
+          },
+          {
+            "name": "uncommon green capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "uncommon green capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "uncommon green capsule",
+            "action": "popped open"
+          }
+        ],
+        [
+          {
+            "name": "rare blue capsule",
+            "action": "closed"
+          },
+          {
+            "name": "rare blue capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "rare blue capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "rare blue capsule",
+            "action": "popped open"
+          }
+        ],
+        [
+          {
+            "name": "epic purple capsule",
+            "action": "closed"
+          },
+          {
+            "name": "epic purple capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "epic purple capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "epic purple capsule",
+            "action": "popped open"
+          }
+        ],
+        [
+          {
+            "name": "legendary gold capsule",
+            "action": "closed"
+          },
+          {
+            "name": "legendary gold capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "legendary gold capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "legendary gold capsule",
+            "action": "popped open"
+          }
+        ],
+        [
+          {
+            "name": "shiny pastel rainbow capsule",
+            "action": "closed"
+          },
+          {
+            "name": "shiny pastel rainbow capsule",
+            "action": "wobbling"
+          },
+          {
+            "name": "shiny pastel rainbow capsule",
+            "action": "cracking"
+          },
+          {
+            "name": "shiny pastel rainbow capsule",
+            "action": "popped open"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "gacha_fx16.png",
+      "group": "effects",
+      "grid": [
+        6,
+        3
+      ],
+      "size": [
+        1536,
+        1152
+      ],
+      "native_by_row": [
+        [
+          24,
+          96
+        ],
+        [
+          48,
+          48
+        ],
+        [
+          32,
+          32
+        ]
+      ],
+      "rows": [
+        [
+          {
+            "name": "common gray light pillar"
+          },
+          {
+            "name": "uncommon green light pillar"
+          },
+          {
+            "name": "rare blue light pillar"
+          },
+          {
+            "name": "epic purple light pillar"
+          },
+          {
+            "name": "legendary gold light pillar"
+          },
+          {
+            "name": "shiny pastel rainbow light pillar"
+          }
+        ],
+        [
+          {
+            "name": "common gray starburst ring"
+          },
+          {
+            "name": "uncommon green starburst ring"
+          },
+          {
+            "name": "rare blue starburst ring"
+          },
+          {
+            "name": "epic purple starburst ring"
+          },
+          {
+            "name": "legendary gold starburst ring"
+          },
+          {
+            "name": "shiny pastel rainbow starburst ring"
+          }
+        ],
+        [
+          {
+            "name": "small 4-point sparkle"
+          },
+          {
+            "name": "big 5-point star"
+          },
+          {
+            "name": "confetti burst"
+          },
+          {
+            "name": "sun rays burst"
+          },
+          {
+            "name": "puff of smoke"
+          },
+          {
+            "name": "heart fireworks"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "cards16.png",
+      "group": "cards",
+      "grid": [
+        4,
+        2
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "native": [
+        48,
+        64
+      ],
+      "rows": [
+        [
+          {
+            "name": "common gray animal front"
+          },
+          {
+            "name": "uncommon green leaf-corner animal front"
+          },
+          {
+            "name": "rare blue gem-corner animal front"
+          },
+          {
+            "name": "epic purple silver-trim animal front"
+          }
+        ],
+        [
+          {
+            "name": "legendary gold ornate animal front"
+          },
+          {
+            "name": "cream paw-print card back"
+          },
+          {
+            "name": "navy staff ID front with clip hole"
+          },
+          {
+            "name": "yellow-black enclosure front with blueprint grid window"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "gacha_cutin16.png",
+      "group": "banners",
+      "grid": [
+        1,
+        2
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "native": [
+        256,
+        80
+      ],
+      "rows": [
+        [
+          {
+            "name": "legendary gold rays, clouds and sparkles"
+          }
+        ],
+        [
+          {
+            "name": "epic purple and silver rays with stars"
+          }
+        ]
+      ]
+    }
+  ]
+}

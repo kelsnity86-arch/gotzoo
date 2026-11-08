@@ -1,0 +1,25 @@
+{
+  "postprocessing": "none; byte-for-byte copies",
+  "sources": [
+    {
+      "generated_source": "exec-371a0838-d8bf-49cd-9a27-ec78db6185d8.png",
+      "path": "assets/spritesheets16/gacha-reveal/machines/gacha_machine16.png"
+    },
+    {
+      "generated_source": "exec-cabb6237-d3ad-4547-b1a7-fbfd75f13c33.png",
+      "path": "assets/spritesheets16/gacha-reveal/capsules/gacha_capsule16.png"
+    },
+    {
+      "generated_source": "exec-c9e744a4-97e9-48e1-b626-81afd3e2c460.png",
+      "path": "assets/spritesheets16/gacha-reveal/effects/gacha_fx16.png"
+    },
+    {
+      "generated_source": "exec-e7a1707d-4179-46fd-97ea-adf78a28d577.png",
+      "path": "assets/spritesheets16/gacha-reveal/cards/cards16.png"
+    },
+    {
+      "generated_source": "exec-d164ce96-b0ee-43fc-8dde-e3f327d8b8fb.png",
+      "path": "assets/spritesheets16/gacha-reveal/banners/gacha_cutin16.png"
+    }
+  ]
+}

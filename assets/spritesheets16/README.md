@@ -1,5 +1,7 @@
 # BbopZOO 16px 명령서 — 전체 31장 생성 원본
 
+가챠 연출 추가: [기계·캡슐·FX·카드·컷인 5장](gacha-reveal/README.md) · [5장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-gacha-reveal16-sources.zip). 신규 카드는 별도 경로이며 정확한 격자·팔레트·프레임 재생은 HOLD입니다.
+
 사계절 장식 추가: [장식 48개 원본 4장](seasonal-decor/README.md) · [장식 4장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-seasonal-decor16-sources.zip). 2:1 배열이며 정확한 캔버스·네이티브 격자·팔레트·게임 배치 검증은 HOLD입니다.
 
 대형 동물 추가: [67종 원본 3장](animals-large/README.md) · [대형 동물 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-big16-sources.zip). 정확한 48×48/60×60 격자·팔레트·요청 캔버스 판정은 HOLD입니다.
