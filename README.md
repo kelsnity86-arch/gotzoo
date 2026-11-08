@@ -45,6 +45,8 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 `animals16_01.png`부터 `animals16_12.png`까지 [12장과 순서표](assets/spritesheets16/README.md)를 추가했습니다. 상시 250종, 계절 한정 50종입니다. **생성 원본의 실제 크기는 1254×1254이고, 정확한 16×16·38색 정리는 미완료**입니다. [검수 기록](reports/ANIMALS16_SOURCE_REVIEW.md)을 확인하세요. 게임의 기존 스프라이트 교체는 이번 작업에 포함하지 않았습니다.
 
+[동물 300종 생성 원본 ZIP 다운로드](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-animals16-sources.zip) — 원본 12장·순서표·기본 제작 문구·검수 기록, 약 18.7MB.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|
