@@ -40,7 +40,7 @@ finishLegacy(save); // 예전 저장(우리 늘리기·넓히기) → 우리 조
 syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
-field.mock2 = new URLSearchParams(location.search).has('mock2');
+field.mock2 = !new URLSearchParams(location.search).has('oldfx');
 field.mock = new URLSearchParams(location.search).has("mock");
 const LOOP = true; // 코인(바닥 동전) → 뽑기 고리
 let dpr = 1, W = 0, H = 0;
@@ -469,12 +469,14 @@ function welcome(list: typeof newcomers) {
   const label = best.grade >= 5 ? '신화' : GRADES[Math.min(4, best.grade)].name;
   if (!banner.isConnected) ui.append(banner);
   banner.className = `newcomer-banner g${Math.min(5, best.grade)}`;
-  banner.replaceChildren(h('small', {}, list.length > 1 ? `새 식구 ${list.length}마리!` : '새 식구!'), h('b', {}, `${best.shiny ? '반짝이 ' : ''}${label} · ${name}`), h('span', {}, `오늘 하루 화제의 신입 · 매력 ×${HOT.mul} · 손님이 몰려요`));
+  const band = best.grade >= 4 ? 'v2_cutin_legend' : 'v2_cutin_epic';
+  banner.replaceChildren(hasPng(band) ? pix(band, 460, 'pix nb-band') : '', h('small', {}, list.length > 1 ? `새 식구 ${list.length}마리!` : '새 식구!'), h('b', {}, `${best.shiny ? '반짝이 ' : ''}${label} · ${name}`), h('span', {}, `오늘 하루 화제의 신입 · 매력 ×${HOT.mul} · 손님이 몰려요`));
   banner.style.left = upx(fieldRect.x + fieldRect.w / 2); banner.style.top = upx(fieldRect.y + fieldRect.h - 96 * uiScale);
   if (best.grade >= 5) audio.sting('jingle_mythic'); else if (best.grade >= 4) audio.sting('jingle_legend'); else audio.sfx('rare');
   window.clearTimeout(bannerTimer); bannerTimer = window.setTimeout(() => banner.classList.add('hidden'), best.grade >= 4 ? 3400 : 2700);
 }
 let bannerTimer = 0;
+let incomeToastAt = 0;
 /** 배경음: 화면이 정한 곡(1주년 · 폐원) · 이벤트 곡 */
 let bgmOverride: string | null = null;
 let eventBgm: string | null = null;
@@ -738,7 +740,8 @@ function frame(now: number) {
     else if (ev.type === 'attractUp') {
       const r = world.layout.pens[ev.pen];
       if (r) world.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: `+${fmt(ev.delta)}♥`, t: 0, color: '#ff8fc4', big: true });
-      if (ev.incomePct >= 3) window.setTimeout(() => toast(`분당 수입 +${ev.incomePct}%`, 'gold', 1800), 400);
+      // 여러 우리에 한 번에 넣어도 알림은 한 번 (가장 큰 값)
+      if (ev.incomePct >= 3 && performance.now() - incomeToastAt > 800) { incomeToastAt = performance.now(); const pct = ev.incomePct; window.setTimeout(() => toast(`분당 수입 +${pct}%`, 'gold', 1800), 400); }
     }
     else if (ev.type === 'lastStand') { audio.sfx('legend'); window.setTimeout(() => showLastStand(), 300); }
     else if (ev.type === 'fever') { audio.fever(ev.on, world.lastStand); if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }

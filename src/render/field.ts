@@ -84,7 +84,7 @@ export class FieldRenderer {
   private focusFx: { x: number; y: number; z: number; t: number; dur: number; z0: number; cx0: number; cy0: number } | null = null;
   spot: { pen: number; t: number; grade: number } | null = null;
   /** 시안: 선 대신 효과 그림으로 꾸미기 (?mock2) */
-  mock2 = false;
+  mock2 = true;
   /** 그림 하나를 월드 좌표에 (아래 가운데 기준, 크기 w×h 월드 칸) */
   private spr(key: string, cx: number, by: number, w: number, h: number, alpha = 1, rot = 0) {
     if (!hasPng(key)) return;
@@ -832,10 +832,19 @@ export class FieldRenderer {
       if (b >= 3) {
         const cards = (save.pens[i] ?? []).map((u) => cardById(save, u)).filter((x): x is Extract<typeof save.cards[number], { kind: 'animal' }> => x?.kind === 'animal');
         const best = cards.sort((a, z) => (z.god !== undefined ? 5 : ANIMALS[z.animal].grade) - (a.god !== undefined ? 5 : ANIMALS[a.animal].grade))[0];
-        const ent = world.animals.find((a) => a.uid === best?.uid);
-        const aura = b >= 5 ? 'v2_mt_rainbow_aura' : b >= 4 ? 'v2_mt_gold_aura' : 'v2_mt_silver_aura';
-        // 발밑 후광: 숨 쉬듯
-        if (ent) { const s = 26 + Math.sin(tt * 2) * 2; c.save(); c.globalCompositeOperation = 'lighter'; this.spr(aura, ent.x, ent.y + s * 0.32, s, s * 0.62, 0.55); c.restore(); }
+        // 테두리: 빛 알갱이(반짝 · 별)가 울타리를 따라 줄지어 돈다 — 영웅 은빛 반짝 · 전설 금빛 별 · 신화 무지개 별
+        const per = 2 * (r.w + r.h), n = Math.max(6, Math.round(per / (b >= 4 ? 14 : 20)));
+        const key = b >= 5 ? 'v2_oly_star' : b >= 4 ? 'v2_gf_star' : 'v2_wx_twinkle', sz = b >= 4 ? 5 : 4;
+        const at = (q: number): [number, number] => { q = ((q % per) + per) % per; if (q < r.w) return [r.x + q, r.y]; q -= r.w; if (q < r.h) return [r.x + r.w, r.y + q]; q -= r.h; if (q < r.w) return [r.x + r.w - q, r.y + r.h]; q -= r.w; return [r.x, r.y + r.h - q]; };
+        c.save(); c.globalCompositeOperation = 'lighter';
+        for (let m = 0; m < n; m++) {
+          const [x, y] = at(m * (per / n) + tt * (b >= 4 ? 10 : 7));
+          const tw = 0.55 + 0.45 * Math.sin(tt * 4 + m * 1.7);
+          this.spr(key, x, y + sz / 2, sz * tw, sz * tw, 0.9);
+        }
+        c.restore();
+        // 네 모서리: 반짝임이 번갈아 터진다
+        [[r.x, r.y], [r.x + r.w, r.y], [r.x, r.y + r.h], [r.x + r.w, r.y + r.h]].forEach(([x, y], m) => { const ph = (tt * 0.8 + m * 0.25) % 1; this.spr(b >= 4 ? 'v2_gf_sparkle' : 'v2_fx_sparkle', x, y + 4, 8 * ph + 2, 8 * ph + 2, Math.sin(ph * Math.PI)); });
         // 모서리 대리석 기둥 (전설 · 신화)
         if (b >= 4) { this.spr('v2_oly_column', r.x + 3, r.y + 10, 6, 12); this.spr('v2_oly_column', r.x + r.w - 3, r.y + 10, 6, 12); if (b >= 5) { this.spr('v2_oly_star', r.x + 3, r.y - 1, 6, 6); this.spr('v2_oly_star', r.x + r.w - 3, r.y - 1, 6, 6); } }
         // 간판: 월계관 위에 이름

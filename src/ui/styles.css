@@ -780,3 +780,9 @@ body.reduce-motion .confetti { display: none; }
 .reveal-grid.scatter .reveal-cell.star-card::before { content: ''; position: absolute; left: 50%; top: 45%; width: 360px; height: 360px; transform: translate(-50%, -50%); background: radial-gradient(circle, color-mix(in srgb, var(--glow) 55%, transparent) 0%, transparent 65%); z-index: -1; animation: star-glow 2.4s ease-in-out infinite; }
 .reveal-grid.scatter .reveal-cell:hover { z-index: 6; }
 @keyframes star-glow { 50% { transform: translate(-50%, -50%) scale(1.12); opacity: .8; } }
+.newcomer-banner:has(.nb-band) { background: none; border: 0; padding: 10px 40px 12px; overflow: visible; }
+.newcomer-banner .nb-band { position: absolute; left: 50%; top: 50%; width: 130%; height: 140%; transform: translate(-50%, -50%); z-index: -1; image-rendering: pixelated; }
+.newcomer-banner { isolation: isolate; }
+.newcomer-banner:has(.nb-band) b { color: #fff; font-size: 24px; text-shadow: -2px 0 #3e2f5b, 2px 0 #3e2f5b, 0 -2px #3e2f5b, 0 2px #3e2f5b, 2px 2px #3e2f5b, -2px 2px #3e2f5b, 2px -2px #3e2f5b, -2px -2px #3e2f5b, 0 4px 0 #1a1c2c; }
+.newcomer-banner:has(.nb-band) small { color: #fff3a3; text-shadow: 0 1px 0 #3e2f5b, 1px 0 #3e2f5b, -1px 0 #3e2f5b, 0 -1px #3e2f5b; font-size: 12px; }
+.newcomer-banner:has(.nb-band) span { position: absolute; top: 118%; left: 50%; transform: translateX(-50%); white-space: nowrap; background: rgba(26,28,44,.8); padding: 2px 10px; border-radius: 8px; }

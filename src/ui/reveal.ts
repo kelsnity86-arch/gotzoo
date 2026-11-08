@@ -109,7 +109,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     ? h('div', { class: 'machine art' }, pix('gacha_01', 128, 'pix m-idle'), pix('gacha_02', 128, 'pix m-shake'), pix(`gacha_${String(3 + capIdx).padStart(2, '0')}`, 40, 'pix cap-closed'), pix(`gacha_${String(8 + capIdx).padStart(2, '0')}`, 40, 'pix cap-open'))
     : h('div', { class: 'machine' }, h('div', { class: 'dome' }, ...Array.from({ length: 9 }, (_, i) => h('i', { style: `--k:${i}` }))), h('div', { class: 'body' }, h('b', {})));
   // (시안 ?mock2) 여러 장: 탁자에 흩뿌린 듯 · 가장 높은 등급 한 장만 가운데 크게
-  const scatter = cards.length > 1 && new URLSearchParams(location.search).has('mock2');
+  const scatter = cards.length > 1;
   const bestIdx = cards.reduce((bi, c, i) => (cardGrade(c) > cardGrade(cards[bi]) || (isNamed(c) && !isNamed(cards[bi])) ? i : bi), 0);
   const grid = h('div', { class: `reveal-grid n${cards.length}${scatter ? ' scatter' : ''}` });
   const placeCell = (wrap: HTMLElement, i: number) => {
