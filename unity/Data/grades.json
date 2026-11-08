@@ -1,0 +1,42 @@
+[
+ {
+  "id": 0,
+  "key": "common",
+  "name": "일반",
+  "attract": 20,
+  "chance": 0.6,
+  "color": "#94b0c2"
+ },
+ {
+  "id": 1,
+  "key": "uncommon",
+  "name": "고급",
+  "attract": 32,
+  "chance": 0.25,
+  "color": "#38a35b"
+ },
+ {
+  "id": 2,
+  "key": "rare",
+  "name": "희귀",
+  "attract": 55,
+  "chance": 0.1,
+  "color": "#41a6f6"
+ },
+ {
+  "id": 3,
+  "key": "epic",
+  "name": "영웅",
+  "attract": 90,
+  "chance": 0.04,
+  "color": "#8e44ad"
+ },
+ {
+  "id": 4,
+  "key": "legend",
+  "name": "전설",
+  "attract": 140,
+  "chance": 0.01,
+  "color": "#f7c948"
+ }
+]

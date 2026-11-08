@@ -1,0 +1,69 @@
+{
+ "seasons": [
+  {
+   "key": "spring",
+   "name": "봄",
+   "icon": "🌸",
+   "strong": "grass",
+   "weak": null,
+   "climate": null,
+   "climateName": "",
+   "tint": "rgba(255,183,208,0.05)",
+   "particle": [
+    "#ffb7d0",
+    "#ffc8dd",
+    "#f4f4f4"
+   ]
+  },
+  {
+   "key": "summer",
+   "name": "여름",
+   "icon": "☀",
+   "strong": "water",
+   "weak": "snow",
+   "climate": "snow",
+   "climateName": "냉방비",
+   "tint": "rgba(255,243,163,0.03)",
+   "particle": []
+  },
+  {
+   "key": "autumn",
+   "name": "가을",
+   "icon": "🍁",
+   "strong": "rock",
+   "weak": null,
+   "climate": null,
+   "climateName": "",
+   "tint": "rgba(217,130,43,0.08)",
+   "particle": [
+    "#d9822b",
+    "#b8452e",
+    "#f7c948"
+   ]
+  },
+  {
+   "key": "winter",
+   "name": "겨울",
+   "icon": "❄",
+   "strong": "snow",
+   "weak": "sand",
+   "climate": "sand",
+   "climateName": "난방비",
+   "tint": "rgba(233,243,255,0.12)",
+   "particle": [
+    "#f4f4f4",
+    "#e9f3ff"
+   ]
+  }
+ ],
+ "fx": {
+  "strong": 0.2,
+  "weak": -0.15,
+  "limitedShare": 0.2,
+  "limitedSelf": 1,
+  "limitedAura": 0.1,
+  "climatePerAnimal": 0.04,
+  "yearDays": 3,
+  "yearTickets": 5
+ }
+}

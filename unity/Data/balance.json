@@ -1,0 +1,224 @@
+{
+ "gacha": {
+  "price": [
+   100,
+   200,
+   450,
+   1000,
+   2200,
+   5000,
+   11000,
+   24000
+  ]
+ },
+ "drawKind": {
+  "animal": 0.9,
+  "staff": 0.05,
+  "pen": 0.05
+ },
+ "machineTiers": [
+  {
+   "name": "계절 기계",
+   "key": "base",
+   "chance": 0.89,
+   "luck": 0,
+   "shiny": 1
+  },
+  {
+   "name": "은빛 기계",
+   "key": "silver",
+   "chance": 0.08,
+   "luck": 0.01,
+   "shiny": 1
+  },
+  {
+   "name": "금빛 기계",
+   "key": "gold",
+   "chance": 0.025,
+   "luck": 0.03,
+   "shiny": 1
+  },
+  {
+   "name": "무지개 기계",
+   "key": "rainbow",
+   "chance": 0.005,
+   "luck": 0.06,
+   "shiny": 2
+  }
+ ],
+ "stageReq": [
+  [
+   5,
+   120
+  ],
+  [
+   12,
+   450
+  ],
+  [
+   22,
+   1100
+  ],
+  [
+   35,
+   2000
+  ],
+  [
+   50,
+   4500
+  ],
+  [
+   70,
+   10000
+  ],
+  [
+   95,
+   22000
+  ]
+ ],
+ "maxStage": 8,
+ "stageNames": [
+  "작은 동물원",
+  "동네 동물원",
+  "시립 동물원",
+  "도시 동물원",
+  "테마 동물원",
+  "국립 동물원",
+  "대륙 동물원",
+  "세계 동물원"
+ ],
+ "expandCost": [
+  300,
+  1200,
+  3500,
+  9000,
+  22000,
+  50000,
+  110000,
+  240000
+ ],
+ "starNeed": [
+  20,
+  40,
+  60,
+  75,
+  90
+ ],
+ "stageTipMul": 1.12,
+ "fusionChance": [
+  0,
+  0,
+  0.2,
+  0.33,
+  0.45,
+  0.56,
+  0.66,
+  0.75,
+  0.83,
+  0.9,
+  1
+ ],
+ "fusionMin": 2,
+ "visitor": {
+  "basePerMin": 3,
+  "perAttract": 0.2,
+  "tipMin": 10,
+  "tipMax": 20,
+  "pickupBonus": 0.5,
+  "tokenShare": 0.6,
+  "luckyChance": 0.025,
+  "fever": {
+   "need": 80,
+   "sec": 15,
+   "coinMul": 2,
+   "rainEvery": 0.4
+  },
+  "overflowMaxMul": 1.6,
+  "walkSpeed": 16,
+  "viewSecMin": 2,
+  "viewSecMax": 4
+ },
+ "coin": {
+  "lifeSec": 60,
+  "blinkSec": 8,
+  "mergeDist": 5,
+  "popSpeed": 30,
+  "gravity": 150
+ },
+ "sameSpeciesBonus": [
+  [
+   10,
+   0.3
+  ],
+  [
+   5,
+   0.2
+  ],
+  [
+   3,
+   0.1
+  ]
+ ],
+ "sameHabitatBonus": 0.1,
+ "feed": {
+  "bonus": 0.1,
+  "sec": 30,
+  "manualCooldown": 20
+ },
+ "staffAi": {
+  "collectorSpeed": 42,
+  "collectorReach": 9,
+  "collectorSearch": 140,
+  "keeperSpeed": 26,
+  "keeperFeedEvery": 6
+ },
+ "day": {
+  "dayLen": 180,
+  "duskLen": 20,
+  "nightAvg": 30,
+  "janitorShare": 0.5
+ },
+ "upkeep": {
+  "perCell": 0.045,
+  "feed": [
+   0.012,
+   0.025,
+   0.05,
+   0.09,
+   0.16
+  ],
+  "unit": [
+   30,
+   120,
+   400,
+   750,
+   1100,
+   1500,
+   2000,
+   2700
+  ]
+ },
+ "scale": {
+  "animal": [
+   1,
+   3,
+   8,
+   20,
+   50
+  ],
+  "upgradeLv": 10,
+  "debtPerDraw": 5
+ },
+ "debt": {
+  "strikeAfter": 3
+ },
+ "incident": {
+  "chance": 0.6,
+  "at": [
+   30,
+   140
+  ],
+  "thiefShare": 0.08,
+  "sickMul": 0.6
+ }
+}

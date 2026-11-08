@@ -1,0 +1,254 @@
+{
+ "sets": [
+  {
+   "id": "savanna",
+   "name": "사바나",
+   "members": [
+    62,
+    49,
+    60
+   ],
+   "attract": 0.25
+  },
+  {
+   "id": "polar",
+   "name": "극지",
+   "members": [
+    31,
+    68,
+    42
+   ],
+   "attract": 0.25,
+   "season": "winter"
+  },
+  {
+   "id": "bamboo",
+   "name": "대나무 숲",
+   "members": [
+    59,
+    57
+   ],
+   "attract": 0.2
+  },
+  {
+   "id": "farm",
+   "name": "농장",
+   "members": [
+    2,
+    14,
+    15,
+    17
+   ],
+   "attract": 0.15,
+   "feedCut": 0.3
+  },
+  {
+   "id": "catmouse",
+   "name": "천적 콤비",
+   "members": [
+    7,
+    6
+   ],
+   "attract": 0.15
+  },
+  {
+   "id": "caravan",
+   "name": "사막 캐러밴",
+   "members": [
+    50,
+    75,
+    37
+   ],
+   "attract": 0.25
+  },
+  {
+   "id": "jungle",
+   "name": "정글",
+   "members": [
+    66,
+    67,
+    55
+   ],
+   "attract": 0.25
+  },
+  {
+   "id": "sea",
+   "name": "바다 친구",
+   "members": [
+    70,
+    71,
+    72,
+    73
+   ],
+   "attract": 0.3,
+   "season": "summer"
+  },
+  {
+   "id": "bigcats",
+   "name": "맹수",
+   "members": [
+    63,
+    64,
+    65
+   ],
+   "attract": 0.25
+  },
+  {
+   "id": "white",
+   "name": "백색 맹수",
+   "members": [
+    78,
+    85,
+    79
+   ],
+   "attract": 0.35
+  },
+  {
+   "id": "myth",
+   "name": "하늘의 신화",
+   "members": [
+    92,
+    96,
+    95
+   ],
+   "attract": 0.4
+  },
+  {
+   "id": "east",
+   "name": "동양 신수",
+   "members": [
+    98,
+    97,
+    99
+   ],
+   "attract": 0.2,
+   "tip": 0.1
+  },
+  {
+   "id": "chuseok",
+   "name": "추석",
+   "members": [
+    134,
+    136
+   ],
+   "attract": 0.3,
+   "season": "autumn"
+  },
+  {
+   "id": "santa",
+   "name": "산타 썰매",
+   "members": [
+    142,
+    145
+   ],
+   "attract": 0.3,
+   "season": "winter"
+  },
+  {
+   "id": "blossom",
+   "name": "꽃놀이",
+   "members": [
+    104,
+    108,
+    100
+   ],
+   "attract": 0.3,
+   "season": "spring"
+  },
+  {
+   "id": "fourgods",
+   "name": "사신수",
+   "members": [
+    290,
+    78,
+    291,
+    292
+   ],
+   "attract": 0.3,
+   "tip": 0.15
+  },
+  {
+   "id": "iceage",
+   "name": "빙하기",
+   "members": [
+    283,
+    284,
+    285
+   ],
+   "attract": 0.35,
+   "season": "winter"
+  },
+  {
+   "id": "deepsea",
+   "name": "심해",
+   "members": [
+    275,
+    248,
+    73
+   ],
+   "attract": 0.25,
+   "season": "summer"
+  },
+  {
+   "id": "polarsea",
+   "name": "북극 바다",
+   "members": [
+    250,
+    251,
+    245
+   ],
+   "attract": 0.3,
+   "season": "winter"
+  },
+  {
+   "id": "primates",
+   "name": "영장류",
+   "members": [
+    261,
+    67,
+    66,
+    265
+   ],
+   "attract": 0.3
+  },
+  {
+   "id": "splash",
+   "name": "여름 물놀이",
+   "members": [
+    113,
+    116,
+    114
+   ],
+   "attract": 0.3,
+   "season": "summer"
+  }
+ ],
+ "habitatTiers": [
+  [
+   10,
+   0.35
+  ],
+  [
+   6,
+   0.2
+  ],
+  [
+   3,
+   0.1
+  ]
+ ],
+ "gradeSyn": {
+  "rainbow": 0.3,
+  "sameGrade": 0.15,
+  "sameCommon": 0.25,
+  "sameMin": 3,
+  "king": 0.2
+ },
+ "cap": 1.5,
+ "shiny": {
+  "chance": 0.01,
+  "attractMul": 1.5,
+  "scaleMul": 1.5,
+  "fusionPerShiny": 0.1
+ }
+}

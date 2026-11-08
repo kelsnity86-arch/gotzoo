@@ -1,0 +1,143 @@
+[
+ {
+  "id": "grade_common",
+  "name": "일반 동물 전부",
+  "reward": 3000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "grade_uncommon",
+  "name": "고급 동물 전부",
+  "reward": 12000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "grade_rare",
+  "name": "희귀 동물 전부",
+  "reward": 50000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "grade_epic",
+  "name": "영웅 동물 전부",
+  "reward": 200000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "grade_legend",
+  "name": "전설 동물 전부",
+  "reward": 800000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "hab_grass",
+  "name": "풀밭 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "grass",
+   "attract": 0.2
+  },
+  "desc": "풀밭 동물 매력도 +20%"
+ },
+ {
+  "id": "hab_sand",
+  "name": "사막 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "sand",
+   "attract": 0.2
+  },
+  "desc": "사막 동물 매력도 +20%"
+ },
+ {
+  "id": "hab_water",
+  "name": "물가 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "water",
+   "attract": 0.2
+  },
+  "desc": "물가 동물 매력도 +20%"
+ },
+ {
+  "id": "hab_snow",
+  "name": "설원 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "snow",
+   "attract": 0.2
+  },
+  "desc": "설원 동물 매력도 +20%"
+ },
+ {
+  "id": "hab_rock",
+  "name": "바위산 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "rock",
+   "attract": 0.2
+  },
+  "desc": "바위산 동물 매력도 +20%"
+ },
+ {
+  "id": "hab_cloud",
+  "name": "구름 동물 전부",
+  "reward": 5000,
+  "bonus": {
+   "habitat": "cloud",
+   "attract": 0.2
+  },
+  "desc": "구름 동물 매력도 +20%"
+ },
+ {
+  "id": "season_spring",
+  "name": "봄 한정 동물 전부",
+  "reward": 30000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "season_summer",
+  "name": "여름 한정 동물 전부",
+  "reward": 30000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "season_autumn",
+  "name": "가을 한정 동물 전부",
+  "reward": 30000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ },
+ {
+  "id": "season_winter",
+  "name": "겨울 한정 동물 전부",
+  "reward": 30000,
+  "bonus": {
+   "tip": 0.05
+  },
+  "desc": "투척액 +5%"
+ }
+]
