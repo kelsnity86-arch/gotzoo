@@ -4,9 +4,10 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
-import { animalFrame, person16, personFrame, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
+import { animalFrame, avgColor, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
 import { itemSprite } from '../data/facilities';
+import { fmt } from '../ui/dom';
 import { eventDef } from '../data/events';
 
 export interface View { x: number; y: number; w: number; h: number }
@@ -50,6 +51,8 @@ export class FieldRenderer {
   /** 우리 놓기 미리 보기 (부지 블록 좌표) */
   ghost: { cells: [number, number][]; ok: boolean } | null = null;
 
+  static readonly R = 2;
+  private wc: HTMLCanvasElement | null = null;
   private bg: HTMLCanvasElement | null = null;
   private seasonN = 1;
   private items: SaveData['items'] = [];
@@ -96,72 +99,75 @@ export class FieldRenderer {
       for (let y = y0; y < y0 + h; y += TILE) for (let x = x0; x < x0 + w; x += TILE) tile(k, x, y);
       c.restore();
     };
-    // 잔디 (가끔 꽃잔디)
-    for (let y = 0; y < L.h; y += TILE) for (let x = 0; x < L.w; x += TILE) tile(((x * 7 + y * 3) / TILE) % 11 === 0 ? 'tiles_02' : 'tiles_01', x, y);
-    // 관객존: 위 줄 나무·덤불·가로등, 길, 아래 울타리
-    for (let x = 0, k = 0; x < L.w - 4; x += TILE, k++) {
-      const prop = ['tiles_15', 'tiles_16', 'tiles_15', 'tiles_17', 'tiles_15', 'tiles_23', 'tiles_16', 'tiles_22'][k % 8];
-      tile(prop, x, 4);
-    }
+    // 무늬를 죽여 잔잔하게: 타일 위에 그 타일 평균색을 반투명으로 덮는다
+    const flat = (k: string, x0: number, y0: number, w: number, h: number, a: number) => {
+      const n = T16[k], key = `t16_${season}_${n}`;
+      c.globalAlpha = a; c.fillStyle = avgColor(hasPng(key) ? sprite(key) : sprite(k)); c.fillRect(x0, y0, w, h); c.globalAlpha = 1;
+    };
+    /** 물체(나무 · 소품): 도트 그림용으로 줄여서 칸 바닥 가운데에 */
+    const obj = (im: Sprite, cx: number, by: number, maxUnits: number) => {
+      const k = (maxUnits * R) / Math.max(im.width, im.height);
+      const d = k < 1 ? pixelDown(im, im.width * k, im.height * k) : im;
+      const s2 = k < 1 ? 1 / R : Math.max(1, Math.floor(k)) / R;
+      c.drawImage(d, Math.round((cx - (d.width * s2) / 2) * R) / R, Math.round((by - d.height * s2) * R) / R, d.width * s2, d.height * s2);
+    };
+    const objTile = (k: string, cx: number, by: number, maxUnits: number) => { const n = T16[k]; const key = `t16_${season}_${n}`; if (hasPng(key)) obj(sprite(key), cx, by, maxUnits); };
+    // 바닥: 잔디 한 가지 + 잔잔하게
+    for (let y = 0; y < L.h; y += TILE) for (let x = 0; x < L.w; x += TILE) tile('tiles_01', x, y);
+    flat('tiles_01', 0, 0, L.w, L.h, 0.55);
+    // 관객존: 위 줄에 나무를 띄엄띄엄, 길, 아래 울타리 한 줄
+    for (let x = 10, k = 0; x < L.w - 10; x += 26, k++) objTile(k % 3 === 1 ? 'tiles_16' : 'tiles_15', x, 15, k % 3 === 1 ? 9 : 13);
     fill('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
-    for (let x = 12; x < L.w - 8; x += 56) { tile('tiles_18', x, PATH_Y0 - 9); tile('tiles_21', x + 26, PATH_Y0 - 9); }
+    flat('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8, 0.45);
     for (let x = 0; x < L.w; x += TILE) tile('tiles_05', x, ZONE_H - 8);
-    // 부지: 빈 블록 칸에는 풀밭 소품 (나무 · 덤불 · 꽃), 부지 둘레는 낮은 울타리
-    const occ = new Set<string>();
-    world.layout.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((v, x) => { if (v) occ.add(`${g.gx + x * TILE},${g.gy + y * TILE}`); })); });
+    // 우리가 차지한 타일 → 우리 번호 (붙은 우리 사이 울타리를 한 줄만 그리려고)
+    const owner = new Map<string, number>();
+    L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((v, x) => { if (v) owner.set(`${g.gx + x * TILE},${g.gy + y * TILE}`, i); })); });
     const { bx0, by0, bw, bh } = L;
-    const BL = BLOCK;
-    for (let y = by0; y < by0 + bh * BL; y += TILE) for (let x = bx0; x < bx0 + bw * BL; x += TILE) {
-      if (occ.has(`${x},${y}`)) continue;
-      const k = (x * 13 + y * 7) / TILE;
-      if (k % 17 === 0) tile(['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_17'][(k / 17) % 5 | 0], x, y);
-      else if (k % 29 === 5) tile('tiles_17', x, y);
+    // 부지 가장자리의 빈 블록에만 나무 몇 그루
+    const itemAtBlock = new Set(this.items.filter((it) => it.x >= 0).map((it) => `${it.x},${it.y}`));
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      if (!(bx === 0 || bx === bw - 1 || by === bh - 1) || itemAtBlock.has(`${bx},${by}`)) continue;
+      let empty = true;
+      for (let ty = 0; ty < 4 && empty; ty++) for (let tx = 0; tx < 4; tx++) if (owner.has(`${bx0 + bx * BLOCK + tx * TILE},${by0 + by * BLOCK + ty * TILE}`)) { empty = false; break; }
+      if (!empty || (bx * 7 + by * 13) % 3 !== 0) continue;
+      objTile((bx + by) % 4 === 0 ? 'tiles_16' : 'tiles_15', bx0 + bx * BLOCK + BLOCK / 2, by0 + by * BLOCK + BLOCK - 4, (bx + by) % 4 === 0 ? 12 : 22);
     }
-    for (let x = bx0 - TILE / 2; x < bx0 + bw * BL; x += TILE) { tile('tiles_05', x, by0 - TILE); tile('tiles_05', x, by0 + bh * BL); }
-    for (let y = by0; y < by0 + bh * BL; y += TILE) { tile('tiles_06', bx0 - TILE, y); tile('tiles_06', bx0 + bw * BL, y); }
-    // 우리: 모양(마스크)대로 바닥 · 울타리, 모양 밖 빈 곳은 공원 소품
-    const PROPS = ['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_18', 'tiles_22', 'tiles_17', 'tiles_23'];
+    // 우리: 모양대로 바닥(잔잔하게) · 울타리. 다른 우리와 맞닿은 쪽은 번호가 작은 우리만 울타리를 그린다
     L.pens.forEach((_, i) => {
       const g = world.geo[i];
       if (!g) return;
       const hab = g.theme;
       const floorTile = hab ? FLOOR_TILE[hab] : 'tiles_09';
       const m = g.mask;
+      const inside = (x: number, y: number) => !!m[y]?.[x] || (owner.get(`${g.gx + x * TILE},${g.gy + y * TILE}`) ?? 99) < i;
       let gate = -1;
       for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) {
+        if (!m[y][x]) continue;
         const px = g.gx + x * TILE, py = g.gy + y * TILE;
-        if (!m[y][x]) { if ((x * 5 + y * 3 + i * 7) % 6 === 0) tile(PROPS[(x + y * 3 + i) % PROPS.length], px, py); continue; }
-        if (g.floor[y][x]) { tile(floorTile, px, py); continue; }
-        // 울타리: 위·아래가 바깥이면 가로, 왼·오른쪽이 바깥이면 세로, 그 밖(모서리)은 기둥
         tile(floorTile, px, py);
-        const up = m[y - 1]?.[x], dn = m[y + 1]?.[x], lf = m[y]?.[x - 1], rt = m[y]?.[x + 1];
+        flat(floorTile, px, py, TILE, TILE, 0.35);
+        if (g.floor[y][x]) continue;
+        const up = inside(x, y - 1), dn = inside(x, y + 1), lf = inside(x - 1, y), rt = inside(x + 1, y);
+        if (up && dn && lf && rt) continue;
         const horiz = (!up || !dn) && lf && rt, vert = (!lf || !rt) && up && dn;
         if (g.shape === 'rect' && !horiz && !vert) tile('tiles_07', px, py);
-        else {
-          // 모양 우리: 위·아래가 트이면 가로, 옆이 트이면 세로, 둘 다면 겹쳐서 이음새
-          if (!up || !dn) tile('tiles_05', px, py);
-          if (!lf || !rt) tile('tiles_06', px, py);
-        }
-        if (gate < 0 && horiz && !up && Math.abs(x - g.cols / 2) < 1.5) { gate = x; tile('tiles_08', px, py); }
+        else { if (!up || !dn) tile('tiles_05', px, py); if (!lf || !rt) tile('tiles_06', px, py); }
+        if (gate < 0 && horiz && !m[y - 1]?.[x] && Math.abs(x - g.cols / 2) < 1.5) { gate = x; tile('tiles_08', px, py); }
       }
-      if (!hab) tile('tiles_19', g.gx + Math.floor(g.cols / 2) * TILE - 4, g.gy + Math.floor(g.rows / 2) * TILE - 4);
-      else if (g.floorCells.length) { const [fx, fy] = g.floorCells[g.floorCells.length - 1]; tile('tiles_20', g.gx + fx * TILE, g.gy + fy * TILE); }
     });
-    // 시설 · 소품: 블록 1칸 안에 바닥에 맞춰 (도트 비율 그대로)
+    // 시설 · 소품: 블록 1칸 안에 바닥에 맞춰 (도트 그림용 축소)
     for (const it of this.items) {
       if (it.x < 0) continue;
       const key2 = itemSprite(it.type);
       if (!hasPng(key2)) continue;
-      const im = sprite(key2);
-      const sc = (BLOCK - 4) / Math.max(im.width, im.height);
-      const w = im.width * sc, hh = im.height * sc;
       const bx = L.bx0 + it.x * BLOCK, by = L.by0 + it.y * BLOCK;
-      c.fillStyle = 'rgba(0,0,0,0.15)'; c.fillRect(bx + 4, by + BLOCK - 4, BLOCK - 8, 2);
-      c.drawImage(im, Math.round(bx + (BLOCK - w) / 2), Math.round(by + BLOCK - 2 - hh), w, hh);
+      c.fillStyle = 'rgba(0,0,0,0.12)'; c.fillRect(bx + 6, by + BLOCK - 4, BLOCK - 12, 2);
+      obj(sprite(key2), bx + BLOCK / 2, by + BLOCK - 3, BLOCK - 6);
     }
     // 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
     const gk = `fac_gate${this.decoTier}`;
-    if (hasPng(gk)) { const im = sprite(gk); const gh = ZONE_H - 10, gw = im.width * (gh / im.height); c.drawImage(im, 2, ZONE_H - 6 - gh, gw, gh); }
+    if (hasPng(gk)) { const im = sprite(gk); obj(im, 4 + (im.width / im.height) * (ZONE_H - 12) / 2, ZONE_H - 6, Math.max(ZONE_H - 12, (im.width / im.height) * (ZONE_H - 12))); }
     this.bg = cv;
     return cv;
   }
@@ -170,14 +176,17 @@ export class FieldRenderer {
   toWorld(sx: number, sy: number) { return { x: (sx - this.ox) / this.scale, y: (sy - this.oy) / this.scale }; }
 
   draw(world: World, save: SaveData, view: View, dpr: number, pointer: { x: number; y: number } | null) {
-    const c = this.ctx, L = world.layout, t = world.time;
+    const c = this.ctx, L = world.layout;
     // 배율: 기기 픽셀 기준 정수로 (도트가 고르게). 내림하면 10% 넘게 작아질 때는 소수 배율 그대로
     // (예: 1.9배 → 1배로 내리면 화면이 절반으로 줄어든다)
     const fit = Math.min(view.w / L.w, view.h / L.h);
     this.lastView = view; this.lastFit = fit; this.worldW = L.w; this.worldH = L.h;
-    const dev = fit * this.userZoom * dpr;
-    const snapped = Math.floor(dev);
-    const z = snapped >= 1 && snapped / dev >= 0.9 ? snapped / dpr : dev / dpr;
+    // 배율: 도트 1개가 기기 픽셀 정수 배가 되게 내림 (28% 넘게 작아지면 소수 배율).
+    // 화면 밀도가 높은 기기(dpr ≥ 2)는 소수 배율이어도 고르지 않은 게 안 보여서 꽉 채운다
+    const art = (fit * this.userZoom * dpr) / FieldRenderer.R;
+    const snapped = Math.floor(art);
+    const snap = dpr < 2 && snapped >= 1 && snapped / art >= 0.72;
+    const z = ((snap ? snapped : art) * FieldRenderer.R) / dpr;
     this.scale = z; this.dev = z * dpr; this.dpr = dpr;
     if (this.userZoom <= 1 || this.camX < 0) {
       this.ox = Math.round((view.x + (view.w - L.w * z) / 2) * dpr) / dpr;
@@ -196,11 +205,62 @@ export class FieldRenderer {
     c.fillRect(0, 0, c.canvas.width, c.canvas.height);
     c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
 
+    // 동물원은 '월드 1칸 = 2도트' 캔버스에 먼저 그리고 (모든 그림의 도트 굵기를 같게), 화면엔 정수 배로 확대해 붙인다
+    const R = FieldRenderer.R;
+    if (!this.wc) this.wc = document.createElement('canvas');
+    if (this.wc.width !== L.w * R || this.wc.height !== L.h * R) { this.wc.width = L.w * R; this.wc.height = L.h * R; }
+    const main = this.ctx, wctx = this.wc.getContext('2d')!;
+    const keep = { ox: this.ox, oy: this.oy, dev: this.dev, dpr: this.dpr };
+    this.ctx = wctx; this.ox = 0; this.oy = 0; this.dev = R; this.dpr = 1;
+    wctx.setTransform(R, 0, 0, R, 0, 0); wctx.imageSmoothingEnabled = false;
+    wctx.clearRect(0, 0, L.w, L.h);
+    this.drawWorld(world, save, pointer);
+    this.ctx = main; this.ox = keep.ox; this.oy = keep.oy; this.dev = keep.dev; this.dpr = keep.dpr;
     c.save();
-    // 필드 칸 밖으로 그리지 않게 (확대했을 때)
     c.setTransform(dpr, 0, 0, dpr, 0, 0); c.beginPath(); c.rect(view.x, view.y, view.w, view.h); c.clip();
-    c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
-    c.beginPath(); c.rect(0, 0, L.w, L.h); c.clip();
+    c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = false;
+    c.drawImage(this.wc, Math.round(this.ox * dpr), Math.round(this.oy * dpr), Math.round(L.w * z * dpr), Math.round(L.h * z * dpr));
+
+    // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
+    const outlined = (text: string, x: number, y: number, color: string) => {
+      c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
+      c.fillStyle = color; c.fillText(text, x, y);
+    };
+    c.font = '15px Galmuri14, Galmuri11, sans-serif'; c.textAlign = 'center';
+    for (const f of world.floats) {
+      const k = f.t / 1.1;
+      const sx = this.ox + f.x * z, sy = this.oy + (f.y - k * 10) * z;
+      c.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
+      outlined(f.text, sx, sy, f.color);
+    }
+    c.globalAlpha = 1;
+    // 우리 이름표: 매력도
+    // 우리 이름표: 매력도 (큰 글씨, 진한 배경)
+    // 우리 이름표: 작은 반투명 딱지 (♥ 매력). 빈 우리는 표시 안 함
+    c.font = '11px Galmuri11, sans-serif';
+    L.pens.forEach((r, i) => {
+      const n = save.pens[i]?.length ?? 0;
+      if (!n) return;
+      const label = `♥${fmt(Math.round(penAttract(save, i, world.fedLeft[i] > 0 ? 1.1 : 1)))}`;
+      const g = world.geo[i];
+      // 모양의 맨 윗줄 가운데 (ㄱ자 등에서 빈 곳에 뜨지 않게)
+      let lx = r.x + r.w / 2, ly = r.y;
+      if (g) { const row = g.mask.findIndex((rw) => rw.some(Boolean)); const xs = g.mask[row].map((v, k) => (v ? k : -1)).filter((k) => k >= 0); lx = g.gx + ((xs[0] + xs[xs.length - 1] + 1) / 2) * TILE; ly = g.gy + row * TILE; }
+      const sx = this.ox + lx * z, sy = this.oy + ly * z + 4;
+      const tw = c.measureText(label).width + 8;
+      c.fillStyle = 'rgba(18,20,30,0.55)';
+      c.beginPath(); c.roundRect(sx - tw / 2, sy - 9, tw, 13, 6); c.fill();
+      c.fillStyle = world.fedLeft[i] > 0 ? '#ffc8dd' : '#fff3a3';
+      c.fillText(label, sx, sy + 1);
+    });
+    c.restore();
+  }
+
+  /** 동물원 한 장 (월드 좌표, this.ctx = 2도트 캔버스) */
+  private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
+    const c = this.ctx, L = world.layout, t = world.time;
     this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0;
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
@@ -229,8 +289,8 @@ export class FieldRenderer {
       c.globalAlpha = fade;
       // 많이 합쳐진 동전은 동전 더미 그림
       const img = co.count >= 3 && hasPng('fx_06') ? sprite('fx_06') : sprite(`coin_${(coinFrame + co.id) % 4}`);
-      if (co.count === 2) c.drawImage(sprite('coin_0'), Math.round(co.x - 2), Math.round(co.y - 6 - co.z), 8, 8);
-      c.drawImage(img, Math.round(co.x - 4), Math.round(co.y - 5 - co.z), 8, 8);
+      if (co.count === 2) this.icon(sprite('coin_0'), co.x + 2, co.y - 2 - co.z, 7);
+      this.icon(img, co.x, co.y - 1 - co.z, 7);
       c.globalAlpha = 1;
     }
 
@@ -241,17 +301,17 @@ export class FieldRenderer {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
       list.push({ y: v.y, f: () => {
         const p16 = person16(seasonOf(save.season.n).key, v.kind, fr);
-        if (p16) this.blitDev(p16, v.x, v.y, 13, v.dir < 0, 0);
+        if (p16) this.blitDev(p16, v.x, v.y, 13, v.dir > 0, 0);
         else this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
         // VIP 손님: 머리 위 별 + 금빛 테두리
-        if (v.vip) { c.drawImage(sprite('fx_15'), Math.round(v.x - 4), Math.round(v.y - 21 + Math.sin(t * 6)), 8, 8); c.strokeStyle = '#f7c948'; c.lineWidth = 1; c.strokeRect(Math.round(v.x - 5) + 0.5, Math.round(v.y - 13) + 0.5, 10, 13); }
+        if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 14 + Math.sin(t * 6), 6);
       } });
     }
     for (const e of world.staff) {
       const fr = Math.floor(e.anim * 6) % 2;
       list.push({ y: e.y, f: () => {
         const s16 = staff16(e.kind, fr);
-        if (s16) this.blitDev(s16, e.x, e.y, 13.5, e.face < 0, 0);
+        if (s16) this.blitDev(s16, e.x, e.y, 13.5, e.face > 0, 0);
         else { this.blit(staffFrame(e.kind, fr), e.x, e.y, 8, 12, e.face > 0, 0); c.fillStyle = e.kind === 'collector' ? '#ef7d32' : '#38a35b'; c.fillRect(Math.round(e.x) - 1, Math.round(e.y) - 15, 2, 2); }
       } });
     }
@@ -263,13 +323,13 @@ export class FieldRenderer {
       const k = e.t / 1.4;
       c.globalAlpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
       if (e.icon === 'zz') { c.fillStyle = '#c7cfdd'; c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 6 - k * 6), 3, 1); c.fillRect(Math.round(e.x + 2 + k * 3), Math.round(e.y - 5 - k * 6), 1, 1); c.fillRect(Math.round(e.x + 1 + k * 3), Math.round(e.y - 4 - k * 6), 1, 1); c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 3 - k * 6), 3, 1); }
-      else c.drawImage(sprite(e.icon), Math.round(e.x - 4), Math.round(e.y - 6 - k * 6), 8, 8);
+      else this.icon(sprite(e.icon), e.x, e.y - k * 6 + 2, 7);
     }
     c.globalAlpha = 1;
     // 해 질 녘·밤: 붉게 → 남색, 밤에는 가로등 불빛
     if (world.phase !== 'day') {
       const k = world.phase === 'dusk' ? Math.min(1, (world.phaseT - (DAY.dayLen - DAY.duskLen)) / DAY.duskLen) : 1;
-      c.fillStyle = world.phase === 'dusk' ? `rgba(239,125,50,${0.22 * k})` : 'rgba(20,24,60,0.55)';
+      c.fillStyle = world.phase === 'dusk' ? `rgba(239,125,50,${0.16 * k})` : 'rgba(20,24,60,0.38)';
       c.fillRect(0, 0, L.w, L.h);
       if (world.phase === 'night') {
         c.globalCompositeOperation = 'lighter';
@@ -287,7 +347,7 @@ export class FieldRenderer {
     c.fillStyle = sea.tint; c.fillRect(0, 0, L.w, L.h);
     const parts = ev?.snow ? ['#f4f4f4', '#e9f3ff'] : sea.particle;
     if (parts.length && !reduceMotion) {
-      const n = ev?.snow ? 110 : 34, fall = sea.key === 'winter' || ev?.snow ? 18 : 12;
+      const n = ev?.snow ? 60 : 12, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
       for (let i = 0; i < n; i++) {
         const sway = Math.sin(t * 1.3 + i) * 6;
         const x = ((i * 71.3 + t * 7 + sway) % L.w + L.w) % L.w, y = ((i * 43.7 + t * fall) % L.h);
@@ -308,45 +368,15 @@ export class FieldRenderer {
       c.fillStyle = gh.ok ? '#38a35b' : '#d83a3a';
       for (const [x, y] of gh.cells) c.fillRect(L.bx0 + x * BLOCK + 1, L.by0 + y * BLOCK + 1, BLOCK - 2, BLOCK - 2);
       c.globalAlpha = 1;
-      c.strokeStyle = gh.ok ? '#a7d65b' : '#ffc8dd'; c.lineWidth = 1 / z;
+      c.strokeStyle = gh.ok ? '#a7d65b' : '#ffc8dd'; c.lineWidth = 0.5;
       for (const [x, y] of gh.cells) c.strokeRect(L.bx0 + x * BLOCK + 1, L.by0 + y * BLOCK + 1, BLOCK - 2, BLOCK - 2);
     }
     // 손 수거 범위
     if (pointer && !this.ghost) {
-      c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 1 / z;
+      c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 0.5;
       c.beginPath(); c.arc(pointer.x, pointer.y, world.pickupRadius, 0, Math.PI * 2); c.stroke();
     }
 
-    // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
-    c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
-    const outlined = (text: string, x: number, y: number, color: string) => {
-      c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
-      c.fillStyle = color; c.fillText(text, x, y);
-    };
-    c.font = '15px Galmuri14, Galmuri11, sans-serif'; c.textAlign = 'center';
-    for (const f of world.floats) {
-      const k = f.t / 1.1;
-      const sx = this.ox + f.x * z, sy = this.oy + (f.y - k * 10) * z;
-      c.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
-      outlined(f.text, sx, sy, f.color);
-    }
-    c.globalAlpha = 1;
-    // 우리 이름표: 매력도
-    // 우리 이름표: 매력도 (큰 글씨, 진한 배경)
-    c.font = '13px Galmuri14, Galmuri11, sans-serif';
-    L.pens.forEach((r, i) => {
-      const n = save.pens[i]?.length ?? 0;
-      const label = n ? `♥ ${Math.round(penAttract(save, i, world.fedLeft[i] > 0 ? 1.1 : 1)).toLocaleString('ko-KR')}` : '빈 우리';
-      const sx = this.ox + (r.x + r.w / 2) * z, sy = this.oy + (r.y + 4) * z + 5;
-      const tw = c.measureText(label).width + 12;
-      c.fillStyle = 'rgba(18,20,30,0.88)';
-      c.beginPath(); c.roundRect(sx - tw / 2, sy - 13, tw, 17, 5); c.fill();
-      c.strokeStyle = world.fedLeft[i] > 0 ? '#f08cbe' : n ? '#e0a526' : '#566c86'; c.lineWidth = 1.5; c.stroke();
-      c.fillStyle = world.fedLeft[i] > 0 ? '#ffc8dd' : n ? '#fff3a3' : '#c7cfdd';
-      c.fillText(label, sx, sy);
-    });
-    c.restore();
   }
 
   /** 타일 바탕 위에: 선택 테두리·먹이 표시·동물 */
@@ -354,7 +384,7 @@ export class FieldRenderer {
     const c = this.ctx;
     world.layout.pens.forEach((r, i) => {
       if (this.selectedPen === i) { c.strokeStyle = '#f7c948'; c.lineWidth = 1; c.strokeRect(r.x + 0.5, r.y + 0.5, r.w - 1, r.h - 1); }
-      if (world.fedLeft[i] > 0) c.drawImage(sprite('fx_10'), r.x + r.w - 14, r.y + 6, 8, 8);
+      if (world.fedLeft[i] > 0) this.icon(sprite('fx_10'), r.x + r.w - 10, r.y + 13, 6);
       void save;
       this.animalsIn(world, i);
     });
@@ -377,6 +407,15 @@ export class FieldRenderer {
     c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(px + 1, Math.round(y) - 1, w - 2, 1);
     if (flip) { c.save(); c.translate(px + w, py); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); c.restore(); }
     else c.drawImage(img, px, py, w, h);
+  }
+
+  /** 작은 그림 (동전 · 말풍선): 바닥 가운데 기준, 큰 쪽을 size칸에 맞춰 도트 그대로 */
+  private icon(img: Sprite, x: number, y: number, size: number) {
+    const R = FieldRenderer.R, k = (size * R) / Math.max(img.width, img.height);
+    const im = k < 1 ? pixelDown(img, img.width * k, img.height * k) : img;
+    const s = k < 1 ? 1 / R : Math.max(1, Math.round(k)) / R;
+    const w = im.width * s, h = im.height * s;
+    this.ctx.drawImage(im, Math.round((x - w / 2) * R) / R, Math.round((y - h) * R) / R, w, h);
   }
 
   /** 반짝이 동물 머리 위 반짝임 (네 방향 별, 깜빡) */
@@ -412,8 +451,10 @@ export class FieldRenderer {
     const c = this.ctx;
     const base = fitMax ? Math.max(img.width, img.height) : img.height;
     let k = (units * this.dev) / base;
-    const smooth = k < 1;
-    if (!smooth) k = Math.max(1, Math.round(k));
+    // 크면 도트 그림용으로 미리 줄여서 1:1, 작으면 정수 배
+    if (k < 1) { img = pixelDown(img, img.width * k, img.height * k); k = 1; }
+    else k = Math.max(1, Math.round(k));
+    const smooth = false;
     const w = img.width * k, h = img.height * k;
     const cx = this.ox * this.dpr + x * this.dev, by = this.oy * this.dpr + y * this.dev;
     const left = Math.round(cx - w / 2), top = Math.round(by - h) - Math.round(hop * Math.max(1, k));

@@ -240,3 +240,62 @@ export function shinyOf(img: Sprite): Sprite {
   shinyCache.set(img, cv);
   return cv;
 }
+
+/** 도트 그림 축소: 목표 칸마다 가장 많은 색 (외곽선이 1/3 넘게 있으면 외곽선), 덜 찬 칸은 투명. 원본·크기별로 한 번만 만든다 */
+const downCache = new WeakMap<object, Map<string, HTMLCanvasElement>>();
+export function pixelDown(img: Sprite, tw: number, th: number): Sprite {
+  tw = Math.max(1, Math.round(tw)); th = Math.max(1, Math.round(th));
+  if (tw >= img.width && th >= img.height) return img;
+  let m = downCache.get(img);
+  if (!m) { m = new Map(); downCache.set(img, m); }
+  const key = `${tw}x${th}`;
+  const hit = m.get(key);
+  if (hit) return hit;
+  const sw = img.width, sh = img.height;
+  const src = document.createElement('canvas'); src.width = sw; src.height = sh;
+  const sc = src.getContext('2d')!; sc.drawImage(img, 0, 0);
+  const sd = sc.getImageData(0, 0, sw, sh).data;
+  const cv = document.createElement('canvas'); cv.width = tw; cv.height = th;
+  const c = cv.getContext('2d')!;
+  const out = c.createImageData(tw, th);
+  for (let y = 0; y < th; y++) {
+    const y0 = Math.floor((y * sh) / th), y1 = Math.max(y0 + 1, Math.floor(((y + 1) * sh) / th));
+    for (let x = 0; x < tw; x++) {
+      const x0 = Math.floor((x * sw) / tw), x1 = Math.max(x0 + 1, Math.floor(((x + 1) * sw) / tw));
+      const counts = new Map<number, number>();
+      let opaque = 0, total = 0, dark = 0, darkKey = 0;
+      for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) {
+        total++;
+        const i = (yy * sw + xx) * 4;
+        if (sd[i + 3] < 128) continue;
+        opaque++;
+        const k = (sd[i] << 16) | (sd[i + 1] << 8) | sd[i + 2];
+        counts.set(k, (counts.get(k) ?? 0) + 1);
+        if (sd[i] + sd[i + 1] + sd[i + 2] < 150) { dark++; darkKey = k; }
+      }
+      if (opaque < total * 0.45) continue;
+      let best = 0, bk = 0;
+      for (const [k, n] of counts) if (n > best) { best = n; bk = k; }
+      if (dark >= opaque * 0.34) bk = darkKey;
+      const o = (y * tw + x) * 4;
+      out.data[o] = bk >> 16; out.data[o + 1] = (bk >> 8) & 255; out.data[o + 2] = bk & 255; out.data[o + 3] = 255;
+    }
+  }
+  c.putImageData(out, 0, 0);
+  m.set(key, cv);
+  return cv;
+}
+/** 그림의 평균 색 (투명 제외) */
+const avgCache = new WeakMap<object, string>();
+export function avgColor(img: Sprite): string {
+  const hit = avgCache.get(img);
+  if (hit) return hit;
+  const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+  const c = cv.getContext('2d')!; c.drawImage(img, 0, 0);
+  const d = c.getImageData(0, 0, cv.width, cv.height).data;
+  let r = 0, g = 0, b = 0, n = 0;
+  for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 128) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+  const col = n ? `rgb(${Math.round(r / n)},${Math.round(g / n)},${Math.round(b / n)})` : '#4c8a3c';
+  avgCache.set(img, col);
+  return col;
+}

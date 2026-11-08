@@ -450,7 +450,7 @@ export class World {
     this.updateStaff(dt);
     this.updateEvent(dt);
     // 동물 말풍선: 가끔 하트·음표 (먹이 먹은 우리는 먹이 그림)
-    this.emoteAcc += dt * Math.min(3, this.animals.length / 15);
+    this.emoteAcc += dt * Math.min(1.2, this.animals.length / 30);
     while (this.emoteAcc > 1 && this.animals.length) {
       this.emoteAcc -= 1;
       const a = this.animals[Math.floor(this.rng() * this.animals.length)];

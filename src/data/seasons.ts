@@ -12,10 +12,10 @@ export interface SeasonDef {
   tint: string; particle: string[];
 }
 export const SEASONS: readonly SeasonDef[] = [
-  { key: 'spring', name: '봄', icon: '🌸', strong: 'grass', weak: null, climate: null, climateName: '', tint: 'rgba(255,183,208,0.10)', particle: ['#ffb7d0', '#ffc8dd', '#f4f4f4'] },
-  { key: 'summer', name: '여름', icon: '☀', strong: 'water', weak: 'snow', climate: 'snow', climateName: '냉방비', tint: 'rgba(255,243,163,0.08)', particle: [] },
-  { key: 'autumn', name: '가을', icon: '🍁', strong: 'rock', weak: null, climate: null, climateName: '', tint: 'rgba(217,130,43,0.16)', particle: ['#d9822b', '#b8452e', '#f7c948'] },
-  { key: 'winter', name: '겨울', icon: '❄', strong: 'snow', weak: 'sand', climate: 'sand', climateName: '난방비', tint: 'rgba(233,243,255,0.30)', particle: ['#f4f4f4', '#e9f3ff'] },
+  { key: 'spring', name: '봄', icon: '🌸', strong: 'grass', weak: null, climate: null, climateName: '', tint: 'rgba(255,183,208,0.05)', particle: ['#ffb7d0', '#ffc8dd', '#f4f4f4'] },
+  { key: 'summer', name: '여름', icon: '☀', strong: 'water', weak: 'snow', climate: 'snow', climateName: '냉방비', tint: 'rgba(255,243,163,0.03)', particle: [] },
+  { key: 'autumn', name: '가을', icon: '🍁', strong: 'rock', weak: null, climate: null, climateName: '', tint: 'rgba(217,130,43,0.08)', particle: ['#d9822b', '#b8452e', '#f7c948'] },
+  { key: 'winter', name: '겨울', icon: '❄', strong: 'snow', weak: 'sand', climate: 'sand', climateName: '난방비', tint: 'rgba(233,243,255,0.12)', particle: ['#f4f4f4', '#e9f3ff'] },
 ];
 /** 시즌 n(1부터)의 계절 · 몇 년째 */
 export const seasonOf = (n: number) => SEASONS[(n - 1) % 4];
