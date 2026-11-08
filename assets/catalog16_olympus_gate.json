@@ -1,0 +1,80 @@
+{
+  "project": "BbopZOO",
+  "collection": "Olympus entrance",
+  "date": "2026-11-09",
+  "status": "generated_source",
+  "engine_ready": false,
+  "file": "assets/spritesheets16/olympus/gate/olympus_gate16.png",
+  "requested_size": [
+    1536,
+    1536
+  ],
+  "actual_size": [
+    1254,
+    1254
+  ],
+  "sha256": "4d6262dd42566abf0f4239e25a6292d60b36edb4d9178e3f871f541d5042f180",
+  "bytes": 1448581,
+  "requested_grid_columns_rows": [
+    2,
+    2
+  ],
+  "items": [
+    {
+      "row": 1,
+      "column": 1,
+      "name": "Olympus temple gate",
+      "requested_art_size": [
+        107,
+        99
+      ]
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "name": "Marble ticket booth",
+      "requested_art_size": [
+        41,
+        45
+      ]
+    },
+    {
+      "row": 2,
+      "column": 1,
+      "name": "Laurel banner flag",
+      "requested_art_size": [
+        21,
+        46
+      ]
+    },
+    {
+      "row": 2,
+      "column": 2,
+      "name": "Marble post with potted olive tree",
+      "requested_art_size": [
+        20,
+        38
+      ]
+    }
+  ],
+  "source_brief": "docs/briefs/olympus-gate16-original-request.txt",
+  "references": [
+    "assets/spritesheets16/entrance/gates/gate16.png",
+    "assets/spritesheets16/olympus/extras/olympus_extras16.png"
+  ],
+  "audit": {
+    "png_decodes": true,
+    "unique_rgb_colors": 144797,
+    "pixels_outside_allowed_palette_including_background": 1572444,
+    "dimensions_match": false,
+    "palette_match": false,
+    "native_grid_and_outline": "not_validated",
+    "same_footprint_as_existing_gate": "not_validated",
+    "game_integration": "not_performed"
+  },
+  "notes": [
+    "Generated PNG preserved without code-based resampling or recoloring.",
+    "Round booth window and warm shadow inside the open doorway were corrected in image generation.",
+    "Requested item positions and art sizes are specifications, not verified extraction rectangles."
+  ]
+}

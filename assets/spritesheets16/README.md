@@ -1,5 +1,7 @@
 # BbopZOO 그림 자료 — 최신 모음과 제작 기록
 
+올림포스 신전 입구 추가: [입구·매표소·깃발·올리브 기둥 2×2 시트](olympus/gate/README.md). 생성 원본이며 요청 크기·제한 팔레트와 다르고 게임 적용 전 검증이 필요합니다.
+
 올림포스 추가: [십이지신·영웅·소품 원본 5장](olympus/README.md) · [파일 목록](../catalog16_olympus.json). 생성 원본이며 실제 크기와 미검증 항목은 묶음 README에 기록했습니다.
 
 기계 애니메이션 추가: [분리 부품 시안·등급별 기계 원본 2장](machine-animation/README.md) · [신규 건물과 합친 3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-buildings-new-and-machine16-sources.zip). 부품 좌표 정합 실패이며 바로 사용 가능한 레이어가 아닙니다. 전체 픽셀 규격은 HOLD입니다.
