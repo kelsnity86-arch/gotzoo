@@ -8,16 +8,32 @@
 
 | 경로 | 내용 | 상태 |
 |---|---|---|
-| `Data/*.json` | 동물 300종, 등급, 직원, 우리 조각, 시설 12종, 업그레이드, 밸런스 숫자, 이벤트, 계절, 시너지, 라이벌, 도감, 미션 | 완료 (웹판과 같은 값) |
-| `Data/sprites.json` | 그림 1,645장 목록: 이름(key)·파일·크기·기준점 | 완료 |
+| `Data/*.json` | 동물 300종, 등급, 직원, 우리 조각, 시설 12종, 업그레이드, 밸런스 숫자, 이벤트, 계절, 시너지, 라이벌, 도감, 미션, **올림푸스**(12신 · 영웅 6 · 확률), **운**(라이벌 컨디션 · 소식 · 막판 대목 · 데려가기 칸) | 완료 (웹판과 같은 값) |
+| `Data/sprites.json` | 그림 1,726장 목록: 이름(key)·파일·크기·기준점 | 완료 |
 | `Scripts/Data/GameData.cs` | JSON 모델 + 불러오기 | 완료 |
-| `Scripts/Core/Gacha.cs` | 뽑기: 기계 등급, 동물 90 / 직원 5 / 우리 5, 등급, 특수옵션, 계절 한정 | 완료 (웹판과 난수 순서 같음) |
+| `Scripts/Core/Cards.cs` | 카드 · 저장 데이터. **웹판 저장 JSON을 그대로 불러온다** (필드 이름 같음) | 이 키트가 쓰는 필드 |
+| `Scripts/Core/Gacha.cs` | 뽑기: 기계 등급, 동물 90 / 직원 5 / 우리 5, 등급, 특수옵션, 계절 한정, **네임드 신 · 영웅 · 각성 · 중복** | 완료 · 웹판과 대조 |
+| `Scripts/Core/Olympus.cs` | 12지신 · 영웅: 전시 중 능력 합(GodVal · HeroVal), 신전 기록, 완성 판정, 능력을 쓰는 식(공사 할인 · 피버 · 실망 손님) | 완료 · 웹판과 대조 |
+| `Scripts/Core/RivalLuck.cs` | 라이벌 컨디션 · 소식 · 규모, **평판 하트 → 최후의 기회 → 폐원**, 막판 대목 · 응원 점수 | 완료 · 웹판과 대조 |
+| `Scripts/Core/Carry.cs` | 폐원 때 데려가기 (동물 칸 · 직원 1명 · 신전 유지) | 완료 · 웹판과 대조 (자동 배치는 아직) |
 | `Scripts/Core/ZooScale.cs` | 규모 확장(작은→세계 동물원), 공사비, 부지, 별 계산 | 핵심만 |
-| `Scripts/Core/Cards.cs` | 카드·저장 데이터 모델 (웹판 저장 JSON과 같은 모양) | 일부 필드 |
 | `Scripts/Core/SpriteDb.cs` | 그림 이름 → Sprite | 완료 |
 | `Scripts/Editor/BbopZooSpriteImporter.cs` | 픽셀 아트 자동 설정 (점 필터, PPU 16, 압축 없음, 발밑 기준점) | 완료 |
+| `Tests/` | **Unity 없이** Scripts를 컴파일해서 웹판 결과와 대조하는 테스트 (아래) | 22,916개 항목 통과 |
 
 그림 파일 자체는 저장소의 `assets/sprites16/` 입니다 (전달 묶음에는 함께 들어 있음).
+
+## 웹판과 대조 테스트
+
+같은 씨앗 난수(mulberry32)로 웹판과 C#을 돌려 결과가 한 글자도 다르지 않은지 본다:
+뽑기 2만 장(네임드 · 중복 · 각성 · 신 능력 포함), 기계 · 직원 · 우리 낱개, 라이벌 컨디션 · 규모 · 소식, 폐원 데려가기(웹판 저장 JSON을 그대로 불러와서), 시즌 판정.
+
+```
+npx vite-node tools/export-unity.ts     # 데이터 JSON 다시 뽑기
+npx vite-node tools/unity-fixtures.ts   # 웹판 기준값 → unity/Tests/fixtures.json
+dotnet run --project unity/Tests        # .NET 8 SDK 필요
+```
+웹판 규칙을 바꾸면 위 세 줄을 다시 돌려 C#이 따라오는지 확인한다.
 
 ## 설치 순서
 
@@ -29,7 +45,7 @@
    - `Scripts/Data`, `Scripts/Core` → `Assets/Scripts/`
    - `Scripts/Editor` → `Assets/Editor/`
 4. 아무 오브젝트에 `GameData.Load();` 를 부르는 시작 스크립트를 붙인다.
-5. 확인: `Gacha.Draw(save, 10, () => rng.NextDouble(), 0, 0.01, "spring", 0.3)` 가 카드 10장을 돌려주면 연결 성공.
+5. 확인: `var s = SaveData.Default(); s.tokens = 10000; Gacha.Draw(s, 10, () => rng.NextDouble())` 가 결과 10개를 돌려주면 연결 성공.
 
 카메라는 Pixel Perfect Camera(Assets PPU 16, 기준 해상도 640×360 정도)를 권장합니다.
 
@@ -55,4 +71,5 @@
 - 연출 기본값은 **전부 켜짐**. 줄이기는 설정에서만.
 - 화면은 PC 가로, 폰도 가로 고정.
 - `GameData.Load()` 는 `File.ReadAllText` 를 쓴다. WebGL·안드로이드 빌드면 `UnityWebRequest` 로 바꿀 것.
-- C# 코드는 이 환경에 Unity가 없어 컴파일 확인을 못 했다. 처음 넣을 때 콘솔 오류를 확인할 것.
+- `Scripts/Data`, `Scripts/Core`는 .NET 8(C# 9)로 컴파일 · 테스트했다. Unity 2022.3도 C# 9이라 그대로 들어간다. `Editor/` · `SpriteDb.cs`는 UnityEditor/UnityEngine이 필요해 Unity 안에서만 확인할 수 있다.
+- `Tests/` 폴더는 Unity 프로젝트에 넣지 않는다 (UnityEngine 대역이 들어 있다).

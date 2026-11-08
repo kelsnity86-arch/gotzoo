@@ -19,13 +19,12 @@ namespace BbopZoo.Core
         public static int ExpandCost(SaveData s)
         {
             var c = GameData.Balance.expandCost;
-            var cutDef = GameData.Upgrades.upgrades.Find(u => u.id == "buildCut");
-            double cut = cutDef == null ? 0 : cutDef.values[s.upgrades.TryGetValue("buildCut", out var lv) ? lv : 0];
+            double cut = Olympus.BuildCut(s); // 업그레이드 + 헤파찍
             int baseCost;
             if (s.stage < GameData.Balance.maxStage) baseCost = c[s.stage - 1];
             else if (!s.bigLand && s.stars >= 3) baseCost = c[c.Length - 1];
             else return -1;
-            return (int)Math.Round(baseCost * (1 - cut));
+            return (int)Math.Floor(baseCost * (1 - cut) + 0.5);
         }
 
         /// <summary>조건: 전시 동물 수 · 총 매력도 (STAGE_REQ) + 공사비 + 밤. displayed/attract 는 필드 계산 결과를 넘긴다.</summary>

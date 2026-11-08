@@ -13,7 +13,7 @@ import { FACILITIES, FAC_MAX_LV, FAC_LV_PRICE, DECOR, DECO_TIERS } from '../src/
 import { EVENTS } from '../src/data/events';
 import { SEASONS, SEASON_FX } from '../src/data/seasons';
 import { SYNERGY_SETS, HABITAT_TIERS, GRADE_SYN, SYNERGY_CAP, SHINY } from '../src/data/synergy';
-import { RIVALS, SEASON, SCALE_TARGET } from '../src/data/rivals';
+import { RIVALS, SEASON, SCALE_TARGET, SCALE_GROWTH } from '../src/data/rivals';
 import { DEX_SETS } from '../src/data/dex';
 import { MISSION_POOL, MISSION_K, MISSION_REWARD } from '../src/data/missions';
 import { DRAW_KIND, MACHINE_TIERS, CARRY } from '../src/game/rules';
@@ -42,7 +42,7 @@ write('balance', {
 write('events', EVENTS);
 write('seasons', { seasons: SEASONS, fx: SEASON_FX });
 write('synergy', { sets: SYNERGY_SETS, habitatTiers: HABITAT_TIERS, gradeSyn: GRADE_SYN, cap: SYNERGY_CAP, shiny: SHINY });
-write('rivals', { season: SEASON, rivals: RIVALS, scaleTarget: SCALE_TARGET });
+write('rivals', { season: SEASON, rivals: RIVALS, scaleTarget: SCALE_TARGET, scaleGrowth: SCALE_GROWTH });
 write('dex', DEX_SETS);
 write('olympus', { named: NAMED, gods: GODS.map((g) => ({ ...g, descNormal: g.desc(g.value), descAwake: g.desc(g.value * NAMED.awakeMul) })), heroes: HEROES.map((x) => ({ ...x, descNormal: x.desc(x.value), descAwake: x.desc(x.value * NAMED.awakeMul) })) });
 write('luck', { rivalCond: RIVAL_COND, rivalEvents: RIVAL_EVENTS, rivalEventChance: RIVAL_EVENT_CHANCE, lastStand: LAST_STAND, carry: CARRY });
