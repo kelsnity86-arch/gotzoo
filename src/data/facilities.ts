@@ -6,7 +6,7 @@ export type FacilityType = 'snack' | 'restroom' | 'bench' | 'fountain' | 'photo'
   | 'souvenir' | 'restaurant' | 'icecream' | 'carousel' | 'tower' | 'lab';
 export interface FacilityDef {
   type: FacilityType; name: string;
-  /** 1단계 효과 · 3단계(최대) 효과. 단계 효과 = cap × 단계 / 3 */
+  /** 1단계 효과 · 3단계 효과(cap). 단계 효과 = cap × 단계 / 3, 4 · 5단계는 단계마다 cap × 15% 더 */
   value: number; cap: number;
   desc: (v: number) => string;
   /** 짓는 값 = 동물 뽑기 가격 × price × FAC_LV_PRICE[단계], 하루 유지비 = 비용 단위 × upkeep × 단계 */
@@ -15,7 +15,7 @@ export interface FacilityDef {
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 export const FACILITIES: readonly FacilityDef[] = [
   { type: 'snack', name: '매점', value: 0.13, cap: 0.4, desc: (v) => `관람객이 간식을 사요 · 투척액 +${pct(v)}`, price: 3, upkeep: 0.2 },
-  { type: 'restroom', name: '화장실', value: 0.17, cap: 0.5, desc: (v) => `오래 머물러요 · 분당 최대 관람객 +${pct(v)}`, price: 3, upkeep: 0.15 },
+  { type: 'restroom', name: '화장실', value: 0.17, cap: 0.5, desc: (v) => `오래 머물러요 · 손님 정원 +${pct(v)}`, price: 3, upkeep: 0.15 },
   { type: 'bench', name: '쉼터', value: 20, cap: 60, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
   { type: 'fountain', name: '분수 광장', value: 0.05, cap: 0.15, desc: (v) => `모든 동물 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'photo', name: '포토존', value: 0.13, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
@@ -30,10 +30,11 @@ export const FACILITIES: readonly FacilityDef[] = [
 ];
 export const facilityDef = (t: FacilityType) => FACILITIES.find((f) => f.type === t)!;
 /** 시설 최대 단계 · 단계별 증축 값 배율 (0→1, 1→2, 2→3) */
-export const FAC_MAX_LV = 3;
-export const FAC_LV_PRICE = [1, 2.5, 5] as const;
+/** 4 · 5단계는 후반용 (그림은 3단계 그림 + 별 표시) */
+export const FAC_MAX_LV = 5;
+export const FAC_LV_PRICE = [1, 2.5, 5, 15, 40] as const;
 /** 단계 효과 (bench는 초, 나머지는 비율) */
-export const facLevelValue = (t: FacilityType, lv: number) => { const d = facilityDef(t); const v = (d.cap * Math.max(0, Math.min(FAC_MAX_LV, lv))) / FAC_MAX_LV; return t === 'bench' ? Math.round(v) : v; };
+export const facLevelValue = (t: FacilityType, lv: number) => { const d = facilityDef(t); const l = Math.max(0, Math.min(FAC_MAX_LV, lv)); const v = l <= 3 ? (d.cap * l) / 3 : d.cap * (1 + 0.15 * (l - 3)); return t === 'bench' ? Math.round(v) : v; };
 
 /** 계절 소품: 계절마다 12종 (그 계절에만 팔고, 산 건 계속 남는다) */
 export const DECOR: Record<SeasonKey, string[]> = {

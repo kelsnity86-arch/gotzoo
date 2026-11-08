@@ -22,7 +22,7 @@ export const rivalOf = (season: number) => RIVALS[(season - 1) % RIVALS.length];
 
 /** 라이벌 규모: 시즌 n의 k일째 (1~7). 시즌 안에서는 목표의 80% → 100%로 커지고, 목표는 시즌마다 커진다.
  * 목표 = 시뮬레이션 봇의 그 시즌 마지막 날 규모를 기준으로 맞춘 표, 표 뒤로는 시즌마다 ×SCALE_GROWTH */
-export const SCALE_TARGET = [150, 380, 700, 980, 1250, 1500];
+export const SCALE_TARGET = [220, 570, 940, 1360, 1770, 2210];
 const SCALE_GROWTH = 1.17;
 export function rivalScaleTarget(n: number): number {
   if (n <= SCALE_TARGET.length) return SCALE_TARGET[n - 1];

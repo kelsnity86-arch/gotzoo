@@ -672,3 +672,6 @@ body.reduce-motion .gacha-gauge.fever { animation: none; }
 .name-ask .name-row .cnt { font-size: 13px; color: #7a6a55; white-space: nowrap; }
 .name-ask .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .name-ask .arch-wrap { display: grid; place-items: center; }
+.cap-line { font-size: 12px; margin: 2px 0 6px; color: var(--ink, #5d3a24); }
+.cap-line.full { color: #c0392b; font-weight: 700; }
+.cap-line small { color: #8a6a4a; font-weight: 400; }

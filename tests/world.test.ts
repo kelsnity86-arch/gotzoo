@@ -91,9 +91,10 @@ describe('필드', () => {
     expect(w.fedLeft[0]).toBeGreaterThan(0);
     expect(w.attract).toBeGreaterThan(a0);
   });
-  it('관람객 수: 분당 3 + 매력도 × 0.2, 게이트 한도', () => {
+  it('관람객 수: 분당 기본 + 매력도 × perAttract, 정원(부지 칸 × capPerCell) 한도', () => {
     const { w } = setup();
-    expect(w.visitorRate).toBeCloseTo(VISITOR.basePerMin + 0.2 * w.attract, 5);
+    expect(w.gateCap).toBe(Math.round(8 * 4 * VISITOR.capPerCell));
+    expect(w.visitorRate).toBeCloseTo(Math.min(w.gateCap, VISITOR.basePerMin + VISITOR.perAttract * w.attract), 5);
   });
 });
 

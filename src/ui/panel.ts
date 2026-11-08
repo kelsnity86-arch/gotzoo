@@ -10,7 +10,7 @@ import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
   assignStaff, DRAW_KIND, MACHINE_TIERS, staffSum, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
-  penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, expandCost, stageName, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
+  penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, expandCost, stageName, gateCapOf, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, shinyOf, staff16, staffFrame } from '../render/sprites';
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
@@ -161,7 +161,9 @@ export class Panel {
     const night = this.ctx.world.isNight;
     const btn = !night ? h('span', { class: 'night-only' }, '🌙 밤에 공사', h('small', {}, fmt(cost)))
       : (() => { const b = this.costBtn(h('span', {}, `${next}으로 확장`, h('small', {}, `공사비 ${fmt(cost)}`)), cost, () => { if (promote(s)) { audio.sfx('fuseWin'); toast(`${stageName(s)}으로 확장! 부지가 넓어지고 우리 하나를 받았어요`, 'gold', 2800); this.ctx.world.relayout(-1); this.changed(); } }, 'expand-btn' + (canPromote(s) ? ' pulse' : ''), !canPromote(s)); return b; })();
+    const capNow = gateCapOf(s), capNext = gateCapOf(s, (s.upgrades.land ?? 0) + 1), demand = this.ctx.world.visitorDemand;
     return h('div', { class: 'home-box' }, head,
+      h('div', { class: 'cap-line' + (demand > capNow ? ' full' : '') }, `손님 정원 ${capNow}명/분${demand > capNow ? ' · 꽉 찼어요' : ''}`, h('small', {}, ` → 확장하면 ${capNext}명`)),
       req ? h('div', {}, this.bar(`전시 동물 ${placedAnimals(s)} / ${req[0]}`, placedAnimals(s) / req[0]), this.bar(`총 매력도 ${fmt(totalAttract(s))} / ${fmt(req[1])}`, totalAttract(s) / req[1])) : null,
       btn);
   }

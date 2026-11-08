@@ -7,7 +7,7 @@ import { UPGRADES } from '../../src/data/balance';
 import { FACILITIES } from '../../src/data/facilities';
 import {
   assignStaff, autoFusionPick, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, optimizePlacement, placedAnimals,
-  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts, expandCost,
+  promote, totalAttract, visitorMul, upValue, stageTipMul, staffTipMul, staffSum, facSum, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts, expandCost,
 } from '../../src/game/rules';
 import type { Grade } from '../../src/data/grades';
 
@@ -46,12 +46,14 @@ it('경제 곡선', () => {
       // 확장 조건을 채웠으면 공사비부터 (모자라면 업그레이드를 미루고 모은다)
       if (canPromote(s)) { const ec = expandCost(s); if (ec !== null && s.coins >= ec) promote(s); }
       const saving = canPromote(s) ? (expandCost(s) ?? 0) : 0;
-      const reserve = dailyCosts(s).total * 1 + saving;
+      // 확장비를 모으는 중에도 싼 것(모을 돈의 20% 이하)은 산다 — 사람도 게이트가 꽉 차면 먼저 늘린다
+      const base = dailyCosts(s).total * 1;
+      const ok = (cost: number) => cost + base <= s.coins && (cost <= saving * 0.2 || cost + base + saving <= s.coins);
       for (let k = 0; k < 12; k++) {
         const opts: { cost: number; buy: () => void }[] = [
           ...UPGRADES.map((u) => ({ cost: upgradeLockedBy(s, u.id) === null ? upgradeCost(s, u.id) : null, buy: () => buyUpgrade(s, u.id) })),
           ...FACILITIES.map((f) => ({ cost: facPrice(s, f.type), buy: () => buyFacility(s, f.type) })),
-        ].filter((o): o is { cost: number; buy: () => void } => o.cost !== null && o.cost + reserve <= s.coins);
+        ].filter((o): o is { cost: number; buy: () => void } => o.cost !== null && ok(o.cost));
         if (!opts.length) break;
         opts.sort((a, b) => a.cost - b.cost)[0].buy();
       }
@@ -68,6 +70,8 @@ it('경제 곡선', () => {
       const inc = w.incomePerMin();
       mark[m] = `${m}분: 돈 ${Math.round(s.coins)} · 코인 ${Math.round(s.tokens)} · 입장료 ${inc.base}/분 · 코인 ${inc.bonus}/분 · 건물 ${Object.values(s.facLv).reduce((a, b) => a + b, 0)} · 전시 ${placedAnimals(s)} · 매력 ${totalAttract(s)} · 카드 ${s.cards.length} · 단계 ${s.stage} · 뽑기 ${draws}장 · 도감 ${s.dex.filter(Boolean).length}`;
       log.push(mark[m]);
+      const f2 = (v: number) => v.toFixed(2);
+      log.push(`   ┗ 매력 ${Math.round(w.attract)} · 수요 ${f2(w.visitorDemand)}/분 · 게이트 ${f2(w.gateCap)} · 입장 ${f2(w.visitorRate)} · 손님배율 ${f2(visitorMul(s))} | 질 ${f2(upValue(s, 'quality'))} · 단계 ${f2(stageTipMul(s))} · 넘침 ${f2(w.overflowMul)} · 직원 ${f2(staffTipMul(s))} · 매표/기념품 ${f2(1 + staffSum(s, 'ticket') + facSum(s, 'souvenir'))} · 뽑기값 ${drawPrice(s)}`);
     }
   }
   console.log(`두 번째 뽑기: ${secondDraw >= 0 ? `${secondDraw.toFixed(0)}초` : '없음'}`);

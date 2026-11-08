@@ -15,7 +15,7 @@ export const MAX_STAGE = GACHA.price.length;
 /** 동물원 규모 이름 (진행 단계) */
 export const STAGE_NAMES = ['작은 동물원', '동네 동물원', '시립 동물원', '도시 동물원', '테마 동물원', '국립 동물원', '대륙 동물원', '세계 동물원'] as const;
 /** 확장 공사비 (돈): 다음 단계로 · 마지막 = 별 3개 특별 확장 */
-export const EXPAND_COST = [300, 1200, 3500, 9000, 22000, 50000, 110000, 240000] as const;
+export const EXPAND_COST = [300, 1200, 3500, 9000, 25000, 70000, 180000, 400000] as const;
 /** 동물원 별 등급: 1년(4시즌)마다 평가 · 점수 기준 (100점 만점) */
 export const STAR_NEED = [20, 40, 60, 75, 90] as const;
 /** 단계마다 관람객 투척액 배율 (유명세) */
@@ -43,10 +43,10 @@ export const UPGRADES: readonly UpgradeDef[] = [
     costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸`, group: 'hidden' },
   { id: 'deco', name: '울타리·입구 꾸미기', icon: 'icon_cage', values: [0, 1, 2, 3],
     costs: [3000, 15000, 70000], need: [2, 4, 6], describe: (v) => `${['나무', '돌', '철', '황금'][v]} 울타리 · 모든 동물 매력 +${v * 3}%`, group: 'zoo' },
-  { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.25, 1.6, 2.1, 2.7, 3.5, 4.5, 6],
-    costs: [250, 700, 2000, 5000, 12000, 30000, 75000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `손님 씀씀이 ×${v}`, group: 'zoo' },
-  { id: 'gate', name: '입장 게이트', icon: 'icon_visitor', values: [30, 45, 60, 80, 110, 150, 200],
-    costs: [800, 2500, 7000, 20000, 55000, 150000], need: [2, 3, 4, 5, 6, 7], describe: (v) => `분당 최대 관람객 ${v}명`, group: 'zoo' },
+  { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.2, 1.4, 1.65, 1.9, 2.2, 2.5, 2.8],
+    costs: [250, 900, 3000, 9000, 25000, 70000, 180000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `손님 씀씀이 ×${v}`, group: 'zoo' },
+  { id: 'gate', name: '입장 게이트', icon: 'icon_visitor', values: [1, 1.1, 1.2, 1.35, 1.5, 1.65, 1.8],
+    costs: [800, 2500, 8000, 22000, 60000, 160000], need: [2, 3, 4, 5, 6, 7], describe: (v) => (v > 1 ? `손님 정원 +${Math.round((v - 1) * 100)}%` : '손님 정원 그대로'), group: 'zoo' },
   { id: 'staff', name: '직원 슬롯', icon: 'icon_badge', values: [1, 2, 3, 4, 5],
     costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명`, group: 'zoo' },
   { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [1.5, 3, 4.5, 6.5, 9, 12],
@@ -86,8 +86,10 @@ export const upgradeDef = (id: UpgradeId) => UPGRADES.find((u) => u.id === id)!;
 
 /** 관람객 */
 export const VISITOR = {
-  basePerMin: 3,
-  perAttract: 0.2,
+  basePerMin: 6,
+  perAttract: 0.1,
+  /** 손님 정원(분당 최대 입장) = 부지 칸 수 × 이 값 × 게이트 업그레이드 × (1 + 화장실). 동물원을 넓혀야 손님이 늘어난다 */
+  capPerCell: 0.9,
   /** 투척액 범위 (관객의 질·단계 배율 전) */
   tipMin: 10, tipMax: 20,
   /** 수거 보너스 = 투척액 × 이 값 */
@@ -98,8 +100,9 @@ export const VISITOR = {
   luckyChance: 0.025,
   /** 피버 타임: 손으로 동전 need개를 주우면(콤보면 더 빨리) sec초 동안 손님 동전 ×coinMul, 하늘에서 동전 비 (rainEvery초마다) */
   fever: { need: 80, sec: 15, coinMul: 2, rainEvery: 0.4 },
-  /** 수요가 게이트 한도를 넘으면 넘친 만큼 투척액이 오른다 (최대 배율) */
-  overflowMaxMul: 1.6,
+  /** 수요가 정원을 넘으면 투척액이 오른다: 1 + overflowK × log2(수요/정원), 최대 overflowMaxMul (인기 많은 동물원 = 비싼 입장) */
+  overflowK: 0.25,
+  overflowMaxMul: 1.8,
   walkSpeed: 16,
   viewSecMin: 2, viewSecMax: 4,
 } as const;

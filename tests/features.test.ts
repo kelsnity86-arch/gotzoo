@@ -267,7 +267,7 @@ describe('우리 조각 · 부지', () => {
 });
 
 describe('시설 · 꾸미기', () => {
-  it('시설은 관객 건물: 단계마다 증축 (최대 3), 효과 · 유지비 · 규모가 단계만큼', () => {
+  it('시설은 관객 건물: 단계마다 증축 (최대 5), 효과 · 유지비 · 규모가 단계만큼', () => {
     const s = defaultSave(); s.coins = 1e6;
     expect(facPrice(s, 'snack')).toBe(300);
     expect(buyFacility(s, 'snack')).toBe(true);
@@ -280,6 +280,8 @@ describe('시설 · 꾸미기', () => {
     expect(facSum(s, 'snack')).toBeCloseTo(0.4, 5);
     expect(dailyCosts(s).facility).toBeGreaterThan(c1 * 2.5);
     expect(zooScale(s) - sc1).toBe(30);
+    expect(buyFacility(s, 'snack')).toBe(true); expect(buyFacility(s, 'snack')).toBe(true);
+    expect(facSum(s, 'snack')).toBeCloseTo(0.4 * 1.3, 5);
     expect(facPrice(s, 'snack')).toBeNull();
     expect(buyFacility(s, 'snack')).toBe(false);
   });

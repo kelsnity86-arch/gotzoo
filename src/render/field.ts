@@ -190,7 +190,8 @@ export class FieldRenderer {
     for (const z of zoneRow(L.w, this.facLv)) {
       if (z.kind === 'prop') { obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1)); continue; }
       const lv = this.facLv[z.type] ?? 0;
-      if (lv > 0) obj(`bld_${BLD_ART[z.type]}_${lv - 1}`, z.x, p0 * TILE - 1);
+      if (lv > 0) obj(`bld_${BLD_ART[z.type]}_${Math.min(lv, 3) - 1}`, z.x, p0 * TILE - 1);
+      if (lv > 3) { c.save(); c.font = '4px Jua, sans-serif'; c.textAlign = 'center'; c.fillStyle = '#f7c948'; c.strokeStyle = '#5d3a24'; c.lineWidth = 1; const st = '★'.repeat(lv - 3); c.strokeText(st, z.x, p0 * TILE - 2); c.fillText(st, z.x, p0 * TILE - 2); c.restore(); }
       else obj('park_sign', z.x, p0 * TILE - 2);
     }
     // 가운데 입구: 앞에서 본 아치 문 (손님이 문을 지나 화면 쪽으로 나온다), 양옆 매표소 · 깃대, 간판 이름, 계절 장식

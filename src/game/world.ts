@@ -9,7 +9,7 @@ import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { gateCapOf, overflowMulOf, evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -348,14 +348,13 @@ export class World {
     return { allMul: e?.allMul, habitatMul: e?.habitat ? { [e.habitat]: e.habitatMul ?? 1 } : undefined };
   }
   get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb * (penOpt(this.save, i, 'feeder') ? 2 : 1) : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1), this.attractCtx); }
-  get gateCap() { return upValue(this.save, 'gate') * (1 + facSum(this.save, 'restroom')); }
+  get gateCap() { return gateCapOf(this.save); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }
   get visitorRate() { return Math.min(this.gateCap * (this.phaseT < 60 ? upValue(this.save, 'promo') : 1), this.visitorDemand * (this.phase === 'day' && this.phaseT < 60 ? upValue(this.save, 'promo') : 1)) * (this.event ? eventDef(this.event.id).rateMul : 1); }
   /** 수요가 한도를 넘친 만큼 투척액이 오른다 */
   get overflowMul() {
-    const d = this.visitorDemand, cap = this.gateCap;
-    return d <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + ((d - cap) / cap) * 0.25);
+    return overflowMulOf(this.visitorDemand, this.gateCap);
   }
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife'); }

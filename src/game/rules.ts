@@ -6,7 +6,7 @@ import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, 
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
 import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
-import { EXPAND_COST, STAGE_NAMES, STAR_NEED, DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
+import { VISITOR, EXPAND_COST, STAGE_NAMES, STAR_NEED, DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
 import { defaultSave, type Card, type MissionKind, type PenCard, type SaveData, type StaffCard } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/missions';
@@ -18,6 +18,10 @@ export const upValue = (s: SaveData, id: UpgradeId) => upgradeDef(id).values[s.u
 // ── 부지 · 우리 조각 ──
 /** 부지 크기 (블록 칸) */
 export const boardDims = (s: SaveData) => BOARD[Math.min(BOARD.length - 1, s.upgrades.land ?? 0)];
+/** 손님 정원 (분당 최대 입장): 부지 칸 수 × capPerCell × 게이트 × (1 + 화장실) */
+export const gateCapOf = (s: SaveData, land: number = s.upgrades.land ?? 0) => { const [w, h] = BOARD[Math.min(BOARD.length - 1, land)]; return Math.round(w * h * VISITOR.capPerCell * upValue(s, 'gate') * (1 + facSum(s, 'restroom'))); };
+/** 수요/정원 → 투척액 배율 */
+export const overflowMulOf = (demand: number, cap: number) => (demand <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + VISITOR.overflowK * Math.log2(demand / cap)));
 /** 놓은 우리 수 */
 export const penCount = (s: SaveData) => s.board.length;
 export const penCardAt = (s: SaveData, i: number) => cardById(s, s.board[i]?.uid ?? -1) as PenCard | undefined;
@@ -815,7 +819,8 @@ export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: numbe
   const minutes = Math.min(OFFLINE.maxHours * 60, (now - s.lastSeen) / 60000);
   if (minutes < OFFLINE.minMinutes) return null;
   const A = totalAttract(s);
-  const perMin = Math.min(upValue(s, 'gate'), 3 + 0.2 * A) * 15 * upValue(s, 'quality') * stageTipMul(s) * staffTipMul(s);
+  const demand = VISITOR.basePerMin + VISITOR.perAttract * A, cap = gateCapOf(s);
+  const perMin = Math.min(cap, demand) * 15 * overflowMulOf(demand, cap) * upValue(s, 'quality') * stageTipMul(s) * staffTipMul(s);
   // 낮 시간 몫만 (하루 중 관람객이 오는 비율)
   const dayShare = (DAY.dayLen - DAY.duskLen) / (DAY.dayLen + DAY.nightAvg);
   return { minutes, amount: Math.floor(perMin * minutes * OFFLINE.rate * dayShare) };

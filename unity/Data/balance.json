@@ -92,10 +92,10 @@
   1200,
   3500,
   9000,
-  22000,
-  50000,
-  110000,
-  240000
+  25000,
+  70000,
+  180000,
+  400000
  ],
  "starNeed": [
   20,
@@ -120,8 +120,9 @@
  ],
  "fusionMin": 2,
  "visitor": {
-  "basePerMin": 3,
-  "perAttract": 0.2,
+  "basePerMin": 6,
+  "perAttract": 0.1,
+  "capPerCell": 0.9,
   "tipMin": 10,
   "tipMax": 20,
   "pickupBonus": 0.5,
@@ -133,7 +134,8 @@
    "coinMul": 2,
    "rainEvery": 0.4
   },
-  "overflowMaxMul": 1.6,
+  "overflowK": 0.25,
+  "overflowMaxMul": 1.8,
   "walkSpeed": 16,
   "viewSecMin": 2,
   "viewSecMax": 4
