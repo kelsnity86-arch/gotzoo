@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { drawPrice, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
+import { MACHINE_TIERS, drawPrice, machineTier, nextTierLeft, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -570,10 +570,13 @@ function updateHud() {
     field.hudTarget = { x: (r.left + r.width / 2) * 1 - cr.left, y: r.top + r.height / 2 - cr.top };
     const price = drawPrice(save), ten = price * 10, coins = Math.max(0, save.tokens ?? 0);
     gaugeCoins.textContent = fmt(coins);
-    const ready10 = coins >= ten, ready = coins >= price;
-    gaugeFill.style.width = `${Math.min(100, ready ? (coins / ten) * 100 : (coins / price) * 100)}%`;
-    gauge.classList.toggle('ready', ready && !ready10); gauge.classList.toggle('ready10', ready10);
-    gaugeText.textContent = ready10 ? '10회 뽑기 가능!' : ready ? `뽑기 ${Math.floor(coins / price)}회 가능` : `다음 뽑기 ${Math.floor((coins / price) * 100)}%`;
+    // 게이지: 지난 뽑기 뒤로 모은 코인 → 기계 등급 (기본 · 은 · 금 · 무지개)
+    const tier = machineTier(save), left = nextTierLeft(save), charge = save.charge ?? 0;
+    const lo = MACHINE_TIERS[tier].need * ten, hi = left === null ? lo : MACHINE_TIERS[tier + 1].need * ten;
+    gaugeFill.style.width = `${left === null ? 100 : Math.min(100, ((charge - lo) / Math.max(1, hi - lo)) * 100)}%`;
+    for (let k = 0; k < 4; k++) gauge.classList.toggle(`t${k}`, k === tier);
+    gauge.classList.toggle('ready', coins >= price && coins < ten); gauge.classList.toggle('ready10', coins >= ten);
+    gaugeText.textContent = `${tier ? MACHINE_TIERS[tier].name : coins >= ten ? '10회 가능' : coins >= price ? `${Math.floor(coins / price)}회 가능` : '모으는 중'}${left === null ? ' · 최고!' : ` · 다음 ${MACHINE_TIERS[tier + 1].name.replace(' 기계', '')}까지 ${fmt(left)}`}`;
     const cb = world.combo;
     if (cb.n >= 2 && cb.t > 0) { comboEl.textContent = `콤보 ×${cb.n}`; comboEl.classList.remove('hidden', 'end'); comboEl.style.left = upx(fieldRect.x + fieldRect.w / 2); comboEl.style.top = upx(fieldRect.y + 40); comboEl.style.setProperty('--s', String(1 + Math.min(0.6, cb.n * 0.02))); }
     else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');

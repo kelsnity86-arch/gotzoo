@@ -15,6 +15,17 @@ class Audio {
     g.gain.setValueAtTime(Math.max(0.0002, v * this.volume * 1.4), t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + 0.02);
   }
+  /** 뽑기 연출용 짧은 소리: 드르륵(손잡이) · 달그락(캡슐) · 통(떨어짐) · 쩍(금) · 덜컹 */
+  fx(kind: 'crank' | 'rattle' | 'bounce' | 'crack' | 'clunk' | 'whoosh', step = 0) {
+    const c = this.ctx; if (!c || this.muted) return;
+    const t = c.currentTime;
+    if (kind === 'crank') { for (let i = 0; i < 3; i++) this.tone(t + i * 0.035, 180 + i * 30, 0.025, 0.05, 'square'); }
+    else if (kind === 'rattle') this.tone(t, 500 + step * 70 + Math.random() * 80, 0.03, 0.035, 'triangle');
+    else if (kind === 'bounce') this.tone(t, 260 - step * 40, 0.08, 0.07, 'sine', 140 - step * 20);
+    else if (kind === 'crack') { this.tone(t, 1400 + step * 200, 0.02, 0.05, 'square'); this.tone(t + 0.02, 900 + step * 150, 0.03, 0.04, 'square'); }
+    else if (kind === 'clunk') { this.tone(t, 120, 0.12, 0.09, 'square', 70); this.tone(t + 0.05, 240, 0.06, 0.05, 'triangle'); }
+    else if (kind === 'whoosh') this.tone(t, 300, 0.25, 0.04, 'sawtooth', 1200);
+  }
   /** (시안 loop) 콤보 동전: 이어질수록 음이 올라간다 */
   coinCombo(n: number) {
     const c = this.ctx; if (!c || this.muted) return;

@@ -569,3 +569,29 @@ body.reduce-motion .gacha-gauge { animation: none !important; }
 .odds-table .head b:first-child { background: transparent; }
 /* 정보 줄: 돈(입장료) · 코인(뽑기) */
 .hud-money b { color: #a7d65b; }
+
+/* ── 뽑기 연출 v4: 한 장면 (후광 · 기계 · 캡슐 · 빛) ── */
+.machine.v4 { position: relative; width: 340px; height: 360px; }
+.machine.v4 .gs-mach { position: absolute; left: 50%; top: 0; width: 240px; height: 230px; margin-left: -120px; transform-origin: 50% 100%; }
+.machine.v4 .gs-mach .gs-f { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); }
+.machine.v4 .gs-aura { position: absolute; left: 50%; top: -20px; width: 290px; height: 290px; margin-left: -145px; border-radius: 50%; opacity: 0; pointer-events: none; }
+.machine.v4 .gs-aura.t1 { background: radial-gradient(circle, rgba(199,207,221,0.95) 0 30%, rgba(148,176,194,0.5) 50%, transparent 70%); }
+.machine.v4 .gs-aura.t2 { background: radial-gradient(circle, rgba(255,243,163,0.95) 0 30%, rgba(247,201,72,0.6) 50%, transparent 70%); }
+.machine.v4 .gs-aura.t3 { background: conic-gradient(from 0deg, #f08cbe, #f7c948, #a7d65b, #73eff7, #8e44ad, #f08cbe); -webkit-mask: radial-gradient(circle, #000 0 45%, transparent 70%); mask: radial-gradient(circle, #000 0 45%, transparent 70%); animation: auraSpin 3s linear infinite; }
+@keyframes auraSpin { to { transform: rotate(360deg); } }
+.machine.v4 .gs-cap { position: absolute; left: 50%; top: 300px; width: 130px; height: 130px; margin-top: -65px; display: grid; place-items: center; transform: translate(-50%, -95px) scale(0.3); z-index: 2; }
+.machine.v4 .gs-cap .gs-c { grid-area: 1 / 1; }
+.machine.v4 .gs-fx { position: absolute; left: 50%; top: 190px; width: 0; height: 0; z-index: 1; }
+.machine.v4 .gs-fx > * { position: absolute; left: 0; top: 0; }
+.machine.v4 .gs-pillar { transform-origin: 50% 100%; top: 40px !important; }
+.machine.v4 .gs-tag { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); font: 20px 'Jua', sans-serif; white-space: nowrap; z-index: 3; text-shadow: 2px 2px 0 #2b1d14; color: #fff; }
+.machine.v4 .gs-tag.t1 { color: #e9f3ff; } .machine.v4 .gs-tag.t2 { color: #fff3a3; } .machine.v4 .gs-tag.t3 { color: #ffc8dd; }
+.machine.v4 .gs-tag.sw { color: #73eff7; }
+.machine.v4 .gs-flash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff 0 30%, transparent 65%); animation: flash 0.5s ease-out both; z-index: 4; pointer-events: none; }
+.machine.v4.done { display: none; }
+body.reduce-motion .machine.v4 .gs-aura.t3 { animation: none; }
+/* 뽑기 게이지: 기계 등급 색 */
+.gacha-gauge.t1 { border-color: #c7cfdd; } .gacha-gauge.t1 .gg-bar i { background: linear-gradient(90deg, #94b0c2, #e9f3ff); }
+.gacha-gauge.t2 { border-color: #f7c948; } .gacha-gauge.t2 .gg-bar i { background: linear-gradient(90deg, #e0a526, #fff3a3); }
+.gacha-gauge.t3 { border-color: #f08cbe; } .gacha-gauge.t3 .gg-bar i { background: linear-gradient(90deg, #f08cbe, #f7c948, #a7d65b, #73eff7); }
+.gacha-gauge .gg-tier { font: 12px 'Jua', sans-serif; color: #c7cfdd; }

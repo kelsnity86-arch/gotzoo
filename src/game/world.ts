@@ -380,6 +380,7 @@ export class World {
     if (this.phase !== 'night') bumpMission(this.save, 'earn', base);
     this.save.coins += base;
     this.save.tokens = (this.save.tokens ?? 0) + bonus;
+    this.save.charge = (this.save.charge ?? 0) + bonus;
     this.save.stats.coinsEarned += base;
     if (bonus) this.save.stats.coinsPicked += bonus;
     this.incomeLog.push({ t: this.time, base, bonus });

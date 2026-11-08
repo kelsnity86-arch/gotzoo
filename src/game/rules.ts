@@ -268,12 +268,36 @@ export function freeDraw(s: SaveData, rng: Rng = Math.random): Card | null {
 /** n장 뽑기. 코인이 모자라면 null (아무것도 바뀌지 않음) */
 /** 뽑기 하나: 동물 90% · 직원 5% · 우리 5%, 나온 것 안에서 등급. 코인(뽑기용)이 모자라면 null */
 export const DRAW_KIND = { animal: 0.9, staff: 0.05, pen: 0.05 } as const;
+/** 기계 등급: 지난 뽑기 뒤로 모은 코인이 10회 뽑기 값의 몇 배인지 (기본 · 은 · 금 · 무지개) */
+export const MACHINE_TIERS = [
+  { name: '기본', key: 'base', need: 0, luck: 0, shiny: 1 },
+  { name: '은빛 기계', key: 'silver', need: 1.5, luck: 0.01, shiny: 1 },
+  { name: '금빛 기계', key: 'gold', need: 2.5, luck: 0.03, shiny: 1 },
+  { name: '무지개 기계', key: 'rainbow', need: 4, luck: 0.06, shiny: 2 },
+] as const;
+export function machineTier(s: SaveData): number {
+  const x = (s.charge ?? 0) / (drawPrice(s) * 10);
+  let t = 0;
+  MACHINE_TIERS.forEach((m, i) => { if (x >= m.need) t = i; });
+  return t;
+}
+/** 다음 기계 등급까지 남은 코인 (최고면 null) */
+export function nextTierLeft(s: SaveData): number | null {
+  const t = machineTier(s);
+  if (t >= MACHINE_TIERS.length - 1) return null;
+  return Math.ceil(MACHINE_TIERS[t + 1].need * drawPrice(s) * 10 - (s.charge ?? 0));
+}
+/** 마지막 뽑기의 기계 등급 (연출용) */
+export let lastTier = 0;
 export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
   const cost = drawPrice(s) * n;
   if ((s.tokens ?? 0) < cost) return null;
+  const tier = machineTier(s);
+  lastTier = tier;
   s.tokens -= cost;
+  s.charge = 0; // 뽑으면 게이지는 다시 0부터
   s.stats.draws += n;
-  return rollCards(s, n, rng);
+  return rollCards(s, n, rng, tier);
 }
 
 // ── 직원 뽑기 (코인) ──
@@ -315,14 +339,15 @@ export const fireRefund = (s: SaveData, c: StaffCard) => Math.round(staffDrawPri
 export const costUnit = (s: SaveData) => UPKEEP.unit[Math.min(s.stage, UPKEEP.unit.length) - 1];
 export const staffPay = (s: SaveData, c: StaffCard) => Math.round(costUnit(s) * STAFF_DRAW_MUL * c.pay * (1 - (c.opts.find((o) => o.id === 'thrifty')?.v ?? 0)));
 
-function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
+function rollCards(s: SaveData, n: number, rng: Rng, tier = 0): Card[] {
+  const mt = MACHINE_TIERS[tier];
   const out: Card[] = [];
   for (let i = 0; i < n; i++) {
     const k = rng();
     if (k >= DRAW_KIND.animal + DRAW_KIND.staff) { out.push(addCard(s, rollPen(rng))); continue; }
     if (k >= DRAW_KIND.animal) { out.push(addCard(s, rollStaff(rng))); continue; }
-    const g = rollGrade(rng, optSum(s, 'luck') + facSum(s, 'lab'));
-    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < SHINY.chance }));
+    const g = rollGrade(rng, optSum(s, 'luck') + facSum(s, 'lab') + mt.luck);
+    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < SHINY.chance * mt.shiny }));
   }
   return out;
 }
@@ -330,6 +355,7 @@ function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
 /** 무료 뽑기권 1장으로 1회 뽑기 */
 export function ticketDraw(s: SaveData, rng: Rng = Math.random): Card[] | null {
   if (s.tickets <= 0 || s.coins < 0) return null; // 빚이 있으면 못 뽑는다
+  lastTier = 0;
   s.tickets--;
   s.stats.draws++;
   return rollCards(s, 1, rng);

@@ -25,6 +25,8 @@ export interface SaveData {
   coins: number;
   /** 코인: 바닥 동전을 주워 모은다. 뽑기 전용 (0 밑으로 안 내려감) */
   tokens: number;
+  /** 지난 뽑기 뒤로 모은 코인 (기계 등급: 많이 모았다 뽑을수록 좋은 기계) */
+  charge?: number;
   cards: Card[];
   nextUid: number;
   /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
@@ -162,6 +164,7 @@ export function normalize(raw: unknown): SaveData {
   out.lockedSpecies = Array.isArray(out.lockedSpecies) ? out.lockedSpecies.filter((n) => typeof n === 'number') : [];
   out.tickets = Number.isFinite(out.tickets) ? Math.max(0, Math.floor(out.tickets)) : 0;
   // 코인(뽑기용)이 없던 예전 저장: 10회 뽑기 1번 분량을 선물
+  out.charge = Number.isFinite(rr.charge as number) ? Math.max(0, rr.charge as number) : 0;
   out.tokens = Number.isFinite(rr.tokens as number) ? Math.max(0, Math.floor(rr.tokens as number)) : (rr.coins !== undefined ? GACHA.price[Math.min(out.stage, GACHA.price.length) - 1] * 10 : 0);
   out.dexClaimed = Array.isArray(out.dexClaimed) ? out.dexClaimed.filter((x) => typeof x === 'string') : [];
   out.lastSeen = Number.isFinite(out.lastSeen) ? out.lastSeen : 0;

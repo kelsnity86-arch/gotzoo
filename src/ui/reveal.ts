@@ -9,6 +9,8 @@ import { h, pix } from './dom';
 import { hasPng } from '../render/sprites';
 
 import { motion } from './motion';
+import { STAFF } from '../data/staff';
+import { lastTier } from '../game/rules';
 
 /** 등급 키 (캡슐 · 빛 효과 그림 이름). 반짝이 동물이 있으면 무지개 */
 const GKEY = ['common', 'uncommon', 'rare', 'epic', 'legend'] as const;
@@ -24,21 +26,32 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   const useArt = hasPng('gacha_01');
   const capIdx = Math.max(0, best);
   let machine: HTMLElement;
-  let stage: HTMLElement | null = null;
+  // 연출용 요소 (한 장면): 뒤 후광 → 기계(흔들림 · 덜컹) → 출구에서 튀어나와 통통 구르는 캡슐 → 다가가서 흔들 · 금 · 펑
+  const tier = lastTier;
+  const switchKind: string | null = cards.some((c) => c.kind === 'staff') ? 'staff' : cards.some((c) => c.kind === 'pen') ? 'pen' : null;
+  let gs: { box: HTMLElement; mach: HTMLElement; frames: HTMLElement[]; alt: HTMLElement[]; cap: HTMLElement; caps: HTMLElement[]; fx: HTMLElement[]; aura: HTMLElement; tag: HTMLElement } | null = null;
   if (v3) {
-    const m = h('div', { class: 'gm' }, pix(`v2_gm_${kind}_0`, 230, 'pix gm-0'), pix(`v2_gm_${kind}_1`, 230, 'pix gm-1'), pix(`v2_gm_${kind}_2`, 230, 'pix gm-2'));
-    stage = h('div', { class: 'cap-stage' },
-      hasPng(`v2_gf_pillar_${gk}`) ? pix(`v2_gf_pillar_${gk}`, 300, 'pix cap-pillar') : null,
-      hasPng(`v2_gf_burst_${gk}`) ? pix(`v2_gf_burst_${gk}`, 240, 'pix cap-burst') : null,
-      hasPng('v2_gf_rays') && best >= 2 ? pix('v2_gf_rays', 300, 'pix cap-rays') : null,
-      ...[0, 1, 2, 3].map((i) => pix(`v2_gc_${gk}_${i}`, i === 3 ? 180 : 140, `pix cap cap-${i}`)),
-      // 희귀 이상: 반짝이 · 색종이가 사방으로
-      ...(best >= 2 ? Array.from({ length: best >= 3 ? 14 : 8 }, (_, i) => {
-        const k = i % 3 === 0 && hasPng('v2_gf_confetti') ? 'v2_gf_confetti' : hasPng('v2_gf_sparkle') ? (i % 3 === 1 ? 'v2_gf_star' : 'v2_gf_sparkle') : null;
-        if (!k) return null;
-        return pix(k, 34 + (i % 2) * 14, 'pix cap-spark');
-      }).map((el, i, arr) => { if (el) { const a = (i / arr.length) * Math.PI * 2, r = 120 + (i % 3) * 30; el.style.setProperty('--dx', `${Math.cos(a) * r}px`); el.style.setProperty('--dy', `${Math.sin(a) * r * 0.8}px`); el.style.animationDelay = `${(i % 4) * 0.05}s`; } return el; }) : []));
-    machine = h('div', { class: 'machine v3' }, m, stage);
+    const MW = 210;
+    const frames = [0, 1, 2].map((i) => pix(`v2_gm_${kind}_${i}`, MW, 'pix gs-f'));
+    const alt = switchKind && hasPng(`v2_gm_${switchKind}_2`) ? [pix(`v2_gm_${switchKind}_1`, MW, 'pix gs-f'), pix(`v2_gm_${switchKind}_2`, MW, 'pix gs-f')] : [];
+    const mach = h('div', { class: 'gs-mach' }, ...frames, ...alt);
+    const caps = [0, 1, 2, 3].map((i) => pix(`v2_gc_${gk}_${i}`, i === 3 ? 120 : 88, 'pix gs-c'));
+    const cap = h('div', { class: 'gs-cap' }, ...caps);
+    const fx = [
+      hasPng(`v2_gf_pillar_${gk}`) ? pix(`v2_gf_pillar_${gk}`, 320, 'pix gs-pillar') : null,
+      hasPng('v2_gf_rays') && best >= 2 ? pix('v2_gf_rays', 320, 'pix gs-rays') : null,
+      hasPng(`v2_gf_burst_${gk}`) ? pix(`v2_gf_burst_${gk}`, 260, 'pix gs-burst') : null,
+      ...(best >= 2 ? Array.from({ length: best >= 3 ? 16 : 9 }, (_, i) => { const k = i % 3 === 0 && hasPng('v2_gf_confetti') ? 'v2_gf_confetti' : i % 3 === 1 && hasPng('v2_gf_star') ? 'v2_gf_star' : hasPng('v2_gf_sparkle') ? 'v2_gf_sparkle' : null; return k ? pix(k, 30 + (i % 2) * 14, 'pix gs-spark') : null; }) : []),
+    ].filter((x): x is HTMLCanvasElement => !!x);
+    const aura = h('div', { class: `gs-aura t${tier}` });
+    const tag = h('div', { class: `gs-tag t${tier}` }, tier ? `${['', '은빛', '금빛', '무지개'][tier]} 기계!` : '');
+    const box = h('div', { class: 'machine v4' }, aura, mach, h('div', { class: 'gs-fx' }, ...fx), cap, tag);
+    frames.forEach((f, i) => { f.style.opacity = i === 0 ? '1' : '0'; });
+    alt.forEach((f) => { f.style.opacity = '0'; });
+    caps.forEach((c) => { c.style.opacity = '0'; });
+    fx.forEach((f) => { f.style.opacity = '0'; });
+    gs = { box, mach, frames, alt, cap, caps, fx, aura, tag };
+    machine = box;
   } else machine = useArt
     ? h('div', { class: 'machine art' }, pix('gacha_01', 128, 'pix m-idle'), pix('gacha_02', 128, 'pix m-shake'), pix(`gacha_${String(3 + capIdx).padStart(2, '0')}`, 40, 'pix cap-closed'), pix(`gacha_${String(8 + capIdx).padStart(2, '0')}`, 40, 'pix cap-open'))
     : h('div', { class: 'machine' }, h('div', { class: 'dome' }, ...Array.from({ length: 9 }, (_, i) => h('i', { style: `--k:${i}` }))), h('div', { class: 'body' }, h('b', {})));
@@ -54,7 +67,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   const showStar = () => {
     if (!star) return;
     const g = cardGrade(star), legend = g === 4;
-    const art = star.kind === 'animal' ? pix(`animal_${String(star.animal).padStart(3, '0')}`, 176) : star.kind === 'staff' ? pix(staffFrame(star.staff, 0), 132) : pix(pieceArt(star, 0, 32), 176);
+    const art = star.kind === 'animal' ? pix(`animal_${String(star.animal).padStart(3, '0')}`, 176) : star.kind === 'staff' ? pix(hasPng(`v2_sw_${String(STAFF.findIndex((d) => d.kind === star.staff)).padStart(2, '0')}_f0`) ? `v2_sw_${String(STAFF.findIndex((d) => d.kind === star.staff)).padStart(2, '0')}_f0` : staffFrame(star.staff, 0), 150) : pix(pieceArt(star, 0, 32), 176);
     const banner = hasPng(`v2_cutin_${legend ? 'legend' : 'epic'}`) ? pix(`v2_cutin_${legend ? 'legend' : 'epic'}`, 1200, 'pix cutin-band') : null;
     const word = legend ? (star.kind === 'animal' ? '전설 등장!' : star.kind === 'staff' ? '전설 직원 합류!' : '전설 우리 완성!') : (star.kind === 'animal' ? '영웅 등장!' : star.kind === 'staff' ? '영웅 직원 합류!' : '영웅 우리!');
     const show = banner
@@ -65,7 +78,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     show.addEventListener('click', (e) => { e.stopPropagation(); show.remove(); });
     window.setTimeout(() => show.remove(), legend ? 3000 : 2200);
   };
-  let shown = 0, timer = 0;
+  let shown = 0, timer = 0, closed = false;
   const backPx = cards.length > 5 ? 110 : 150;
   const showOne = () => {
     if (shown >= cards.length) { finish(); return; }
@@ -80,31 +93,89 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     timer = window.setTimeout(showOne, motion.reduce ? 0 : cards.length > 1 ? 240 : 0);
   };
   const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: cards.length > 5 ? 'r' : 'l' }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
-  if (v3) {
-    // 기계 흔들림(0.7초) → 캡슐 나옴 → 캡슐 흔들림 → 금 → 빛기둥과 함께 열림 → (영웅 · 전설 컷인) → 카드
-    // 움직임 줄이기 설정이어도 단계는 보여 준다 (흔들림 · 날아감만 빠짐)
-    const T = motion.reduce ? [450, 350, 300, 300, 600] : [750, 500, 500, 450, best >= 2 ? 1100 : 800];
-    machine.classList.add('st-shake');
-    timer = window.setTimeout(() => {
-      machine.classList.replace('st-shake', 'st-drop');
-      timer = window.setTimeout(() => {
-        machine.classList.replace('st-drop', 'st-wobble');
-        timer = window.setTimeout(() => {
-          machine.classList.replace('st-wobble', 'st-crack');
-          timer = window.setTimeout(() => {
-            machine.classList.replace('st-crack', 'st-open'); audio.sfx(best >= 2 ? 'rare' : 'reveal');
-            if (best >= 3) { const fl = h('div', { class: `reveal-flash g${best}` }); back.append(fl); window.setTimeout(() => fl.remove(), 700); }
-            timer = window.setTimeout(() => { showStar(); timer = window.setTimeout(showOne, star ? 400 : 0); }, T[4]);
-          }, T[3]);
-        }, T[2]);
-      }, T[1]);
-    }, T[0]);
+  if (v3 && gs) {
+    const G = gs, R = motion.reduce, amp = R ? 0.35 : 1;
+    const show = (els: HTMLElement[], i: number) => els.forEach((e, k) => { e.style.opacity = k === i ? '1' : '0'; });
+    const anim = (el: Element, kf: Keyframe[], o: KeyframeAnimationOptions) => el.animate(kf, { fill: 'forwards', ...o });
+    const at = (ms: number, fn: () => void) => { const id = window.setTimeout(() => { if (!closed && !G.box.classList.contains('done')) fn(); }, ms); timers.push(id); };
+    const timers: number[] = [];
+    // 0: 움츠림 (힘 모으기)
+    if (tier) anim(G.aura, [{ opacity: 0, transform: 'scale(0.6)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 400, easing: 'ease-out' });
+    anim(G.mach, [{ transform: 'scale(1,1)' }, { transform: `scale(${1 + 0.07 * amp},${1 - 0.1 * amp}) translateY(${6 * amp}px)` }, { transform: 'scale(1,1)' }], { duration: 260, easing: 'ease-in-out' });
+    audio.fx('crank');
+    // 260~1150: 흔들림이 점점 빨라지고 세진다 (손잡이 드르륵 · 캡슐 달그락)
+    at(260, () => {
+      show(G.frames, 1);
+      const kf: Keyframe[] = [];
+      for (let i = 0; i <= 16; i++) { const k = i / 16, a = (2 + k * 9) * amp * (i % 2 ? 1 : -1); kf.push({ transform: `rotate(${a}deg) translateX(${a * 0.6}px)`, offset: k }); }
+      kf[kf.length - 1] = { transform: 'rotate(0deg)', offset: 1 };
+      anim(G.mach, kf, { duration: 890, easing: 'ease-in' });
+      for (let i = 0; i < 9; i++) at(i * 95, () => audio.fx(i % 3 === 0 ? 'crank' : 'rattle', i));
+    });
+    // 1150: 덜컹! (직원 · 우리가 섞였으면 기계가 바뀐다) → 출구에서 캡슐이 튀어나와 통통
+    at(1150, () => {
+      audio.fx('clunk');
+      anim(G.mach, [{ transform: 'translateY(0)' }, { transform: `translateY(${8 * amp}px) scale(1.03,0.95)` }, { transform: 'translateY(0)' }], { duration: 180, easing: 'ease-out' });
+      if (G.alt.length) {
+        const fl = h('div', { class: 'gs-flash' }); G.box.append(fl); window.setTimeout(() => fl.remove(), 500);
+        show(G.frames, -1); show(G.alt, 1); audio.sfx('event');
+        G.tag.textContent = switchKind === 'staff' ? '직원 기계로 변신!' : '우리 기계로 변신!'; G.tag.className = 'gs-tag sw';
+        anim(G.tag, [{ opacity: 0, transform: 'translateY(8px) scale(0.8)' }, { opacity: 1, transform: 'none' }], { duration: 250 });
+      } else show(G.frames, 2);
+      show(G.caps, 0);
+      // 출구(기계 아래 가운데) → 앞으로 포물선 · 두 번 튕김 (떨어질 때 납작)
+      anim(G.cap, [
+        { transform: 'translate(-50%, -95px) scale(0.3)', offset: 0 },
+        { transform: 'translate(-50%, -125px) scale(0.6)', offset: 0.22 },
+        { transform: 'translate(-50%, 0) scale(1.15,0.8)', offset: 0.5 },
+        { transform: 'translate(-50%, -34px) scale(0.95,1.05)', offset: 0.68 },
+        { transform: 'translate(-50%, 0) scale(1.08,0.9)', offset: 0.84 },
+        { transform: 'translate(-50%, -8px) scale(1)', offset: 0.92 },
+        { transform: 'translate(-50%, 0) scale(1)', offset: 1 },
+      ], { duration: 760, easing: 'ease-in-out' });
+      at(380, () => audio.fx('bounce', 0)); at(640, () => audio.fx('bounce', 1));
+    });
+    // 2000: 카메라가 캡슐로 (기계는 뒤로 흐려짐)
+    at(2000, () => {
+      audio.fx('whoosh');
+      anim(G.mach, [{ opacity: 1, filter: 'blur(0)', transform: 'none' }, { opacity: 0.18, filter: 'blur(2px)', transform: 'translateY(-24px) scale(0.82)' }], { duration: 380, easing: 'ease-out' });
+      anim(G.aura, [{ opacity: tier ? 1 : 0 }, { opacity: tier ? 0.4 : 0 }], { duration: 380 });
+      anim(G.cap, [{ transform: 'translate(-50%, 0) scale(1)' }, { transform: 'translate(-50%, -110px) scale(1.5)' }], { duration: 380, easing: 'cubic-bezier(.2,.8,.3,1)' });
+    });
+    // 2400~3000: 흔들 → 금이 가며 등급 빛이 샌다
+    const col = shiny ? '#f08cbe' : GRADES[Math.max(0, best)].color;
+    at(2400, () => {
+      show(G.caps, 1);
+      anim(G.caps[1], [0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({ transform: `rotate(${(i % 2 ? 1 : -1) * (6 + i * 1.5) * amp}deg)` })), { duration: 520, easing: 'linear' });
+      for (let i = 0; i < 4; i++) at(i * 130, () => audio.fx('rattle', i + 4));
+    });
+    at(2920, () => {
+      show(G.caps, 2); audio.fx('crack', 0); at(160, () => audio.fx('crack', 1)); at(300, () => audio.fx('crack', 2));
+      anim(G.caps[2], [{ filter: `drop-shadow(0 0 0 ${col})`, transform: 'translateX(0)' }, { filter: `drop-shadow(0 0 ${best >= 3 ? 26 : 16}px ${col})`, transform: `translateX(${3 * amp}px)` }, { filter: `drop-shadow(0 0 ${best >= 3 ? 34 : 20}px ${col})`, transform: `translateX(${-3 * amp}px)` }], { duration: 480, easing: 'ease-in', iterations: 1 });
+    });
+    // 3420: 펑! 빛기둥 · 터지는 빛 · 반짝이, 화면 흔들림 (영웅 이상은 번쩍)
+    at(3420, () => {
+      show(G.caps, 3); audio.sfx(best >= 2 ? 'rare' : 'reveal');
+      anim(G.caps[3], [{ transform: 'scale(0.7)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 320, easing: 'ease-out' });
+      const [pillar, rays, burst] = [G.fx.find((f) => f.classList.contains('gs-pillar')), G.fx.find((f) => f.classList.contains('gs-rays')), G.fx.find((f) => f.classList.contains('gs-burst'))];
+      if (pillar) anim(pillar, [{ opacity: 0, transform: 'translate(-50%, -100%) scaleY(0.1)' }, { opacity: 1, transform: 'translate(-50%, -100%) scaleY(1.1)', offset: 0.4 }, { opacity: 0.85, transform: 'translate(-50%, -100%) scaleY(1)' }], { duration: 700, easing: 'ease-out' });
+      if (rays) anim(rays, [{ opacity: 0, transform: 'translate(-50%, -50%) scale(0.4) rotate(0)' }, { opacity: 0.9, transform: 'translate(-50%, -50%) scale(1.2) rotate(40deg)', offset: 0.35 }, { opacity: 0.6, transform: 'translate(-50%, -50%) scale(1.35) rotate(90deg)' }], { duration: 1800, easing: 'linear' });
+      if (burst) anim(burst, [{ opacity: 1, transform: 'translate(-50%, -50%) scale(0.3)' }, { opacity: 0, transform: 'translate(-50%, -50%) scale(1.6)' }], { duration: 650, easing: 'ease-out' });
+      G.fx.filter((f) => f.classList.contains('gs-spark')).forEach((sp, i, arr) => {
+        const a = (i / arr.length) * Math.PI * 2 + Math.random() * 0.3, r = (130 + (i % 3) * 40) * (R ? 0.6 : 1);
+        anim(sp, [{ opacity: 1, transform: 'translate(-50%, -50%) scale(0.3)' }, { opacity: 1, transform: `translate(calc(-50% + ${Math.cos(a) * r * 0.7}px), calc(-50% + ${Math.sin(a) * r * 0.6 - 20}px)) scale(1)`, offset: 0.5 }, { opacity: 0, transform: `translate(calc(-50% + ${Math.cos(a) * r}px), calc(-50% + ${Math.sin(a) * r * 0.8 + 30}px)) scale(0.8)` }], { duration: 1000 + (i % 4) * 120, easing: 'ease-out' });
+      });
+      const box = back.querySelector('.reveal-box');
+      const sh = (best >= 3 ? 10 : best >= 2 ? 6 : 3) * amp;
+      if (box) box.animate([0, 1, 2, 3, 4, 5].map((i) => ({ transform: i === 5 ? 'none' : `translate(${(i % 2 ? 1 : -1) * sh}px, ${(i % 3 - 1) * sh * 0.6}px)` })), { duration: 320 });
+      if (best >= 3) { const fl = h('div', { class: `reveal-flash g${best}` }); back.append(fl); window.setTimeout(() => fl.remove(), 700); }
+      at(best >= 2 ? 1150 : 800, () => { showStar(); timer = window.setTimeout(showOne, star ? 400 : 0); });
+    });
   } else {
     machine.classList.add('shake');
     if (best >= 0) machine.style.setProperty('--cap', GRADES[best].color);
     timer = window.setTimeout(() => { machine.classList.add('open'); showStar(); timer = window.setTimeout(showOne, motion.reduce ? 0 : 350); }, motion.reduce ? 0 : 700);
   }
-  let closed = false;
   const closeAll = () => { if (closed) return; closed = true; audio.sfx('click'); back.remove(); onClose(); };
   skip.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('click'); finish(); });
   close.addEventListener('click', (e) => { e.stopPropagation(); closeAll(); });
