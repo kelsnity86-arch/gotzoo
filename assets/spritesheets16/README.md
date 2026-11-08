@@ -1,5 +1,7 @@
 # BbopZOO 16px 명령서 — 전체 31장 생성 원본
 
+입구 추가 묶음: [게이트·부속품·계절 장식 3장](entrance/README.md) · [게이트 3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-gate16-sources.zip).
+
 추가 제작: [확장 아이콘·우리 뽑기·대각 울타리·사건 4장](expansion/README.md) · [추가 4장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-expansion16-sources.zip). 아래 기본 31장 ZIP과는 별도입니다.
 
 새 WORLD 명령서: [바닥·길·우리·소품·건물·행동·생활 효과 11장](world-life/README.md) · [WORLD 11장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-world-life16-sources.zip). 갈색 외곽선과 정면 관람객 행동을 사용하는 별도 묶음입니다.

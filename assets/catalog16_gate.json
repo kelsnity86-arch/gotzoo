@@ -1,0 +1,448 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 3,
+  "requested_slot_count": 32,
+  "count_note": "Four seasonal base slots contain pairs; counts are requested cells, not detected components.",
+  "sheets": [
+    {
+      "filename": "gate16.png",
+      "path": "assets/spritesheets16/entrance/gates/gate16.png",
+      "group": "gates",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1536,
+        1536
+      ],
+      "sha256": "8a9162dc45a64182528c25223dd461400647c972fe93631252814e4480804173",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "tier 1 wooden zoo entrance",
+          "target_native_size_per_piece": [
+            96,
+            88
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "tier 2 fieldstone zoo entrance",
+          "target_native_size_per_piece": [
+            96,
+            88
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 3,
+          "row": 2,
+          "column": 1,
+          "name": "tier 3 brick and green iron zoo entrance",
+          "target_native_size_per_piece": [
+            96,
+            88
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 4,
+          "row": 2,
+          "column": 2,
+          "name": "tier 4 marble and gold zoo entrance",
+          "target_native_size_per_piece": [
+            96,
+            88
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        }
+      ]
+    },
+    {
+      "filename": "gate_parts16.png",
+      "path": "assets/spritesheets16/entrance/parts/gate_parts16.png",
+      "group": "parts",
+      "actual_size": [
+        1373,
+        1145
+      ],
+      "target_size": [
+        1536,
+        1280
+      ],
+      "sha256": "2873f63fd29bdb0e2e9eb7bdb9563d99316caeb2b86231c9733fd4201b93de18",
+      "reference_sheet_used": "assets/spritesheets16/entrance/gates/gate16.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "wood: repeatable wall segment",
+          "target_native_size_per_piece": [
+            32,
+            28
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "wood: end post",
+          "target_native_size_per_piece": [
+            12,
+            32
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "wood: ticket booth",
+          "target_native_size_per_piece": [
+            32,
+            40
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "wood: turnstile",
+          "target_native_size_per_piece": [
+            16,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "wood: blank banner flagpole",
+          "target_native_size_per_piece": [
+            12,
+            44
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "fieldstone: repeatable wall segment",
+          "target_native_size_per_piece": [
+            32,
+            28
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "fieldstone: end post",
+          "target_native_size_per_piece": [
+            12,
+            32
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "fieldstone: ticket booth",
+          "target_native_size_per_piece": [
+            32,
+            40
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "fieldstone: turnstile",
+          "target_native_size_per_piece": [
+            16,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "fieldstone: blank banner flagpole",
+          "target_native_size_per_piece": [
+            12,
+            44
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "brick and iron: repeatable wall segment",
+          "target_native_size_per_piece": [
+            32,
+            28
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "brick and iron: end post",
+          "target_native_size_per_piece": [
+            12,
+            32
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "brick and iron: ticket booth",
+          "target_native_size_per_piece": [
+            32,
+            40
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "brick and iron: turnstile",
+          "target_native_size_per_piece": [
+            16,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "brick and iron: blank banner flagpole",
+          "target_native_size_per_piece": [
+            12,
+            44
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "marble and gold: repeatable wall segment",
+          "target_native_size_per_piece": [
+            32,
+            28
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "marble and gold: end post",
+          "target_native_size_per_piece": [
+            12,
+            32
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "marble and gold: ticket booth",
+          "target_native_size_per_piece": [
+            32,
+            40
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "marble and gold: turnstile",
+          "target_native_size_per_piece": [
+            16,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "marble and gold: blank banner flagpole",
+          "target_native_size_per_piece": [
+            12,
+            44
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        }
+      ]
+    },
+    {
+      "filename": "gate_season16.png",
+      "path": "assets/spritesheets16/entrance/seasonal/gate_season16.png",
+      "group": "seasonal",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "sha256": "7f30cca66ee2410f8e0c93f504e4e2ee1627e125babd9f8e669501bb9ed6ba6b",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "spring blossom garland",
+          "target_native_size_per_piece": [
+            96,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "summer bunting and flower lei",
+          "target_native_size_per_piece": [
+            96,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "autumn leaves and pumpkins garland",
+          "target_native_size_per_piece": [
+            96,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "winter pine lights and wreath",
+          "target_native_size_per_piece": [
+            96,
+            20
+          ],
+          "paired_base_decoration": false,
+          "piece_count": 1
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "pair of tulip pots",
+          "target_native_size_per_piece": [
+            20,
+            20
+          ],
+          "paired_base_decoration": true,
+          "piece_count": 2
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "pair of beach ball and float groups",
+          "target_native_size_per_piece": [
+            20,
+            20
+          ],
+          "paired_base_decoration": true,
+          "piece_count": 2
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "pair of pumpkin and hay groups",
+          "target_native_size_per_piece": [
+            20,
+            20
+          ],
+          "paired_base_decoration": true,
+          "piece_count": 2
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "pair of small snowmen",
+          "target_native_size_per_piece": [
+            20,
+            20
+          ],
+          "paired_base_decoration": true,
+          "piece_count": 2
+        }
+      ]
+    }
+  ]
+}

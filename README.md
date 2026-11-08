@@ -82,6 +82,12 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 새 명령서의 갈색 외곽선과 조명, 정면 관람객/왼쪽 직원 기준으로 제작했습니다. 기존 시트와 다른 경로에 보존했습니다. **9장은 요청 캔버스 크기와 다르며, 네이티브 격자·팔레트·반복 이음매·패치 분할·동작 재생은 미완료**입니다. [검수 기록](reports/WORLD_LIFE16_SOURCE_REVIEW.md)을 참고하세요.
 
+## 입구 게이트 신규 원본 3장
+
+[게이트 4단계·부속품·계절 장식](assets/spritesheets16/entrance/README.md) · [32칸 요청 순서표](assets/catalog16_gate.json) · [3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-gate16-sources.zip).
+
+**세 장 모두 요청 캔버스와 다르며, 네이티브 격자·팔레트·통로 폭/교체 피벗·벽 반복·계절 장식 합성은 미검증**입니다. [검수 기록](reports/GATE16_SOURCE_REVIEW.md)에 구분했습니다.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|
