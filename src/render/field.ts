@@ -621,7 +621,7 @@ export class FieldRenderer {
         else if (a.act === 'sleep') hop = Math.floor(a.t * 0.8) % 2;
         else if (a.act === 'shiver') x += Math.floor(a.t * 18) % 2 ? 0.34 : -0.34;
       }
-      if (a.god !== undefined) { this.drawGod(a, x, hop, water ? 0.32 : 0); continue; }
+      if (a.god !== undefined) { this.drawGod(a, x, hop, water ? 0.32 : 0, (world.layout.pens[i]?.y ?? -99) + 9); continue; }
       const mul = GRADE_SIZE[ANIMALS[a.animal].grade];
       const img = animalFrame(a.animal, fr);
       // 물가 우리: 몸 아래가 잠기고 물결
@@ -666,7 +666,7 @@ export class FieldRenderer {
 
   /** 반짝이 동물 머리 위 반짝임 (네 방향 별, 깜빡) */
   /** 신(네임드): 발밑 금빛 원 · 구름 받침, 크게, 머리 위 이름표 · 가끔 후광 */
-  private drawGod(a: AnimalEnt, x: number, hop: number, sink: number) {
+  private drawGod(a: AnimalEnt, x: number, hop: number, sink: number, minTop = -99) {
     const c = this.ctx, d = GODS[a.god!];
     const t = performance.now() / 1000 + a.uid;
     c.save(); c.globalAlpha = 0.55 + 0.25 * Math.sin(t * 2); c.fillStyle = a.shiny ? '#ff9ad5' : '#f7c948';
@@ -676,8 +676,10 @@ export class FieldRenderer {
     const img = godFrame(d.id, !!a.shiny, d.base);
     if (art) this.blitDev(img, x, a.y, img.height / FieldRenderer.R, a.face > 0, hop, false, sink);
     else this.blitAnimal(img, x, a.y, 1.7, a.face > 0, hop, sink);
-    const top = a.y - (art ? img.height / FieldRenderer.R : 16) - 3 - hop;
-    if (hasPng('v2_oly_halo') && Math.floor(t) % 4 === 0) { const hl = sprite('v2_oly_halo'); this.blitDev(hl, x, top + 1, hl.height / FieldRenderer.R, false, 0); }
+    const headTop = a.y - (art ? img.height / FieldRenderer.R : 16) - 3 - hop;
+    // 우리 위쪽 매력 표시(♥)와 겹치지 않게: 너무 위면 이름표를 아래로 내린다
+    const top = Math.max(headTop, minTop);
+    if (hasPng('v2_oly_halo') && Math.floor(t) % 4 === 0) { const hl = sprite('v2_oly_halo'); this.blitDev(hl, x, headTop + 1, hl.height / FieldRenderer.R, false, 0); }
     c.save(); c.font = '3.6px Jua, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'bottom';
     const wd = c.measureText(d.name).width + 4;
     c.fillStyle = a.shiny ? '#5d275d' : '#5d3a24'; c.fillRect(Math.round(x - wd / 2), Math.round(top - 4.6), Math.ceil(wd), 5);
