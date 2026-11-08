@@ -26,11 +26,18 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   let machine: HTMLElement;
   let stage: HTMLElement | null = null;
   if (v3) {
-    const m = h('div', { class: 'gm' }, pix(`v2_gm_${kind}_0`, 150, 'pix gm-0'), pix(`v2_gm_${kind}_1`, 150, 'pix gm-1'), pix(`v2_gm_${kind}_2`, 150, 'pix gm-2'));
+    const m = h('div', { class: 'gm' }, pix(`v2_gm_${kind}_0`, 230, 'pix gm-0'), pix(`v2_gm_${kind}_1`, 230, 'pix gm-1'), pix(`v2_gm_${kind}_2`, 230, 'pix gm-2'));
     stage = h('div', { class: 'cap-stage' },
-      hasPng(`v2_gf_pillar_${gk}`) ? pix(`v2_gf_pillar_${gk}`, 190, 'pix cap-pillar') : null,
-      hasPng(`v2_gf_burst_${gk}`) ? pix(`v2_gf_burst_${gk}`, 150, 'pix cap-burst') : null,
-      ...[0, 1, 2, 3].map((i) => pix(`v2_gc_${gk}_${i}`, i === 3 ? 120 : 96, `pix cap cap-${i}`)));
+      hasPng(`v2_gf_pillar_${gk}`) ? pix(`v2_gf_pillar_${gk}`, 300, 'pix cap-pillar') : null,
+      hasPng(`v2_gf_burst_${gk}`) ? pix(`v2_gf_burst_${gk}`, 240, 'pix cap-burst') : null,
+      hasPng('v2_gf_rays') && best >= 2 ? pix('v2_gf_rays', 300, 'pix cap-rays') : null,
+      ...[0, 1, 2, 3].map((i) => pix(`v2_gc_${gk}_${i}`, i === 3 ? 180 : 140, `pix cap cap-${i}`)),
+      // 희귀 이상: 반짝이 · 색종이가 사방으로
+      ...(best >= 2 ? Array.from({ length: best >= 3 ? 14 : 8 }, (_, i) => {
+        const k = i % 3 === 0 && hasPng('v2_gf_confetti') ? 'v2_gf_confetti' : hasPng('v2_gf_sparkle') ? (i % 3 === 1 ? 'v2_gf_star' : 'v2_gf_sparkle') : null;
+        if (!k) return null;
+        return pix(k, 34 + (i % 2) * 14, 'pix cap-spark');
+      }).map((el, i, arr) => { if (el) { const a = (i / arr.length) * Math.PI * 2, r = 120 + (i % 3) * 30; el.style.setProperty('--dx', `${Math.cos(a) * r}px`); el.style.setProperty('--dy', `${Math.sin(a) * r * 0.8}px`); el.style.animationDelay = `${(i % 4) * 0.05}s`; } return el; }) : []));
     machine = h('div', { class: 'machine v3' }, m, stage);
   } else machine = useArt
     ? h('div', { class: 'machine art' }, pix('gacha_01', 128, 'pix m-idle'), pix('gacha_02', 128, 'pix m-shake'), pix(`gacha_${String(3 + capIdx).padStart(2, '0')}`, 40, 'pix cap-closed'), pix(`gacha_${String(8 + capIdx).padStart(2, '0')}`, 40, 'pix cap-open'))
@@ -45,7 +52,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   // 영웅 · 전설: 화면을 가로지르는 띠(컷인) 위로 큰 그림
   const star = cards.find((c) => cardGrade(c) === 4) ?? cards.find((c) => cardGrade(c) === 3);
   const showStar = () => {
-    if (!star || reduce) return;
+    if (!star) return;
     const g = cardGrade(star), legend = g === 4;
     const art = star.kind === 'animal' ? pix(`animal_${String(star.animal).padStart(3, '0')}`, 176) : star.kind === 'staff' ? pix(staffFrame(star.staff, 0), 132) : pix(pieceArt(star, 0, 32), 176);
     const banner = hasPng(`v2_cutin_${legend ? 'legend' : 'epic'}`) ? pix(`v2_cutin_${legend ? 'legend' : 'epic'}`, 1200, 'pix cutin-band') : null;
@@ -75,7 +82,8 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: cards.length > 5 ? 'r' : 'l' }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
   if (v3) {
     // 기계 흔들림(0.7초) → 캡슐 나옴 → 캡슐 흔들림 → 금 → 빛기둥과 함께 열림 → (영웅 · 전설 컷인) → 카드
-    const T = reduce ? [0, 0, 0, 0, 0] : [700, 450, 450, 420, 650];
+    // 움직임 줄이기 설정이어도 단계는 보여 준다 (흔들림 · 날아감만 빠짐)
+    const T = reduce ? [450, 350, 300, 300, 600] : [750, 500, 500, 450, best >= 2 ? 1100 : 800];
     machine.classList.add('st-shake');
     timer = window.setTimeout(() => {
       machine.classList.replace('st-shake', 'st-drop');
@@ -85,7 +93,8 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
           machine.classList.replace('st-wobble', 'st-crack');
           timer = window.setTimeout(() => {
             machine.classList.replace('st-crack', 'st-open'); audio.sfx(best >= 2 ? 'rare' : 'reveal');
-            timer = window.setTimeout(() => { showStar(); timer = window.setTimeout(showOne, star && !reduce ? 400 : 0); }, T[4]);
+            if (best >= 3) { const fl = h('div', { class: `reveal-flash g${best}` }); back.append(fl); window.setTimeout(() => fl.remove(), 700); }
+            timer = window.setTimeout(() => { showStar(); timer = window.setTimeout(showOne, star ? 400 : 0); }, T[4]);
           }, T[3]);
         }, T[2]);
       }, T[1]);

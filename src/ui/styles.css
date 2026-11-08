@@ -492,7 +492,7 @@ body.compact .hud .rival .bar, body.compact .hud .clock .bar { display: none; }
 body.compact .hud-coins b { font-size: 15px; }
 
 /* ── 뽑기 연출 (새 그림): 기계 → 캡슐 → 빛기둥 → 카드 뒤집기 ── */
-.machine.v3 { position: relative; width: 200px; height: 190px; }
+.machine.v3 { position: relative; width: 320px; height: 290px; }
 .machine.v3 .gm { position: absolute; inset: 0; display: grid; place-items: center; }
 .machine.v3 .gm .pix { grid-area: 1 / 1; display: none; }
 .machine.v3 .gm .gm-0 { display: block; }
@@ -528,7 +528,24 @@ body.compact .hud-coins b { font-size: 15px; }
 .reveal-cell.has-back .cell-front { transform: rotateY(180deg); }
 .reveal-cell.has-back.flipped .cell-back { transform: rotateY(-180deg); }
 .reveal-cell.has-back.flipped .cell-front { transform: none; }
-@media (prefers-reduced-motion: reduce) { .machine.v3 *, .cutin, .cutin * { animation: none !important; } .reveal-cell.has-back * { transition: none; } }
+/* 희귀 이상: 햇살 · 반짝이, 영웅 이상: 화면 번쩍 */
+.machine.v3.st-open .cap-rays { display: block; animation: raysSpin 1.6s linear both; opacity: 0.85; }
+.machine.v3 .cap-stage > .cap-spark { display: none; }
+.machine.v3.st-open .cap-stage > .cap-spark { display: block; animation: spark 0.9s ease-out both; }
+@keyframes raysSpin { from { transform: scale(0.4) rotate(0); opacity: 0; } 30% { opacity: 0.9; } to { transform: scale(1.3) rotate(60deg); opacity: 0.6; } }
+@keyframes spark { from { transform: translate(0, 0) scale(0.3); opacity: 1; } to { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; } }
+.reveal-flash { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: #fff; animation: flash 0.6s ease-out both; }
+.reveal-flash.g4 { background: #fff3a3; }
+@keyframes flash { from { opacity: 0.85; } to { opacity: 0; } }
+.reveal-box { position: relative; }
+/* 움직임 줄이기: 흔들림 · 날아감 · 회전만 끄고 단계 그림과 빛은 그대로 보인다 */
+@media (prefers-reduced-motion: reduce) {
+  .machine.v3 .gm .pix, .machine.v3 .cap, .machine.v3 .cap-spark, .machine.v3 .cap-rays, .cutin .cutin-band, .cutin .cutin-art { animation: none !important; }
+  .machine.v3.st-open .cap-pillar, .machine.v3.st-open .cap-burst { animation: fadeIn 0.3s ease-out both !important; }
+  .reveal-flash { animation-duration: 0.3s; }
+  .reveal-cell.has-back * { transition-duration: 0.15s; }
+}
+@keyframes fadeIn { from { opacity: 0; } }
 /* 새 카드 틀(28×44): 이름 칸은 아래쪽 31~36줄 */
 .card.art.v3 .card-name-in { left: 18%; right: 18%; top: 70.5%; height: 11.5%; color: #3b2a1a; }
 .card.art.v3.g-epic .card-name-in, .card.art.v3.g-legend .card-name-in { left: 20%; right: 20%; }
