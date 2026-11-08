@@ -9,7 +9,7 @@ import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, LAST_STAND, rivalScaleTarget } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { feverTimeOf, feverChargeOf, godVal, heroVal, hasHero, sadCutOf, rivalAt, rollRivalEvent, startSeason, gateCapOf, overflowMulOf, evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { HOT, isHot, markHot, penBest, feverTimeOf, feverChargeOf, godVal, heroVal, hasHero, sadCutOf, rivalAt, rollRivalEvent, startSeason, gateCapOf, overflowMulOf, evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -103,7 +103,7 @@ export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; 
   act?: number;
   /** 신화 영웅 · 각성 */
   hero?: number; awake?: boolean }
-export interface FloatText { x: number; y: number; text: string; t: number; color: string }
+export interface FloatText { x: number; y: number; text: string; t: number; color: string; big?: boolean }
 
 export interface Emote { x: number; y: number; t: number; icon: string }
 export type WorldEvent =
@@ -113,6 +113,10 @@ export type WorldEvent =
   | { type: 'fever'; on: boolean }
   | { type: 'rivalNews'; text: string; mul: number }
   | { type: 'lastStand' }
+  /** 희귀 이상 새 식구 (입장식) */
+  | { type: 'newcomer'; uid: number; pen: number; animal: number; grade: number; god?: number; shiny?: boolean }
+  /** 배치로 매력 · 수입이 올랐다 */
+  | { type: 'attractUp'; pen: number; delta: number; incomePct: number }
   | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
   | { type: 'eventStart'; id: EventId }
   | { type: 'eventEnd'; id: EventId }
@@ -338,6 +342,25 @@ export class World {
       this.placeIn(a);
       this.animals.push(a);
     }
+    // 새 식구 · 매력 변화: 처음 sync 때 있던 동물은 '본 것'으로 치고, 그 뒤로 처음 배치된 동물만
+    const fresh: number[] = [];
+    for (const [uid] of want) if (!this.seen.has(uid)) { this.seen.add(uid); if (this.seeded) fresh.push(uid); }
+    if (fresh.length) {
+      const before = this.lastPenAtt.slice(), incBefore = this.lastIncome;
+      const now = s.pens.map((_, i) => totalAttractPen(s, i));
+      const pensHit = new Set(fresh.map((u) => want.get(u)!));
+      const incNow = this.incomeEstimate();
+      for (const pen of pensHit) { const d = Math.round(now[pen] - (before[pen] ?? 0)); if (d > 0) this.events.push({ type: 'attractUp', pen, delta: d, incomePct: incBefore > 0 ? Math.round(((incNow - incBefore) / incBefore) * 100) : 0 }); }
+      for (const uid of fresh) {
+        const c = cardById(s, uid);
+        if (c?.kind !== 'animal') continue;
+        const grade = c.god !== undefined ? 5 : ANIMALS[c.animal].grade;
+        if (grade >= HOT.minGrade) { markHot(s, uid); this.events.push({ type: 'newcomer', uid, pen: want.get(uid)!, animal: c.animal, grade, god: c.god, shiny: !!c.shiny }); }
+      }
+    }
+    this.seeded = true;
+    this.lastPenAtt = s.pens.map((_, i) => totalAttractPen(s, i));
+    this.lastIncome = this.incomeEstimate();
     const staffWant = s.staffSlots.filter((u): u is number => u !== null);
     this.staff = this.staff.filter((e) => staffWant.includes(e.uid));
     for (const uid of staffWant) {
@@ -349,6 +372,10 @@ export class World {
   }
 
   /** 이벤트가 바꾸는 매력 (물놀이 데이 · 첫눈 · 폭염) */
+  private seen = new Set<number>(); private seeded = false;
+  private lastPenAtt: number[] = []; private lastIncome = 0;
+  /** 분당 예상 수입 (입장료): 정원 · 수요 · 씀씀이 */
+  incomeEstimate() { const d = (VISITOR.basePerMin + VISITOR.perAttract * totalAttract(this.save)) * visitorMul(this.save), cap = this.gateCap; return Math.min(cap, d) * overflowMulOf(d, cap) * this.tipMul; }
   get attractCtx(): AttractCtx {
     const e = this.event ? eventDef(this.event.id) : null;
     return { allMul: e?.allMul, habitatMul: e?.habitat ? { [e.habitat]: e.habitatMul ?? 1 } : undefined };
@@ -755,7 +782,7 @@ export class World {
     const L = this.layout, evId = this.event?.id;
     const pen = L.pens.findIndex((r) => v.x >= r.x && v.x <= r.x + r.w);
     const here = this.animals.filter((a) => a.pen === pen);
-    const star = here.some((a) => a.shiny || ANIMALS[a.animal].grade >= 3);
+    const star = here.some((a) => a.shiny || a.god !== undefined || ANIMALS[a.animal].grade >= 3 || isHot(this.save, a.uid));
     const playing = here.some((a) => a.act === 'play' || a.act === 'splash');
     const r = this.rng();
     if (((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) && this.rng() >= sadCutOf(this.save)) { if (this.save.yearStats) this.save.yearStats.sad++; return 'sad'; }
@@ -791,8 +818,11 @@ export class World {
   private spawnVisitor(vip = false) {
     const L = this.layout;
     // 동물이 있는 우리 앞을 고른다
+    // 동물이 있는 우리 앞, 화제의 신입 · 전설 · 영웅 우리로 더 몰린다
     const pens = this.layout.pens.map((_, i) => i).filter((i) => this.save.pens[i]?.length);
-    const pi = pens.length ? pens[Math.floor(this.rng() * pens.length)] : 0;
+    const wt = pens.map((i) => { const b = penBest(this.save, i); return 1 + ((this.save.pens[i] ?? []).some((u) => isHot(this.save, u)) ? HOT.visitorWeight : 0) + (b >= 4 ? 1.5 : b === 3 ? 0.7 : 0); });
+    let pick = this.rng() * wt.reduce((a, b) => a + b, 0), pi = pens[0] ?? 0;
+    for (let k = 0; k < pens.length; k++) { pick -= wt[k]; if (pick <= 0) { pi = pens[k]; break; } }
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
@@ -811,7 +841,9 @@ export class World {
   private throwCoin(v: VisitorEnt) {
     // 입장료(돈)는 들어올 때 받았다. 우리 앞에서는 코인(뽑기용)을 바닥에 떨어뜨린다
     const raw = (VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul;
-    const tip = Math.round(raw * (v.vip ? EVENT_TIMING.vipTipMul : 1));
+    const hp = this.layout.pens.findIndex((r) => v.x >= r.x && v.x <= r.x + r.w);
+    const hot = hp >= 0 && (this.save.pens[hp] ?? []).some((u) => isHot(this.save, u));
+    const tip = Math.round(raw * (v.vip ? EVENT_TIMING.vipTipMul : 1) * (hot ? HOT.tipMul : 1));
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: 'VIP 손님!', t: 0, color: '#f7c948' }); }
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
     const bonus = Math.max(1, Math.round(tip * VISITOR.tokenShare * (1 + facSum(this.save, 'restaurant')) * (this.feverOn ? VISITOR.fever.coinMul : 1)));

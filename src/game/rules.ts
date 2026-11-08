@@ -637,8 +637,9 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     if (a.habitat === season.weak) bonus += SEASON_FX.weak;
     bonus = Math.max(-0.5, Math.min(SYNERGY_CAP, bonus));
     const ev = (ctx.habitatMul?.[a.habitat] ?? 1) * (ctx.allMul ?? 1);
-    total += (c.god !== undefined ? GRADES[4].attract * NAMED.attractMul : GRADES[a.grade].attract) * (c.shiny ? SHINY.attractMul : 1) * (1 + bonus) * ev;
+    total += (c.god !== undefined ? GRADES[4].attract * NAMED.attractMul : GRADES[a.grade].attract) * (c.shiny ? SHINY.attractMul : 1) * (1 + bonus) * ev * (isHot(s, c.uid) ? HOT.mul : 1);
   }
+  if (cards.some((c) => isHot(s, c.uid))) syn.push({ kind: 'set', name: '화제의 신입', desc: `오늘 하루 새 식구 매력 ×${HOT.mul} · 손님이 몰려요` });
   // 아프로토: 같은 우리 동물 매력 +
   let love = 0;
   for (const c of cards) if (c.god !== undefined && GODS[c.god].ability === 'penAttract') love += GODS[c.god].value * (c.shiny ? NAMED.awakeMul : 1);
@@ -1013,4 +1014,20 @@ export function gainHero(s: SaveData, id: number, awake: boolean): NamedCard {
   }
   const base = rollStaff(() => 0.5, 4, HEROES[id].staff);
   return addCard(s, { ...base, hero: id, awake, pay: STAFF_PAY[4][1] * 1.2 } as NewCard);
+}
+
+// ── 화제의 신입 ──
+export const HOT = { mul: 1.5, minGrade: 2, visitorWeight: 3, tipMul: 1.5 } as const;
+/** 오늘 화제의 신입인지 (영업일 기준) */
+export const isHot = (s: SaveData, uid: number) => (s.hot ?? []).some((h) => h.uid === uid && h.day === s.day);
+/** 새로 배치한 희귀 이상: 밤이면 다음 영업일, 낮이면 오늘 */
+export function markHot(s: SaveData, uid: number) {
+  const day = s.atNight ? s.day + 1 : s.day;
+  s.hot = [...(s.hot ?? []).filter((h) => h.day >= s.day && h.uid !== uid), { uid, day }];
+}
+/** 우리 안 최고 등급 (신은 5로) — 우리 꾸밈 · 손님 몰림에 */
+export function penBest(s: SaveData, pen: number): number {
+  let b = -1;
+  for (const u of s.pens[pen] ?? []) { const c = cardById(s, u); if (c?.kind === 'animal') b = Math.max(b, c.god !== undefined ? 5 : ANIMALS[c.animal].grade); }
+  return b;
 }

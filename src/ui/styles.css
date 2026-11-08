@@ -764,3 +764,11 @@ body.compact .reveal-box .row-btns::after { display: none; }
 .confetti i { position: absolute; top: -12px; left: var(--x); width: 7px; height: 11px; background: hsl(calc(var(--i) * 47), 80%, 60%); animation: confetti 2.4s calc(var(--i) * 0.06s) ease-in both; }
 @keyframes confetti { from { transform: translateY(0) rotate(0); opacity: 1; } to { transform: translateY(420px) rotate(540deg); opacity: 0; } }
 body.reduce-motion .confetti { display: none; }
+/* 입장식 이름 띠 */
+.newcomer-banner { position: absolute; transform: translateX(-50%); z-index: 30; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 18px 7px; border-radius: 12px; background: rgba(26,28,44,.86); border: 2px solid var(--gb, #94b0c2); color: #fff6e0; text-align: center; animation: nb-in .45s cubic-bezier(.2, 1.5, .4, 1) both; }
+.newcomer-banner small { font-size: 11px; color: var(--gb, #94b0c2); letter-spacing: .05em; }
+.newcomer-banner b { font-family: 'Jua', sans-serif; font-weight: 400; font-size: 22px; color: var(--gb, #fff); text-shadow: 0 2px 0 #1a1c2c; }
+.newcomer-banner span { font-size: 11px; opacity: .85; }
+.newcomer-banner.g2 { --gb: #41a6f6; } .newcomer-banner.g3 { --gb: #c084fc; } .newcomer-banner.g4 { --gb: #f7c948; } .newcomer-banner.g5 { --gb: #fff3a3; box-shadow: 0 0 24px #fff3a3; }
+.newcomer-banner.hidden { display: none; }
+@keyframes nb-in { from { transform: translateX(-50%) scale(.4); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }

@@ -4,7 +4,7 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import type { AnimalEnt, StaffEnt } from '../game/world';
-import { penAttract } from '../game/rules';
+import { penAttract , penBest, cardById } from '../game/rules';
 import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite , godFrame, heroFrame } from './sprites';
 import { GODS, HEROES } from '../data/olympus';
 import { seasonOf } from '../data/seasons';
@@ -80,6 +80,11 @@ export class FieldRenderer {
   expandFx: { t: number; ow: number; oh: number } | null = null;
   /** 동물원 단계 (입구 장식이 늘어난다) */
   stage = 1;
+  /** 입장식: 카메라가 우리로 다가갔다가 돌아온다 · 스포트라이트 */
+  private focusFx: { x: number; y: number; z: number; t: number; dur: number; z0: number; cx0: number; cy0: number } | null = null;
+  spot: { pen: number; t: number; grade: number } | null = null;
+  focus(x: number, y: number, z: number, dur = 2.8) { this.focusFx = { x, y, z, t: performance.now(), dur: dur * 1000, z0: this.userZoom, cx0: this.camX, cy0: this.camY }; }
+  get focusing() { return !!this.focusFx; }
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -328,6 +333,17 @@ export class FieldRenderer {
     const c = this.ctx, L = world.layout;
     // 배율: 기기 픽셀 기준 정수로 (도트가 고르게). 내림하면 10% 넘게 작아질 때는 소수 배율 그대로
     // (예: 1.9배 → 1배로 내리면 화면이 절반으로 줄어든다)
+    // 입장식 카메라: 0.5초 다가가고, 머물고, 마지막 0.6초 돌아온다
+    if (this.focusFx) {
+      const f = this.focusFx, e = performance.now() - f.t;
+      if (e >= f.dur) { this.userZoom = f.z0; this.camX = f.cx0; this.camY = f.cy0; this.focusFx = null; }
+      else {
+        const k = e < 500 ? e / 500 : e > f.dur - 600 ? (f.dur - e) / 600 : 1, s = k * k * (3 - 2 * k);
+        this.userZoom = f.z0 + (f.z - f.z0) * s;
+        const bx = f.cx0 < 0 ? L.w / 2 : f.cx0, by = f.cx0 < 0 ? L.h / 2 : f.cy0;
+        this.camX = bx + (f.x - bx) * s; this.camY = by + (f.y - by) * s;
+      }
+    }
     const fit = Math.min(view.w / L.w, view.h / L.h);
     this.lastView = view; this.lastFit = fit; this.worldW = L.w; this.worldH = L.h;
     // 처음 그릴 때 한 번: 월드 1칸이 화면 3px쯤 되게 키우고 맨 위(입구 · 길)부터 보여 준다. '전체 보기'로 돌아갈 수 있다
@@ -412,7 +428,8 @@ export class FieldRenderer {
       const k = f.t / 1.1;
       const sx = this.ox + f.x * z, sy = this.oy + (f.y - k * 10) * z;
       c.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
-      outlined(f.text, sx, sy, f.color);
+      if (f.big) { c.font = `${Math.round(22 + 8 * Math.max(0, 1 - k * 4))}px Jua, sans-serif`; outlined(f.text, sx, sy, f.color); c.font = '16px Jua, sans-serif'; }
+      else outlined(f.text, sx, sy, f.color);
     }
     c.globalAlpha = 1;
     // 우리 이름표: 매력도
@@ -520,6 +537,53 @@ export class FieldRenderer {
       else this.icon(sprite(e.icon), e.x, e.y - k * 6 + 2, 7);
     }
     c.globalAlpha = 1;
+    // 등급 높은 우리: 전설 · 신 = 금빛 테두리 · 간판, 영웅 = 은빛 (빛이 테두리를 따라 돈다)
+    const tt = performance.now() / 1000;
+    L.pens.forEach((r, i) => {
+      const b = penBest(save, i);
+      if (b < 3) return;
+      const gold = b >= 4, col = gold ? '#f7c948' : '#c7cfdd', hi = gold ? '#fff3a3' : '#ffffff';
+      c.fillStyle = col; c.fillRect(r.x, r.y, r.w, 1); c.fillRect(r.x, r.y + r.h - 1, r.w, 1); c.fillRect(r.x, r.y, 1, r.h); c.fillRect(r.x + r.w - 1, r.y, 1, r.h);
+      const per = 2 * (r.w + r.h), p = ((tt * 40) % per);
+      for (let d = 0; d < 10; d++) {
+        let q = (p + d) % per, x = r.x, y = r.y;
+        if (q < r.w) x += q; else if ((q -= r.w) < r.h) { x += r.w - 1; y += q; } else if ((q -= r.h) < r.w) { x += r.w - 1 - q; y += r.h - 1; } else { y += r.h - 1 - (q - r.w); }
+        c.fillStyle = hi; c.fillRect(Math.round(x), Math.round(y), 1, 1);
+      }
+      // 간판: 우리 안 왼쪽 위
+      const best = (save.pens[i] ?? []).map((u) => cardById(save, u)).filter((x): x is Extract<typeof save.cards[number], { kind: 'animal' }> => x?.kind === 'animal')
+        .sort((a, z) => (z.god !== undefined ? 5 : ANIMALS[z.animal].grade) - (a.god !== undefined ? 5 : ANIMALS[a.animal].grade))[0];
+      if (best) {
+        const name = best.god !== undefined ? GODS[best.god].name : ANIMALS[best.animal].name;
+        const label = `${b >= 5 ? '신화' : gold ? '전설' : '영웅'}의 ${name}`;
+        c.save(); c.font = '3.4px Jua, sans-serif'; c.textBaseline = 'middle';
+        const w = c.measureText(label).width + 4;
+        c.fillStyle = gold ? '#8a5a3b' : '#566c86'; c.fillRect(r.x + 3, r.y + 3, w, 5);
+        c.fillStyle = col; c.fillRect(r.x + 3, r.y + 3, w, 0.6);
+        c.fillStyle = '#fff6e0'; c.fillText(label, r.x + 5, r.y + 5.6);
+        c.restore();
+      }
+    });
+    // 입장식 스포트라이트: 주변을 어둡게, 우리에 빛기둥, 전설 · 신화는 꽃가루
+    if (this.spot) {
+      const k = (performance.now() - this.spot.t) / 3200;
+      const r = L.pens[this.spot.pen];
+      if (k >= 1 || !r) this.spot = null;
+      else {
+        const a = Math.min(1, k * 5, (1 - k) * 4);
+        const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+        const g = c.createRadialGradient(cx, cy, Math.max(r.w, r.h) * 0.45, cx, cy, Math.max(L.w, L.h) * 0.7);
+        g.addColorStop(0, 'rgba(10,8,20,0)'); g.addColorStop(1, `rgba(10,8,20,${0.55 * a})`);
+        c.fillStyle = g; c.fillRect(0, 0, L.w, L.h);
+        const beam = c.createLinearGradient(0, r.y - 40, 0, r.y + r.h);
+        beam.addColorStop(0, 'rgba(255,243,163,0)'); beam.addColorStop(1, `rgba(255,243,163,${0.28 * a})`);
+        c.fillStyle = beam; c.beginPath(); c.moveTo(cx - 4, r.y - 40); c.lineTo(cx + 4, r.y - 40); c.lineTo(r.x + r.w, r.y + r.h); c.lineTo(r.x, r.y + r.h); c.closePath(); c.fill();
+        if (this.spot.grade >= 4 && !motion.reduce) for (let n = 0; n < 26; n++) {
+          const px = r.x + ((n * 37.7) % r.w), py = r.y - 20 + ((k * 90 + n * 13) % (r.h + 20));
+          c.fillStyle = ['#f08cbe', '#f7c948', '#73eff7', '#a7d65b'][n % 4]; c.globalAlpha = a; c.fillRect(Math.round(px), Math.round(py), 1, 1.5); c.globalAlpha = 1;
+        }
+      }
+    }
     // 규모 확장 직후 6초: 새로 생긴 부지 칸이 금빛으로 반짝이고 테두리가 깜빡인다
     if (this.expandFx) {
       const k = (performance.now() - this.expandFx.t) / 6000;

@@ -85,6 +85,8 @@ export interface SaveData {
   season: { n: number; start: number; mine: number; rival: number; lost?: boolean;
     /** 라이벌 컨디션 (RIVAL_COND 번호) · 라이벌 소식 배율 누적 · 마지막 소식 · 막판 대목 중인지 · 막판 응원 점수 */
     cond?: number; rmul?: number; rev?: { text: string; mul: number } | null; stand?: boolean; cheer?: number };
+  /** 화제의 신입: 희귀 이상을 새로 배치하면 그 영업일(day) 하루 매력 2배 · 손님이 몰린다 */
+  hot?: { uid: number; day: number }[];
   /** 평판 하트를 잃었는지: 한 번 지면 최후의 기회, 또 지면 폐원 */
   lastChance?: boolean;
   /** 빚(코인 < 0)으로 끝난 날이 이어진 수 · 오늘 파업 중인지 */
@@ -202,6 +204,7 @@ export function normalize(raw: unknown): SaveData {
   const num = (v: unknown, def: number) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
   out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}), cond: Math.max(0, Math.min(2, Math.floor(num(se.cond, 0)))), rmul: num(se.rmul, 1), rev: se.rev ?? null, stand: !!se.stand, cheer: Math.max(0, num(se.cheer, 0)) };
   out.lastChance = !!rr.lastChance;
+  out.hot = Array.isArray(rr.hot) ? (rr.hot as { uid: number; day: number }[]).filter((x) => x && typeof x.uid === 'number' && typeof x.day === 'number' && x.day >= out.day) : [];
   if (out.season.start > out.day) out.season.start = out.day;
   const rc = (r.records ?? {}) as Partial<SaveData['records']>;
   out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)), bestYears: Math.max(0, num(rc.bestYears, 0)) };

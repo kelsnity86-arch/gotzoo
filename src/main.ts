@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero, stageName, gateCapOf } from './game/rules';
+import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero, stageName, gateCapOf, HOT } from './game/rules';
 import { showReveal } from './ui/reveal';
 import { compile, renderSong, wav } from './audio/music';
 import { songById } from './audio/songs';
@@ -456,6 +456,24 @@ function showTitle(onStart?: () => void) {
   back.addEventListener('pointerdown', () => audio.unlock(), { once: true });
 }
 let titleOn = false;
+/** 입장식: 한 번에 여러 마리가 들어오면 가장 높은 등급 하나만 크게 */
+const newcomers: Extract<import('./game/world').WorldEvent, { type: 'newcomer' }>[] = [];
+const banner = h('div', { class: 'newcomer-banner hidden' });
+function welcome(list: typeof newcomers) {
+  const best = list.slice().sort((a, b) => b.grade - a.grade)[0];
+  const r = world.layout.pens[best.pen]; if (!r) return;
+  if (!field.focusing) field.focus(r.x + r.w / 2, r.y + r.h / 2, best.grade >= 4 ? 2.4 : 2, best.grade >= 4 ? 3.2 : 2.6);
+  field.spot = { pen: best.pen, t: performance.now(), grade: best.grade };
+  const name = best.god !== undefined ? GODS[best.god].name : ANIMALS[best.animal].name;
+  const label = best.grade >= 5 ? '신화' : GRADES[Math.min(4, best.grade)].name;
+  if (!banner.isConnected) ui.append(banner);
+  banner.className = `newcomer-banner g${Math.min(5, best.grade)}`;
+  banner.replaceChildren(h('small', {}, list.length > 1 ? `새 식구 ${list.length}마리!` : '새 식구!'), h('b', {}, `${best.shiny ? '반짝이 ' : ''}${label} · ${name}`), h('span', {}, `오늘 하루 화제의 신입 · 매력 ×${HOT.mul} · 손님이 몰려요`));
+  banner.style.left = upx(fieldRect.x + fieldRect.w / 2); banner.style.top = upx(fieldRect.y + fieldRect.h - 96 * uiScale);
+  if (best.grade >= 5) audio.sting('jingle_mythic'); else if (best.grade >= 4) audio.sting('jingle_legend'); else audio.sfx('rare');
+  window.clearTimeout(bannerTimer); bannerTimer = window.setTimeout(() => banner.classList.add('hidden'), best.grade >= 4 ? 3400 : 2700);
+}
+let bannerTimer = 0;
 /** 배경음: 화면이 정한 곡(1주년 · 폐원) · 이벤트 곡 */
 let bgmOverride: string | null = null;
 let eventBgm: string | null = null;
@@ -715,6 +733,12 @@ function frame(now: number) {
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
     else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`라이벌 소식 · ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
+    else if (ev.type === 'newcomer') { newcomers.push(ev); }
+    else if (ev.type === 'attractUp') {
+      const r = world.layout.pens[ev.pen];
+      if (r) world.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: `+${fmt(ev.delta)}♥`, t: 0, color: '#ff8fc4', big: true });
+      if (ev.incomePct >= 3) window.setTimeout(() => toast(`분당 수입 +${ev.incomePct}%`, 'gold', 1800), 400);
+    }
     else if (ev.type === 'lastStand') { audio.sfx('legend'); window.setTimeout(() => showLastStand(), 300); }
     else if (ev.type === 'fever') { audio.fever(ev.on, world.lastStand); if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
     else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
@@ -738,6 +762,7 @@ function frame(now: number) {
     }
     else if (ev.type === 'vip') { audio.sting('notify_vip'); toast(`VIP 손님이 큰 동전(${fmt(ev.amount)})을 떨어뜨렸어요! 주워요`, 'gold', 2200); }
   }
+  if (newcomers.length) { welcome(newcomers); newcomers.length = 0; }
   world.events.length = 0;
   field.draw(world, save, fieldRect, dpr, pointer);
   hudAcc += dt; saveAcc += dt;
