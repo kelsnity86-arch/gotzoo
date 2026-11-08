@@ -40,10 +40,32 @@ export function computeLayout(s: SaveData): Layout {
   return { w: bx0 * 2 + bw * BLOCK, h: by0 + bh * BLOCK + MARGIN, pens, cols: bw, bx0, by0, bw, bh };
 }
 
-export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
-export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number }
+/** 동물 행동: 잠 · 먹기 · 물 마시기 · 놀기 · 친구 · 덜덜(추위) · 물장구 */
+export type AnimalAct = 'sleep' | 'eat' | 'drink' | 'play' | 'friend' | 'shiver' | 'splash';
+export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean;
+  /** 지금 하는 행동 · 남은 시간 · 가는 중인 소품 · 효과 타이머 */
+  act?: AnimalAct | null; actT?: number; goal?: PropKind | null; fx?: number }
+export type PropKind = 'den' | 'plant' | 'water' | 'rock' | 'food' | 'toy';
+/** 우리 안 소품 (x = 가운데, y = 바닥) */
+export interface PropEnt { pen: number; kind: PropKind; x: number; y: number; flip: boolean }
+/** 관객존 꾸미기 한 줄 (길 위쪽 잔디): 이름 · 가운데 x */
+export const ZONE_ROW = ['tree', 'lamp', 'flowerbed', 'bench', 'lamp', 'blossom', 'bush', 'lamp', 'bench', 'pine', 'flowerbush', 'lamp'] as const;
+export function zoneRow(w: number): { name: (typeof ZONE_ROW)[number]; x: number }[] {
+  const out: { name: (typeof ZONE_ROW)[number]; x: number }[] = [];
+  for (let x = 58, k = 0; x < w - 10; x += 30, k++) out.push({ name: ZONE_ROW[k % ZONE_ROW.length], x });
+  return out;
+}
+/** 관람객 자세 (정면): 구경 · 환호 · 사진 · 간식 · 가리키기 · 앉기 · 동전 던지기 · 실망 */
+export type VisitorPose = 'watch' | 'cheer' | 'photo' | 'snack' | 'point' | 'sit' | 'toss' | 'sad';
+/** 0~1 해시 (같은 자리면 늘 같은 값) */
+export const hash2 = (x: number, y: number) => { let h = (x * 374761393 + y * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave' | 'sit'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number;
+  /** 멈춰서 하는 자세 · 던지는 순간 자세 남은 시간 · 앉을 벤치(-1 = 안 앉음) · 효과 타이머 */
+  pose?: VisitorPose; tossT?: number; bench?: number; fx?: number }
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
-export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number }
+export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number;
+  /** 일하는 동작 남은 시간 (> 0이면 멈춰서 동작) */
+  act?: number }
 export interface FloatText { x: number; y: number; text: string; t: number; color: string }
 
 export interface Emote { x: number; y: number; t: number; icon: string }
@@ -81,6 +103,10 @@ export class World {
   staff: StaffEnt[] = [];
   floats: FloatText[] = [];
   emotes: Emote[] = [];
+  /** 우리 안 소품 · 관객존 벤치 (앉은 사람 있으면 busy) */
+  props: PropEnt[] = [];
+  benches: { x: number; y: number; busy: boolean }[] = [];
+  private friendAcc = 0;
   /** 하루: 낮(day) → 해 질 녘(dusk) → 밤(night) */
   phase: 'day' | 'dusk' | 'night' = 'day';
   phaseT = 0;
@@ -148,8 +174,44 @@ export class World {
       const shape: PenShape = mask.flat().every(Boolean) ? 'rect' : (carve ?? 'L');
       return { gx, gy, cols, rows, shape, theme: themes[i], mask, floor, floorCells };
     });
+    this.placeProps();
     for (const a of this.animals) this.placeIn(a, true);
   }
+  /** 우리 안 소품: 잠자리 · 식물 · 물 · 바위 · 먹이 · 장난감 (우리가 클수록 많이). 첫 자리는 맨 윗줄 왼쪽, 다음부터 이미 고른 자리에서 가장 먼 바닥 칸 */
+  private placeProps() {
+    this.props = [];
+    this.geo.forEach((g, i) => {
+      const cells = g.floorCells;
+      if (!cells.length) return;
+      const n = cells.length;
+      const kinds: PropKind[] = (['den', 'plant', 'water', 'rock', 'food', 'toy', 'plant', 'rock'] as PropKind[]).slice(0, n >= 40 ? 8 : n >= 28 ? 6 : n >= 18 ? 4 : n >= 10 ? 3 : 2);
+      if (n >= 10 && !kinds.includes('food')) kinds[kinds.length - 1] = 'food';
+      const spots: [number, number][] = [[...cells].sort((a, b) => a[1] - b[1] || a[0] - b[0])[0]];
+      while (spots.length < kinds.length) {
+        let best = cells[0], bd = -1;
+        for (const cl of cells) { const d = Math.min(...spots.map((s) => Math.hypot(s[0] - cl[0], (s[1] - cl[1]) * 1.3))) + hash2(cl[0] + i, cl[1]) * 0.6; if (d > bd) { bd = d; best = cl; } }
+        spots.push(best);
+      }
+      kinds.forEach((kind, k) => { const [x, y] = spots[k]; this.props.push({ pen: i, kind, x: g.gx + (x + 0.5) * TILE, y: g.gy + (y + 1) * TILE - 1, flip: hash2(x, y + i) < 0.5 && kind !== 'den' }); });
+    });
+    this.benches = zoneRow(this.layout.w).filter((z) => z.name === 'bench').map((z) => ({ x: z.x, y: Math.floor(PATH_Y0 / TILE) * TILE - 2, busy: false }));
+  }
+  /** 소품 앞 빈자리 (못 찾으면 null) */
+  private spotNear(a: AnimalEnt, kind: PropKind): [number, number] | null {
+    const ps = this.props.filter((p) => p.pen === a.pen && p.kind === kind);
+    if (!ps.length) return null;
+    const p = ps[Math.floor(this.rng() * ps.length)];
+    const half = 4 * GRADE_MUL[ANIMALS[a.animal].grade];
+    for (let k = 0; k < 12; k++) {
+      const x = p.x + (this.rng() - 0.5) * (kind === 'den' ? 22 : 12), y = p.y + 2 + this.rng() * (kind === 'den' ? 8 : 4);
+      if (this.okAt(a.pen, x, y, half)) return [x, y];
+    }
+    return null;
+  }
+  /** 행동 시작 + 첫 효과 */
+  private startAct(a: AnimalEnt, act: AnimalAct, sec: number) { a.act = act; a.actT = sec; a.fx = 0; a.moving = false; a.goal = null; }
+  private animalEmote(a: AnimalEnt, icon: string, dy = 0) { this.emotes.push({ x: a.x + (this.rng() - 0.5) * 3, y: a.y - 4 * GRADE_MUL[ANIMALS[a.animal].grade] * 2 - 2 + dy, t: 0, icon }); }
+
   /** 이 자리가 우리 바닥 안인지 (몸 크기만큼 여유) */
   private okAt(pen: number, x: number, y: number, half: number): boolean {
     const g = this.geo[pen];
@@ -319,6 +381,15 @@ export class World {
       this.sickPen = pen;
     }
     this.events.push({ type: 'incident', kind, blocked, loss, pen });
+    // 사고 반응: 소매치기면 관람객이 깜짝 · 경비원 호루라기, 감기면 수의사가 그 우리로
+    if (kind === 'thief') {
+      for (const v of this.visitors) if (this.rng() < 0.5) this.emotes.push({ x: v.x, y: v.y - 15, t: 0, icon: blocked ? 'v2_fx_excl' : 'v2_fx_anger' });
+      for (const e of this.staff) if (e.kind === 'guard') e.act = 2.5;
+    } else {
+      const target = pen >= 0 ? pen : this.layout.pens.findIndex((_, i) => this.save.pens[i]?.length);
+      const r = this.layout.pens[target];
+      for (const e of this.staff) if (e.kind === 'vet' && r) { e.target = { x: r.x + r.w / 2, y: r.y - 4 }; (e as StaffEnt & { vetGo?: boolean }).vetGo = true; }
+    }
   }
 
   private updateDay(dt: number) {
@@ -349,7 +420,7 @@ export class World {
     this.phase = 'night'; this.phaseT = 0;
     sv.atNight = true; sv.dayT = 0;
     this.coins = [];
-    this.visitors = [];
+    this.visitors = []; for (const b of this.benches) b.busy = false;
     let topPen = 0, topAttract = 0;
     this.layout.pens.forEach((_, i) => { const a = totalAttractPen(sv, i); if (a > topAttract) { topAttract = a; topPen = i; } });
     // 미션 정산
@@ -402,26 +473,79 @@ export class World {
     const L = this.layout;
     for (let i = 0; i < this.fedLeft.length; i++) { this.fedLeft[i] = Math.max(0, this.fedLeft[i] - dt); this.feedCooldown[i] = Math.max(0, this.feedCooldown[i] - dt); }
 
-    // 동물: 우리 안에서 잠깐 쉬다 걷다
+    // 동물: 걷다 쉬다, 소품으로 가서 자고 · 먹고 · 마시고 · 논다. 밤 · 비 · 한파 · 감기면 잠자리로
+    const evId = this.event?.id;
+    const shelter = evId === 'rain' || evId === 'monsoon' || evId === 'coldwave';
     for (const a of this.animals) {
       a.t += dt;
       const r = L.pens[a.pen];
       if (!r) continue;
-      if (night) { a.moving = false; continue; } // 밤에는 잔다
+      const hab = this.geo[a.pen]?.theme;
+      const sick = a.pen === this.sickPen;
+      if (!night && a.act === 'sleep' && (a.actT ?? 0) > 60) a.actT = 0.5 + this.rng() * 3; // 아침: 하나둘 깬다
+      if (a.act && (a.actT ?? 0) > 0) {
+        a.actT! -= dt; a.fx = (a.fx ?? 0) + dt; a.moving = false;
+        const every = a.act === 'sleep' ? 2.4 : a.act === 'eat' ? 0.9 : a.act === 'drink' ? 1 : a.act === 'play' ? 1.3 : a.act === 'splash' ? 0.45 : a.act === 'shiver' ? 1.6 : 9;
+        if (a.fx > every) {
+          a.fx = 0;
+          const icon = a.act === 'sleep' ? (night ? 'v2_fx_nightzzz' : 'v2_fx_zzz') : a.act === 'eat' ? 'v2_fx_crumbs' : a.act === 'drink' ? 'v2_fx_drops' : a.act === 'play' ? (evId === 'firstsnow' || evId === 'xmas' ? 'v2_fx_sparkle' : 'v2_fx_note') : a.act === 'splash' ? `v2_fx_splash${1 + Math.floor(this.rng() * 3)}` : 'v2_fx_sweat';
+          if (a.act !== 'sleep' || this.rng() < 0.5) this.animalEmote(a, icon, a.act === 'eat' || a.act === 'drink' || a.act === 'splash' ? 8 : 0);
+        }
+        continue;
+      }
+      a.act = null;
+      // 잠자리로 가야 할 때
+      if ((night || shelter || sick) && a.goal !== 'den') {
+        const s = this.spotNear(a, 'den');
+        a.goal = 'den'; a.wait = night ? this.rng() * 1.5 : 0;
+        if (s) [a.tx, a.ty] = s;
+      }
       if (a.wait > 0) { a.wait -= dt; a.moving = false; continue; }
       const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy);
       if (d < 1) {
-        a.wait = 0.5 + this.rng() * 2.5;
-        [a.tx, a.ty] = this.randomSpot(a.pen, a.animal, a);
+        // 도착: 소품으로 왔으면 그 행동, 아니면 다음 할 일 고르기
+        const g = a.goal;
+        if (g === 'den') { this.startAct(a, shelter && !night && evId === 'coldwave' ? 'shiver' : 'sleep', night ? 999 : 3 + this.rng() * 4); a.face = this.rng() < 0.5 ? -1 : 1; continue; }
+        if (g === 'food') { this.startAct(a, 'eat', 2.5 + this.rng() * 1.5); continue; }
+        if (g === 'water') { this.startAct(a, 'drink', 2 + this.rng()); continue; }
+        if (g === 'toy') { this.startAct(a, 'play', 2.2 + this.rng() * 1.5); continue; }
+        a.goal = null;
+        const fed = this.fedLeft[a.pen] > 0;
+        const rr = this.rng();
+        let next: PropKind | null = null;
+        if (fed && rr < 0.65) next = 'food';
+        else if (evId === 'heat') next = rr < 0.5 ? 'water' : rr < 0.6 ? 'den' : null;
+        else if (evId === 'splash' && hab === 'water') { if (rr < 0.5) { this.startAct(a, 'splash', 2 + this.rng() * 2); continue; } }
+        else if (evId === 'firstsnow' || evId === 'festival' || evId === 'xmas') { if (rr < 0.35) { this.startAct(a, 'play', 2 + this.rng() * 2); continue; } next = rr < 0.55 ? 'toy' : null; }
+        else next = rr < 0.1 ? 'water' : rr < 0.2 ? 'toy' : rr < 0.24 ? 'den' : null;
+        const s = next ? this.spotNear(a, next) : null;
+        if (s) { a.goal = next; [a.tx, a.ty] = s; a.wait = 0.2 + this.rng() * 0.8; }
+        else { a.wait = 0.5 + this.rng() * 2.5; [a.tx, a.ty] = this.randomSpot(a.pen, a.animal, a); }
         continue;
       }
-      const sp = 10 * dt;
+      const sp = 10 * dt * (evId === 'heat' ? 0.55 : a.goal === 'food' || a.goal === 'toy' ? 1.6 : night ? 0.8 : 1);
       const nx = a.x + (dx / d) * Math.min(sp, d), ny = a.y + (dy / d) * Math.min(sp, d);
       // 모양 밖(ㄱ자 안쪽 모서리 등)으로 나가면 멈추고 다른 곳을 고른다
       if (!this.okAt(a.pen, nx, ny, 4 * GRADE_MUL[ANIMALS[a.animal].grade]) && this.okAt(a.pen, a.x, a.y, 4 * GRADE_MUL[ANIMALS[a.animal].grade])) { a.tx = a.x; a.ty = a.y; continue; }
       a.x = nx; a.y = ny;
       if (Math.abs(dx) > 0.3) a.face = dx < 0 ? -1 : 1;
       a.moving = true;
+      if (evId === 'heat' && this.rng() < dt * 0.25) this.animalEmote(a, 'v2_fx_sweat');
+    }
+    // 친구: 가끔 가까이 있는 두 동물이 마주 보고 하트
+    this.friendAcc += dt;
+    if (!night && this.friendAcc > 2.5 && this.animals.length > 1) {
+      this.friendAcc = 0;
+      const a = this.animals[Math.floor(this.rng() * this.animals.length)];
+      if (!a.act && !a.goal) {
+        let b: AnimalEnt | null = null, bd = 16;
+        for (const o of this.animals) if (o !== a && o.pen === a.pen && !o.act && !o.goal) { const dd = Math.hypot(o.x - a.x, o.y - a.y); if (dd < bd) { bd = dd; b = o; } }
+        if (b) {
+          this.startAct(a, 'friend', 2); this.startAct(b, 'friend', 2);
+          a.face = b.x > a.x ? 1 : -1; b.face = -a.face;
+          this.emotes.push({ x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) - 14, t: 0, icon: 'v2_fx_heart' });
+        }
+      }
     }
 
     // 관람객 생성
@@ -431,15 +555,24 @@ export class World {
     }
     for (let i = this.visitors.length - 1; i >= 0; i--) {
       const v = this.visitors[i];
-      v.t += dt; v.anim += dt;
+      v.t += dt; v.anim += dt; v.fx = (v.fx ?? 0) + dt;
+      if (v.tossT) v.tossT = Math.max(0, v.tossT - dt);
       if (v.state === 'walk') {
-        v.x += v.dir * VISITOR.walkSpeed * dt;
-        if ((v.dir > 0 && v.x >= v.targetX) || (v.dir < 0 && v.x <= v.targetX)) { v.state = 'view'; v.t = 0; }
+        v.x += v.dir * VISITOR.walkSpeed * (evId === 'coldwave' || evId === 'monsoon' ? 1.3 : 1) * dt;
+        if ((v.dir > 0 && v.x >= v.targetX) || (v.dir < 0 && v.x <= v.targetX)) { v.state = 'view'; v.t = 0; v.pose = this.choosePose(v); v.fx = 0; }
       } else if (v.state === 'view') {
-        if (!v.thrown && v.t > v.viewFor * 0.5) { v.thrown = true; this.throwCoin(v); }
+        if (!v.thrown && v.t > v.viewFor * 0.5) { v.thrown = true; v.tossT = 0.6; this.throwCoin(v); }
+        // 자세별 효과: 사진 플래시 · 환호 하트 · 실망 땀
+        const every = v.pose === 'photo' ? 1.3 : v.pose === 'cheer' ? 1.1 : v.pose === 'sad' ? 1.6 : 99;
+        if (v.fx > every) { v.fx = 0; this.emotes.push({ x: v.x + (v.pose === 'photo' ? -2 : 0), y: v.y - (v.pose === 'photo' ? 9 : 15), t: 0, icon: v.pose === 'photo' ? 'v2_fx_flash' : v.pose === 'cheer' ? (evId === 'festival' || evId === 'blossom' || evId === 'maple' ? 'v2_fx_petals' : 'v2_fx_heart') : 'v2_fx_sweat' }); }
         if (v.t > v.viewFor) { v.state = 'leave'; }
+      } else if (v.state === 'sit') {
+        if (v.t > 5) { v.state = 'leave'; const b = this.benches[v.bench ?? -1]; if (b) b.busy = false; v.bench = -1; v.y = PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6); }
       } else {
         v.x += v.dir * VISITOR.walkSpeed * 1.2 * dt;
+        // 돌아가다 벤치에서 쉬어 간다 (정한 사람만, 비었을 때)
+        const b = this.benches[v.bench ?? -1];
+        if (b && this.phase === 'day' && !b.busy && Math.abs(b.x - v.x) < 1.5) { b.busy = true; v.state = 'sit'; v.t = 0; v.x = b.x; v.y = b.y; v.pose = 'sit'; continue; }
         if (v.x < -16 || v.x > L.w + 16) this.visitors.splice(i, 1);
       }
     }
@@ -458,12 +591,13 @@ export class World {
     this.updateStaff(dt);
     this.updateEvent(dt);
     // 동물 말풍선: 가끔 하트·음표 (먹이 먹은 우리는 먹이 그림)
-    this.emoteAcc += dt * Math.min(1.2, this.animals.length / 30);
+    this.emoteAcc += dt * Math.min(0.6, this.animals.length / 60);
     while (this.emoteAcc > 1 && this.animals.length) {
       this.emoteAcc -= 1;
       const a = this.animals[Math.floor(this.rng() * this.animals.length)];
       const fed = this.fedLeft[a.pen] > 0;
-      this.emotes.push({ x: a.x, y: a.y - 10, t: 0, icon: night ? 'zz' : fed ? ['fx_11', 'fx_12', 'fx_13', 'fx_14'][a.animal % 4] : this.rng() < 0.6 ? 'fx_10' : 'fx_17' });
+      if (night || a.act) continue;
+      this.emotes.push({ x: a.x, y: a.y - 10, t: 0, icon: fed ? ['fx_11', 'fx_12', 'fx_13', 'fx_14'][a.animal % 4] : this.rng() < 0.6 ? 'v2_fx_heart' : 'v2_fx_note' });
     }
     for (let i = this.emotes.length - 1; i >= 0; i--) { this.emotes[i].t += dt; if (this.emotes[i].t > 1.4) this.emotes.splice(i, 1); }
 
@@ -487,6 +621,45 @@ export class World {
     this.event = { id: ev.id, left: EVENT_TIMING.durationSec + eventExtraSec(this.save) };
     this.events.push({ type: 'eventStart', id: ev.id });
     for (let k = 0; k < (ev.vips ?? 0); k++) this.spawnVisitor(true);
+    this.eventReact(ev.id);
+  }
+
+  /** 우리 앞에 멈췄을 때 자세: 사고 · 이벤트 · 우리 동물(전설 · 반짝이 · 노는 중)에 따라 */
+  private choosePose(v: VisitorEnt): VisitorPose {
+    const L = this.layout, evId = this.event?.id;
+    const pen = L.pens.findIndex((r) => v.x >= r.x && v.x <= r.x + r.w);
+    const here = this.animals.filter((a) => a.pen === pen);
+    const star = here.some((a) => a.shiny || ANIMALS[a.animal].grade >= 3);
+    const playing = here.some((a) => a.act === 'play' || a.act === 'splash');
+    const r = this.rng();
+    if ((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) return 'sad';
+    if (v.vip || (star && r < 0.45) || ((evId === 'blossom' || evId === 'maple' || evId === 'firstsnow' || evId === 'xmas' || evId === 'halloween') && r < 0.5)) return 'photo';
+    if (((evId === 'festival' || evId === 'kids' || evId === 'bus' || evId === 'chuseok' || evId === 'xmas') && r < 0.7) || (evId === 'splash' && this.geo[pen]?.theme === 'water' && r < 0.8) || (playing && r < 0.6)) return 'cheer';
+    if (this.save.items.some((it) => it.type === 'fac:snack' && it.x >= 0) && r < 0.3) return 'snack';
+    if (r < 0.2) return 'point';
+    if (r < 0.32) return 'photo';
+    return 'watch';
+  }
+
+  /** 이벤트가 시작될 때 한 번: 동물 · 관람객이 반응한다 */
+  private eventReact(id: EventId) {
+    for (const a of this.animals) {
+      const hab = this.geo[a.pen]?.theme, r = this.rng();
+      if (a.act === 'sleep') continue;
+      if (id === 'firstsnow' && r < 0.6) { this.startAct(a, 'play', 2 + this.rng() * 2); this.animalEmote(a, 'v2_fx_sparkle'); }
+      else if (id === 'splash' && hab === 'water' && r < 0.8) this.startAct(a, 'splash', 3 + this.rng() * 2);
+      else if ((id === 'festival' || id === 'xmas') && r < 0.4) { this.startAct(a, 'play', 2 + this.rng() * 2); this.animalEmote(a, id === 'xmas' ? 'v2_fx_star' : 'v2_fx_note'); }
+      else if (id === 'halloween' && r < 0.5) this.animalEmote(a, 'v2_fx_excl');
+      else if ((id === 'bus' || id === 'kids' || id === 'chuseok') && r < 0.3) this.animalEmote(a, 'v2_fx_quest');
+      else if (id === 'heat' && r < 0.5) this.animalEmote(a, 'v2_fx_sweat');
+      else if ((id === 'rain' || id === 'monsoon' || id === 'coldwave') && r < 0.3) this.animalEmote(a, 'v2_fx_drops');
+    }
+    for (const v of this.visitors) {
+      if (v.state !== 'view') continue;
+      if (id === 'pollen') v.pose = 'sad';
+      else if (id === 'firstsnow' || id === 'blossom' || id === 'maple' || id === 'xmas') v.pose = this.rng() < 0.5 ? 'photo' : 'cheer';
+      else if (id === 'festival' || id === 'bus' || id === 'kids' || id === 'chuseok') v.pose = 'cheer';
+    }
   }
 
   private spawnVisitor(vip = false) {
@@ -499,7 +672,8 @@ export class World {
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
     this.visitors.push({ vip, x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
-      state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng() });
+      state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng(),
+      bench: this.benches.length && this.rng() < 0.18 ? Math.floor(this.rng() * this.benches.length) : -1 });
   }
 
   private throwCoin(v: VisitorEnt) {
@@ -549,6 +723,9 @@ export class World {
     for (const e of this.staff) {
       const card = working.get(e.uid);
       if (!card) continue; // 파업 중: 제자리에 서 있다
+      if ((e.act ?? 0) > 0) { e.act! -= dt; e.anim += dt; continue; } // 일하는 동작 중
+      const ve = e as StaffEnt & { vetGo?: boolean };
+      if (ve.vetGo) { e.anim += dt; if (this.moveTo(e, 26, dt)) { ve.vetGo = false; e.act = 3; e.target = null; } continue; }
       const sp = staffSpeed(card) > 1.01 && (e.kind === 'collector' || e.kind === 'keeper') ? staffSpeed(card) : 1;
       e.t += dt; e.anim += dt;
       if (e.kind === 'collector') {
@@ -560,10 +737,10 @@ export class World {
           e.target = best ? { x: best.x, y: best.y } : { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
         }
         this.moveTo(e, STAFF_AI.collectorSpeed * sp, dt);
-        for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) this.pick(c, 'staff');
+        for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) { this.pick(c, 'staff'); e.act = 0.35; }
       } else if (e.kind !== 'keeper') {
         // 그 밖의 직원: 길을 천천히 오가며 일한다 (효과는 상시 적용)
-        if (!e.target || this.moveTo(e, 14, dt)) e.target = { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
+        if (!e.target || this.moveTo(e, 14, dt)) { if (e.target) e.act = 1.4 + this.rng() * 1.4; e.target = { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) }; }
         this.moveTo(e, 14, dt);
       } else {
         // 사육사: 동물 있는 우리를 차례로 돌며 먹이
@@ -579,7 +756,7 @@ export class World {
         if (this.moveTo(e, STAFF_AI.keeperSpeed * sp, dt) && e.t > STAFF_AI.keeperFeedEvery / sp) {
           e.t = 0;
           this.feed((e as StaffEnt & { pen?: number }).pen ?? 0, 'staff');
-          e.target = null;
+          e.target = null; e.act = 1.4;
         }
       }
     }

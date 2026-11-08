@@ -2,13 +2,14 @@
 import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
+import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, zoneRow, type VisitorEnt, type World } from '../game/world';
 import { penAttract } from '../game/rules';
 import { animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
 import { itemSprite } from '../data/facilities';
 import { fmt } from '../ui/dom';
 import { eventDef } from '../data/events';
+import { STAFF } from '../data/staff';
 
 export interface View { x: number; y: number; w: number; h: number }
 /** GPT 타일 (assets/sprites/tiles): 서식지별 바닥 */
@@ -70,7 +71,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${season}|${this.decoTier}|${items}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${season}|${this.decoTier}|${items}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -124,12 +125,7 @@ export class FieldRenderer {
     for (let ty = p0; ty <= p1; ty++) for (let tx = 0; tx < TW; tx++) autotile(onPath, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true);
 
     // 3. 관객존 꾸미기: 길 위쪽 잔디에 나무 · 벤치 · 가로등 · 화단을 번갈아, 길 아래엔 낮은 생울타리
-    const topRow = ['tree', 'lamp', 'flowerbed', 'bench', 'lamp', 'blossom', 'bush', 'lamp', 'bench', 'pine', 'flowerbush', 'lamp'];
-    const gateW = 44;
-    for (let x = gateW + 14, k = 0; x < L.w - 10; x += 30, k++) {
-      const n = topRow[k % topRow.length];
-      obj(`park_${n === 'blossom' && season === 'winter' ? 'pine' : n}`, x, p0 * TILE - (n === 'lamp' ? 0 : 1));
-    }
+    for (const z of zoneRow(L.w)) obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1));
     for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
 
     // 4. 우리: 바닥 → 울타리. 다른 우리와 맞닿은 쪽은 번호가 작은 우리만 울타리를 친다
@@ -151,28 +147,8 @@ export class FieldRenderer {
       g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) autotile(inside, ox + x, oy + y, v(`fence${tier}_sq`), v(`fence${tier}_x`), crossAt, false); }));
     });
 
-    // 5. 우리 소품: 잠자리 · 물 · 먹이 · 식물 · 바위 · 장난감 (우리가 클수록 많이). 서로 멀리, 가장자리 쪽에
-    L.pens.forEach((_, i) => {
-      const g = world.geo[i];
-      if (!g || !g.floorCells.length) return;
-      const hab = g.theme ?? 'grass';
-      const n = g.floorCells.length;
-      const kinds = ['den', 'plant', 'water', 'rock', 'food', 'toy', 'plant', 'rock'].slice(0, n >= 40 ? 8 : n >= 28 ? 6 : n >= 18 ? 4 : n >= 10 ? 3 : 2);
-      const spots: [number, number][] = [];
-      // 첫 자리(잠자리): 맨 윗줄 왼쪽. 다음부터 이미 고른 자리에서 가장 먼 바닥 칸
-      const cells = g.floorCells.filter(([x, y]) => g.floor[y - 1]?.[x] !== undefined || y === 0);
-      const first = [...cells].sort((a, b) => a[1] - b[1] || a[0] - b[0])[0];
-      spots.push(first);
-      while (spots.length < kinds.length) {
-        let best = cells[0], bd = -1;
-        for (const cl of cells) { const d = Math.min(...spots.map((s) => Math.hypot(s[0] - cl[0], (s[1] - cl[1]) * 1.3))) + hash(cl[0] + i, cl[1]) * 0.6; if (d > bd) { bd = d; best = cl; } }
-        spots.push(best);
-      }
-      kinds.forEach((kd, k) => {
-        const [x, y] = spots[k];
-        obj(`prop_${hab}_${kd}`, g.gx + (x + 0.5) * TILE, g.gy + (y + 1) * TILE - 1, hash(x, y + i) < 0.5 && kd !== 'den');
-      });
-    });
+    // 5. 우리 소품 (자리는 world가 정한다: 동물이 찾아가서 쓴다)
+    for (const pr of world.props) obj(`prop_${world.geo[pr.pen]?.theme ?? 'grass'}_${pr.kind}`, pr.x, pr.y, pr.flip);
 
     // 6. 우리 없는 빈 블록: 풀밭 공원 (나무 · 덤불 · 꽃 · 바위 · 연못)
     const { bx0, by0, bw, bh } = L;
@@ -346,6 +322,8 @@ export class FieldRenderer {
     for (const v of world.visitors) {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
       list.push({ y: v.y, f: () => {
+        const pose = this.poseSprite(v);
+        if (pose) { const hop = v.pose === 'cheer' && !v.tossT && !reduceMotion ? Math.round(Math.abs(Math.sin(v.t * 7)) * 4) : 0; this.blitDev(pose, v.x, v.y, pose.height / FieldRenderer.R, false, hop); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 14 + Math.sin(t * 6), 6); return; }
         const p16 = person16(seasonOf(save.season.n).key, v.kind, fr);
         if (p16) this.blitDev(p16, v.x, v.y, 13, v.dir > 0, 0);
         else this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
@@ -356,6 +334,9 @@ export class FieldRenderer {
     for (const e of world.staff) {
       const fr = Math.floor(e.anim * 6) % 2;
       list.push({ y: e.y, f: () => {
+        const si = STAFF.findIndex((d) => d.kind === e.kind);
+        const ak = `v2_sa_${String(si).padStart(2, '0')}_f${Math.floor(e.anim * 3) % 2}`;
+        if ((e.act ?? 0) > 0 && hasPng(ak)) { const im = sprite(ak); this.blitDev(im, e.x, e.y, im.height / FieldRenderer.R, e.face > 0, 0); return; }
         const s16 = staff16(e.kind, fr);
         if (s16) this.blitDev(s16, e.x, e.y, 13.5, e.face > 0, 0);
         else { this.blit(staffFrame(e.kind, fr), e.x, e.y, 8, 12, e.face > 0, 0); c.fillStyle = e.kind === 'collector' ? '#ef7d32' : '#38a35b'; c.fillRect(Math.round(e.x) - 1, Math.round(e.y) - 15, 2, 2); }
@@ -369,6 +350,7 @@ export class FieldRenderer {
       const k = e.t / 1.4;
       c.globalAlpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
       if (e.icon === 'zz') { c.fillStyle = '#c7cfdd'; c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 6 - k * 6), 3, 1); c.fillRect(Math.round(e.x + 2 + k * 3), Math.round(e.y - 5 - k * 6), 1, 1); c.fillRect(Math.round(e.x + 1 + k * 3), Math.round(e.y - 4 - k * 6), 1, 1); c.fillRect(Math.round(e.x + k * 3), Math.round(e.y - 3 - k * 6), 3, 1); }
+      else if (e.icon.startsWith('v2_')) { if (hasPng(e.icon)) { const im = sprite(e.icon); this.icon(im, e.x, e.y - k * 6 + 2, Math.max(im.width, im.height) / FieldRenderer.R); } }
       else this.icon(sprite(e.icon), e.x, e.y - k * 6 + 2, 7);
     }
     c.globalAlpha = 1;
@@ -438,12 +420,26 @@ export class FieldRenderer {
 
   private animalsIn(world: World, i: number) {
     const list = world.animals.filter((a) => a.pen === i).sort((a, b) => a.y - b.y);
+    const water = world.geo[i]?.theme === 'water';
     for (const a of list) {
       const fr = a.moving ? Math.floor(a.t * 5) % 2 : 0;
-      const hop = a.moving && !reduceMotion && fr && hasPng(`animal_${String(a.animal).padStart(3, '0')}`) ? 1 : 0;
+      const has16 = hasPng(`animal_${String(a.animal).padStart(3, '0')}`);
+      // 행동별 몸짓 (기기 픽셀): 놀기 = 통통, 먹기 · 마시기 = 고개 끄덕, 잠 = 천천히 숨쉬기, 덜덜 = 좌우 떨기
+      let hop = a.moving && !reduceMotion && fr && has16 ? 1 : 0, x = a.x;
+      if (!reduceMotion) {
+        if (a.act === 'play' || a.act === 'splash') hop = Math.round(Math.abs(Math.sin(a.t * 9)) * (a.act === 'play' ? 6 : 3));
+        else if (a.act === 'eat' || a.act === 'drink') hop = Math.floor(a.t * 4) % 2;
+        else if (a.act === 'friend') hop = Math.floor(a.t * 3) % 2;
+        else if (a.act === 'sleep') hop = Math.floor(a.t * 0.8) % 2;
+        else if (a.act === 'shiver') x += Math.floor(a.t * 18) % 2 ? 0.34 : -0.34;
+      }
+      const mul = GRADE_SIZE[ANIMALS[a.animal].grade];
       const img = animalFrame(a.animal, fr);
-      this.blitAnimal(a.shiny ? shinyOf(img) : img, a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
-      if (a.shiny) this.sparkle(a.x, a.y - 4 * GRADE_SIZE[ANIMALS[a.animal].grade], a.t + a.uid);
+      // 물가 우리: 몸 아래가 잠기고 물결
+      const sink = water ? 0.32 : 0;
+      if (water && hasPng('v2_fx_ripple1')) { const rp = sprite(Math.floor(a.t * 1.5) % 2 ? 'v2_fx_ripple2' : 'v2_fx_ripple1'); this.ctx.globalAlpha = 0.7; this.icon(rp, x, a.y + 1.5, (rp.width / FieldRenderer.R) * Math.min(1, mul)); this.ctx.globalAlpha = 1; }
+      this.blitAnimal(a.shiny ? shinyOf(img) : img, x, a.y, mul, a.face > 0, hop, sink, a.act === 'sleep');
+      if (a.shiny) this.sparkle(x, a.y - 4 * mul, a.t + a.uid);
     }
   }
 
@@ -453,6 +449,14 @@ export class FieldRenderer {
     c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(px + 1, Math.round(y) - 1, w - 2, 1);
     if (flip) { c.save(); c.translate(px + w, py); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); c.restore(); }
     else c.drawImage(img, px, py, w, h);
+  }
+
+  /** 멈춰 선 관람객의 정면 자세 그림 (4종: 아이 · 여자 · 남자 · 어르신). 걷는 중이면 null */
+  private poseSprite(v: VisitorEnt): Sprite | null {
+    if (v.state !== 'view' && v.state !== 'sit') return null;
+    const p = v.tossT ? 'toss' : v.state === 'sit' ? 'sit' : v.pose ?? 'watch';
+    const k = `v2_va_${v.vip ? 1 : v.kind % 4}_${p}`;
+    return hasPng(k) ? sprite(k) : null;
   }
 
   /** 작은 그림 (동전 · 말풍선): 바닥 가운데 기준, 큰 쪽을 size칸에 맞춰 도트 그대로 */
@@ -475,9 +479,9 @@ export class FieldRenderer {
   }
 
   /** 동물: 등급 배율만큼 크게, 기기 픽셀 좌표로 (도트가 고르게) */
-  private blitAnimal(img: Sprite, x: number, y: number, mul: number, flip: boolean, hop: number) {
+  private blitAnimal(img: Sprite, x: number, y: number, mul: number, flip: boolean, hop: number, sink = 0, dim = false) {
     // 16px 시트 그림(크다)은 큰 쪽이 9칸 × 등급 배율이 되게, 예전 8px 그림은 8칸
-    if (img.width > 8 || img.height > 8) { this.blitDev(img, x, y, 9 * mul, flip, hop, true); return; }
+    if (img.width > 8 || img.height > 8) { this.blitDev(img, x, y, 9 * mul, flip, hop, true, sink, dim); return; }
     const c = this.ctx;
     const k = Math.max(1, Math.round(this.dev * mul));
     const size = 8 * k;
@@ -502,7 +506,7 @@ export class FieldRenderer {
 
   /** 고해상도 그림을 기기 픽셀로: 크기 기준(units, 월드 칸)을 큰 쪽(fit) 또는 높이에 맞춘다.
    *  1배 이상이면 정수 배로 (도트가 고르게), 작으면 부드럽게 줄인다 */
-  private blitDev(img: Sprite, x: number, y: number, units: number, flip: boolean, hop: number, fitMax = false) {
+  private blitDev(img: Sprite, x: number, y: number, units: number, flip: boolean, hop: number, fitMax = false, sink = 0, dim = false) {
     const c = this.ctx;
     const base = fitMax ? Math.max(img.width, img.height) : img.height;
     let k = (units * this.dev) / base;
@@ -517,7 +521,9 @@ export class FieldRenderer {
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.imageSmoothingEnabled = smooth;
     if (smooth) c.imageSmoothingQuality = 'high';
-    this.shadow(c, cx, by, w * 0.62, Math.max(1, Math.round(k)));
+    if (!sink) this.shadow(c, cx, by, w * 0.62, Math.max(1, Math.round(k)));
+    if (sink > 0) { c.beginPath(); c.rect(left - 2, top - 20, w + 4, h * (1 - sink) + 20); c.clip(); c.translate(0, Math.round(h * sink * 0.6)); }
+    if (dim) c.filter = 'brightness(0.85)';
     if (flip) { c.translate(left + w, top); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); }
     else c.drawImage(img, left, top, w, h);
     c.restore();
