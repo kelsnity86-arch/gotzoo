@@ -1,13 +1,14 @@
 // 추가 기능: 미션·뽑기권, 도감 보상, 자리 비움 수익, 이벤트, 새 직원, 저장 코드
 import { describe, expect, it } from 'vitest';
 import { defaultSave, normalize } from '../src/game/state';
+import { seasonOf, yearOf } from '../src/data/seasons';
 import { STAFF_OPT_COUNT, STAFF_PAY } from '../src/data/staff';
 import { exportCode, importCode } from '../src/game/savecode';
 import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
+  assignStaff, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
@@ -122,5 +123,56 @@ describe('저장 코드', () => {
     expect(r.ok && r.save.coins).toBe(12345);
     const bad = code.slice(0, 10) + (code[10] === 'A' ? 'B' : 'A') + code.slice(11);
     expect(importCode(bad).ok).toBe(false);
+  });
+});
+
+describe('계절 · 반짝이 · 시너지', () => {
+  const put = (s: ReturnType<typeof defaultSave>, animal: number, pen = 0, shiny = false) => { s.cards.push({ uid: s.nextUid, kind: 'animal', animal, ...(shiny ? { shiny } : {}) }); s.pens[pen].push(s.nextUid++); };
+  const id = (name: string) => ANIMALS.find((a) => a.name === name)!.id;
+  it('시즌 → 계절 · 년: 1 봄, 4 겨울, 5 = 2년 봄', () => {
+    expect(seasonOf(1).key).toBe('spring'); expect(seasonOf(4).key).toBe('winter');
+    expect(seasonOf(5).key).toBe('spring'); expect(yearOf(5)).toBe(2);
+  });
+  it('계절 한정 동물은 그 계절에만 나온다', () => {
+    const s = defaultSave(); s.coins = 1e12; s.season.n = 3; // 가을
+    const out = draw(s, 20000)!;
+    const lim = out.filter((c) => c.kind === 'animal' && ANIMALS[c.animal].season);
+    expect(lim.length).toBeGreaterThan(0);
+    expect(lim.every((c) => c.kind === 'animal' && ANIMALS[c.animal].season === 'autumn')).toBe(true);
+    const sh = out.filter((c) => c.kind === 'animal' && c.shiny).length / out.length;
+    expect(sh).toBeGreaterThan(0.005); expect(sh).toBeLessThan(0.016);
+  });
+  it('반짝이는 매력 1.5배, 제철 서식지 +20% · 약한 서식지 −15%', () => {
+    const a = defaultSave(); a.season.n = 2; put(a, id('토끼')); // 여름 풀밭: 보정 없음
+    const b = defaultSave(); b.season.n = 2; put(b, id('토끼'), 0, true);
+    expect(penAttract(b, 0) / penAttract(a, 0)).toBeCloseTo(1.5, 5);
+    const sp = defaultSave(); sp.season.n = 1; put(sp, id('토끼')); // 봄 풀밭 +20%
+    expect(penAttract(sp, 0)).toBeCloseTo(20 * 1.2, 5);
+    const su = defaultSave(); su.season.n = 2; put(su, id('펭귄')); // 여름 설원 −15%
+    expect(penAttract(su, 0)).toBeCloseTo(32 * 0.85, 5);
+  });
+  it('조합 시너지: 사바나 세트가 한 우리에 모이면 +25%, 하나라도 빠지면 없음', () => {
+    const s = defaultSave(); s.season.n = 2; s.upgrades.size = 2;
+    put(s, id('사자')); put(s, id('얼룩말'));
+    const before = penAttract(s, 0);
+    put(s, id('기린'));
+    const d = penDetail(s, 0);
+    expect(d.syn.some((x) => x.name === '사바나')).toBe(true);
+    expect(discoverSynergies(s).map((x) => x.id)).toContain('savanna');
+    expect(discoverSynergies(s)).toHaveLength(0);
+    expect(d.total).toBeGreaterThan(before * 1.5);
+  });
+  it('계절 한정 동물은 제철에 매력 2배 + 같은 우리 +10%', () => {
+    const s = defaultSave(); s.season.n = 4; // 겨울
+    put(s, id('루돌프 순록')); put(s, id('토끼'));
+    const off = defaultSave(); off.season.n = 2; put(off, id('루돌프 순록')); put(off, id('토끼'));
+    expect(penAttract(s, 0)).toBeGreaterThan(penAttract(off, 0) * 1.5);
+  });
+  it('냉난방비: 겨울엔 사막 동물만큼 난방비', () => {
+    const s = defaultSave(); s.season.n = 4;
+    put(s, id('두더지')); // 사막
+    expect(dailyCosts(s).climate).toBeGreaterThan(0);
+    s.season.n = 1;
+    expect(dailyCosts(s).climate).toBe(0);
   });
 });

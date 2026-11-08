@@ -179,3 +179,33 @@ export function staffFrame(kind: string, frame: number): Sprite {
   return hasPng(`staff_${kind}`) ? sprite(`staff_${kind}`) : sprite(`staff_${kind}_f${frame}`);
 }
 export const WHITE_PX = WHITE;
+
+/** 반짝이 변종: 색상환을 돌리고 채도를 올린 그림 (원본별로 한 번만 만든다) */
+const shinyCache = new WeakMap<object, HTMLCanvasElement>();
+export function shinyOf(img: Sprite): Sprite {
+  const hit = shinyCache.get(img);
+  if (hit) return hit;
+  const w = img.width, h = img.height;
+  if (!w || !h) return img;
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const c = cv.getContext('2d')!;
+  c.drawImage(img, 0, 0);
+  const d = c.getImageData(0, 0, w, h), p = d.data;
+  for (let i = 0; i < p.length; i += 4) {
+    if (p[i + 3] === 0) continue;
+    let r = p[i] / 255, g = p[i + 1] / 255, b = p[i + 2] / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+    if (max - min < 0.08 && (l < 0.2 || l > 0.85)) continue; // 외곽선·흰색은 그대로
+    let hh = 0, ss = 0;
+    const dd = max - min;
+    if (dd) { ss = l > 0.5 ? dd / (2 - max - min) : dd / (max + min); hh = max === r ? (g - b) / dd + (g < b ? 6 : 0) : max === g ? (b - r) / dd + 2 : (r - g) / dd + 4; hh /= 6; }
+    hh = (hh + 0.42) % 1; ss = Math.min(1, ss * 1.3 + 0.15);
+    const q = l < 0.5 ? l * (1 + ss) : l + ss - l * ss, pp = 2 * l - q;
+    const f = (t: number) => { t = (t + 1) % 1; return t < 1 / 6 ? pp + (q - pp) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? pp + (q - pp) * (2 / 3 - t) * 6 : pp; };
+    r = f(hh + 1 / 3); g = f(hh); b = f(hh - 1 / 3);
+    p[i] = r * 255; p[i + 1] = g * 255; p[i + 2] = b * 255;
+  }
+  c.putImageData(d, 0, 0);
+  shinyCache.set(img, cv);
+  return cv;
+}

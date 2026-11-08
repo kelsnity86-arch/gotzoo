@@ -75,7 +75,7 @@ describe('필드', () => {
   });
   it('관람객 수: 분당 3 + 매력도 × 0.2, 게이트 한도', () => {
     const { w } = setup();
-    expect(w.visitorRate).toBeCloseTo(VISITOR.basePerMin + 0.2 * 20, 5);
+    expect(w.visitorRate).toBeCloseTo(VISITOR.basePerMin + 0.2 * w.attract, 5);
   });
 });
 

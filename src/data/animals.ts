@@ -1,7 +1,8 @@
-// 동물 100종. 순서는 그림 명령서(animals_01~10.png)의 칸 순서와 같다.
+// 동물 150종 (상시 100 + 계절 한정 50). 상시 순서는 그림 명령서(animals_01~10.png)의 칸 순서와 같다.
 // 등급별: 일반 30 · 고급 26 · 희귀 22 · 영웅 14 · 전설 8.
 // shape·body·accent는 그림이 오기 전 코드로 그리는 임시 8×8 도트에 쓴다.
 import type { Grade } from './grades';
+import type { SeasonKey } from './seasons';
 
 export type Habitat = 'grass' | 'sand' | 'water' | 'snow' | 'rock' | 'cloud';
 export type Shape = 'quad' | 'small' | 'bird' | 'fish' | 'reptile' | 'bug' | 'tall' | 'big' | 'myth';
@@ -16,6 +17,8 @@ export interface AnimalDef {
   shape: Shape;
   body: string;
   accent: string;
+  /** 계절 한정 동물이면 그 계절 (그 계절 뽑기에서만 나온다) */
+  season?: SeasonKey;
 }
 
 // [이름, 영어, 서식지, 모양, 몸 색, 포인트 색]
@@ -75,8 +78,52 @@ export const ANIMALS: readonly AnimalDef[] = (() => {
   for (const g of [0, 1, 2, 3, 4] as Grade[]) {
     for (const [name, en, habitat, shape, body, accent] of ROWS[g]) out.push({ id: out.length, name, en, grade: g, habitat, shape, body, accent });
   }
+  // 계절 한정 50종 (id 100~149): [이름, 영어, 등급, 서식지, 모양, 몸 색, 포인트 색]
+  const SEASONAL: Record<SeasonKey, [string, string, Grade, Habitat, Shape, string, string][]> = {
+    spring: [
+      ['꽃토끼', 'rabbit wearing a flower crown', 1, 'grass', 'small', C.white, C.pink], ['민들레 햄스터', 'dandelion hamster', 1, 'grass', 'small', C.yellow, C.white],
+      ['개나리 참새', 'forsythia sparrow', 1, 'grass', 'bird', C.yellow, C.mbrown], ['무지개 송어', 'rainbow trout', 1, 'water', 'fish', C.sky, C.pink],
+      ['벚꽃사슴', 'cherry blossom deer', 2, 'grass', 'tall', C.tan, C.lpink], ['꿀벌 여왕', 'queen bee', 2, 'grass', 'bug', C.yellow, C.gold],
+      ['새싹 거북', 'sprout turtle', 2, 'grass', 'reptile', C.dgreen, C.lime], ['봄비 개구리', 'rain frog with leaf umbrella', 2, 'water', 'reptile', C.lime, C.teal],
+      ['벚꽃 여우', 'cherry blossom fox', 3, 'grass', 'quad', C.lpink, C.white], ['장미 공작', 'rose peacock', 3, 'grass', 'bird', C.red, C.pink],
+      ['은방울 학', 'lily crane', 3, 'water', 'bird', C.white, C.lime], ['꽃기린', 'flower qilin', 4, 'cloud', 'myth', C.lpink, C.gold],
+      ['봄바람 용', 'spring breeze dragon', 4, 'cloud', 'myth', C.lime, C.pink],
+    ],
+    summer: [
+      ['수박 거북', 'watermelon turtle', 1, 'water', 'reptile', C.green, C.red], ['선글라스 물개', 'seal with sunglasses', 1, 'water', 'fish', C.gray, C.ink],
+      ['해바라기 앵무', 'sunflower parrot', 1, 'grass', 'bird', C.yellow, C.mbrown], ['튜브 오리', 'duck in a swim ring', 1, 'water', 'bird', C.white, C.red],
+      ['반딧불 여우', 'firefly fox', 2, 'grass', 'quad', C.navy, C.lyellow], ['산호 문어', 'coral octopus', 2, 'water', 'fish', C.pink, C.orange],
+      ['서핑 돌고래', 'surfing dolphin', 2, 'water', 'fish', C.sky, C.yellow], ['무지개 해파리', 'rainbow jellyfish', 2, 'water', 'fish', C.cyan, C.pink],
+      ['태양 사자', 'sun lion', 3, 'sand', 'big', C.gold, C.orange], ['황금 만타', 'golden manta', 3, 'water', 'fish', C.gold, C.yellow],
+      ['해신 고래', 'sea god whale', 4, 'water', 'big', C.blue, C.gold], ['무지개 뱀', 'rainbow serpent', 4, 'cloud', 'myth', C.purple, C.cyan],
+    ],
+    autumn: [
+      ['도토리 다람쥐', 'acorn squirrel', 1, 'grass', 'small', C.mbrown, C.tan], ['단풍 너구리', 'maple raccoon', 1, 'rock', 'quad', C.gray, C.orange],
+      ['허수아비 까마귀', 'scarecrow crow', 1, 'grass', 'bird', C.ink, C.yellow], ['버섯 두꺼비', 'mushroom toad', 1, 'rock', 'reptile', C.tan, C.red],
+      ['낙엽 고양이', 'leaf pile kitten', 1, 'grass', 'quad', C.orange, C.red],
+      ['호박 고슴도치', 'pumpkin hedgehog', 2, 'grass', 'small', C.brown, C.orange], ['은행잎 사슴', 'ginkgo deer', 2, 'rock', 'tall', C.tan, C.yellow],
+      ['망토 박쥐', 'caped bat', 2, 'rock', 'bird', C.dpurple, C.red], ['갈대 두루미', 'reed crane', 2, 'water', 'bird', C.white, C.silver],
+      ['달토끼', 'moon rabbit', 3, 'cloud', 'small', C.white, C.lyellow], ['유령 고양이', 'ghost cat', 3, 'rock', 'quad', C.silver, C.cyan],
+      ['황금 추수 황소', 'golden harvest ox', 4, 'grass', 'big', C.gold, C.yellow], ['호박등 드래곤', 'jack-o-lantern dragon', 4, 'cloud', 'myth', C.orange, C.dpurple],
+    ],
+    winter: [
+      ['털모자 펭귄', 'penguin in a knit hat', 1, 'snow', 'bird', C.ink, C.red], ['눈사람 곰', 'snowman bear cub', 1, 'snow', 'quad', C.white, C.orange],
+      ['목도리 수달', 'otter with a scarf', 1, 'water', 'small', C.mbrown, C.red], ['눈꽃 토끼', 'snowflake rabbit', 1, 'snow', 'small', C.white, C.sky],
+      ['루돌프 순록', 'red-nosed reindeer', 2, 'snow', 'tall', C.mbrown, C.red], ['얼음 여우', 'ice fox', 2, 'snow', 'quad', C.cyan, C.white],
+      ['고드름 고슴도치', 'icicle hedgehog', 2, 'snow', 'small', C.silver, C.cyan], ['산타 북극곰', 'santa polar bear', 2, 'snow', 'big', C.white, C.red],
+      ['오로라 고래', 'aurora whale', 3, 'water', 'big', C.dblue, C.lime], ['서리 늑대', 'frost wolf', 3, 'snow', 'quad', C.silver, C.sky],
+      ['얼음 용', 'ice dragon', 4, 'snow', 'myth', C.cyan, C.white], ['겨울 정령 사슴', 'winter spirit stag', 4, 'cloud', 'tall', C.white, C.cyan],
+    ],
+  };
+  for (const season of ['spring', 'summer', 'autumn', 'winter'] as SeasonKey[]) {
+    for (const [name, en, grade, habitat, shape, body, accent] of SEASONAL[season]) out.push({ id: out.length, name, en, grade, habitat, shape, body, accent, season });
+  }
   return out;
 })();
 
-export const animalsOfGrade = (g: Grade) => ANIMALS.filter((a) => a.grade === g);
+/** 상시 동물 (계절 한정 제외) */
+export const animalsOfGrade = (g: Grade) => ANIMALS.filter((a) => a.grade === g && !a.season);
+/** 이 계절 한정 동물 중 이 등급 */
+export const seasonalOfGrade = (g: Grade, season: SeasonKey) => ANIMALS.filter((a) => a.grade === g && a.season === season);
+export const isSeasonal = (id: number) => !!ANIMALS[id]?.season;
 export const HABITAT_NAMES: Record<Habitat, string> = { grass: '풀밭', sand: '사막', water: '물가', snow: '설원', rock: '바위산', cloud: '구름' };

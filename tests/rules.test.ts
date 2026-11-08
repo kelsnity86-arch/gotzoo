@@ -12,10 +12,12 @@ import {
 const seq = (...v: number[]) => { let i = 0; return () => v[i++ % v.length]; };
 
 describe('데이터', () => {
-  it('동물 100종, 등급별 수와 이름 중복 없음', () => {
-    expect(ANIMALS).toHaveLength(100);
-    expect(new Set(ANIMALS.map((a) => a.name)).size).toBe(100);
-    expect([0, 1, 2, 3, 4].map((g) => ANIMALS.filter((a) => a.grade === g).length)).toEqual([30, 26, 22, 14, 8]);
+  it('동물 150종(상시 100 + 계절 한정 50), 등급별 수와 이름 중복 없음', () => {
+    expect(ANIMALS).toHaveLength(150);
+    expect(new Set(ANIMALS.map((a) => a.name)).size).toBe(150);
+    expect([0, 1, 2, 3, 4].map((g) => ANIMALS.filter((a) => a.grade === g && !a.season).length)).toEqual([30, 26, 22, 14, 8]);
+    expect(['spring', 'summer', 'autumn', 'winter'].map((k) => ANIMALS.filter((a) => a.season === k).length)).toEqual([13, 12, 13, 12]);
+    expect(ANIMALS.filter((a) => a.season && a.grade === 0)).toHaveLength(0);
   });
   it('등급 확률 합 = 1, 합성 확률은 장수가 늘수록 오르고 10장 = 100%', () => {
     expect(GRADES.reduce((a, g) => a + g.chance, 0)).toBeCloseTo(1, 9);
@@ -70,10 +72,10 @@ describe('배치 · 매력도', () => {
     const left = s.cards.find((c) => !placedSet(s).has(c.uid))!;
     expect(placeAnimal(s, left.uid)).toBe(false);
   });
-  it('같은 종 3마리면 +10%, 같은 서식지면 +10%', () => {
-    const s = defaultSave();
+  it('같은 종 3마리 +10%, 같은 서식지 3마리 +10%, 일반 동급 무리 +25% (여름 풀밭)', () => {
+    const s = defaultSave(); s.season.n = 2;
     for (let i = 0; i < 3; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 0 }); s.pens[0].push(s.nextUid++); }
-    expect(penAttract(s, 0)).toBeCloseTo(3 * 20 * 1.2, 5);
+    expect(penAttract(s, 0)).toBeCloseTo(3 * 20 * 1.45, 5);
   });
   it('업그레이드하면 우리 수가 바로 늘어난다', () => {
     const s = defaultSave(); s.coins = 300;

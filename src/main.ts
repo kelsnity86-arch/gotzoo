@@ -8,6 +8,7 @@ import { eventDef } from './data/events';
 import { World, ZONE_H } from './game/world';
 import { syncSlots, totalAttract, placedAnimals, penCount, penSize, offlineEarnings, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
+import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
 import { hasPng, preloadPngs } from './render/sprites';
 import { Panel, openPenSheet } from './ui/panel';
@@ -17,6 +18,7 @@ import { fillIcons, fmt, h, iconSlot, pix, toast } from './ui/dom';
 const canvas = document.getElementById('world') as HTMLCanvasElement;
 const ui = document.getElementById('ui')!;
 const ctx = canvas.getContext('2d', { alpha: false })!;
+const habitatKo: Record<string, string> = { grass: '풀밭', sand: '사막', water: '물가', snow: '설원', rock: '바위산', cloud: '구름' };
 
 let save = loadSave();
 syncSlots(save);
@@ -210,6 +212,7 @@ function showReport(r: import('./game/world').DayReport) {
           r.stolen ? h('div', {}, h('span', {}, '소매치기'), h('b', { class: 'minus' }, `-${fmt(r.stolen)}`)) : null,
           h('div', {}, h('span', {}, '직원 월급'), h('b', { class: 'minus' }, `-${fmt(r.costs.salary)}`)),
           h('div', {}, h('span', {}, '우리 유지비 · 사료비'), h('b', { class: 'minus' }, `-${fmt(r.costs.pens + r.costs.food)}`)),
+          r.costs.climate ? h('div', {}, h('span', {}, r.costs.climateName), h('b', { class: 'minus' }, `-${fmt(r.costs.climate)}`)) : null,
           h('div', { class: 'net' }, h('span', {}, '오늘 순이익'), h('b', { class: r.net >= 0 ? 'plus' : 'minus' }, `${r.net >= 0 ? '+' : ''}${fmt(r.net)}`)),
           h('div', { class: 'after' }, h('span', {}, '남은 코인'), h('b', { class: r.coinsAfter >= 0 ? '' : 'minus' }, fmt(r.coinsAfter)))),
         h('div', {}, h('b', {}, fmt(r.visitors)), h('span', {}, '다녀간 관람객')),
@@ -236,10 +239,10 @@ function showSeason(r: import('./game/world').DayReport) {
     const next = rivalOf(se.n + 1);
     const back = h('div', { class: 'overlay' },
       h('div', { class: 'fuse-result win' },
-        h('div', { class: 'reveal-title' }, `시즌 ${se.n} 승리!`),
+        h('div', { class: 'reveal-title' }, se.year ? `🎂 ${se.year}주년! 1년을 버텼어요` : `${seasonOf(se.n).icon} ${seasonOf(se.n).name} 시즌 승리!`),
         h('div', { class: 'sub' }, `${r.rivalName}을(를) 규모 ${fmt(r.mine - r.rival)} 차이로 이겼어요`),
         h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
-        h('div', { class: 'sub' }, `다음 라이벌: ${next.name} (${next.owner}) · 더 강해졌어요`),
+        h('div', { class: 'sub' }, `다음 계절 ${seasonOf(se.n + 1).icon}${seasonOf(se.n + 1).name} · 라이벌 ${next.name} (${next.owner}) · 더 강해졌어요`),
         h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
     ui.append(back);
   } else showClosure();
@@ -254,7 +257,7 @@ function showClosure() {
       h('div', { class: 'sub' }, `${rivalOf(save.season.n).name}에게 손님을 빼앗겼어요 (규모 ${fmt(save.season.mine)} vs ${fmt(save.season.rival)})`),
       h('div', { class: 'report' },
         h('div', {}, h('b', {}, `${save.day}일`), h('span', {}, '버틴 날')),
-        h('div', {}, h('b', {}, `${save.season.n - 1}번`), h('span', {}, '이긴 라이벌')),
+        h('div', {}, h('b', {}, `${save.season.n - 1}번 · ${Math.floor((save.season.n - 1) / 4)}년`), h('span', {}, '이긴 라이벌 · 버틴 해')),
         h('div', {}, h('b', {}, `${Math.max(rc.bestDay, save.day)}일`), h('span', {}, '최고 기록')),
         h('div', {}, h('b', {}, `${save.dex.filter(Boolean).length}종`), h('span', {}, '도감 (그대로 남아요)'))),
       h('div', { class: 'sub' }, '동물원·코인·카드는 처음부터 다시 시작해요. 도감과 기록은 남아요.'),
@@ -290,7 +293,11 @@ function frame(now: number) {
     if (ev.type === 'night') { audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
     else if (ev.type === 'morning') {
       const sd = world.seasonDay;
-      if (sd === 1) toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! ${SEASON.days}일 안에 더 많이 벌어야 해요`, 'gold', 3200);
+      if (sd === 1) {
+        const se = seasonOf(save.season.n);
+        toast(`${se.icon} ${yearOf(save.season.n)}년 ${se.name}이 왔어요! ${habitatKo[se.strong]} 동물 +20%${se.weak ? ` · ${habitatKo[se.weak]} −15%` : ''}${se.climate ? ` · ${se.climateName}` : ''}`, 'gold', 3600);
+        window.setTimeout(() => toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! ${SEASON.days}일째 밤에 규모로 겨뤄요`, 'gold', 3200), 1400);
+      }
       else if (sd === SEASON.days) toast(`${ev.day}일째 아침 · 시즌 마지막 날! 오늘 결판나요`, 'bad', 3000);
       else toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200);
       if (ev.strike) window.setTimeout(() => toast('빚이 3일 넘게 밀려서 오늘은 직원들이 파업해요!', 'bad', 3200), 800);
@@ -299,6 +306,7 @@ function frame(now: number) {
     else if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
+    else if (ev.type === 'synergy') { audio.sfx('rare'); toast(`✨ 시너지 발견! ${ev.name} · ${ev.desc}`, 'gold', 3000); panel.render(true); }
     else if (ev.type === 'incident') {
       if (ev.kind === 'thief') toast(ev.blocked ? '경비원이 소매치기를 잡았어요!' : `소매치기! 오늘 수입 중 ${fmt(ev.loss)}코인을 잃었어요 (경비원이 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
       else toast(ev.blocked ? '수의사가 동물 감기를 미리 막았어요!' : `우리 ${ev.pen + 1} 동물들이 감기에 걸렸어요. 오늘 매력 −40% (수의사가 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
@@ -331,7 +339,10 @@ function updateHud() {
   const night = world.isNight;
   clock.classList.toggle('night', night);
   const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));
-  clockText.textContent = night ? `${save.day}일째 🌙 밤 정비 중` : `${save.day}일째 ${world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  const sea = seasonOf(save.season.n);
+  const when = `${yearOf(save.season.n)}년 ${sea.icon}${sea.name} ${world.seasonDay}일째`;
+  clockText.textContent = night ? `${when} · 🌙 밤 정비 중` : `${when} · ${world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  document.body.dataset.season = sea.key;
   clockFill.parentElement!.classList.toggle('hidden', night);
   clockFill.style.width = `${(world.phaseT / 180) * 100}%`;
   openBtn.classList.toggle('hidden', !night || !!save.season.lost);

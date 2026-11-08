@@ -5,7 +5,8 @@ import { COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
-import { bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { SEASON_FX, yearOf } from '../data/seasons';
+import { curSeason, discoverSynergies, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -55,7 +56,7 @@ export function computeLayout(n: number, cap: number, aspect: number): Layout {
   return { w, h, pens, cols };
 }
 
-export interface AnimalEnt { uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
+export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
 export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number }
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number }
@@ -70,7 +71,8 @@ export type WorldEvent =
   | { type: 'eventEnd'; id: EventId }
   | { type: 'vip'; amount: number }
   | { type: 'night'; report: DayReport }
-  | { type: 'morning'; day: number; strike: boolean }
+  | { type: 'morning'; day: number; strike: boolean; seasonStart: boolean }
+  | { type: 'synergy'; name: string; desc: string }
   | { type: 'incident'; kind: 'thief' | 'sick'; blocked: boolean; loss: number; pen: number };
 
 /** 하루 정산 */
@@ -78,13 +80,13 @@ export interface DayReport {
   day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number;
   missions: Mission[]; missionTickets: number;
   /** 돈: 오늘 수입(관리인 회수 포함) − 소매치기 − 비용 = 순이익, 정산 후 코인 */
-  income: number; stolen: number; costs: { salary: number; pens: number; food: number; total: number }; net: number; coinsAfter: number;
+  income: number; stolen: number; costs: { salary: number; pens: number; food: number; climate: number; climateName: string; total: number }; net: number; coinsAfter: number;
   /** 빚으로 끝난 날 연속 수 · 내일 파업하는지 */
   debtDays: number; strikeNext: boolean;
   /** 라이벌: 시즌 며칠째, 내 규모 · 라이벌 규모 */
   rivalName: string; seasonDay: number; mine: number; rival: number;
   /** 시즌 마지막 날이면 결과 */
-  season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number } | null;
+  season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number; year: number } | null;
 }
 
 export class World {
@@ -156,8 +158,16 @@ export class World {
   }
 
   /** 저장 데이터의 배치와 필드의 동물·직원을 맞춘다 */
+  private penKey = '';
   sync() {
     const s = this.save;
+    // 배치가 바뀌면 새로 발동한 조합 시너지를 찾는다
+    const pk = s.pens.map((p) => p.join(',')).join('|');
+    if (pk !== this.penKey) {
+      if (this.penKey) for (const st of discoverSynergies(s)) this.events.push({ type: 'synergy', name: st.name, desc: `같은 우리 동물 매력 +${Math.round(st.attract * 100)}%` });
+      else discoverSynergies(s);
+      this.penKey = pk;
+    }
     const want = new Map<number, number>();
     s.pens.forEach((p, i) => { if (i < penCount(s)) for (const u of p) want.set(u, i); });
     this.animals = this.animals.filter((a) => want.get(a.uid) === a.pen);
@@ -166,7 +176,7 @@ export class World {
       if (have.has(uid)) continue;
       const c = cardById(s, uid);
       if (!c || c.kind !== 'animal') continue;
-      const a: AnimalEnt = { uid, animal: c.animal, pen, x: 0, y: 0, tx: 0, ty: 0, wait: this.rng() * 2, t: this.rng() * 10, face: -1, moving: false };
+      const a: AnimalEnt = { shiny: !!c.shiny, uid, animal: c.animal, pen, x: 0, y: 0, tx: 0, ty: 0, wait: this.rng() * 2, t: this.rng() * 10, face: -1, moving: false };
       this.placeIn(a);
       this.animals.push(a);
     }
@@ -180,7 +190,12 @@ export class World {
     }
   }
 
-  get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1)); }
+  /** 이벤트가 바꾸는 매력 (물놀이 데이 · 첫눈 · 폭염) */
+  get attractCtx(): AttractCtx {
+    const e = this.event ? eventDef(this.event.id) : null;
+    return { allMul: e?.allMul, habitatMul: e?.habitat ? { [e.habitat]: e.habitatMul ?? 1 } : undefined };
+  }
+  get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1), this.attractCtx); }
   get gateCap() { return upValue(this.save, 'gate'); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }
@@ -251,7 +266,7 @@ export class World {
     this.sickPen = -1;
     this.scheduleIncident();
     ensureMissions(this.save, this.rng);
-    this.events.push({ type: 'morning', day: this.save.day, strike: this.save.strike });
+    this.events.push({ type: 'morning', day: this.save.day, strike: this.save.strike, seasonStart: this.seasonDay === 1 });
   }
 
   private scheduleIncident() {
@@ -324,13 +339,17 @@ export class World {
     let season: DayReport['season'] = null;
     if (seasonDay >= SEASON.days) {
       if (mine >= rival) {
-        const coins = Math.round(Math.max(0, income) * SEASON.winDays), tickets = SEASON.winTickets;
+        // 겨울(4시즌마다)을 이기면 1년 버틴 것: 1주년 보너스
+        const year = se.n % 4 === 0 ? yearOf(se.n) : 0;
+        const coins = Math.round(Math.max(0, income) * (SEASON.winDays + (year ? SEASON_FX.yearDays : 0)));
+        const tickets = SEASON.winTickets + (year ? SEASON_FX.yearTickets : 0);
         sv.coins += coins; sv.tickets += tickets;
         sv.records.bestSeasons = Math.max(sv.records.bestSeasons, se.n);
-        season = { result: 'win', n: se.n, coins, tickets };
+        if (year) sv.records.bestYears = Math.max(sv.records.bestYears, year);
+        season = { result: 'win', n: se.n, coins, tickets, year };
         sv.season = { n: se.n + 1, start: sv.day + 1, mine: 0, rival: 0 };
       } else {
-        season = { result: 'lose', n: se.n, coins: 0, tickets: 0 };
+        season = { result: 'lose', n: se.n, coins: 0, tickets: 0, year: 0 };
         se.lost = true;
       }
     }
@@ -338,7 +357,7 @@ export class World {
     const { stolen, ...today } = this.today;
     const report: DayReport = {
       day: sv.day, ...today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets,
-      income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, total: c.total }, net, coinsAfter: Math.round(sv.coins),
+      income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, climate: c.climate, climateName: c.climateName, total: c.total }, net, coinsAfter: Math.round(sv.coins),
       debtDays: sv.debtDays, strikeNext: sv.strike,
       rivalName: rivalOf(se.n).name, seasonDay, mine, rival, season,
     };
@@ -427,14 +446,14 @@ export class World {
     }
     this.eventTimer -= dt;
     if (this.eventTimer > 0) return;
-    const vm = vipMul(this.save);
-    const w = (e: (typeof EVENTS)[number]) => e.weight * (e.id === 'vip' ? vm : 1);
+    const vm = vipMul(this.save), sk = curSeason(this.save).key;
+    const w = (e: (typeof EVENTS)[number]) => (e.season && e.season !== sk ? 0 : e.weight * (e.vips ? vm : 1));
     const total = EVENTS.reduce((a, e) => a + w(e), 0);
     let r = this.rng() * total;
     const ev = EVENTS.find((e) => (r -= w(e)) <= 0) ?? EVENTS[0];
     this.event = { id: ev.id, left: EVENT_TIMING.durationSec + eventExtraSec(this.save) };
     this.events.push({ type: 'eventStart', id: ev.id });
-    if (ev.id === 'vip') this.spawnVisitor(true);
+    for (let k = 0; k < (ev.vips ?? 0); k++) this.spawnVisitor(true);
   }
 
   private spawnVisitor(vip = false) {

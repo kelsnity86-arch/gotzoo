@@ -4,7 +4,9 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
-import { animalFrame, personFrame, sprite, staffFrame, hasPng, type Sprite } from './sprites';
+import { animalFrame, personFrame, shinyOf, sprite, staffFrame, hasPng, type Sprite } from './sprites';
+import { seasonOf } from '../data/seasons';
+import { eventDef } from '../data/events';
 
 export interface View { x: number; y: number; w: number; h: number }
 /** GPT 타일 (assets/sprites/tiles): 서식지별 바닥 */
@@ -209,8 +211,22 @@ export class FieldRenderer {
         c.globalCompositeOperation = 'source-over';
       }
     }
-    // 소나기
-    if (world.event?.id === 'rain') {
+    // 계절: 살짝 덧칠 + 날리는 꽃잎 · 낙엽 · 눈 (이벤트가 눈이면 더 많이)
+    const sea = seasonOf(save.season.n);
+    const ev = world.event ? eventDef(world.event.id) : null;
+    c.fillStyle = sea.tint; c.fillRect(0, 0, L.w, L.h);
+    const parts = ev?.snow ? ['#f4f4f4', '#e9f3ff'] : sea.particle;
+    if (parts.length && !reduceMotion) {
+      const n = ev?.snow ? 110 : 34, fall = sea.key === 'winter' || ev?.snow ? 18 : 12;
+      for (let i = 0; i < n; i++) {
+        const sway = Math.sin(t * 1.3 + i) * 6;
+        const x = ((i * 71.3 + t * 7 + sway) % L.w + L.w) % L.w, y = ((i * 43.7 + t * fall) % L.h);
+        c.fillStyle = parts[i % parts.length];
+        c.fillRect(Math.round(x), Math.round(y), sea.key === 'autumn' && !ev?.snow ? 2 : 1, 1);
+      }
+    }
+    // 비 (소나기 · 장마)
+    if (ev?.rain) {
       c.fillStyle = 'rgba(115,239,247,0.55)';
       for (let i = 0; i < 90; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); c.fillRect(Math.round(x), Math.round(y), 1, 3); }
       c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(0, 0, L.w, L.h);
@@ -269,7 +285,9 @@ export class FieldRenderer {
     for (const a of list) {
       const fr = a.moving ? Math.floor(a.t * 5) % 2 : 0;
       const hop = a.moving && !reduceMotion && fr && hasPng(`animal_${String(a.animal).padStart(3, '0')}`) ? 1 : 0;
-      this.blitAnimal(animalFrame(a.animal, fr), a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
+      const img = animalFrame(a.animal, fr);
+      this.blitAnimal(a.shiny ? shinyOf(img) : img, a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
+      if (a.shiny) this.sparkle(a.x, a.y - 4 * GRADE_SIZE[ANIMALS[a.animal].grade], a.t + a.uid);
     }
   }
 
@@ -279,6 +297,16 @@ export class FieldRenderer {
     c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(px + 1, Math.round(y) - 1, w - 2, 1);
     if (flip) { c.save(); c.translate(px + w, py); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); c.restore(); }
     else c.drawImage(img, px, py, w, h);
+  }
+
+  /** 반짝이 동물 머리 위 반짝임 (네 방향 별, 깜빡) */
+  private sparkle(x: number, y: number, t: number) {
+    const ph = (t * 2) % 3;
+    if (ph > 1) return;
+    const c = this.ctx;
+    c.fillStyle = ph < 0.5 ? '#fff3a3' : '#73eff7';
+    const sx = Math.round(x + Math.sin(t) * 4), sy = Math.round(y - 2);
+    c.fillRect(sx, sy - 1, 1, 3); c.fillRect(sx - 1, sy, 3, 1);
   }
 
   /** 동물: 등급 배율만큼 크게, 기기 픽셀 좌표로 (도트가 고르게) */
@@ -330,7 +358,9 @@ export class FieldRenderer {
     for (const a of list) {
       const fr = a.moving ? Math.floor(a.t * 5) % 2 : 0;
       const hop = a.moving && !reduceMotion && fr && hasPng(`animal_${String(a.animal).padStart(3, '0')}`) ? 1 : 0;
-      this.blitAnimal(animalFrame(a.animal, fr), a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
+      const img = animalFrame(a.animal, fr);
+      this.blitAnimal(a.shiny ? shinyOf(img) : img, a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
+      if (a.shiny) this.sparkle(a.x, a.y - 4 * GRADE_SIZE[ANIMALS[a.animal].grade], a.t + a.uid);
     }
   }
 }

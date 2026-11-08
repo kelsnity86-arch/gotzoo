@@ -341,3 +341,30 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .report .money b { font-size: 15px; }
 .report .money .net { border-top: 1px dashed #d8c7a6; padding-top: 3px; } .report .money .net b { font-size: 18px; }
 .report b.plus { color: #2e7d32; } .report b.minus { color: #c0392b; }
+
+/* 계절 · 반짝이 · 시너지 */
+.season-banner { margin: 8px 0; padding: 8px 10px; border-radius: 10px; border: 2px solid #d8c7a6; background: #fffaf0; }
+.season-banner.s-spring { border-color: #f08cbe; background: #fff0f6; } .season-banner.s-summer { border-color: #41a6f6; background: #eef8ff; }
+.season-banner.s-autumn { border-color: #ef7d32; background: #fff3e6; } .season-banner.s-winter { border-color: #94b0c2; background: #f2f7fc; }
+.season-banner .sb-head { display: flex; flex-direction: column; }
+.season-banner .sb-list { display: flex; gap: 4px; margin: 4px 0; flex-wrap: wrap; }
+.season-banner .sb-a { padding: 2px; border-radius: 6px; background: #fff; border: 2px solid #ccc; }
+.season-banner .sb-a.g-uncommon { border-color: #38a35b; } .season-banner .sb-a.g-rare { border-color: #3b5dc9; } .season-banner .sb-a.g-epic { border-color: #8e44ad; } .season-banner .sb-a.g-legend { border-color: #e0a526; }
+.season-banner .sb-a.unknown canvas, .season-banner .sb-a.unknown img { filter: brightness(0); opacity: .5; }
+.gtag.s-spring { background: #f08cbe; margin-left: 3px; } .gtag.s-summer { background: #41a6f6; margin-left: 3px; } .gtag.s-autumn { background: #ef7d32; margin-left: 3px; } .gtag.s-winter { background: #7fb5d6; margin-left: 3px; }
+.gtag.shiny { background: linear-gradient(90deg, #f08cbe, #f7c948, #73eff7); color: #1a1c2c; margin-left: 3px; }
+.card.shiny { box-shadow: 0 0 0 3px #f7c948, 0 0 14px 4px rgba(115,239,247,.8); animation: shinyGlow 1.6s ease-in-out infinite alternate; }
+@keyframes shinyGlow { from { box-shadow: 0 0 0 3px #f08cbe, 0 0 10px 2px rgba(240,140,190,.7); } to { box-shadow: 0 0 0 3px #73eff7, 0 0 16px 5px rgba(115,239,247,.8); } }
+@media (prefers-reduced-motion: reduce) { .card.shiny { animation: none; } }
+.dex-cell.shiny { box-shadow: inset 0 0 0 2px #f7c948; }
+.section-title.s-spring { color: #c2417a; } .section-title.s-summer { color: #2a78c2; } .section-title.s-autumn { color: #b8452e; } .section-title.s-winter { color: #4a6f96; }
+.syn-list { display: flex; flex-direction: column; gap: 4px; }
+.syn-row { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 8px; background: #fffaf0; }
+.syn-row.unknown { opacity: .65; }
+.syn-row .syn-art { display: flex; gap: 2px; min-width: 70px; flex-wrap: wrap; }
+.syn-row .q { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 4px; background: #e6d8bd; color: #8a7a5e; font-size: 12px; }
+.syn-box { display: flex; flex-direction: column; gap: 3px; margin: 6px 0; }
+.syn { display: flex; gap: 6px; align-items: baseline; padding: 4px 8px; border-radius: 6px; background: #fffaf0; font-size: 13px; }
+.syn b { font-weight: 400; color: #5d3a24; } .syn span { color: #6b5536; font-size: 12px; }
+.syn.k-set { background: #fff3c8; } .syn.k-season { background: #e8f4ff; } .syn.k-grade { background: #f3e8ff; } .syn.near { background: transparent; border: 1px dashed #d8c7a6; }
+body[data-season="spring"] .clock:not(.night) { background: rgba(240,140,190,.35); } body[data-season="autumn"] .clock:not(.night) { background: rgba(239,125,50,.35); } body[data-season="winter"] .clock:not(.night) { background: rgba(148,176,194,.4); } body[data-season="summer"] .clock:not(.night) { background: rgba(65,166,246,.35); }

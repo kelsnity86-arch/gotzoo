@@ -8,10 +8,12 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } fro
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, curSeason, penDetail, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
-import { animalFrame, hasPng, staffFrame } from '../render/sprites';
+import { animalFrame, hasPng, shinyOf, staffFrame } from '../render/sprites';
+import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
+import { SYNERGY_SETS } from '../data/synergy';
 import { audio } from './audio';
 import { cardEl } from './cardview';
 import { fmt, h, iconSlot, pix, toast } from './dom';
@@ -50,7 +52,7 @@ export class Panel {
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
     const s = this.ctx.save;
-    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${this.ctx.world.phase}`;
+    const key = `${this.tab}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${s.season.n}|${s.synergyFound.length}|${s.shinyDex.filter(Boolean).length}|${this.ctx.world.phase}`;
     if (!force && key === this.lastKey) return;
     // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
@@ -91,6 +93,7 @@ export class Panel {
       h('div', { class: 'gacha-hero' }, h('div', { class: 'mini-machine' }, h('i', {}), h('i', {}), h('i', {})),
         h('div', {}, h('div', { class: 'title' }, '동물 카드 뽑기'), h('div', { class: 'sub' }, `진행 ${s.stage}단계 · 1장 ${fmt(price)}코인`))),
       free,
+      this.seasonBanner(),
       s.coins < 0 ? h('div', { class: 'debt-note' }, `빚 ${fmt(-s.coins)}코인 · 갚기 전엔 뽑기·공사를 못 해요`) : null,
       h('div', { class: 'draw-btns' },
         this.costBtn(h('span', {}, '1회', h('small', {}, `${fmt(price)}`)), price, () => doDraw(1)),
@@ -100,6 +103,16 @@ export class Panel {
       this.missions(),
       h('div', { class: 'section-title' }, '나오는 확률'), grid,
       h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요. 직원은 직원 탭에서 따로 뽑아요.'));
+  }
+
+  /** 계절 픽업 배너: 이 계절 한정 동물 (고급 이상을 뽑으면 일정 확률로) */
+  private seasonBanner() {
+    const s = this.ctx.save, se = curSeason(s);
+    const lim = ANIMALS.filter((a) => a.season === se.key).sort((a, b) => b.grade - a.grade);
+    return h('div', { class: `season-banner s-${se.key}` },
+      h('div', { class: 'sb-head' }, h('b', {}, `${se.icon} ${yearOf(s.season.n)}년 ${se.name} 한정 동물 ${lim.length}종`), h('span', { class: 'sub' }, `고급 이상이 나오면 ${Math.round(SEASON_FX.limitedShare * 100)}% 확률로 계절 한정 · 제철엔 매력 2배`)),
+      h('div', { class: 'sb-list' }, ...lim.slice(0, 6).map((a) => h('span', { class: `sb-a g-${GRADES[a.grade].key}${s.dex[a.id] ? '' : ' unknown'}`, title: s.dex[a.id] ? a.name : '???' }, pix(animalFrame(a.id, 0), 24)))),
+      h('div', { class: 'sub' }, `반짝이 변종 ${Math.round(1)}% · 매력 1.5배`));
   }
 
   /** 오늘 영업 미션: 하나 = 뽑기권 1장, 셋 다 = 보너스 2장 (영업이 끝나면 자동 정산) */
@@ -143,12 +156,13 @@ export class Panel {
   private inventory() {
     const s = this.ctx.save;
     const placed = placedSet(s);
-    const groups = new Map<number, { all: number; free: number[]; placed: number }>();
+    const groups = new Map<number, { all: number; free: number[]; placed: number; shiny: number }>();
     for (const c of s.cards) {
       if (c.kind !== 'animal') continue;
       if (this.invGrade >= 0 && ANIMALS[c.animal].grade !== this.invGrade) continue;
-      const g = groups.get(c.animal) ?? { all: 0, free: [], placed: 0 };
-      g.all++; if (placed.has(c.uid)) g.placed++; else g.free.push(c.uid);
+      const g = groups.get(c.animal) ?? { all: 0, free: [], placed: 0, shiny: 0 };
+      g.all++; if (c.shiny) g.shiny++;
+      if (placed.has(c.uid)) g.placed++; else if (c.shiny) g.free.unshift(c.uid); else g.free.push(c.uid);
       groups.set(c.animal, g);
     }
     const capLeft = penCount(s) * penSize(s) - placedAnimals(s);
@@ -156,8 +170,8 @@ export class Panel {
       const a = ANIMALS[id], gr = GRADES[a.grade];
       const locked = s.lockedSpecies.includes(id);
       return h('div', { class: `inv-row g-${gr.key}` },
-        h('div', { class: 'inv-art' }, pix(animalFrame(id, 0), 32)),
-        h('div', { class: 'inv-info' }, h('div', { class: 'inv-name' }, a.name, h('span', { class: 'gtag' }, gr.name)),
+        h('div', { class: 'inv-art' }, pix(g.shiny ? shinyOf(animalFrame(id, 0)) : animalFrame(id, 0), 32)),
+        h('div', { class: 'inv-info' }, h('div', { class: 'inv-name' }, a.name, h('span', { class: 'gtag' }, gr.name), a.season ? h('span', { class: `gtag s-${a.season}` }, SEASONS.find((x) => x.key === a.season)!.name) : null, g.shiny ? h('span', { class: 'gtag shiny' }, `반짝이 ${g.shiny}`) : null),
           h('div', { class: 'inv-sub' }, `보유 ${g.all} · 전시 ${g.placed} · ♥${gr.attract} · ${HABITAT_NAMES[a.habitat]}`)),
         h('div', { class: 'inv-act' },
           h('button', { class: `icon ${locked ? 'on' : ''}`, title: locked ? '잠금 해제' : '합성 재료에서 빼기(잠금)', onclick: () => { s.lockedSpecies = locked ? s.lockedSpecies.filter((x) => x !== id) : [...s.lockedSpecies, id]; this.changed(); } }, locked ? '🔒' : '🔓'),
@@ -349,13 +363,27 @@ export class Panel {
     return h('div', {},
       h('div', { class: 'section-title' }, '도감 보상 (모으면 영구 보너스)'), ...sets,
       h('div', { class: 'inv-head', style: 'margin-top:12px' }, h('b', {}, `도감 ${found} / ${ANIMALS.length}`), h('span', { class: 'sub' }, GRADES.map((g) => `${g.name} ${ANIMALS.filter((a, i) => a.grade === g.id && s.dex[i]).length}/${ANIMALS.filter((a) => a.grade === g.id).length}`).join(' · '))),
-      ...GRADES.map((g) => h('div', {},
-        h('div', { class: `section-title g-${g.key}` }, g.name),
-        h('div', { class: 'dex-grid' }, ...ANIMALS.filter((a) => a.grade === g.id).map((a) => {
-          const known = s.dex[a.id];
-          return h('button', { class: `dex-cell${known ? '' : ' unknown'}`, title: known ? a.name : '???', onclick: () => toast(known ? `${a.name} · ${g.name} · ♥${g.attract} · ${HABITAT_NAMES[a.habitat]}` : '아직 못 만난 동물이에요', 'info') },
-            pix(animalFrame(a.id, 0), 24), h('span', {}, known ? a.name : '???'));
-        })))));
+      h('div', { class: 'sub' }, `반짝이 ${s.shinyDex.filter(Boolean).length} / ${ANIMALS.length} · 조합 시너지 ${s.synergyFound.length} / ${SYNERGY_SETS.length}`),
+      h('div', { class: 'section-title' }, '조합 시너지 도감 (같은 우리에 모두 모으면 발동)'),
+      h('div', { class: 'syn-list' }, ...SYNERGY_SETS.map((st) => {
+        const f = s.synergyFound.includes(st.id);
+        return h('div', { class: `syn-row${f ? '' : ' unknown'}` },
+          h('div', { class: 'syn-art' }, ...st.members.map((m) => (f || s.dex[m] ? pix(animalFrame(m, 0), 20) : h('span', { class: 'q' }, '?')))),
+          h('div', {}, h('b', {}, f ? st.name : '???'), h('div', { class: 'sub' }, f ? `${st.members.map((m) => ANIMALS[m].name).join(' + ')} · 매력 +${Math.round(st.attract * 100)}%${st.season ? ` (${SEASONS.find((x) => x.key === st.season)!.name} 2배)` : ''}${st.tip ? ` · 투척액 +${Math.round(st.tip * 100)}%` : ''}${st.feedCut ? ` · 사료비 −${Math.round(st.feedCut * 100)}%` : ''}` : `${st.members.length}마리 조합 · 같은 우리에 모아 보세요`)));
+      })),
+      ...GRADES.map((g) => this.dexGrid(`section-title g-${g.key}`, g.name, ANIMALS.filter((a) => a.grade === g.id && !a.season))),
+      ...SEASONS.map((se) => this.dexGrid(`section-title s-${se.key}`, `${se.icon} ${se.name} 한정`, ANIMALS.filter((a) => a.season === se.key))));
+  }
+
+  private dexGrid(cls: string, title: string, list: typeof ANIMALS[number][]) {
+    const s = this.ctx.save;
+    return h('div', {},
+      h('div', { class: cls }, title),
+      h('div', { class: 'dex-grid' }, ...list.map((a) => {
+        const known = s.dex[a.id], shiny = s.shinyDex[a.id], g = GRADES[a.grade];
+        return h('button', { class: `dex-cell${known ? '' : ' unknown'}${shiny ? ' shiny' : ''}`, title: known ? a.name : '???', onclick: () => toast(known ? `${a.name} · ${g.name} · ♥${g.attract} · ${HABITAT_NAMES[a.habitat]}${shiny ? ' · 반짝이 발견!' : ''}` : '아직 못 만난 동물이에요', 'info') },
+          pix(shiny ? shinyOf(animalFrame(a.id, 0)) : animalFrame(a.id, 0), 24), h('span', {}, known ? a.name : '???'));
+      })));
   }
 }
 
@@ -371,7 +399,13 @@ export function openPenSheet(ctx: PanelCtx, pen: number, onClose: () => void) {
     const feed = h('button', { class: 'btn small', onclick: () => { if (w.feed(pen)) { audio.sfx('feed'); render(); } } }, w.feedCooldown[pen] > 0 ? `먹이 (${Math.ceil(w.feedCooldown[pen])}초)` : '먹이 주기') as HTMLButtonElement;
     feed.disabled = !uids.length || w.feedCooldown[pen] > 0;
     back.replaceChildren(h('div', { class: 'sheet' },
-      h('div', { class: 'sheet-head' }, h('b', {}, `우리 ${pen + 1}`), h('span', { class: 'sub' }, `${uids.length} / ${penSize(s)}마리`), feed),
+      h('div', { class: 'sheet-head' }, h('b', {}, `우리 ${pen + 1}`), h('span', { class: 'sub' }, `${uids.length} / ${penSize(s)}마리 · ♥${fmt(penDetail(s, pen).total)}`), feed),
+      (() => {
+        const d = penDetail(s, pen);
+        return d.syn.length || d.near.length ? h('div', { class: 'syn-box' },
+          ...d.syn.map((x) => h('div', { class: `syn k-${x.kind}` }, h('b', {}, x.name), h('span', {}, x.desc))),
+          ...d.near.map((n) => h('div', { class: 'syn near' }, h('span', {}, `💡 ${n}`)))) : null;
+      })(),
       groups.size ? h('div', { class: 'inv-list' }, ...[...groups.entries()].map(([id, list]) => h('div', { class: `inv-row g-${GRADES[ANIMALS[id].grade].key}` },
         h('div', { class: 'inv-art' }, pix(animalFrame(id, 0), 28)),
         h('div', { class: 'inv-info' }, h('div', { class: 'inv-name' }, `${ANIMALS[id].name} ×${list.length}`), h('div', { class: 'inv-sub' }, list.length >= 3 ? `같은 종 보너스 +${list.length >= 10 ? 30 : list.length >= 5 ? 20 : 10}%` : '3마리부터 같은 종 보너스')),

@@ -5,7 +5,7 @@ import type { Grade } from '../data/grades';
 import { UPGRADES, type UpgradeId } from '../data/balance';
 
 export type Card =
-  | { uid: number; kind: 'animal'; animal: number }
+  | { uid: number; kind: 'animal'; animal: number; shiny?: boolean }
   | StaffCard;
 /** 직원 카드: 등급 · 월급(직원 뽑기 가격 대비 하루 비율) · 특수옵션 */
 export interface StaffCard { uid: number; kind: 'staff'; staff: StaffKind; grade: Grade; pay: number; opts: { id: StaffOptId; v: number }[] }
@@ -33,6 +33,9 @@ export interface SaveData {
   tickets: number;
   /** 오늘의 미션 */
   missions: MissionState | null;
+  /** 반짝이 도감 · 발견한 조합 시너지 id */
+  shinyDex: boolean[];
+  synergyFound: string[];
   /** 받은 도감 보상 id */
   dexClaimed: string[];
   /** 마지막으로 본 시각 (자리 비움 수익) */
@@ -48,7 +51,7 @@ export interface SaveData {
   debtDays: number;
   strike: boolean;
   /** 폐원해도 남는 기록 */
-  records: { bestSeasons: number; bestDay: number; closures: number };
+  records: { bestSeasons: number; bestDay: number; closures: number; bestYears: number };
 }
 
 export interface Mission { kind: MissionKind; target: number; progress: number; claimed: boolean }
@@ -67,7 +70,7 @@ export function defaultSave(): SaveData {
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
-    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0 }, debtDays: 0, strike: false,
+    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0, bestYears: 0 }, debtDays: 0, strike: false, shinyDex: ANIMALS.map(() => false), synergyFound: [],
   };
 }
 
@@ -107,7 +110,10 @@ export function normalize(raw: unknown): SaveData {
   out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}) };
   if (out.season.start > out.day) out.season.start = out.day;
   const rc = (r.records ?? {}) as Partial<SaveData['records']>;
-  out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)) };
+  out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)), bestYears: Math.max(0, num(rc.bestYears, 0)) };
+  out.shinyDex = ANIMALS.map((_, i) => !!(Array.isArray(r.shinyDex) && r.shinyDex[i]));
+  for (const c of out.cards) if (c.kind === 'animal' && c.shiny) out.shinyDex[c.animal] = true;
+  out.synergyFound = Array.isArray(r.synergyFound) ? r.synergyFound.filter((x) => typeof x === 'string') : [];
   out.debtDays = Number.isFinite(out.debtDays) ? Math.max(0, Math.floor(out.debtDays)) : 0;
   out.strike = !!out.strike;
   out.staffSlots = out.staffSlots.length ? out.staffSlots : [null];

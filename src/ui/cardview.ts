@@ -3,7 +3,8 @@ import { ANIMALS, HABITAT_NAMES } from '../data/animals';
 import { GRADES } from '../data/grades';
 import { staffDef, staffOptDef } from '../data/staff';
 import type { Card } from '../game/state';
-import { animalFrame, hasPng, sprite, staffFrame, type Sprite } from '../render/sprites';
+import { animalFrame, hasPng, shinyOf, sprite, staffFrame, type Sprite } from '../render/sprites';
+import { seasonByKey } from '../data/seasons';
 import { h, pix } from './dom';
 
 export function cardGrade(c: Card): number { return c.kind === 'animal' ? ANIMALS[c.animal].grade : c.grade; }
@@ -28,22 +29,24 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
   const g = GRADES[isStaff ? c.grade : ANIMALS[c.animal].grade];
   const key = g.key;
   const name = isStaff ? staffDef(c.staff).name : ANIMALS[c.animal].name;
-  const gradeLabel = isStaff ? `${g.name} 직원` : g.name;
+  const shiny = !isStaff && !!c.shiny;
+  const seasonTag = !isStaff && ANIMALS[c.animal].season ? ` · ${seasonByKey(ANIMALS[c.animal].season!).name} 한정` : '';
+  const gradeLabel = isStaff ? `${g.name} 직원` : `${shiny ? '✦반짝이 ' : ''}${g.name}${seasonTag}`;
   // 직원: 효과 + 특수옵션 (큰 카드만 설명까지)
   const sub = isStaff ? (big ? [staffDef(c.staff).desc(staffDef(c.staff).values[c.grade]), ...c.opts.map((o) => `★ ${staffOptDef(o.id).name}`)].join(' · ') : '') : `♥${g.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
-  const art = isStaff ? staffFrame(c.staff, 0) : animalFrame(c.animal, 0);
+  const art = isStaff ? staffFrame(c.staff, 0) : shiny ? shinyOf(animalFrame(c.animal, 0)) : animalFrame(c.animal, 0);
   if (hasPng('cards_01')) {
     const frame = `cards_0${g.id + 1}`;
     // 여러 장일 때는 화면 폭에 3장이 들어가게
     const rPx = typeof window !== 'undefined' ? Math.min(160, Math.floor((window.innerWidth - 70) / 3.6), Math.floor(window.innerHeight / 4.2)) : 160;
     const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
-    return h('div', { class: `card art g-${key}${big ? ' big' : ''}` },
+    return h('div', { class: `card art g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
       h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
       h('div', { class: 'card-grade' }, gradeLabel),
       sub ? h('div', { class: 'card-sub' }, sub) : null,
       opts.isNew ? h('span', { class: 'card-new' }, 'NEW') : null);
   }
-  return h('div', { class: `card g-${key}${big ? ' big' : ''}` },
+  return h('div', { class: `card g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
     h('div', { class: 'card-grade' }, gradeLabel),
     h('div', { class: 'card-art' }, pix(art, big ? 64 : 40)),
     h('div', { class: 'card-name' }, name),
