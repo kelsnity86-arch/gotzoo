@@ -1,0 +1,17 @@
+{
+  "postprocessing": "none; byte-for-byte copies",
+  "sources": [
+    {
+      "generated_source": "exec-e74b4438-31ae-4cc3-8fda-da6670333211.png",
+      "path": "assets/spritesheets16/animals-large/big16_1.png"
+    },
+    {
+      "generated_source": "exec-1f9602c8-2e82-43cd-ab69-263a36a15ad8.png",
+      "path": "assets/spritesheets16/animals-large/big16_2.png"
+    },
+    {
+      "generated_source": "exec-39b352ef-39c1-418c-af58-d473833cc772.png",
+      "path": "assets/spritesheets16/animals-large/big16_3.png"
+    }
+  ]
+}

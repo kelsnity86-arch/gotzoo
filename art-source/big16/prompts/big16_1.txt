@@ -1,0 +1,28 @@
+Create one BbopZOO LARGE ANIMAL sprite sheet, 1536x1536 square. These are the SAME animals from supplied source sheets, not new character designs. Preserve face, recognizable markings, body proportions, characteristic pose and seasonal ornaments, but redraw with more native pixel detail. All face screen LEFT, whole bodies fully visible. Gentle three-quarter view. Exact true pixel art, integer-scaled solid square art pixels, 1 art pixel DARK BROWN #2b1d14 outline, flat 2-tone shading, upper LEFT light. NO ground shadows at all. No antialiasing, gradients, blur, texture, soft shadows or smooth illustration. ONLY palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Pure perfectly uniform #FF00FF outside sprites, no magenta inside art. Generous clear magenta gutters, no overlap. NO TEXT, LETTERS, NUMBERS, LABELS, GRIDLINES, WATERMARKS, FRAMES OR BORDERS. Keep any tiny rarity sparkles minimal and within each cell.
+ONE sheet big16_1.png, 25 animals in EXACTLY 5 columns x 5 rows. Each fits 48x48 ART pixels, ideally displayed at 5x with hard 5x5 solid blocks. Equal invisible cells 307x307, centered animals no cropping. Supplied references in order: animals16_09, animals16_11, animals16_12. Each reference has 5x5 cells, indices 1 to 25 left to right/top to bottom. The requested NEW ordering differs from original reference positions; FOLLOW BELOW EXACTLY:
+ROW 1 COL 1: white tiger (animals16_09.png cell 1); white fur, navy stripes, cyan-blue eye, seated with curled striped tail.
+ROW 1 COL 2: snow leopard (animals16_09.png cell 2); silver-gray fur, dark rosettes, blue-gray eye, big curled spotted tail.
+ROW 1 COL 3: peacock (animals16_09.png cell 3); blue body and neck, green open fan tail with gold-rimmed blue eyespots.
+ROW 1 COL 4: black panther (animals16_09.png cell 4); deep navy-purple body, golden eye, curled tail.
+ROW 1 COL 5: bald eagle (animals16_09.png cell 5); white head and tail, dark brown folded wings, gold beak and feet.
+ROW 2 COL 1: okapi (animals16_09.png cell 6); chestnut body, cream cheeks, oversized ears, white stripes on hindquarters and legs.
+ROW 2 COL 2: komodo dragon (animals16_09.png cell 7); brown scales, squat legs, curved tail, red forked tongue, golden eye.
+ROW 2 COL 3: white lion (animals16_09.png cell 8); cream-white body and full shaggy pale mane, blue eye.
+ROW 2 COL 4: whale shark (animals16_09.png cell 9); teal-blue back with regular white spots, pale belly, wide smiling flat snout.
+ROW 2 COL 5: humpback whale (animals16_09.png cell 10); navy-blue back, white pleated throat, very long white pectoral flippers.
+ROW 3 COL 1: golden snub-nosed monkey (animals16_09.png cell 11); orange-gold fur and mane, BLUE snub-nosed face, pale cheeks, sitting.
+ROW 3 COL 2: aye-aye (animals16_09.png cell 12); dark purple-gray fur, huge pink-inside ears, golden eye, thin long middle finger.
+ROW 3 COL 3: pangolin (animals16_09.png cell 13); amber-gold overlapping plates, low arched body, long plated tail, pointed snout.
+ROW 3 COL 4: bird of paradise (animals16_09.png cell 14); black face, green throat, dark red body, gold crest and cascading cream-gold tail plumes.
+ROW 3 COL 5: cherry blossom fox (animals16_11.png cell 9); orange fox, cream bib, pink blossom by ear, enormous pink petal-shaped blossom tail.
+ROW 4 COL 1: rose peacock (animals16_11.png cell 10); blue body, golden crest, fan tail made of pink spiral roses and green leaves.
+ROW 4 COL 2: lily crane (animals16_11.png cell 11); white black-winged crane, red head patch, curved green lily stem with white bell flowers over head.
+ROW 4 COL 3: sun lion (animals16_11.png cell 22); golden lion, orange pointed sun-ray mane, warm golden body.
+ROW 4 COL 4: golden manta (animals16_11.png cell 23); gold ray, broad pointed wings, cream spiral markings on back, curved narrow tail.
+ROW 4 COL 5: moon rabbit (animals16_12.png cell 10); cream-white upright rabbit, gold crescent forehead, wooden rice-cake mallet and small mortar.
+ROW 5 COL 1: ghost cat (animals16_12.png cell 11); pale icy-white floating ghost-cat, purple ribbon with gold bell, tapering spectral lower body.
+ROW 5 COL 2: aurora whale (animals16_12.png cell 22); navy-blue whale, white pleated belly, blocky cyan-green-yellow-purple aurora stripe along back.
+ROW 5 COL 3: frost wolf (animals16_12.png cell 23); silver-white and icy-blue wolf, jagged frosty mane and tail, dark nose.
+ROW 5 COL 4: amur leopard (animals16_09.png cell 15); warm tan-gold leopard, dark rosettes, white underside and cheeks, blue eye, curled tail.
+ROW 5 COL 5: blue whale (animals16_09.png cell 16); blue whale, white pale-blue pleated belly, small flippers, wide rounded head.
+All 25 cells occupied. Preserve distinct leopard patterns, humpback's long flippers versus blue whale's shorter flippers, rose peacock versus green peacock. Moon rabbit includes the small mallet and mortar as one sprite. Ghost cat is a floating cat shaped spirit turned LEFT, all others also LEFT. No ground shadows. Avoid added clothes or random accessories.

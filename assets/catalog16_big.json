@@ -1,0 +1,913 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 3,
+  "requested_animal_count": 67,
+  "requested_slot_count": 71,
+  "empty_slot_count": 4,
+  "sheets": [
+    {
+      "filename": "big16_1.png",
+      "path": "assets/spritesheets16/animals-large/big16_1.png",
+      "sha256": "8cf5fe500017bf07f7f3e68f7a71934de7aaa1b8375f4de76a53b1fa2c241e98",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "target_native_size": [
+        48,
+        48
+      ],
+      "requested_grid": [
+        5,
+        5
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "empty": false,
+          "name": "white tiger",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 1,
+          "identity": "white fur, navy stripes, cyan-blue eye, seated with curled striped tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "empty": false,
+          "name": "snow leopard",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 2,
+          "identity": "silver-gray fur, dark rosettes, blue-gray eye, big curled spotted tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "empty": false,
+          "name": "peacock",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 3,
+          "identity": "blue body and neck, green open fan tail with gold-rimmed blue eyespots",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "empty": false,
+          "name": "black panther",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 4,
+          "identity": "deep navy-purple body, golden eye, curled tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "empty": false,
+          "name": "bald eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 5,
+          "identity": "white head and tail, dark brown folded wings, gold beak and feet",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "empty": false,
+          "name": "okapi",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 6,
+          "identity": "chestnut body, cream cheeks, oversized ears, white stripes on hindquarters and legs",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "empty": false,
+          "name": "komodo dragon",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 7,
+          "identity": "brown scales, squat legs, curved tail, red forked tongue, golden eye",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "empty": false,
+          "name": "white lion",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 8,
+          "identity": "cream-white body and full shaggy pale mane, blue eye",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "empty": false,
+          "name": "whale shark",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 9,
+          "identity": "teal-blue back with regular white spots, pale belly, wide smiling flat snout",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "empty": false,
+          "name": "humpback whale",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 10,
+          "identity": "navy-blue back, white pleated throat, very long white pectoral flippers",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "empty": false,
+          "name": "golden snub-nosed monkey",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 11,
+          "identity": "orange-gold fur and mane, BLUE snub-nosed face, pale cheeks, sitting",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "empty": false,
+          "name": "aye-aye",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 12,
+          "identity": "dark purple-gray fur, huge pink-inside ears, golden eye, thin long middle finger",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "empty": false,
+          "name": "pangolin",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 13,
+          "identity": "amber-gold overlapping plates, low arched body, long plated tail, pointed snout",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "empty": false,
+          "name": "bird of paradise",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 14,
+          "identity": "black face, green throat, dark red body, gold crest and cascading cream-gold tail plumes",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "empty": false,
+          "name": "cherry blossom fox",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 9,
+          "identity": "orange fox, cream bib, pink blossom by ear, enormous pink petal-shaped blossom tail",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "empty": false,
+          "name": "rose peacock",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 10,
+          "identity": "blue body, golden crest, fan tail made of pink spiral roses and green leaves",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "empty": false,
+          "name": "lily crane",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 11,
+          "identity": "white black-winged crane, red head patch, curved green lily stem with white bell flowers over head",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "empty": false,
+          "name": "sun lion",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 22,
+          "identity": "golden lion, orange pointed sun-ray mane, warm golden body",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "empty": false,
+          "name": "golden manta",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 23,
+          "identity": "gold ray, broad pointed wings, cream spiral markings on back, curved narrow tail",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "empty": false,
+          "name": "moon rabbit",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 10,
+          "identity": "cream-white upright rabbit, gold crescent forehead, wooden rice-cake mallet and small mortar",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "empty": false,
+          "name": "ghost cat",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 11,
+          "identity": "pale icy-white floating ghost-cat, purple ribbon with gold bell, tapering spectral lower body",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "empty": false,
+          "name": "aurora whale",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 22,
+          "identity": "navy-blue whale, white pleated belly, blocky cyan-green-yellow-purple aurora stripe along back",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "empty": false,
+          "name": "frost wolf",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 23,
+          "identity": "silver-white and icy-blue wolf, jagged frosty mane and tail, dark nose",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "empty": false,
+          "name": "amur leopard",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 15,
+          "identity": "warm tan-gold leopard, dark rosettes, white underside and cheeks, blue eye, curled tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "empty": false,
+          "name": "blue whale",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 16,
+          "identity": "blue whale, white pale-blue pleated belly, small flippers, wide rounded head",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        }
+      ]
+    },
+    {
+      "filename": "big16_2.png",
+      "path": "assets/spritesheets16/animals-large/big16_2.png",
+      "sha256": "f41150006e28c0c30b6529fc718691c48c7adfabef352dbc0e38f2fad3bc2a0a",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "target_native_size": [
+        48,
+        48
+      ],
+      "requested_grid": [
+        4,
+        4
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "empty": false,
+          "name": "great white shark",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 17,
+          "identity": "blue-gray back, white underside, open friendly toothy mouth, tall dorsal fin",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "empty": false,
+          "name": "giant squid",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 18,
+          "identity": "brick-red long pointed mantle and many curled red tentacles, large cream-rimmed eye",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "empty": false,
+          "name": "harpy eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 19,
+          "identity": "pale gray tall spiky double crest, white chest, dark slate wings, yellow eye and feet",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "empty": false,
+          "name": "golden eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 20,
+          "identity": "golden head and hooked beak, deep brown wings and body, golden feet",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "empty": false,
+          "name": "white peacock",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 21,
+          "identity": "white body and full white fan tail with pale-blue eyespots and crest",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "empty": false,
+          "name": "silver fox",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 22,
+          "identity": "silver-gray body and huge tail, white muzzle/chest/tailtip, dark legs and ear tips",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "empty": false,
+          "name": "maned wolf",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 23,
+          "identity": "orange-rust coat, dark mane and very long dark legs, huge cream-inside ears",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "empty": false,
+          "name": "silverback gorilla",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 24,
+          "identity": "dark slate gorilla, pale silver back and hips, broad gray face, knuckle stance",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "empty": false,
+          "name": "dodo",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 25,
+          "identity": "slate gray-blue body, cream face, large orange-gold hooked beak, pale wing and tufted tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+          "reference_sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb"
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "empty": false,
+          "name": "woolly mammoth",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 1,
+          "identity": "shaggy warm brown mammoth, huge curled ivory tusks, short trunk and domed furry head",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "empty": false,
+          "name": "saber-toothed cat",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 2,
+          "identity": "tan-gold body, dark stripes, two very long white saber fangs, cream paws",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "empty": false,
+          "name": "woolly rhino",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 3,
+          "identity": "shaggy muted brown-gray coat, enormous forward ivory nose horn, short broad legs",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "empty": false,
+          "name": "thylacine",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 4,
+          "identity": "tan dog-shaped animal, dark transverse stripes over rear back, long straight tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "empty": false,
+          "name": "moa",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 5,
+          "identity": "warm brown shaggy flightless bird, cream long neck, long beak, dark thick feet",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "empty": false,
+          "name": "albino alligator",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 6,
+          "identity": "creamy white scaly body, pale tan accents, red eye, short feet, broad toothed snout",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "empty": false,
+          "name": "przewalski horse",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 7,
+          "identity": "tan dun horse, cream muzzle, short upright DARK mane, dark lower legs and tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        }
+      ]
+    },
+    {
+      "filename": "big16_3.png",
+      "path": "assets/spritesheets16/animals-large/big16_3.png",
+      "sha256": "85b680ffc65f17ea057bfefaea85b5498c29a36e793a339de59a582c18cff0c2",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "target_native_size": [
+        60,
+        60
+      ],
+      "requested_grid": [
+        6,
+        5
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "empty": false,
+          "name": "unicorn",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 8,
+          "identity": "white horse, pale blue mane and tail, single golden horn, gold hooves, one front leg raised",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "empty": false,
+          "name": "phoenix",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 9,
+          "identity": "bright orange-gold fiery bird, upswept flame wings, rounded chunky body and gold tailflames",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "empty": false,
+          "name": "golden dragon",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 10,
+          "identity": "golden western dragon, cream belly, membranous gold wings, horns, curved flame-tipped tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "empty": false,
+          "name": "griffin",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 11,
+          "identity": "white eagle head, gold beak and front talons, brown lion body, brown-gold feather wings",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "empty": false,
+          "name": "pegasus",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 12,
+          "identity": "white horse, pale-blue mane, white feather wings, gold hooves, NO HORN",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "empty": false,
+          "name": "nine-tailed fox",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 13,
+          "identity": "cream-white seated fox, pink ears and pink-tipped nine fluffy fan tails, gold neck bell",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "empty": false,
+          "name": "haetae",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 14,
+          "identity": "golden lion-like Korean guardian, curled GOLD mane, green spiral back and tail, rounded friendly muzzle",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "empty": false,
+          "name": "three-legged sun crow",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 15,
+          "identity": "black/navy crow, gold sun halo/crown, red-gold wings, EXACTLY THREE gold legs",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "empty": false,
+          "name": "flower qilin",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 12,
+          "identity": "cream deer-dragon body, golden branching antlers, pink blossoms and green leaves on neck/back",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "empty": false,
+          "name": "spring breeze dragon",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 13,
+          "identity": "light spring-green coiled eastern dragon, cream belly, gold antlers, pink blossoms and petals",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "empty": false,
+          "name": "sea god whale",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 24,
+          "identity": "blue whale, white pleated belly and white spiral marking, GOLD TRIDENT CROWN, icy fin accents",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "empty": false,
+          "name": "rainbow serpent",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 25,
+          "identity": "cream-faced coiled serpent, gold antlers, blocky pink-yellow-green-blue body bands, gold mane accents",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+          "reference_sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5"
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "empty": false,
+          "name": "golden harvest ox",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 12,
+          "identity": "gold ox, cream curled horns, wheat garland and wheat behind shoulder, green leaf accents",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "empty": false,
+          "name": "jack-o-lantern dragon",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 13,
+          "identity": "orange winged dragon, pumpkin head details, big orange jack-o-lantern belly, green vine collar",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "empty": false,
+          "name": "ice dragon",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 24,
+          "identity": "icy cyan-blue western dragon, white sharp crest and pale translucent-looking FLAT wings, crystalline tailtip",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "empty": false,
+          "name": "winter spirit stag",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 25,
+          "identity": "white icy stag, blue-gray icy mane, snowflake-shaped antlers, golden diamond chest pendant",
+          "reference_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+          "reference_sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "empty": false,
+          "name": "azure dragon",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 16,
+          "identity": "deep azure-blue coiled eastern dragon, GOLD antlers/whiskers, white belly and muzzle",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "empty": false,
+          "name": "vermilion bird",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 17,
+          "identity": "RED-orange long-necked sacred bird, gold sweeping crest/wings, long graceful layered red-gold tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "empty": false,
+          "name": "black tortoise",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 18,
+          "identity": "black tortoise, gold-outlined dark shell, green snake winding over and around shell with red tongue",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "empty": false,
+          "name": "qilin",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 19,
+          "identity": "green scaled deer-dragon, GOLD scale lattice, gold antlers and mane, cream muzzle, cloud-curled gold tail",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "empty": false,
+          "name": "kraken",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 20,
+          "identity": "cute purple giant octopus, lavender spots and curling thick tentacles, friendly dark eyes",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "empty": false,
+          "name": "yeti",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 21,
+          "identity": "fluffy white squat ape, icy-blue face/hands/feet, dark small eyes, pale blue tiny horns",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "empty": false,
+          "name": "thunderbird",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 22,
+          "identity": "blue feathered bird, GOLD lightning-shaped wings and crest, gold beak and feet",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "empty": false,
+          "name": "cerberus",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 23,
+          "identity": "cute dark-brown/black three-headed puppy, cream muzzles, THREE heads, red collar with large gold medallion",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 25,
+          "row": 5,
+          "column": 1,
+          "empty": false,
+          "name": "hippogriff",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 24,
+          "identity": "white eagle head and gold beak, GREY feather wings, BROWN HORSE hindbody with hooves and tail; not lion hindquarters",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 26,
+          "row": 5,
+          "column": 2,
+          "empty": false,
+          "name": "imugi",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 25,
+          "identity": "GREEN coiled serpent-dragon, cream belly, GOLD antlers and gold cloud-shaped mane/tail curls",
+          "reference_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+          "reference_sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c"
+        },
+        {
+          "slot": 27,
+          "row": 5,
+          "column": 3,
+          "empty": true
+        },
+        {
+          "slot": 28,
+          "row": 5,
+          "column": 4,
+          "empty": true
+        },
+        {
+          "slot": 29,
+          "row": 5,
+          "column": 5,
+          "empty": true
+        },
+        {
+          "slot": 30,
+          "row": 5,
+          "column": 6,
+          "empty": true
+        }
+      ]
+    }
+  ]
+}

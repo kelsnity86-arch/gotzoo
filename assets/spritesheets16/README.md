@@ -1,5 +1,7 @@
 # BbopZOO 16px 명령서 — 전체 31장 생성 원본
 
+대형 동물 추가: [67종 원본 3장](animals-large/README.md) · [대형 동물 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-big16-sources.zip). 정확한 48×48/60×60 격자·팔레트·요청 캔버스 판정은 HOLD입니다.
+
 직원 보행 추가: [기존 직원 10명 보행 A/B 시트](staff-walk/README.md) · [직원 보행 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-staff-walk16-source.zip). 실제 크기·픽셀/팔레트·루프 검증은 HOLD인 생성 원본입니다.
 
 관람객 추가 묶음: [8명 모델·사계절 보행/행동·VIP 14장](people-actions/README.md) · [14장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-people-actions16-sources.zip). 정확한 네이티브 격자·색상·프레임 정렬은 미완료입니다.

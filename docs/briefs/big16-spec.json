@@ -1,0 +1,510 @@
+{
+  "project": "BbopZOO",
+  "batch": "big16",
+  "outline": "#2b1d14",
+  "background": "#FF00FF",
+  "ground_shadow": false,
+  "sheets": [
+    {
+      "filename": "big16_1.png",
+      "grid": [
+        5,
+        5
+      ],
+      "native": [
+        48,
+        48
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "entries": [
+        {
+          "name": "white tiger",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 1,
+          "identity": "white fur, navy stripes, cyan-blue eye, seated with curled striped tail"
+        },
+        {
+          "name": "snow leopard",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 2,
+          "identity": "silver-gray fur, dark rosettes, blue-gray eye, big curled spotted tail"
+        },
+        {
+          "name": "peacock",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 3,
+          "identity": "blue body and neck, green open fan tail with gold-rimmed blue eyespots"
+        },
+        {
+          "name": "black panther",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 4,
+          "identity": "deep navy-purple body, golden eye, curled tail"
+        },
+        {
+          "name": "bald eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 5,
+          "identity": "white head and tail, dark brown folded wings, gold beak and feet"
+        },
+        {
+          "name": "okapi",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 6,
+          "identity": "chestnut body, cream cheeks, oversized ears, white stripes on hindquarters and legs"
+        },
+        {
+          "name": "komodo dragon",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 7,
+          "identity": "brown scales, squat legs, curved tail, red forked tongue, golden eye"
+        },
+        {
+          "name": "white lion",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 8,
+          "identity": "cream-white body and full shaggy pale mane, blue eye"
+        },
+        {
+          "name": "whale shark",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 9,
+          "identity": "teal-blue back with regular white spots, pale belly, wide smiling flat snout"
+        },
+        {
+          "name": "humpback whale",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 10,
+          "identity": "navy-blue back, white pleated throat, very long white pectoral flippers"
+        },
+        {
+          "name": "golden snub-nosed monkey",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 11,
+          "identity": "orange-gold fur and mane, BLUE snub-nosed face, pale cheeks, sitting"
+        },
+        {
+          "name": "aye-aye",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 12,
+          "identity": "dark purple-gray fur, huge pink-inside ears, golden eye, thin long middle finger"
+        },
+        {
+          "name": "pangolin",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 13,
+          "identity": "amber-gold overlapping plates, low arched body, long plated tail, pointed snout"
+        },
+        {
+          "name": "bird of paradise",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 14,
+          "identity": "black face, green throat, dark red body, gold crest and cascading cream-gold tail plumes"
+        },
+        {
+          "name": "cherry blossom fox",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 9,
+          "identity": "orange fox, cream bib, pink blossom by ear, enormous pink petal-shaped blossom tail"
+        },
+        {
+          "name": "rose peacock",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 10,
+          "identity": "blue body, golden crest, fan tail made of pink spiral roses and green leaves"
+        },
+        {
+          "name": "lily crane",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 11,
+          "identity": "white black-winged crane, red head patch, curved green lily stem with white bell flowers over head"
+        },
+        {
+          "name": "sun lion",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 22,
+          "identity": "golden lion, orange pointed sun-ray mane, warm golden body"
+        },
+        {
+          "name": "golden manta",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 23,
+          "identity": "gold ray, broad pointed wings, cream spiral markings on back, curved narrow tail"
+        },
+        {
+          "name": "moon rabbit",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 10,
+          "identity": "cream-white upright rabbit, gold crescent forehead, wooden rice-cake mallet and small mortar"
+        },
+        {
+          "name": "ghost cat",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 11,
+          "identity": "pale icy-white floating ghost-cat, purple ribbon with gold bell, tapering spectral lower body"
+        },
+        {
+          "name": "aurora whale",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 22,
+          "identity": "navy-blue whale, white pleated belly, blocky cyan-green-yellow-purple aurora stripe along back"
+        },
+        {
+          "name": "frost wolf",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 23,
+          "identity": "silver-white and icy-blue wolf, jagged frosty mane and tail, dark nose"
+        },
+        {
+          "name": "amur leopard",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 15,
+          "identity": "warm tan-gold leopard, dark rosettes, white underside and cheeks, blue eye, curled tail"
+        },
+        {
+          "name": "blue whale",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 16,
+          "identity": "blue whale, white pale-blue pleated belly, small flippers, wide rounded head"
+        }
+      ],
+      "empty_slots": []
+    },
+    {
+      "filename": "big16_2.png",
+      "grid": [
+        4,
+        4
+      ],
+      "native": [
+        48,
+        48
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "entries": [
+        {
+          "name": "great white shark",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 17,
+          "identity": "blue-gray back, white underside, open friendly toothy mouth, tall dorsal fin"
+        },
+        {
+          "name": "giant squid",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 18,
+          "identity": "brick-red long pointed mantle and many curled red tentacles, large cream-rimmed eye"
+        },
+        {
+          "name": "harpy eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 19,
+          "identity": "pale gray tall spiky double crest, white chest, dark slate wings, yellow eye and feet"
+        },
+        {
+          "name": "golden eagle",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 20,
+          "identity": "golden head and hooked beak, deep brown wings and body, golden feet"
+        },
+        {
+          "name": "white peacock",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 21,
+          "identity": "white body and full white fan tail with pale-blue eyespots and crest"
+        },
+        {
+          "name": "silver fox",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 22,
+          "identity": "silver-gray body and huge tail, white muzzle/chest/tailtip, dark legs and ear tips"
+        },
+        {
+          "name": "maned wolf",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 23,
+          "identity": "orange-rust coat, dark mane and very long dark legs, huge cream-inside ears"
+        },
+        {
+          "name": "silverback gorilla",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 24,
+          "identity": "dark slate gorilla, pale silver back and hips, broad gray face, knuckle stance"
+        },
+        {
+          "name": "dodo",
+          "reference_sheet": "animals16_09.png",
+          "reference_cell": 25,
+          "identity": "slate gray-blue body, cream face, large orange-gold hooked beak, pale wing and tufted tail"
+        },
+        {
+          "name": "woolly mammoth",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 1,
+          "identity": "shaggy warm brown mammoth, huge curled ivory tusks, short trunk and domed furry head"
+        },
+        {
+          "name": "saber-toothed cat",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 2,
+          "identity": "tan-gold body, dark stripes, two very long white saber fangs, cream paws"
+        },
+        {
+          "name": "woolly rhino",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 3,
+          "identity": "shaggy muted brown-gray coat, enormous forward ivory nose horn, short broad legs"
+        },
+        {
+          "name": "thylacine",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 4,
+          "identity": "tan dog-shaped animal, dark transverse stripes over rear back, long straight tail"
+        },
+        {
+          "name": "moa",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 5,
+          "identity": "warm brown shaggy flightless bird, cream long neck, long beak, dark thick feet"
+        },
+        {
+          "name": "albino alligator",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 6,
+          "identity": "creamy white scaly body, pale tan accents, red eye, short feet, broad toothed snout"
+        },
+        {
+          "name": "przewalski horse",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 7,
+          "identity": "tan dun horse, cream muzzle, short upright DARK mane, dark lower legs and tail"
+        }
+      ],
+      "empty_slots": []
+    },
+    {
+      "filename": "big16_3.png",
+      "grid": [
+        6,
+        5
+      ],
+      "native": [
+        60,
+        60
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "entries": [
+        {
+          "name": "unicorn",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 8,
+          "identity": "white horse, pale blue mane and tail, single golden horn, gold hooves, one front leg raised"
+        },
+        {
+          "name": "phoenix",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 9,
+          "identity": "bright orange-gold fiery bird, upswept flame wings, rounded chunky body and gold tailflames"
+        },
+        {
+          "name": "golden dragon",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 10,
+          "identity": "golden western dragon, cream belly, membranous gold wings, horns, curved flame-tipped tail"
+        },
+        {
+          "name": "griffin",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 11,
+          "identity": "white eagle head, gold beak and front talons, brown lion body, brown-gold feather wings"
+        },
+        {
+          "name": "pegasus",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 12,
+          "identity": "white horse, pale-blue mane, white feather wings, gold hooves, NO HORN"
+        },
+        {
+          "name": "nine-tailed fox",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 13,
+          "identity": "cream-white seated fox, pink ears and pink-tipped nine fluffy fan tails, gold neck bell"
+        },
+        {
+          "name": "haetae",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 14,
+          "identity": "golden lion-like Korean guardian, curled GOLD mane, green spiral back and tail, rounded friendly muzzle"
+        },
+        {
+          "name": "three-legged sun crow",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 15,
+          "identity": "black/navy crow, gold sun halo/crown, red-gold wings, EXACTLY THREE gold legs"
+        },
+        {
+          "name": "flower qilin",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 12,
+          "identity": "cream deer-dragon body, golden branching antlers, pink blossoms and green leaves on neck/back"
+        },
+        {
+          "name": "spring breeze dragon",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 13,
+          "identity": "light spring-green coiled eastern dragon, cream belly, gold antlers, pink blossoms and petals"
+        },
+        {
+          "name": "sea god whale",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 24,
+          "identity": "blue whale, white pleated belly and white spiral marking, GOLD TRIDENT CROWN, icy fin accents"
+        },
+        {
+          "name": "rainbow serpent",
+          "reference_sheet": "animals16_11.png",
+          "reference_cell": 25,
+          "identity": "cream-faced coiled serpent, gold antlers, blocky pink-yellow-green-blue body bands, gold mane accents"
+        },
+        {
+          "name": "golden harvest ox",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 12,
+          "identity": "gold ox, cream curled horns, wheat garland and wheat behind shoulder, green leaf accents"
+        },
+        {
+          "name": "jack-o-lantern dragon",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 13,
+          "identity": "orange winged dragon, pumpkin head details, big orange jack-o-lantern belly, green vine collar"
+        },
+        {
+          "name": "ice dragon",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 24,
+          "identity": "icy cyan-blue western dragon, white sharp crest and pale translucent-looking FLAT wings, crystalline tailtip"
+        },
+        {
+          "name": "winter spirit stag",
+          "reference_sheet": "animals16_12.png",
+          "reference_cell": 25,
+          "identity": "white icy stag, blue-gray icy mane, snowflake-shaped antlers, golden diamond chest pendant"
+        },
+        {
+          "name": "azure dragon",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 16,
+          "identity": "deep azure-blue coiled eastern dragon, GOLD antlers/whiskers, white belly and muzzle"
+        },
+        {
+          "name": "vermilion bird",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 17,
+          "identity": "RED-orange long-necked sacred bird, gold sweeping crest/wings, long graceful layered red-gold tail"
+        },
+        {
+          "name": "black tortoise",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 18,
+          "identity": "black tortoise, gold-outlined dark shell, green snake winding over and around shell with red tongue"
+        },
+        {
+          "name": "qilin",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 19,
+          "identity": "green scaled deer-dragon, GOLD scale lattice, gold antlers and mane, cream muzzle, cloud-curled gold tail"
+        },
+        {
+          "name": "kraken",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 20,
+          "identity": "cute purple giant octopus, lavender spots and curling thick tentacles, friendly dark eyes"
+        },
+        {
+          "name": "yeti",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 21,
+          "identity": "fluffy white squat ape, icy-blue face/hands/feet, dark small eyes, pale blue tiny horns"
+        },
+        {
+          "name": "thunderbird",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 22,
+          "identity": "blue feathered bird, GOLD lightning-shaped wings and crest, gold beak and feet"
+        },
+        {
+          "name": "cerberus",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 23,
+          "identity": "cute dark-brown/black three-headed puppy, cream muzzles, THREE heads, red collar with large gold medallion"
+        },
+        {
+          "name": "hippogriff",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 24,
+          "identity": "white eagle head and gold beak, GREY feather wings, BROWN HORSE hindbody with hooves and tail; not lion hindquarters"
+        },
+        {
+          "name": "imugi",
+          "reference_sheet": "animals16_10.png",
+          "reference_cell": 25,
+          "identity": "GREEN coiled serpent-dragon, cream belly, GOLD antlers and gold cloud-shaped mane/tail curls"
+        }
+      ],
+      "empty_slots": [
+        27,
+        28,
+        29,
+        30
+      ]
+    }
+  ],
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ]
+}
