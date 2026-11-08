@@ -1,5 +1,7 @@
 # BbopZOO 16px 명령서 — 전체 31장 생성 원본
 
+추가 제작: [확장 아이콘·우리 뽑기·대각 울타리·사건 4장](expansion/README.md) · [추가 4장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-expansion16-sources.zip). 아래 기본 31장 ZIP과는 별도입니다.
+
 | 묶음 | 시트 | 요청된 그림 칸 | 목록 |
 | --- | --- | --- | --- |
 | 동물 | 12장 | 300 | 아래 동물 목록 |

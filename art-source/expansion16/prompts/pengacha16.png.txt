@@ -1,0 +1,23 @@
+Make a cute BbopZOO game sprite sheet matching the earlier chunky pixel-art zoo collection sheets. TRUE native pixel grids, enlarged by an integer nearest-neighbor scale: every drawn art pixel is one perfectly solid square block. Very simple clean silhouettes, one native pixel dark outline #1a1c2c; flat base color plus at most 1-2 flat shadow/highlight tones. NO anti-aliasing, texture, noise, blur, smooth gradient, soft shadow or tiny subpixel detail. Use ONLY this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely uniform solid #FF00FF background everywhere outside sprites. No hot magenta inside objects; use pastel #ffc8dd or #ffb7d0 for pink. All characters face LEFT. Generous empty magenta gutters and margins, no touching, no overlap, whole shapes visible. No captions, text, numbers, letters, labels, watermark, sheet frame, layout grid or sheet border. Requested signs/papers are BLANK; their object borders are allowed.
+Target file pengacha16.png (do not print filename). Canvas 1536x1024.
+Enclosure construction gacha. Exactly 6/5/6 items in 3 rows. Every row2 blueprint has a blue grid and a simple outlined polyomino enclosure shape, no letters. Scale machines larger than crates, hammer smaller. Flat stepped light, no soft glow. Two first-row machines same design with changed pose. Dust and sparkle have visibly different animation stages.
+ROW 1: EXACTLY 6 items, native grid 32x32, left to right:
+1. toy block-dispensing machine idle, glass box full of colorful tetris blocks, crank, crane arm on top (native 48x48)
+2. same machine shaking, tilted with turned crank and motion marks (native 48x48)
+3. closed wooden construction crate
+4. same crate bursting open with light and a block popping out
+5. rolled blueprint paper with blue grid
+6. small hammer (native 16x16)
+ROW 2: EXACTLY 5 items, native grid 24x24, left to right:
+1. blueprint with gray rarity border
+2. blueprint with green rarity border
+3. blueprint with blue rarity border
+4. blueprint with purple rarity border
+5. blueprint with gold rarity border
+ROW 3: EXACTLY 6 items, native grid 16x16, left to right:
+1. construction dust puff small
+2. construction dust puff big
+3. construction dust puff fading
+4. built sparkle burst frame 1
+5. built sparkle burst frame 2
+6. glowing L-shaped placement corner marker

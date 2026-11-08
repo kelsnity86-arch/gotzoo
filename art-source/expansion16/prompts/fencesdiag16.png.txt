@@ -1,0 +1,39 @@
+Make a cute BbopZOO game sprite sheet matching the earlier chunky pixel-art zoo collection sheets. TRUE native pixel grids, enlarged by an integer nearest-neighbor scale: every drawn art pixel is one perfectly solid square block. Very simple clean silhouettes, one native pixel dark outline #1a1c2c; flat base color plus at most 1-2 flat shadow/highlight tones. NO anti-aliasing, texture, noise, blur, smooth gradient, soft shadow or tiny subpixel detail. Use ONLY this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely uniform solid #FF00FF background everywhere outside sprites. No hot magenta inside objects; use pastel #ffc8dd or #ffb7d0 for pink. All characters face LEFT. Generous empty magenta gutters and margins, no touching, no overlap, whole shapes visible. No captions, text, numbers, letters, labels, watermark, sheet frame, layout grid or sheet border. Requested signs/papers are BLANK; their object borders are allowed.
+Target file fencesdiag16.png (do not print filename). Canvas 1536x768.
+32 tiles, top-down 3/4, matching prior fences16 materials: warm wood with posts and two rails; cool stone with blocks; dark iron rails and spear tips; gold rails with blue gems. Diagonal segments are straight corner-to-corner 45 degree segments, NOT bent L shapes or straight horizontal fences. Four orientations follow an octagon clockwise upper-left, upper-right, lower-right, lower-left; alternate / and backslash, with consistent front/back depth. Row3 floors completely fill SQUARE native tiles and repeat seamlessly with NO outline; gold stage trim is a repeating floor pattern, not a standalone round object. Row4 objects outlined. Leave generous magenta gutters outside all tiles.
+ROW 1: EXACTLY 8 items, native grid 16x16, left to right:
+1. rustic wood diagonal upper-left edge /
+2. rustic wood diagonal upper-right edge \
+3. rustic wood diagonal lower-right edge /
+4. rustic wood diagonal lower-left edge \
+5. gray stone diagonal upper-left edge /
+6. gray stone diagonal upper-right edge \
+7. gray stone diagonal lower-right edge /
+8. gray stone diagonal lower-left edge \
+ROW 2: EXACTLY 8 items, native grid 16x16, left to right:
+1. black iron diagonal upper-left edge /
+2. black iron diagonal upper-right edge \
+3. black iron diagonal lower-right edge /
+4. black iron diagonal lower-left edge \
+5. gold gem fence diagonal upper-left edge /
+6. gold gem fence diagonal upper-right edge \
+7. gold gem fence diagonal lower-right edge /
+8. gold gem fence diagonal lower-left edge \
+ROW 3: EXACTLY 8 items, native grid 16x16, left to right:
+1. legendary stage floor: polished light wood and repeating gold trim pattern
+2. lush garden lawn with tiny flowers
+3. plaza paving stones
+4. deep blue lake water with ripples
+5. soft sand with pebbles
+6. fresh snow with sparkles
+7. mossy rock floor
+8. pastel magic cloud floor
+ROW 4: EXACTLY 8 items, native grid 16x16, left to right:
+1. stage spotlight lamp
+2. flower bed border piece
+3. pond edge reeds
+4. small blank wooden enclosure sign
+5. small blank stone sign
+6. golden blank plaque
+7. animal feeding trough
+8. water bowl
