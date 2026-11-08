@@ -424,6 +424,16 @@ def buildings_big():
     SRC = old
 
 
+def buildings_new():
+    """새 관객 건물 6종 × 3단계 → bld_* (기념품점 · 식당 · 아이스크림 · 회전목마 · 전망대 · 연구소)"""
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16'
+    bn = ['souvenir', 'restaurant', 'icecream', 'carousel', 'tower', 'lab']
+    for i, t in enumerate(objects('buildings-new/buildings_new16.png', 6, 3)):
+        if t is not None: S.save(t, OUT / f'bld_{bn[i % 6]}_{i // 6}.png')
+    SRC = old
+
+
 def buildings():
     bl = objects('buildings/buildings16.png', 6, 3, s=5.5)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
@@ -436,6 +446,7 @@ if __name__ == '__main__':
     elif sys.argv[1:] == ['gate']: gate()
     elif sys.argv[1:] == ['people']: people()
     elif sys.argv[1:] == ['buildings_big']: buildings_big()
+    elif sys.argv[1:] == ['buildings_new']: buildings_new()
     elif sys.argv[1:2] == ['final']: final()
     elif sys.argv[1:] == ['park']:
         names = ['tree', 'pine', 'blossom', 'fruit', 'bush', 'flowerbush', 'lamp', 'bench', 'bin', 'sign', 'planter', 'flowerbed', 'hedge', 'boulder', 'drink', 'picnic', 'balloon', 'pond']

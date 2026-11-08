@@ -57,8 +57,8 @@ export interface PropEnt { pen: number; kind: PropKind; x: number; y: number; fl
 /** 관객 건물 12종: 입구 왼쪽 6 · 오른쪽 6, 입구에서 가까운 순서 */
 export const ZONE_BUILDINGS = ['snack', 'restroom', 'photo', 'souvenir', 'restaurant', 'icecream', 'fountain', 'bench', 'clinic', 'carousel', 'tower', 'lab'] as const;
 export type ZoneBuilding = (typeof ZONE_BUILDINGS)[number];
-/** 새 건물 그림이 오기 전까지 빌려 쓰는 그림 */
-export const BLD_ART: Record<ZoneBuilding, string> = { snack: 'snack', restroom: 'restroom', photo: 'photo', fountain: 'fountain', bench: 'bench', clinic: 'clinic', souvenir: 'snack', restaurant: 'restroom', icecream: 'snack', carousel: 'fountain', tower: 'clinic', lab: 'clinic' };
+/** 건물 → 그림 이름 */
+export const BLD_ART: Record<ZoneBuilding, string> = { snack: 'snack', restroom: 'restroom', photo: 'photo', fountain: 'fountain', bench: 'bench', clinic: 'clinic', souvenir: 'souvenir', restaurant: 'restaurant', icecream: 'icecream', carousel: 'carousel', tower: 'tower', lab: 'lab' };
 const ZONE_FILL = ['bench', 'flowerbed', 'bush', 'tree', 'flowerbush', 'bench', 'lamp', 'blossom'] as const;
 /** 건물 너비 (월드 칸): 안 지음(팻말) · 1 · 2 · 3단계 */
 const BLD_W = [11, 15, 17, 19];
