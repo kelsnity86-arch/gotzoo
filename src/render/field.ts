@@ -200,21 +200,24 @@ export class FieldRenderer {
     }
     // 가운데 입구: 앞에서 본 아치 문 (손님이 문을 지나 화면 쪽으로 나온다), 양옆 매표소 · 깃대, 간판 이름, 계절 장식
     if (hasPng(`v2_gate_${tier4}`)) {
-      const im = v(`gate_${tier4}`), gw = im.width / R, gh = im.height / R, gb = p0 * TILE - 1;
+      // 올림푸스 완성: 신전 입구 · 대리석 매표소 · 월계관 깃발 · 올리브 기둥
+      const T = this.temple && hasPng('v2_oly_gate');
+      const im = T ? v('oly_gate') : v(`gate_${tier4}`), gw = im.width / R, gh = im.height / R, gb = p0 * TILE - 1;
       const gl = gx - gw / 2, gt = gb - gh;
-      obj(`gatepart_${tier4}_flag`, gl - 13, gb);
-      obj(`gatepart_${tier4}_flag`, gl + gw + 13, gb);
-      obj(`gatepart_${tier4}_booth`, gl - 4, gb);
-      obj(`gatepart_${tier4}_booth`, gl + gw + 4, gb, true);
-      if (this.temple && hasPng('v2_oly_gate')) obj('oly_gate', gx, gb); else obj(`gate_${tier4}`, gx, gb);
+      if (T) { obj('oly_post', gl - 26, gb); obj('oly_post', gl + gw + 26, gb, true); }
+      obj(T ? 'oly_flag' : `gatepart_${tier4}_flag`, gl - 13, gb);
+      obj(T ? 'oly_flag' : `gatepart_${tier4}_flag`, gl + gw + 13, gb);
+      obj(T ? 'oly_booth' : `gatepart_${tier4}_booth`, gl - 4, gb);
+      obj(T ? 'oly_booth' : `gatepart_${tier4}_booth`, gl + gw + 4, gb, true);
+      obj(T ? 'oly_gate' : `gate_${tier4}`, gx, gb);
       c.save();
       c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
-      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = this.zooName;
-      c.font = `${Math.min(tier4 === 2 ? 4.2 : 5.2, (tier4 === 2 ? 22 : 34) / Math.max(1, [...name].length) * 1.6)}px Jua, sans-serif`;
+      const ty = gt + gh * (T ? 0.28 : tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = this.zooName;
+      c.font = `${Math.min(T ? 4.4 : tier4 === 2 ? 4.2 : 5.2, (T ? 26 : tier4 === 2 ? 22 : 34) / Math.max(1, [...name].length) * 1.6)}px Jua, sans-serif`;
       c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = '#fff6e0'; c.strokeText(name, gx, ty);
       c.fillStyle = '#5d3a24'; c.fillText(name, gx, ty);
       c.restore();
-      obj(`gatedeco_${season}_arch`, gx, gt + gh * 0.5);
+      if (!T) obj(`gatedeco_${season}_arch`, gx, gt + gh * 0.5);
       if (this.zooStars) { c.save(); c.font = '4px Jua, sans-serif'; c.textAlign = 'center'; c.fillStyle = '#f7c948'; c.strokeStyle = '#5d3a24'; c.lineWidth = 1; const st = '★'.repeat(this.zooStars); c.strokeText(st, gx, gt - 1); c.fillText(st, gx, gt - 1); c.restore(); }
       obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
       obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);

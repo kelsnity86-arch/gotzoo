@@ -508,10 +508,10 @@ def olympus():
         if t is not None: S.save(t, OUT / f'herop_{i}.png')
     names = ['oly_gate', 'oly_ped0', 'oly_ped1', 'oly_ped2', 'oly_capsule0', 'oly_capsule1', 'oly_cloud', 'oly_halo', 'oly_column', 'oly_laurel', 'oly_corner', 'oly_star']
     for i, t in enumerate(objects('extras/olympus_extras16.png', 4, 3)):
-        if t is None: continue
-        # 신전 입구는 원본이 다른 입구(107×99)보다 작게(59×64) 그려져서 도트 2배로 키운다
-        if names[i] == 'oly_gate': t = np.repeat(np.repeat(t, 2, axis=0), 2, axis=1)
+        if t is None or names[i] == 'oly_gate': continue  # 입구는 아래 전용 시트(기존 입구와 같은 크기)로
         S.save(t, OUT / f'{names[i]}.png')
+    for i, t in enumerate(objects('gate/olympus_gate16.png', 2, 2)):
+        if t is not None: S.save(t, OUT / f'{["oly_gate", "oly_booth", "oly_flag", "oly_post"][i]}.png')
     SRC = old
 
 

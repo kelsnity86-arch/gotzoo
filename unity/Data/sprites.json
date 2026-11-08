@@ -11253,6 +11253,16 @@
 ]
 },
 {
+"key": "v2/oly_booth",
+"file": "sprites16/v2/oly_booth.png",
+"w": 45,
+"h": 54,
+"pivot": [
+0.5,
+0.0
+]
+},
+{
 "key": "v2/oly_capsule0",
 "file": "sprites16/v2/oly_capsule0.png",
 "w": 31,
@@ -11303,10 +11313,20 @@
 ]
 },
 {
+"key": "v2/oly_flag",
+"file": "sprites16/v2/oly_flag.png",
+"w": 27,
+"h": 62,
+"pivot": [
+0.5,
+0.0
+]
+},
+{
 "key": "v2/oly_gate",
 "file": "sprites16/v2/oly_gate.png",
-"w": 118,
-"h": 128,
+"w": 84,
+"h": 87,
 "pivot": [
 0.5,
 0.0
@@ -11357,6 +11377,16 @@
 "file": "sprites16/v2/oly_ped2.png",
 "w": 40,
 "h": 28,
+"pivot": [
+0.5,
+0.0
+]
+},
+{
+"key": "v2/oly_post",
+"file": "sprites16/v2/oly_post.png",
+"w": 29,
+"h": 61,
 "pivot": [
 0.5,
 0.0
