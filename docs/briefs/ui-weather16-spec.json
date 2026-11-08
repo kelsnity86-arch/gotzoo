@@ -1,0 +1,536 @@
+{
+  "project": "BbopZOO",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "outline": "#2b1d14",
+  "background": "#FF00FF",
+  "requested_slot_count": 96,
+  "sheets": [
+    {
+      "filename": "icons_ui16_a.png",
+      "group": "icons",
+      "size": [
+        1536,
+        960
+      ],
+      "grid": [
+        8,
+        5
+      ],
+      "native": [
+        24,
+        24
+      ],
+      "rows": [
+        [
+          {
+            "label": "gacha machine"
+          },
+          {
+            "label": "zoo entrance gate"
+          },
+          {
+            "label": "stack of cards"
+          },
+          {
+            "label": "clipboard with a gear"
+          },
+          {
+            "label": "open record book"
+          },
+          {
+            "label": "paw print"
+          },
+          {
+            "label": "staff name badge"
+          },
+          {
+            "label": "square enclosure block piece"
+          }
+        ],
+        [
+          {
+            "label": "grid board"
+          },
+          {
+            "label": "small shop building"
+          },
+          {
+            "label": "flower pot"
+          },
+          {
+            "label": "list made of blank horizontal bars"
+          },
+          {
+            "label": "two cards merging with a plus"
+          },
+          {
+            "label": "green up arrow"
+          },
+          {
+            "label": "three empty rectangular slots"
+          },
+          {
+            "label": "money bag"
+          }
+        ],
+        [
+          {
+            "label": "mission flag"
+          },
+          {
+            "label": "encyclopedia book with a paw"
+          },
+          {
+            "label": "chain link"
+          },
+          {
+            "label": "trophy"
+          },
+          {
+            "label": "single gold coin"
+          },
+          {
+            "label": "stack of gold coins"
+          },
+          {
+            "label": "golden ticket"
+          },
+          {
+            "label": "food bowl"
+          }
+        ],
+        [
+          {
+            "label": "pink heart"
+          },
+          {
+            "label": "little person"
+          },
+          {
+            "label": "sun"
+          },
+          {
+            "label": "moon"
+          },
+          {
+            "label": "hourglass"
+          },
+          {
+            "label": "blank calendar"
+          },
+          {
+            "label": "gear"
+          },
+          {
+            "label": "speaker on with sound waves"
+          }
+        ],
+        [
+          {
+            "label": "muted speaker"
+          },
+          {
+            "label": "magnifier plus"
+          },
+          {
+            "label": "magnifier minus"
+          },
+          {
+            "label": "four outward arrows for fit-to-screen"
+          },
+          {
+            "label": "close X symbol"
+          },
+          {
+            "label": "check mark"
+          },
+          {
+            "label": "padlock"
+          },
+          {
+            "label": "rival zoo flag with a lightning bolt"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "icons_ui16_b.png",
+      "group": "icons",
+      "size": [
+        1536,
+        768
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "native": [
+        24,
+        24
+      ],
+      "rows": [
+        [
+          {
+            "label": "meadow grass tuft"
+          },
+          {
+            "label": "desert cactus and sun"
+          },
+          {
+            "label": "water wave"
+          },
+          {
+            "label": "snowflake"
+          },
+          {
+            "label": "rocky mountain peak"
+          },
+          {
+            "label": "magic cloud with a star"
+          },
+          {
+            "label": "spring cherry blossom"
+          },
+          {
+            "label": "summer sun with sunglasses"
+          }
+        ],
+        [
+          {
+            "label": "autumn maple leaf"
+          },
+          {
+            "label": "winter snowman head"
+          },
+          {
+            "label": "one gray star"
+          },
+          {
+            "label": "one green star"
+          },
+          {
+            "label": "one blue star"
+          },
+          {
+            "label": "one purple star"
+          },
+          {
+            "label": "one gold star with sparkle"
+          },
+          {
+            "label": "rainbow sparkle"
+          }
+        ],
+        [
+          {
+            "label": "coin with grabber hand"
+          },
+          {
+            "label": "food bucket"
+          },
+          {
+            "label": "small yellow guide flag"
+          },
+          {
+            "label": "broom"
+          },
+          {
+            "label": "ticket stub"
+          },
+          {
+            "label": "mop"
+          },
+          {
+            "label": "whistle"
+          },
+          {
+            "label": "stethoscope"
+          }
+        ],
+        [
+          {
+            "label": "megaphone"
+          },
+          {
+            "label": "juggling balls"
+          },
+          {
+            "label": "thermometer"
+          },
+          {
+            "label": "wrench"
+          },
+          {
+            "label": "blank picket sign"
+          },
+          {
+            "label": "piggy bank"
+          },
+          {
+            "label": "gift box"
+          },
+          {
+            "label": "party popper"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "weather16.png",
+      "group": "weather",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        6,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "rows": [
+        [
+          {
+            "label": "raindrop streak",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "raindrop splash frame 1",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "raindrop splash frame 2",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "small puddle",
+            "native": [
+              24,
+              8
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "open umbrella",
+            "native": [
+              16,
+              12
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "rain cloud",
+            "native": [
+              32,
+              16
+            ],
+            "no_outline": false
+          }
+        ],
+        [
+          {
+            "label": "small snowflake",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "big snowflake",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "snow clump",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "cherry blossom petal A",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "cherry blossom petal B",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "cherry blossom petal C",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          }
+        ],
+        [
+          {
+            "label": "red maple leaf",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "orange maple leaf",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "yellow ginkgo leaf",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "heat shimmer wave lines",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "sun glare sparkle",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "dust gust",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": false
+          }
+        ],
+        [
+          {
+            "label": "firefly glow, yellow dot with two lighter rings",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "lamp light pool, three flat warm elliptical bands",
+            "native": [
+              32,
+              16
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "lit window square, warm yellow",
+            "native": [
+              8,
+              8
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "star twinkle",
+            "native": [
+              16,
+              16
+            ],
+            "no_outline": true
+          },
+          {
+            "label": "moon",
+            "native": [
+              24,
+              24
+            ],
+            "no_outline": false
+          },
+          {
+            "label": "shooting star",
+            "native": [
+              32,
+              16
+            ],
+            "no_outline": true
+          }
+        ]
+      ]
+    }
+  ]
+}

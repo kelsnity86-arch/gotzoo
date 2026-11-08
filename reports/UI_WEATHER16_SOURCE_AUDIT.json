@@ -1,0 +1,80 @@
+{
+  "source_delivery": "PASS_3_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "canvas_matches": 1,
+  "canvas_mismatches": 2,
+  "checks": [
+    {
+      "filename": "icons_ui16_a.png",
+      "readable_png": true,
+      "actual_size": [
+        1586,
+        992
+      ],
+      "requested_size": [
+        1536,
+        960
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 229437,
+      "off_palette_pixels": 1573277,
+      "off_palette_fraction": 0.999978,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_runtime": "NOT_TESTED"
+    },
+    {
+      "filename": "icons_ui16_b.png",
+      "readable_png": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 228673,
+      "off_palette_pixels": 1573442,
+      "off_palette_fraction": 0.999939,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_runtime": "NOT_TESTED"
+    },
+    {
+      "filename": "weather16.png",
+      "readable_png": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "canvas_pass": true,
+      "unique_rgb_colors": 92678,
+      "off_palette_pixels": 1572838,
+      "off_palette_fraction": 0.999983,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_runtime": "NOT_TESTED"
+    }
+  ],
+  "visual_layout_review": "40 / 32 / 24 occupied slots, row-major ordering inspected visually.",
+  "corrections": [
+    "Weather streak changed to one streak; splash phase 2 made wider and lower; sun glare changed to four-point sparkle; firefly rings simplified."
+  ],
+  "remaining": [
+    "Exact native grids, 38-color palette, uniform magenta and 1px brown outlines not certified.",
+    "UI sheet canvases differ from requested dimensions.",
+    "Solid two-tone fills contain intermediate colors.",
+    "Weather particle sizes and splash anchors need native-grid redraw and playback verification.",
+    "Petal A/B/C silhouettes are not verified as one rotated source.",
+    "No runtime import or interactive icon readability test performed."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "sheets": [
+    {
+      "source": "/workspace/generated_images/exec-d1ee3de4-85fd-42bf-9206-bef9a0a737fa.png",
+      "destination": "assets/spritesheets16/ui-weather/icons/icons_ui16_a.png"
+    },
+    {
+      "source": "/workspace/generated_images/exec-97b72916-db39-4116-bdac-7ca5f8be4801.png",
+      "destination": "assets/spritesheets16/ui-weather/icons/icons_ui16_b.png"
+    },
+    {
+      "source": "/workspace/generated_images/exec-d3d7aa7d-cec1-4813-9c5c-b4efe0e72317.png",
+      "destination": "assets/spritesheets16/ui-weather/weather/weather16.png"
+    }
+  ],
+  "previous_weather_source": "/workspace/generated_images/exec-a5062c1b-948a-4035-a906-d612f7ccc031.png",
+  "note": "Final PNGs are byte-for-byte imagegen outputs. Native pixel compliance is not certified."
+}
