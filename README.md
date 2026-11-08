@@ -76,6 +76,12 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 기존 31장 묶음과 별도로 저장했습니다. **아이콘과 대각 울타리는 요청 캔버스 크기와 다르고, 네이티브 격자·팔레트·울타리 연결/바닥 반복·프레임 재생은 미검증**입니다. [검수 기록](reports/EXPANSION16_SOURCE_REVIEW.md)을 참고하세요.
 
+## 새 WORLD 아트 11장 원본
+
+[바닥·길·울타리·소품·건물·관람객/직원 행동·생활 효과 11장](assets/spritesheets16/world-life/README.md) · [200칸 요청 순서표](assets/catalog16_world_life.json) · [WORLD 11장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-world-life16-sources.zip).
+
+새 명령서의 갈색 외곽선과 조명, 정면 관람객/왼쪽 직원 기준으로 제작했습니다. 기존 시트와 다른 경로에 보존했습니다. **9장은 요청 캔버스 크기와 다르며, 네이티브 격자·팔레트·반복 이음매·패치 분할·동작 재생은 미완료**입니다. [검수 기록](reports/WORLD_LIFE16_SOURCE_REVIEW.md)을 참고하세요.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|

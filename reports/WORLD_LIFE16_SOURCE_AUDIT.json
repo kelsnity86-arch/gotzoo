@@ -1,0 +1,255 @@
+{
+  "source_delivery": "PASS_11_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "canvas_matches": 2,
+  "canvas_mismatches": 9,
+  "checks": [
+    {
+      "filename": "ground16.png",
+      "readable_png": true,
+      "requested_slots": 16,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 50579,
+      "off_palette_pixels": 1572176,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_TESTED",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "path16.png",
+      "readable_png": true,
+      "requested_slots": 4,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 58847,
+      "off_palette_pixels": 1572351,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_TESTED",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "penfloor16.png",
+      "readable_png": true,
+      "requested_slots": 24,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 62838,
+      "off_palette_pixels": 1572863,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_TESTED",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "fences16_a.png",
+      "readable_png": true,
+      "requested_slots": 4,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 148072,
+      "off_palette_pixels": 1572495,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_TESTED",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "fences16_b.png",
+      "readable_png": true,
+      "requested_slots": 4,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 215410,
+      "off_palette_pixels": 1572486,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_TESTED",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "penprops16.png",
+      "readable_png": true,
+      "requested_slots": 36,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 278567,
+      "off_palette_pixels": 1572478,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "parkprops16.png",
+      "readable_png": true,
+      "requested_slots": 18,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 203468,
+      "off_palette_pixels": 1572822,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "buildings16.png",
+      "readable_png": true,
+      "requested_slots": 18,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 305137,
+      "off_palette_pixels": 1572850,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "visitors_act16.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 204760,
+      "off_palette_pixels": 1572863,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_TESTED"
+    },
+    {
+      "filename": "staff_act16.png",
+      "readable_png": true,
+      "requested_slots": 20,
+      "actual_size": [
+        1122,
+        1402
+      ],
+      "requested_size": [
+        1024,
+        1280
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 241578,
+      "off_palette_pixels": 1572963,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_TESTED"
+    },
+    {
+      "filename": "fx_life16.png",
+      "readable_png": true,
+      "requested_slots": 24,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1024,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 104397,
+      "off_palette_pixels": 1572525,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_light_status": "NOT_CERTIFIED",
+      "tiling_and_patch_extraction_status": "NOT_APPLICABLE",
+      "identity_pivots_and_animation_status": "NOT_TESTED"
+    }
+  ],
+  "manual_review": "See WORLD_LIFE16_SOURCE_REVIEW.md. Counts are requested slots, not automated recognition.",
+  "references": [
+    "fences16_b created from fences16_a material-edit reference.",
+    "staff_act16 created from the existing world/staff/staff16.png reference."
+  ],
+  "corrections": [
+    "Restored seated woman ponytail and adjusted seated visitor identity.",
+    "Replaced recognizable sleep letters with short abstract stair-step marks."
+  ],
+  "remaining": [
+    "Exact native grids, brown outline thickness, palette and uniform magenta.",
+    "Requested output canvas sizes where mismatched.",
+    "Same-row ground/floor tiling; 16px path/fence extraction and corner joins.",
+    "Action identity, common pivots, timing and playback in game.",
+    "Consistent object-to-character art-pixel scale, light and shadow in a composed scene."
+  ]
+}

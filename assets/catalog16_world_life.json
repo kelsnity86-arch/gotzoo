@@ -1,0 +1,2455 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 11,
+  "requested_slot_count": 200,
+  "slot_count_note": "Counts patches, props and action frames; not unique characters or extracted 16x16 tiles.",
+  "object_outline_target": "#2b1d14",
+  "light_target": "top-left; solid down-right ground shadow",
+  "sheets": [
+    {
+      "filename": "ground16.png",
+      "path": "assets/spritesheets16/world-life/ground/ground16.png",
+      "group": "ground",
+      "sha256": "727be730ddd1496302a108370074299a3764f493ad95a6265e4261ad1c07a1d1",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "spring plain",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "spring variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "spring tiny seasonal details",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "spring small tall-grass tuft",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "summer plain",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "summer variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "summer tiny seasonal details",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "summer small tall-grass tuft",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "autumn plain",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "autumn variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "autumn tiny seasonal details",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "autumn small tall-grass tuft",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "name": "winter plain",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "name": "winter variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "name": "winter tiny seasonal details",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "name": "winter small tall-grass tuft",
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "path16.png",
+      "path": "assets/spritesheets16/world-life/paths/path16.png",
+      "group": "paths",
+      "sha256": "70678e030247c57756a6b7f2d5bb055c0327c1ddb46cc67ff15a44d6d5631f9d",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "normal square paving patch",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "normal donut paving patch with central magenta hole",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 2,
+          "column": 1,
+          "name": "winter square paving patch",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 2,
+          "column": 2,
+          "name": "winter donut paving patch with central magenta hole",
+          "target_native_size": [
+            48,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "penfloor16.png",
+      "path": "assets/spritesheets16/world-life/floors/penfloor16.png",
+      "group": "floors",
+      "sha256": "2a3aa870f135fab37714b5aa5e7827a9dce7f90b7760a1ab90777eabe6429cd9",
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "target_size": [
+        1024,
+        1536
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "meadow base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "meadow base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "meadow small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "meadow another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "desert base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "desert base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "desert small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "desert another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "water base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "water base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "water small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "water another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "name": "snow base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "name": "snow base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "name": "snow small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "name": "snow another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 5,
+          "column": 1,
+          "name": "rocky mountain base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 5,
+          "column": 2,
+          "name": "rocky mountain base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 5,
+          "column": 3,
+          "name": "rocky mountain small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 5,
+          "column": 4,
+          "name": "rocky mountain another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 6,
+          "column": 1,
+          "name": "magic clouds base floor",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 6,
+          "column": 2,
+          "name": "magic clouds base variation",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 6,
+          "column": 3,
+          "name": "magic clouds small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 6,
+          "column": 4,
+          "name": "magic clouds another small detail",
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "fences16_a.png",
+      "path": "assets/spritesheets16/world-life/fences/fences16_a.png",
+      "group": "fences",
+      "sha256": "46a49b8ae1bb4b7199c2a43b66d099acf5baa1f77b6027e40ffb90dfaf314fb4",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "wood square fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "wood plus fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 2,
+          "column": 1,
+          "name": "fieldstone square fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 2,
+          "column": 2,
+          "name": "fieldstone plus fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "fences16_b.png",
+      "path": "assets/spritesheets16/world-life/fences/fences16_b.png",
+      "group": "fences",
+      "sha256": "a54bff1f9343bac13e0a88d8ca3798bd3b7fd64c2a04aa31b2e6cdb609a7913b",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "reference_sheet_used": "assets/spritesheets16/world-life/fences/fences16_a.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "dark green iron square fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "dark green iron plus fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 2,
+          "column": 1,
+          "name": "gold railing square fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 2,
+          "column": 2,
+          "name": "gold railing plus fence",
+          "target_native_size": [
+            48,
+            48
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "penprops16.png",
+      "path": "assets/spritesheets16/world-life/enclosure-props/penprops16.png",
+      "group": "enclosure-props",
+      "sha256": "247080ef03dc699cc6b7854634c623e7c6c4bc5602c96777d1bdd43d73d4e5a9",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1536,
+        1536
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "hollow log house with straw",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "wooden water trough",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "carrots and greens tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "red ball",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "round bush",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "mossy rock",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "sandstone burrow",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "clay water bowl",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "dates and seeds tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "tumbleweed",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "cactus",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "sun-bleached rock",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "rock islet cave",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "lily-pad pool edge",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "fish tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "floating rubber ring",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "cattails",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "river stones",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "name": "ice cave",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "name": "ice hole",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "name": "frozen fish tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "name": "snowball pile",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "name": "snowy pine sapling",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "name": "ice block",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 25,
+          "row": 5,
+          "column": 1,
+          "name": "stone cave",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 26,
+          "row": 5,
+          "column": 2,
+          "name": "stone basin",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 27,
+          "row": 5,
+          "column": 3,
+          "name": "nuts and berries tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 28,
+          "row": 5,
+          "column": 4,
+          "name": "climbing log pile",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 29,
+          "row": 5,
+          "column": 5,
+          "name": "mountain shrub",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 30,
+          "row": 5,
+          "column": 6,
+          "name": "boulder",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 31,
+          "row": 6,
+          "column": 1,
+          "name": "cloud nest with star",
+          "target_native_size": [
+            32,
+            24
+          ]
+        },
+        {
+          "slot": 32,
+          "row": 6,
+          "column": 2,
+          "name": "crystal water bowl",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 33,
+          "row": 6,
+          "column": 3,
+          "name": "glowing fruit tray",
+          "target_native_size": [
+            16,
+            12
+          ]
+        },
+        {
+          "slot": 34,
+          "row": 6,
+          "column": 4,
+          "name": "floating star toy",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 35,
+          "row": 6,
+          "column": 5,
+          "name": "crystal flower",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 36,
+          "row": 6,
+          "column": 6,
+          "name": "small floating cloud",
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "parkprops16.png",
+      "path": "assets/spritesheets16/world-life/park-props/parkprops16.png",
+      "group": "park-props",
+      "sha256": "f5c81afa95e8329b773d46fd26cf56ee5a16f655c996373cea6aa7cf01df0f3e",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        6,
+        6,
+        6
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "big round leafy tree",
+          "target_native_size": [
+            32,
+            40
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "pine tree",
+          "target_native_size": [
+            32,
+            40
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "pink flowering tree",
+          "target_native_size": [
+            32,
+            40
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "orange fruit tree",
+          "target_native_size": [
+            32,
+            40
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "round bush",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "flowering bush",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "street lamp",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "front-facing empty bench",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "wooden trash bin",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "blank two-arrow signpost",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "square flower planter",
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "round stone-bordered flower bed",
+          "target_native_size": [
+            24,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "repeatable hedge segment",
+          "target_native_size": [
+            32,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "decorative boulder",
+          "target_native_size": null
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "small drinking fountain",
+          "target_native_size": null
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "picnic table with umbrella",
+          "target_native_size": null
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "balloon cart",
+          "target_native_size": null
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "round pond with lily pads",
+          "target_native_size": [
+            32,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "buildings16.png",
+      "path": "assets/spritesheets16/world-life/buildings/buildings16.png",
+      "group": "buildings",
+      "sha256": "d01292e429219001df31d661309a928baa3601e37836c95006168aa62b0631af",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        6,
+        6,
+        6
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "small snack stand",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "small restroom with two doors",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 2
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "small animal photo cutout",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 3
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "small fountain plaza",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 4
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "small pergola rest area",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 5
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "small animal clinic",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "upgrade_level": 1,
+          "building_type_column": 6
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "medium snack stand",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 1
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "medium restroom with two doors",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 2
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "medium animal photo cutout",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 3
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "medium fountain plaza",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 4
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "medium pergola rest area",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 5
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "medium animal clinic",
+          "target_native_size": [
+            40,
+            40
+          ],
+          "upgrade_level": 2,
+          "building_type_column": 6
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "large snack stand",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 1
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "large restroom with two doors",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 2
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "large animal photo cutout",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 3
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "large fountain plaza",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 4
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "large pergola rest area",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 5
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "large animal clinic",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "upgrade_level": 3,
+          "building_type_column": 6
+        }
+      ]
+    },
+    {
+      "filename": "visitors_act16.png",
+      "path": "assets/spritesheets16/world-life/visitor-actions/visitors_act16.png",
+      "group": "visitor-actions",
+      "sha256": "806202523664afed6473511b0fb937bc21b44c35f9b6406a61e791ffff2ee60e",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "kid with cap: watch happily",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "kid with cap: cheer with both arms raised",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 2
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "kid with cap: take photo",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 3
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "kid with cap: eat ice cream",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 4
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "kid with cap: point down-forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 5
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "kid with cap: sit without bench",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 6
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "name": "kid with cap: toss coin",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 7
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "name": "kid with cap: disappointed",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 1,
+          "action_column": 8
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "name": "woman with ponytail: watch happily",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 1
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "name": "woman with ponytail: cheer with both arms raised",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 2
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "name": "woman with ponytail: take photo",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 3
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "name": "woman with ponytail: eat ice cream",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 4
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "name": "woman with ponytail: point down-forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 5
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "name": "woman with ponytail: sit without bench",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 6
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "name": "woman with ponytail: toss coin",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 7
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "name": "woman with ponytail: disappointed",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 2,
+          "action_column": 8
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "name": "man with backpack: watch happily",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 1
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "name": "man with backpack: cheer with both arms raised",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 2
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "name": "man with backpack: take photo",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 3
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "name": "man with backpack: eat ice cream",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 4
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "name": "man with backpack: point down-forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 5
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "name": "man with backpack: sit without bench",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 6
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "name": "man with backpack: toss coin",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 7
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "name": "man with backpack: disappointed",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 3,
+          "action_column": 8
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "name": "grandparent with glasses: watch happily",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 1
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "name": "grandparent with glasses: cheer with both arms raised",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 2
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "name": "grandparent with glasses: take photo",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 3
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "name": "grandparent with glasses: eat ice cream",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 4
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "name": "grandparent with glasses: point down-forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 5
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "name": "grandparent with glasses: sit without bench",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 6
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "name": "grandparent with glasses: toss coin",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 7
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "name": "grandparent with glasses: disappointed",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "front",
+          "identity_row": 4,
+          "action_column": 8
+        }
+      ]
+    },
+    {
+      "filename": "staff_act16.png",
+      "path": "assets/spritesheets16/world-life/staff-actions/staff_act16.png",
+      "group": "staff-actions",
+      "sha256": "7e0423d3ded477fc34c2fbb581354d6aa19ab0d301c74a5d469240daa201c7c7",
+      "actual_size": [
+        1122,
+        1402
+      ],
+      "target_size": [
+        1024,
+        1280
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "reference_sheet_used": "assets/spritesheets16/world/staff/staff16.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "coin collector picking up coin: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 1,
+          "frame": 1
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "coin collector picking up coin: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 1,
+          "frame": 2
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "zookeeper tossing food: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 2,
+          "frame": 1
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "zookeeper tossing food: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 2,
+          "frame": 2
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "tour guide waving flag: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 3,
+          "frame": 1
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "tour guide waving flag: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 3,
+          "frame": 2
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "groundskeeper sweeping: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 4,
+          "frame": 1
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "groundskeeper sweeping: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 4,
+          "frame": 2
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "ticket seller handing ticket: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 5,
+          "frame": 1
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "ticket seller handing ticket: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 5,
+          "frame": 2
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "cleaner mopping: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 6,
+          "frame": 1
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "cleaner mopping: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 6,
+          "frame": 2
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "name": "guard blowing whistle: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 7,
+          "frame": 1
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "name": "guard blowing whistle: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 7,
+          "frame": 2
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "name": "veterinarian kneeling with stethoscope: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 8,
+          "frame": 1
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "name": "veterinarian kneeling with stethoscope: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 8,
+          "frame": 2
+        },
+        {
+          "slot": 17,
+          "row": 5,
+          "column": 1,
+          "name": "promoter using megaphone: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 9,
+          "frame": 1
+        },
+        {
+          "slot": 18,
+          "row": 5,
+          "column": 2,
+          "name": "promoter using megaphone: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 9,
+          "frame": 2
+        },
+        {
+          "slot": 19,
+          "row": 5,
+          "column": 3,
+          "name": "performer juggling: frame 1",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 10,
+          "frame": 1
+        },
+        {
+          "slot": 20,
+          "row": 5,
+          "column": 4,
+          "name": "performer juggling: frame 2",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "requested_facing": "left",
+          "identity_index": 10,
+          "frame": 2
+        }
+      ]
+    },
+    {
+      "filename": "fx_life16.png",
+      "path": "assets/spritesheets16/world-life/effects/fx_life16.png",
+      "group": "effects",
+      "sha256": "a000f5ec552fcc426dabf4e038efe330139f380673e99bfc83e65c2c41522b98",
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "target_size": [
+        1024,
+        768
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "sleep bubble with three zigzag marks",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "music note",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "small heart",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "big heart",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "sweat drop",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "anger cross",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "exclamation shape bubble",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "question shape bubble",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "sparkle",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "star",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "dust small frame 1",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "dust bigger frame 2",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "dust fading frame 3",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "water splash frame 1",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "water splash frame 2",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "water splash frame 3",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "small water ripple ring",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "big water ripple ring",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "name": "food crumbs",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "name": "drinking water droplets",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "name": "camera flash burst",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "name": "stink lines with two flies",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "name": "petals and confetti",
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "name": "blue night sleep cloud with zigzag marks",
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    }
+  ]
+}

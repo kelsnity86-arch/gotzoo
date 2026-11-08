@@ -1,0 +1,770 @@
+{
+  "project": "BbopZOO",
+  "batch": "world-life16",
+  "background": "#FF00FF",
+  "object_outline": "#2b1d14",
+  "light": "top-left; solid down-right ground shadow",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "sheets": [
+    {
+      "filename": "ground16.png",
+      "group": "ground",
+      "size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "requested_slot_count": 16,
+      "request": "Sheet ground16.png: seamless grass ground tiles, each exactly 16x16 art pixels, NO outline, must tile seamlessly in every direction with the other tiles of the same row. Very calm and low-contrast: only 2-3 close shades of the base color with a few tiny 1-2 pixel blades. This is the background of the whole park.\nLayout: 4 columns x 4 rows. Rows = seasons: 1 spring (fresh light green), 2 summer (rich green), 3 autumn (golden olive green), 4 winter (snow-covered, white-blue with a little grass peeking).\nColumns: 1. plain grass  2. plain grass variation (slightly different blade pattern, same colors)  3. grass with tiny details (spring: 2 small petals, summer: a tiny flower, autumn: 2 small leaves, winter: a few sparkles)  4. grass with a small tuft of taller grass.\nImage size 1024x1024, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "spring plain",
+          "spring variation",
+          "spring tiny seasonal details",
+          "spring small tall-grass tuft"
+        ],
+        [
+          "summer plain",
+          "summer variation",
+          "summer tiny seasonal details",
+          "summer small tall-grass tuft"
+        ],
+        [
+          "autumn plain",
+          "autumn variation",
+          "autumn tiny seasonal details",
+          "autumn small tall-grass tuft"
+        ],
+        [
+          "winter plain",
+          "winter variation",
+          "winter tiny seasonal details",
+          "winter small tall-grass tuft"
+        ]
+      ]
+    },
+    {
+      "filename": "path16.png",
+      "group": "paths",
+      "size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "native_by_row": [
+        [
+          48,
+          48
+        ],
+        [
+          48,
+          48
+        ]
+      ],
+      "requested_slot_count": 4,
+      "request": "Sheet path16.png: a stone-paved walking path for the visitors, seen from top-down, drawn as small patches so it can be cut into tiles. The path surface: rounded light beige-gray paving stones (#c7cfdd, #94b0c2, #e8c39e) with very soft joints, calm and low-contrast. Along every edge where the path meets grass there is a neat 2-pixel curb of slightly darker stone; the outside of the patch is magenta (not grass).\nLayout: 2 columns x 2 rows, each cell holds ONE patch of exactly 48x48 art pixels (3x3 tiles of 16x16), with lots of magenta around it.\nColumn 1: a SQUARE patch, path everywhere inside, curb on all 4 outer edges with nicely rounded outer corners.\nColumn 2: a DONUT patch, the same square but the center 16x16 tile is an empty magenta hole, so the curb also runs around the inside hole (this gives the inner corners).\nRow 1: normal. Row 2: winter, the same stones with light snow dusting on the joints and curbs.\nThe paving pattern must line up so each 16x16 tile repeats seamlessly. Image size 1024x1024, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "normal square paving patch",
+          "normal donut paving patch with central magenta hole"
+        ],
+        [
+          "winter square paving patch",
+          "winter donut paving patch with central magenta hole"
+        ]
+      ]
+    },
+    {
+      "filename": "penfloor16.png",
+      "group": "floors",
+      "size": [
+        1024,
+        1536
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "requested_slot_count": 24,
+      "request": "Sheet penfloor16.png: seamless floor tiles for animal enclosures, each exactly 16x16 art pixels, NO outline, each row must tile seamlessly. Calm, low-contrast (animals stand on top), but clearly a different habitat from the plain park grass.\nLayout: 4 columns x 6 rows. Rows = habitat: 1 meadow (lush darker green grass with clover), 2 desert (warm sand with tiny ripples), 3 water (blue water with small light ripple lines; must tile), 4 snow (soft white-blue snow), 5 rocky mountain (gray-brown packed earth with small pebbles), 6 magic clouds (pastel lavender-pink cloud floor with tiny stars, for legendary animals).\nColumns: 1. base floor  2. base variation  3. floor with a small detail (meadow: a flower, desert: a pebble, water: a lily pad, snow: a footprint pair, rock: a crack, clouds: a star)  4. another small detail.\nImage size 1024x1536, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "meadow base floor",
+          "meadow base variation",
+          "meadow small detail",
+          "meadow another small detail"
+        ],
+        [
+          "desert base floor",
+          "desert base variation",
+          "desert small detail",
+          "desert another small detail"
+        ],
+        [
+          "water base floor",
+          "water base variation",
+          "water small detail",
+          "water another small detail"
+        ],
+        [
+          "snow base floor",
+          "snow base variation",
+          "snow small detail",
+          "snow another small detail"
+        ],
+        [
+          "rocky mountain base floor",
+          "rocky mountain base variation",
+          "rocky mountain small detail",
+          "rocky mountain another small detail"
+        ],
+        [
+          "magic clouds base floor",
+          "magic clouds base variation",
+          "magic clouds small detail",
+          "magic clouds another small detail"
+        ]
+      ]
+    },
+    {
+      "filename": "fences16_a.png",
+      "group": "fences",
+      "size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "native_by_row": [
+        [
+          48,
+          48
+        ],
+        [
+          48,
+          48
+        ]
+      ],
+      "requested_slot_count": 4,
+      "request": "Sheet fences16_a.png: low enclosure fences for a cozy top-down zoo, 3/4 view, soft dark-brown outline, light from top-left. The fence is LOW (about 6-8 art pixels tall), drawn exactly along the border of the enclosure shape, so we can cut it into 16x16 tiles. Inside and outside the fence is magenta: draw only the fence, no floor.\nLayout: 2 columns x 2 rows, each cell holds ONE closed fence shape with lots of magenta around it.\nColumn 1: a SQUARE enclosure 48x48 art pixels (3x3 tiles): fence on all 4 sides with neat outer corner posts.\nColumn 2: a PLUS / CROSS shaped enclosure 48x48 art pixels: a 3x3 square with the four corner tiles removed, fence following the whole cross outline, so it has 8 outer corners and 4 inner (concave) corners, all with neat posts.\nRow 1: tier 1 warm wooden picket fence (light wood #c28a5c, posts slightly darker) with a little grass at its foot. Row 2: tier 2 low rounded fieldstone wall (gray stones #94b0c2 #566c86 with a moss accent).\nThe back (top) side of the fence is seen from above and thinner; the front (bottom) side shows its face. Straight sections must repeat seamlessly every 16 pixels. Image size 1024x1024, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "wood square fence",
+          "wood plus fence"
+        ],
+        [
+          "fieldstone square fence",
+          "fieldstone plus fence"
+        ]
+      ]
+    },
+    {
+      "filename": "fences16_b.png",
+      "group": "fences",
+      "size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "native_by_row": [
+        [
+          48,
+          48
+        ],
+        [
+          48,
+          48
+        ]
+      ],
+      "requested_slot_count": 4,
+      "request": "Sheet fences16_b.png: the same two enclosure shapes and the same rules as fences16_a.png (low fence along the border, magenta inside and outside, 48x48 square in column 1, 48x48 plus/cross shape with 4 inner corners in column 2, seamless 16-pixel repeats).\nRow 1: tier 3 dark green iron railing on a low light stone base, little round finials on the posts. Row 2: tier 4 fancy golden railing (#f7c948 #e0a526) on a white stone base, small gem or flower ornaments on the posts, a little sparkle pixel here and there.\nImage size 1024x1024, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "dark green iron square fence",
+          "dark green iron plus fence"
+        ],
+        [
+          "gold railing square fence",
+          "gold railing plus fence"
+        ]
+      ],
+      "reference_sheet_used": "assets/spritesheets16/world-life/fences/fences16_a.png"
+    },
+    {
+      "filename": "penprops16.png",
+      "group": "enclosure-props",
+      "size": [
+        1536,
+        1536
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "native_by_row": null,
+      "requested_slot_count": 36,
+      "request": "Sheet penprops16.png: props inside animal enclosures that animals use for behaviors (sleeping, drinking, eating, playing), cozy top-down zoo, 3/4 view, soft dark-brown outline, light from top-left, solid darker ground shadow down-right.\nLayout: 6 columns x 6 rows, each item sits on the bottom of its cell. Rows = habitat: 1 meadow, 2 desert, 3 water, 4 snow, 5 rocky mountain, 6 magic clouds (pastel, sparkly, for legendary animals).\nColumns (same order every row):\n1. sleeping spot / den, about 32x24 (meadow: hollow-log house with straw, desert: sandstone burrow, water: rock islet with a small cave, snow: ice cave, rock: stone cave, clouds: round cloud nest with a star)\n2. water spot, about 24x16 (wooden trough, clay water bowl, lily-pad pool edge, ice-hole, stone basin, crystal water bowl)\n3. food tray with habitat food, about 16x12 (carrots and greens, dates and seeds, fish, frozen fish, nuts and berries, glowing fruit)\n4. play toy, about 16x16 (red ball, tumbleweed, floating rubber ring, snowball pile, climbing log pile, floating star toy)\n5. habitat plant, about 16x24 (round bush, cactus, cattails, snowy pine sapling, mountain shrub, crystal flower)\n6. decorative rock or object, about 16x16 (mossy rock, sun-bleached desert rock, smooth river stones, ice block, boulder, small floating cloud).\nImage size 1536x1536, solid #FF00FF background, no text.",
+      "native_by_column": [
+        [
+          32,
+          24
+        ],
+        [
+          24,
+          16
+        ],
+        [
+          16,
+          12
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "hollow log house with straw",
+          "wooden water trough",
+          "carrots and greens tray",
+          "red ball",
+          "round bush",
+          "mossy rock"
+        ],
+        [
+          "sandstone burrow",
+          "clay water bowl",
+          "dates and seeds tray",
+          "tumbleweed",
+          "cactus",
+          "sun-bleached rock"
+        ],
+        [
+          "rock islet cave",
+          "lily-pad pool edge",
+          "fish tray",
+          "floating rubber ring",
+          "cattails",
+          "river stones"
+        ],
+        [
+          "ice cave",
+          "ice hole",
+          "frozen fish tray",
+          "snowball pile",
+          "snowy pine sapling",
+          "ice block"
+        ],
+        [
+          "stone cave",
+          "stone basin",
+          "nuts and berries tray",
+          "climbing log pile",
+          "mountain shrub",
+          "boulder"
+        ],
+        [
+          "cloud nest with star",
+          "crystal water bowl",
+          "glowing fruit tray",
+          "floating star toy",
+          "crystal flower",
+          "small floating cloud"
+        ]
+      ]
+    },
+    {
+      "filename": "parkprops16.png",
+      "group": "park-props",
+      "size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        6,
+        6,
+        6
+      ],
+      "native_by_row": null,
+      "requested_slot_count": 18,
+      "request": "Sheet parkprops16.png: park decorations for a cozy top-down zoo, 3/4 view, soft dark-brown outline, light from top-left, solid darker ground shadow down-right, warm cohesive colors.\nLayout: 6 columns x 3 rows, each item sits on the bottom of its cell.\nRow 1 (nature, trees about 32x40, bushes about 16x16): 1. big round leafy tree  2. pine tree  3. flowering tree (pink blossoms)  4. fruit tree (small oranges)  5. round green bush  6. flowering bush.\nRow 2 (about 16x24): 7. street lamp (warm light)  8. wooden park bench, seen from the front, empty  9. wooden trash bin  10. blank wooden signpost with two arrow boards (no letters)  11. square wooden planter with flowers  12. round flower bed with stone border (about 24x16).\nRow 3: 13. trimmed hedge segment (32x16, can repeat side by side)  14. decorative boulder  15. small drinking fountain  16. picnic table with umbrella  17. balloon cart with colorful balloons  18. small round pond with lily pads (32x24).\nImage size 1536x1152, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "big round leafy tree",
+          "pine tree",
+          "pink flowering tree",
+          "orange fruit tree",
+          "round bush",
+          "flowering bush"
+        ],
+        [
+          "street lamp",
+          "front-facing empty bench",
+          "wooden trash bin",
+          "blank two-arrow signpost",
+          "square flower planter",
+          "round stone-bordered flower bed"
+        ],
+        [
+          "repeatable hedge segment",
+          "decorative boulder",
+          "small drinking fountain",
+          "picnic table with umbrella",
+          "balloon cart",
+          "round pond with lily pads"
+        ]
+      ],
+      "native_by_slot": [
+        [
+          [
+            32,
+            40
+          ],
+          [
+            32,
+            40
+          ],
+          [
+            32,
+            40
+          ],
+          [
+            32,
+            40
+          ],
+          [
+            16,
+            16
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            24
+          ],
+          [
+            24,
+            16
+          ]
+        ],
+        [
+          [
+            32,
+            16
+          ],
+          null,
+          null,
+          null,
+          null,
+          [
+            32,
+            24
+          ]
+        ]
+      ]
+    },
+    {
+      "filename": "buildings16.png",
+      "group": "buildings",
+      "size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        6,
+        6,
+        6
+      ],
+      "native_by_row": [
+        [
+          32,
+          32
+        ],
+        [
+          40,
+          40
+        ],
+        [
+          48,
+          48
+        ]
+      ],
+      "requested_slot_count": 18,
+      "request": "Sheet buildings16.png: visitor buildings that stand in one row along the top of the zoo, cozy top-down 3/4 view, soft dark-brown outline, light from top-left, solid darker ground shadow down-right. Each building has a clear door or counter at the bottom-front where visitors walk in or buy things.\nLayout: 6 columns x 3 rows. Columns = building type, rows = upgrade level (row 1 small, row 2 medium, row 3 large and fancy). A building keeps its colors and identity across its 3 levels, just bigger with more details.\nColumns: 1. snack stand (striped awning, popcorn and ice cream)  2. restroom building (two doors)  3. photo spot (big cute animal cut-out board with a face hole)  4. fountain plaza (stone fountain with water spray)  5. rest area (benches under a pergola with plants)  6. animal clinic (white building with a green cross).\nSizes: row 1 fits 32x32, row 2 fits 40x40, row 3 fits 48x48 art pixels, bottom-aligned, front-facing. Blank signboards only, no letters.\nImage size 1536x1152, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "small snack stand",
+          "small restroom with two doors",
+          "small animal photo cutout",
+          "small fountain plaza",
+          "small pergola rest area",
+          "small animal clinic"
+        ],
+        [
+          "medium snack stand",
+          "medium restroom with two doors",
+          "medium animal photo cutout",
+          "medium fountain plaza",
+          "medium pergola rest area",
+          "medium animal clinic"
+        ],
+        [
+          "large snack stand",
+          "large restroom with two doors",
+          "large animal photo cutout",
+          "large fountain plaza",
+          "large pergola rest area",
+          "large animal clinic"
+        ]
+      ]
+    },
+    {
+      "filename": "visitors_act16.png",
+      "group": "visitor-actions",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "native_by_row": [
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ]
+      ],
+      "requested_slot_count": 32,
+      "request": "Sheet visitors_act16.png: zoo visitor action poses, matching the existing BbopZOO visitor sprites (chunky cute chibi, big head, about 16 art pixels wide and 24 art pixels tall, soft dark-brown outline, 2-tone flat shading). Visitors stand on the path ABOVE the enclosures and look DOWN at the animals, so all poses are FRONT-FACING toward the viewer.\nLayout: 8 columns x 4 rows, each character centered in its cell, feet on the same baseline.\nRows = visitor: 1. small kid with a cap  2. young woman with a ponytail  3. young man with a backpack  4. grandparent with glasses. Same outfit and colors across the whole row; casual, colorful but not neon.\nColumns = action: 1. standing and watching happily  2. cheering with both arms up, small jump  3. taking a photo, holding a phone up (screen faces away from us)  4. eating an ice cream cone  5. pointing down-forward excitedly  6. sitting (as if on a bench, legs forward; no bench drawn)  7. tossing a small gold coin forward with one hand  8. disappointed, shoulders down, small frown.\nImage size 1536x1024, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "kid with cap: watch happily",
+          "kid with cap: cheer with both arms raised",
+          "kid with cap: take photo",
+          "kid with cap: eat ice cream",
+          "kid with cap: point down-forward",
+          "kid with cap: sit without bench",
+          "kid with cap: toss coin",
+          "kid with cap: disappointed"
+        ],
+        [
+          "woman with ponytail: watch happily",
+          "woman with ponytail: cheer with both arms raised",
+          "woman with ponytail: take photo",
+          "woman with ponytail: eat ice cream",
+          "woman with ponytail: point down-forward",
+          "woman with ponytail: sit without bench",
+          "woman with ponytail: toss coin",
+          "woman with ponytail: disappointed"
+        ],
+        [
+          "man with backpack: watch happily",
+          "man with backpack: cheer with both arms raised",
+          "man with backpack: take photo",
+          "man with backpack: eat ice cream",
+          "man with backpack: point down-forward",
+          "man with backpack: sit without bench",
+          "man with backpack: toss coin",
+          "man with backpack: disappointed"
+        ],
+        [
+          "grandparent with glasses: watch happily",
+          "grandparent with glasses: cheer with both arms raised",
+          "grandparent with glasses: take photo",
+          "grandparent with glasses: eat ice cream",
+          "grandparent with glasses: point down-forward",
+          "grandparent with glasses: sit without bench",
+          "grandparent with glasses: toss coin",
+          "grandparent with glasses: disappointed"
+        ]
+      ]
+    },
+    {
+      "filename": "staff_act16.png",
+      "group": "staff-actions",
+      "size": [
+        1024,
+        1280
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "native_by_row": [
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          24
+        ]
+      ],
+      "requested_slot_count": 20,
+      "request": "Sheet staff_act16.png: zoo staff doing their jobs, matching the existing BbopZOO staff sprites (chunky cute chibi, about 16 art pixels wide and 24 tall, soft dark-brown outline, 2-tone flat shading, facing LEFT). Two animation frames per staff member.\nLayout: 4 columns x 5 rows = 10 staff x 2 frames. Read left to right, top to bottom: each staff member takes two cells side by side (frame 1, frame 2).\nStaff in order (main uniform color in brackets):\n1. coin collector bending down to pick up a gold coin (orange)  2. zookeeper tossing food from a bucket (tan with green)  3. tour guide waving a small yellow flag (purple)  4. groundskeeper sweeping with a broom (slate gray)  5. ticket seller handing out a ticket (red)  6. cleaner mopping (light blue)  7. security guard blowing a whistle (navy with yellow)  8. veterinarian kneeling with a stethoscope (white coat, green)  9. promoter shouting into a megaphone (yellow with red)  10. performer juggling three balls (pink with cyan).\nFrame 2 is the same pose mid-motion (broom moved, ball higher, flag swung).\nImage size 1024x1280, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "coin collector picking up coin: frame 1",
+          "coin collector picking up coin: frame 2",
+          "zookeeper tossing food: frame 1",
+          "zookeeper tossing food: frame 2"
+        ],
+        [
+          "tour guide waving flag: frame 1",
+          "tour guide waving flag: frame 2",
+          "groundskeeper sweeping: frame 1",
+          "groundskeeper sweeping: frame 2"
+        ],
+        [
+          "ticket seller handing ticket: frame 1",
+          "ticket seller handing ticket: frame 2",
+          "cleaner mopping: frame 1",
+          "cleaner mopping: frame 2"
+        ],
+        [
+          "guard blowing whistle: frame 1",
+          "guard blowing whistle: frame 2",
+          "veterinarian kneeling with stethoscope: frame 1",
+          "veterinarian kneeling with stethoscope: frame 2"
+        ],
+        [
+          "promoter using megaphone: frame 1",
+          "promoter using megaphone: frame 2",
+          "performer juggling: frame 1",
+          "performer juggling: frame 2"
+        ]
+      ],
+      "reference_sheet_used": "assets/spritesheets16/world/staff/staff16.png"
+    },
+    {
+      "filename": "fx_life16.png",
+      "group": "effects",
+      "size": [
+        1024,
+        768
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "requested_slot_count": 24,
+      "request": "Sheet fx_life16.png: small effect icons that float over animals and visitors to show what they are doing, cute pixel art, soft dark-brown outline unless noted, each fits a 16x16 art-pixel cell.\nLayout: 6 columns x 4 rows, in order:\n1. \"Zzz\" sleep bubble (three tiny z shapes, not real letters, just zig-zag marks)  2. music note  3. small heart  4. big heart  5. sweat drop  6. anger cross mark\n7. exclamation mark shape in a speech bubble  8. question mark shape in a speech bubble  9. sparkle  10. star  11. dust puff frame 1 (small)  12. dust puff frame 2 (bigger)\n13. dust puff frame 3 (fading, broken up)  14. water splash frame 1  15. water splash frame 2  16. water splash frame 3  17. water ripple ring small (seen from above, flat ellipse, no outline)  18. water ripple ring big\n19. food crumbs bits  20. water droplets (drinking)  21. camera flash burst (white-yellow)  22. stink lines with two tiny flies (dirty enclosure)  23. falling petals/confetti  24. small \"zzz\" cloud for sleeping at night (blue).\nThe bubbles for 7 and 8 are symbols drawn with shapes, they are fine. No other text. Image size 1024x768, solid #FF00FF background.",
+      "rows": [
+        [
+          "sleep bubble with three zigzag marks",
+          "music note",
+          "small heart",
+          "big heart",
+          "sweat drop",
+          "anger cross"
+        ],
+        [
+          "exclamation shape bubble",
+          "question shape bubble",
+          "sparkle",
+          "star",
+          "dust small frame 1",
+          "dust bigger frame 2"
+        ],
+        [
+          "dust fading frame 3",
+          "water splash frame 1",
+          "water splash frame 2",
+          "water splash frame 3",
+          "small water ripple ring",
+          "big water ripple ring"
+        ],
+        [
+          "food crumbs",
+          "drinking water droplets",
+          "camera flash burst",
+          "stink lines with two flies",
+          "petals and confetti",
+          "blue night sleep cloud with zigzag marks"
+        ]
+      ]
+    }
+  ]
+}

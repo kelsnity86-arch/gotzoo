@@ -1,0 +1,18 @@
+You are drawing the WORLD art for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The animals and visitors already exist (chunky cute pixel sprites, soft dark-brown outline, 2-tone flat shading, left-facing). Everything you draw now must look like it belongs in the SAME world as them: same pixel size, same outline, same light, same colors.
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. One tile = 16x16 art pixels. Scale the image up so each art pixel is one solid square block. No anti-aliasing, no gradients, no blur, no soft or transparent shadows, no painterly texture.
+- View: gentle 3/4 top-down (we see the top and a little of the front of objects). Light comes from the TOP-LEFT on everything. Shadows are a solid darker shape on the ground, down-right of the object.
+- Objects and characters: soft 1-pixel dark-brown outline (#2b1d14). Ground tiles: NO outline.
+- Colors: cozy, warm and slightly muted, never neon. Ground is calm and low-contrast so characters stand out; objects are a little brighter than the ground. Prefer this world palette: #2b1d14 outline; grass #6b8f2e #a7d65b #38a35b #1f5d3a; earth #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8; stone #333c57 #566c86 #94b0c2 #c7cfdd; water #29366f #3b5dc9 #41a6f6 #73eff7; snow #e9f3ff #f4f4f4 #7fb5d6; accents #d83a3a #ef7d32 #f7c948 #f08cbe #ffc8dd #8e44ad. Only use colors from this full palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Lay items out on the requested invisible grid with clear magenta space between them, never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, watermarks, frames or borders.
+
+
+Generate ONLY the following ONE sheet. Do not include any other sheet. Do not print its name in the image.
+Sheet path16.png: a stone-paved walking path for the visitors, seen from top-down, drawn as small patches so it can be cut into tiles. The path surface: rounded light beige-gray paving stones (#c7cfdd, #94b0c2, #e8c39e) with very soft joints, calm and low-contrast. Along every edge where the path meets grass there is a neat 2-pixel curb of slightly darker stone; the outside of the patch is magenta (not grass).
+Layout: 2 columns x 2 rows, each cell holds ONE patch of exactly 48x48 art pixels (3x3 tiles of 16x16), with lots of magenta around it.
+Column 1: a SQUARE patch, path everywhere inside, curb on all 4 outer edges with nicely rounded outer corners.
+Column 2: a DONUT patch, the same square but the center 16x16 tile is an empty magenta hole, so the curb also runs around the inside hole (this gives the inner corners).
+Row 1: normal. Row 2: winter, the same stones with light snow dusting on the joints and curbs.
+The paving pattern must line up so each 16x16 tile repeats seamlessly. Image size 1024x1024, solid #FF00FF background, no text.
