@@ -425,7 +425,7 @@ export class FieldRenderer {
     // 동전 (관객존 바닥)
     const coinFrame = Math.floor(t * 8) % 4;
     for (const co of world.coins) {
-      const fade = co.age > COIN.lifeSec - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
+      const fade = co.age > world.coinLife - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
       c.globalAlpha = fade;
       // 많이 합쳐진 동전은 동전 더미 그림
       const img = co.count >= 3 && hasPng('fx_06') ? sprite('fx_06') : sprite(`coin_${(coinFrame + co.id) % 4}`);

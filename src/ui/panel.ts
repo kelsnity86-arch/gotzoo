@@ -16,6 +16,7 @@ import { animalFrame, hasPng, shinyOf, staff16, staffFrame } from '../render/spr
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
 import { PEN_THEME_BONUS, penOptDef, pieceDef } from '../data/pieces';
+import { UPGRADE_GROUPS } from '../data/balance';
 import { DECO_TIERS, DECOR, DECOR_FX, FACILITIES, FAC_MAX_LV, facLevelValue, itemName, itemSprite, type FacilityType } from '../data/facilities';
 import { pieceArt } from './pieceart';
 import type { DayReport } from '../game/world';
@@ -36,7 +37,10 @@ const SUBS: Record<Tab, [string, string][]> = {
   manage: [['up', '업그레이드'], ['slots', '직원 배치'], ['money', '돈']],
   log: [['mission', '미션'], ['dex', '도감'], ['syn', '시너지'], ['record', '라이벌']],
 };
-const UP_ICON: Record<string, string> = { land: 'v2_ui_board', deco: 'v2_ui_pot', quality: 'v2_ui_ticket', gate: 'v2_ui_visitor', staff: 'v2_ui_badge', pickup: 'v2_ui_coins' };
+const UP_ICON: Record<string, string> = { land: 'v2_ui_board', deco: 'v2_ui_pot', quality: 'v2_ui_ticket', gate: 'v2_ui_visitor', staff: 'v2_ui_badge', pickup: 'v2_ui_coins',
+  comboTime: 'v2_ui_hourglass', comboBonus: 'v2_ui_money', feverTime: 'v2_ui_party', feverCharge: 'v2_ui_up', coinLife: 'v2_ui_coin',
+  machine: 'v2_ui_gacha', shiny: 'v2_ui_shiny', seasonPick: 'v2_ui_spring', fusion: 'v2_ui_fuse',
+  feedCost: 'v2_ui_food', feedTime: 'v2_ui_keeper', promo: 'v2_ui_promoter', buildCut: 'v2_ui_wrench' };
 
 /** 직원 효과 한 줄 (카드에 크게) */
 function staffShort(kind: string, v: number): string {
@@ -92,7 +96,7 @@ export class Panel {
   /** 돈 · 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
     const s = this.ctx.save;
-    const key = `${this.tab}:${this.sub[this.tab]}:${this.cardMode}:${this.penSel.length}:${this.penFuseGrade}:${s.board.map((b) => b.uid).join(',')}:${s.items.map((it) => `${it.uid}${it.x}`).join(',')}:${this.fireArm}|${Math.floor(s.coins)}|${Math.floor(s.tokens ?? 0)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${s.season.n}|${s.synergyFound.length}|${s.shinyDex.filter(Boolean).length}|${this.ctx.world.phase}`;
+    const key = `${this.tab}:${this.sub[this.tab]}:${this.cardMode}:${this.penSel.length}:${this.penFuseGrade}:${s.board.map((b) => b.uid).join(',')}:${s.items.map((it) => `${it.uid}${it.x}`).join(',')}:${this.fireArm}:${this.upGroup}|${Math.floor(s.coins)}|${Math.floor(s.tokens ?? 0)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${s.season.n}|${s.synergyFound.length}|${s.shinyDex.filter(Boolean).length}|${this.ctx.world.phase}`;
     if (!force && key === this.lastKey) return;
     // 돈 · 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(3).join() === this.lastKey.split('|').slice(3).join() && key.split('|')[0] === this.lastKey.split('|')[0];
@@ -139,6 +143,7 @@ export class Panel {
     return b;
   }
   private fireArm = '';
+  private upGroup: string = 'zoo';
   private changed() { this.ctx.persist(); this.ctx.world.sync(); this.render(true); }
 
   // ── 뽑기 (하나로): 동물 90% · 직원 5% · 우리 5%, 코인으로 ──
@@ -275,7 +280,7 @@ export class Panel {
     const cands = fusionCandidates(s, this.fuseGrade);
     const candSet = new Set(cands.map((c) => c.uid));
     this.fuseSel = this.fuseSel.filter((u) => candSet.has(u));
-    const n = this.fuseSel.length, chance = fusionChance(n);
+    const n = this.fuseSel.length, chance = Math.min(1, fusionChance(n) + (n >= 2 ? upValue(this.ctx.save, 'fusion') : 0));
     const bySpecies = new Map<number, number[]>();
     for (const c of cands) if (c.kind === 'animal') bySpecies.set(c.animal, [...(bySpecies.get(c.animal) ?? []), c.uid]);
     const chips = h('div', { class: 'chips' }, ...[0, 1, 2, 3].map((g) => h('button', { class: `chip g-${GRADES[g].key}${this.fuseGrade === g ? ' on' : ''}`, onclick: () => { this.fuseGrade = g as Grade; this.fuseSel = []; this.render(true); } }, `${GRADES[g].name} → ${GRADES[g + 1].name}`)));
@@ -348,9 +353,17 @@ export class Panel {
         this.bar(`총 매력도 ${fmt(totalAttract(s))} / ${fmt(req[1])}`, totalAttract(s) / req[1]),
         (() => { const b = h('button', { class: 'btn', onclick: () => { if (promote(s)) { audio.sfx('fuseWin'); toast(`${s.stage}단계 승급! 투척액이 올라가고 새 업그레이드가 열려요`, 'gold', 2600); this.changed(); } } }, `${s.stage + 1}단계 승급 (뽑기 1장 ${fmt(GACHA.price[s.stage])})`) as HTMLButtonElement; b.disabled = !canPromote(s); return b; })())
         : h('div', { class: 'sub' }, `최고 단계(${MAX_STAGE})예요!`));
-    const rows = UPGRADES.map((u) => {
+    // 묶음 (동물원 · 줍기 · 뽑기 · 운영), 다음 단계까지 열리는 것만 보인다
+    const group = this.upGroup;
+    const groupBar = h('div', { class: 'chips' }, ...UPGRADE_GROUPS.map(([k, name]) => {
+      const n = UPGRADES.filter((u) => (u.group ?? 'zoo') === k && upgradeCost(s, u.id) !== null && !upgradeLockedBy(s, u.id) && s.coins >= (upgradeCost(s, u.id) ?? Infinity)).length;
+      return h('button', { class: `chip${group === k ? ' on' : ''}`, onclick: () => { this.upGroup = k; this.render(true); } }, name, n ? h('span', { class: 'chip-n' }, String(n)) : null);
+    }));
+    const shown = UPGRADES.filter((u) => (u.group ?? 'zoo') === group && ((s.upgrades[u.id] ?? 0) > 0 || (u.need[0] ?? 1) <= s.stage + 1));
+    const hidden = UPGRADES.filter((u) => (u.group ?? 'zoo') === group).length - shown.length;
+    const rows = shown.map((u) => {
       const cost = upgradeCost(s, u.id), lock = upgradeLockedBy(s, u.id);
-      const lv = s.upgrades[u.id];
+      const lv = s.upgrades[u.id] ?? 0;
       return h('div', { class: 'up-row' },
         h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, hasPng(UP_ICON[u.id]) ? pix(UP_ICON[u.id], 20) : null, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
           h('div', { class: 'sub' }, cost === null ? u.describe(u.values[lv]) : `${u.describe(u.values[lv])} → ${u.describe(u.values[lv + 1])}`),
@@ -360,7 +373,7 @@ export class Panel {
           : this.costBtn(`${fmt(cost)}`, cost, () => { if (buyUpgrade(s, u.id)) { audio.sfx('buy'); this.ctx.world.relayout(-1); this.changed(); } }, 'small', !!lock));
     });
     const note = this.ctx.world.isNight ? h('p', { class: 'hint night-on' }, '🌙 밤 정비 시간이에요. 지금 업그레이드할 수 있어요.') : h('p', { class: 'hint' }, '시설 공사는 동물원이 문을 닫은 밤에만 할 수 있어요. 뽑기·배치·합성은 언제나 돼요.');
-    return h('div', {}, stageBox, note, h('div', { class: 'up-list' }, ...rows));
+    return h('div', {}, stageBox, note, groupBar, h('div', { class: 'up-list' }, ...rows), hidden ? h('p', { class: 'hint' }, `단계가 오르면 ${hidden}개가 더 열려요`) : null);
   }
   private bar(label: string, k: number) {
     return h('div', { class: 'pbar' }, h('i', { style: `width:${Math.min(100, k * 100)}%` }), h('span', {}, label));
@@ -604,7 +617,7 @@ export class Panel {
     const cands = penFusionCandidates(s, this.penFuseGrade);
     const candSet = new Set(cands.map((c) => c.uid));
     this.penSel = this.penSel.filter((u) => candSet.has(u));
-    const n = this.penSel.length, chance = fusionChance(n);
+    const n = this.penSel.length, chance = Math.min(1, fusionChance(n) + (n >= 2 ? upValue(this.ctx.save, 'fusion') : 0));
     const all = s.cards.filter((c): c is Extract<Card, { kind: 'pen' }> => c.kind === 'pen').sort((a, b) => b.grade - a.grade);
     const go = h('button', { class: 'btn', onclick: () => {
       const r = fusePens(s, this.penSel);

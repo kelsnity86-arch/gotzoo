@@ -349,14 +349,14 @@ export class World {
   get gateCap() { return upValue(this.save, 'gate') * (1 + facSum(this.save, 'restroom')); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }
-  get visitorRate() { return Math.min(this.gateCap, this.visitorDemand) * (this.event ? eventDef(this.event.id).rateMul : 1); }
+  get visitorRate() { return Math.min(this.gateCap * (this.phaseT < 60 ? upValue(this.save, 'promo') : 1), this.visitorDemand * (this.phase === 'day' && this.phaseT < 60 ? upValue(this.save, 'promo') : 1)) * (this.event ? eventDef(this.event.id).rateMul : 1); }
   /** 수요가 한도를 넘친 만큼 투척액이 오른다 */
   get overflowMul() {
     const d = this.visitorDemand, cap = this.gateCap;
     return d <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + ((d - cap) / cap) * 0.25);
   }
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
-  get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save); }
+  get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife'); }
   get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
   /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */
@@ -669,7 +669,7 @@ export class World {
     // 피버 타임: 남은 시간만큼 게이지가 줄고, 하늘에서 동전 비
     if (this.fever.left > 0) {
       this.fever.left -= dt;
-      this.fever.gauge = Math.max(0, this.fever.left / VISITOR.fever.sec);
+      this.fever.gauge = Math.max(0, this.fever.left / upValue(this.save, 'feverTime'));
       this.fever.rainAcc += dt;
       while (this.fever.rainAcc >= VISITOR.fever.rainEvery) {
         this.fever.rainAcc -= VISITOR.fever.rainEvery;
@@ -684,7 +684,7 @@ export class World {
         this.combo.t -= dt;
         if (this.combo.t <= 0) {
           // 콤보 끝: 5개 넘게 이었으면 보너스 (최대 +50%)
-          if (this.combo.n >= 5) { const bonus = Math.round(this.combo.sum * Math.min(0.5, this.combo.n * 0.02)); this.earn(0, bonus); this.events.push({ type: 'combo', n: this.combo.n, bonus }); }
+          if (this.combo.n >= 5) { const bonus = Math.round(this.combo.sum * Math.min(upValue(this.save, 'comboBonus'), this.combo.n * 0.02)); this.earn(0, bonus); this.events.push({ type: 'combo', n: this.combo.n, bonus }); }
           this.combo = { n: 0, sum: 0, t: 0 };
         }
       }
@@ -806,11 +806,11 @@ export class World {
     this.today.coins += c.count;
     if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
-      this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = 1.2;
+      this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = upValue(this.save, 'comboTime');
       // 피버 게이지: 주운 동전 수만큼 (콤보가 길수록 최대 2배 빨리)
       if (!this.feverOn) {
-        this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)));
-        if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = VISITOR.fever.sec; this.events.push({ type: 'fever', on: true }); }
+        this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)) * upValue(this.save, 'feverCharge'));
+        if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = upValue(this.save, 'feverTime'); this.events.push({ type: 'fever', on: true }); }
       }
       this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
       if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }
@@ -825,7 +825,7 @@ export class World {
   feed(pen: number, by: 'hand' | 'staff' = 'hand'): boolean {
     if (!this.save.pens[pen]?.length || this.phase === 'night') return false; // 밤엔 동물이 잔다
     if (by === 'hand' && this.feedCooldown[pen] > 0) return false;
-    this.fedLeft[pen] = FEED.sec;
+    this.fedLeft[pen] = FEED.sec * upValue(this.save, 'feedTime');
     if (by === 'hand') { this.feedCooldown[pen] = FEED.manualCooldown; bumpMission(this.save, 'feed', 1); }
     this.events.push({ type: 'feed', pen, by });
     const r = this.layout.pens[pen];

@@ -14,7 +14,7 @@ import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/
 export type Rng = () => number;
 
 // ── 업그레이드 값 ──
-export const upValue = (s: SaveData, id: UpgradeId) => upgradeDef(id).values[s.upgrades[id]];
+export const upValue = (s: SaveData, id: UpgradeId) => upgradeDef(id).values[s.upgrades[id] ?? 0];
 // ── 부지 · 우리 조각 ──
 /** 부지 크기 (블록 칸) */
 export const boardDims = (s: SaveData) => BOARD[Math.min(BOARD.length - 1, s.upgrades.land ?? 0)];
@@ -50,7 +50,7 @@ export const facCount = (s: SaveData, t: FacilityType) => s.facLv?.[t] ?? 0;
 /** 시설 효과 (단계만큼) */
 export const facSum = (s: SaveData, t: FacilityType) => facLevelValue(t, facCount(s, t));
 /** 다음 단계 증축 값 (최고 단계면 null) */
-export const facPrice = (s: SaveData, t: FacilityType): number | null => { const lv = facCount(s, t); return lv >= FAC_MAX_LV ? null : Math.round(drawPrice(s) * facilityDef(t).price * FAC_LV_PRICE[lv]); };
+export const facPrice = (s: SaveData, t: FacilityType): number | null => { const lv = facCount(s, t); return lv >= FAC_MAX_LV ? null : Math.round(drawPrice(s) * facilityDef(t).price * FAC_LV_PRICE[lv] * (1 - upValue(s, 'buildCut'))); };
 /** 시설 한 단계 증축 (코인 모자라거나 최고 단계면 false) */
 export function buyFacility(s: SaveData, t: FacilityType): boolean {
   const cost = facPrice(s, t);
@@ -207,7 +207,7 @@ export function fusePens(s: SaveData, uids: number[], rng: Rng = Math.random): F
   if (!first || first.kind !== 'pen') return { ok: false, reason: '우리 조각만 넣을 수 있어요' };
   const allowed = new Set(penFusionCandidates(s, first.grade).map((c) => c.uid));
   if (!set.every((u) => allowed.has(u))) return { ok: false, reason: '같은 등급의 놓지 않은 우리만 넣을 수 있어요' };
-  const chance = fusionChance(set.length);
+  const chance = Math.min(1, fusionChance(set.length) + upValue(s, 'fusion'));
   const success = rng() < chance;
   const keepUid = success ? -1 : set[Math.floor(rng() * set.length)];
   s.cards = s.cards.filter((c) => !set.includes(c.uid) || c.uid === keepUid);
@@ -251,7 +251,7 @@ function addCard(s: SaveData, card: NewCard): Card {
 /** 지금 계절 */
 export const curSeason = (s: SaveData): SeasonDef => seasonOf(s.season.n);
 /** 이 등급의 동물 하나: 그 계절 한정 종이 있으면 일정 확률로 계절 한정 풀에서 */
-function pickAnimal(s: SaveData, g: Grade, rng: Rng, limitedShare: number = SEASON_FX.limitedShare): number {
+function pickAnimal(s: SaveData, g: Grade, rng: Rng, limitedShare: number = upValue(s, 'seasonPick') ?? SEASON_FX.limitedShare): number {
   const lim = seasonalOfGrade(g, curSeason(s).key);
   if (lim.length && rng() < limitedShare) return pick(lim, rng).id;
   return pick(animalsOfGrade(g), rng).id;
@@ -275,9 +275,9 @@ export const MACHINE_TIERS = [
   { name: '금빛 기계', key: 'gold', chance: 0.025, luck: 0.03, shiny: 1 },
   { name: '무지개 기계', key: 'rainbow', chance: 0.005, luck: 0.06, shiny: 2 },
 ] as const;
-export function rollMachine(rng: Rng): number {
+export function rollMachine(rng: Rng, mul = 1): number {
   let r = rng();
-  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { if (r < MACHINE_TIERS[i].chance) return i; r -= MACHINE_TIERS[i].chance; }
+  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { const c = MACHINE_TIERS[i].chance * mul; if (r < c) return i; r -= c; }
   return 0;
 }
 /** 마지막 뽑기의 기계 등급 (연출용) */
@@ -285,7 +285,7 @@ export let lastTier = 0;
 export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
   const cost = drawPrice(s) * n;
   if ((s.tokens ?? 0) < cost) return null;
-  const tier = rollMachine(rng);
+  const tier = rollMachine(rng, upValue(s, 'machine'));
   lastTier = tier;
   s.tokens -= cost;
   s.stats.draws += n;
@@ -339,7 +339,7 @@ function rollCards(s: SaveData, n: number, rng: Rng, tier = 0): Card[] {
     if (k >= DRAW_KIND.animal + DRAW_KIND.staff) { out.push(addCard(s, rollPen(rng))); continue; }
     if (k >= DRAW_KIND.animal) { out.push(addCard(s, rollStaff(rng))); continue; }
     const g = rollGrade(rng, optSum(s, 'luck') + facSum(s, 'lab') + mt.luck);
-    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < SHINY.chance * mt.shiny }));
+    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < upValue(s, 'shiny') * mt.shiny }));
   }
   return out;
 }
@@ -383,7 +383,7 @@ export function fuse(s: SaveData, uids: number[], rng: Rng = Math.random): Fusio
   const grade = ANIMALS[first.animal].grade;
   const allowed = new Set(fusionCandidates(s, grade).map((c) => c.uid));
   if (!set.every((u) => allowed.has(u))) return { ok: false, reason: '같은 등급의 배치·잠금 안 된 동물만 넣을 수 있어요' };
-  const chance = fusionChance(set.length);
+  const chance = Math.min(1, fusionChance(set.length) + upValue(s, 'fusion'));
   const shinyIn = cards.filter((c) => c?.kind === 'animal' && c.shiny).length;
   const success = rng() < chance;
   const keepUid = success ? -1 : set[Math.floor(rng() * set.length)];
@@ -707,7 +707,7 @@ export function dailyCosts(s: SaveData) {
     for (const u of p) {
       const c = cardById(s, u);
       if (c?.kind !== 'animal') continue;
-      feed += UPKEEP.feed[ANIMALS[c.animal].grade] * farm;
+      feed += UPKEEP.feed[ANIMALS[c.animal].grade] * farm * (1 - upValue(s, 'feedCost'));
       if (season.climate && ANIMALS[c.animal].habitat === season.climate) climateN++;
     }
   });
@@ -823,8 +823,8 @@ export function offlineEarnings(s: SaveData, now = Date.now()): { minutes: numbe
 
 // ── 업그레이드 · 승급 ──
 export function upgradeCost(s: SaveData, id: UpgradeId): number | null {
-  const u = upgradeDef(id), lv = s.upgrades[id];
-  return lv < u.costs.length ? u.costs[lv] : null;
+  const u = upgradeDef(id), lv = s.upgrades[id] ?? 0;
+  return lv < u.costs.length ? Math.round(u.costs[lv] * (1 - (id === 'buildCut' ? 0 : upValue(s, 'buildCut')))) : null;
 }
 export function upgradeLockedBy(s: SaveData, id: UpgradeId): number | null {
   const u = upgradeDef(id), lv = s.upgrades[id];

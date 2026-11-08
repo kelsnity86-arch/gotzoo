@@ -22,25 +22,60 @@ export const FUSION_MIN = 2, FUSION_MAX = 10;
 /** 업그레이드: 레벨별 값과 다음 레벨 가격. need = 이 레벨을 사려면 필요한 진행 단계 */
 export interface UpgradeDef {
   id: UpgradeId; name: string; icon: string;
+  /** 업그레이드 탭 묶음 */
+  group?: 'zoo' | 'pick' | 'gacha' | 'ops';
   values: readonly number[]; costs: readonly number[]; need: readonly number[];
   describe: (v: number) => string;
 }
-export type UpgradeId = 'land' | 'deco' | 'quality' | 'gate' | 'staff' | 'pickup';
+export type UpgradeId = 'land' | 'deco' | 'quality' | 'gate' | 'staff' | 'pickup'
+  | 'comboTime' | 'comboBonus' | 'feverTime' | 'feverCharge' | 'coinLife'
+  | 'machine' | 'shiny' | 'seasonPick' | 'fusion'
+  | 'feedCost' | 'feedTime' | 'promo' | 'buildCut';
 
 export const UPGRADES: readonly UpgradeDef[] = [
   { id: 'land', name: '부지 넓히기', icon: 'icon_cage', values: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸` },
+    costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸`, group: 'zoo' },
   { id: 'deco', name: '울타리·입구 꾸미기', icon: 'icon_cage', values: [0, 1, 2, 3],
-    costs: [3000, 15000, 70000], need: [2, 4, 6], describe: (v) => `${['나무', '돌', '철', '황금'][v]} 울타리 · 모든 동물 매력 +${v * 3}%` },
+    costs: [3000, 15000, 70000], need: [2, 4, 6], describe: (v) => `${['나무', '돌', '철', '황금'][v]} 울타리 · 모든 동물 매력 +${v * 3}%`, group: 'zoo' },
   { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.25, 1.6, 2.1, 2.7, 3.5, 4.5, 6],
-    costs: [250, 700, 2000, 5000, 12000, 30000, 75000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `투척액 ×${v}` },
+    costs: [250, 700, 2000, 5000, 12000, 30000, 75000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `손님 씀씀이 ×${v}`, group: 'zoo' },
   { id: 'gate', name: '입장 게이트', icon: 'icon_visitor', values: [30, 45, 60, 80, 110, 150, 200],
-    costs: [800, 2500, 7000, 20000, 55000, 150000], need: [2, 3, 4, 5, 6, 7], describe: (v) => `분당 최대 관람객 ${v}명` },
+    costs: [800, 2500, 7000, 20000, 55000, 150000], need: [2, 3, 4, 5, 6, 7], describe: (v) => `분당 최대 관람객 ${v}명`, group: 'zoo' },
   { id: 'staff', name: '직원 슬롯', icon: 'icon_badge', values: [1, 2, 3, 4, 5],
-    costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명` },
+    costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명`, group: 'zoo' },
   { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [1.5, 3, 4.5, 6.5, 9, 12],
-    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `끌거나 커서를 대면 줍기 · 범위 ${v}` },
+    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `끌거나 커서를 대면 줍기 · 범위 ${v}`, group: 'pick' },
+  // ── 줍기 · 피버 ──
+  { id: 'comboTime', name: '콤보 유지', icon: '', group: 'pick', values: [1.2, 1.4, 1.6, 1.8, 2],
+    costs: [1200, 4000, 14000, 45000], need: [2, 3, 5, 6], describe: (v) => `콤보가 ${v}초 안에 이어져요` },
+  { id: 'comboBonus', name: '콤보 보너스', icon: '', group: 'pick', values: [0.5, 0.65, 0.8, 1],
+    costs: [2500, 12000, 50000], need: [3, 5, 7], describe: (v) => `콤보 끝 보너스 최대 +${Math.round(v * 100)}%` },
+  { id: 'feverTime', name: '피버 시간', icon: '', group: 'pick', values: [15, 18, 21, 25],
+    costs: [3000, 15000, 60000], need: [3, 5, 7], describe: (v) => `피버 타임 ${v}초` },
+  { id: 'feverCharge', name: '피버 충전', icon: '', group: 'pick', values: [1, 1.15, 1.3, 1.5],
+    costs: [2000, 10000, 40000], need: [2, 4, 6], describe: (v) => `피버 게이지 ×${v} 빨리` },
+  { id: 'coinLife', name: '동전 오래 남기', icon: '', group: 'pick', values: [0, 15, 30, 45, 60],
+    costs: [800, 3000, 10000, 35000], need: [1, 3, 4, 6], describe: (v) => `바닥 동전 +${v}초` },
+  // ── 뽑기 · 기계 ──
+  { id: 'machine', name: '기계 정비', icon: '', group: 'gacha', values: [1, 1.25, 1.5, 2],
+    costs: [5000, 25000, 100000], need: [3, 5, 7], describe: (v) => `특별한 기계 확률 ×${v}` },
+  { id: 'shiny', name: '반짝이 연구', icon: '', group: 'gacha', values: [0.01, 0.0125, 0.015, 0.0175, 0.02],
+    costs: [4000, 15000, 50000, 150000], need: [3, 4, 6, 7], describe: (v) => `반짝이 확률 ${+(v * 100).toFixed(2)}%` },
+  { id: 'seasonPick', name: '계절 픽업', icon: '', group: 'gacha', values: [0.2, 0.25, 0.3, 0.35],
+    costs: [3000, 12000, 45000], need: [2, 4, 6], describe: (v) => `고급 이상 중 계절 한정 ${Math.round(v * 100)}%` },
+  { id: 'fusion', name: '합성 숙련', icon: '', group: 'gacha', values: [0, 0.03, 0.06, 0.1],
+    costs: [2500, 12000, 50000], need: [2, 4, 6], describe: (v) => `합성 성공 +${Math.round(v * 100)}%p` },
+  // ── 운영 ──
+  { id: 'feedCost', name: '사료 공급 계약', icon: '', group: 'ops', values: [0, 0.1, 0.2, 0.3],
+    costs: [3000, 15000, 60000], need: [3, 5, 7], describe: (v) => `사료비 −${Math.round(v * 100)}%` },
+  { id: 'feedTime', name: '사육사 교육', icon: '', group: 'ops', values: [1, 1.15, 1.3, 1.5],
+    costs: [1500, 8000, 35000], need: [2, 4, 6], describe: (v) => `먹이 효과 시간 ×${v}` },
+  { id: 'promo', name: '홍보 전단', icon: '', group: 'ops', values: [1, 1.5, 2, 2.5],
+    costs: [2000, 10000, 40000], need: [2, 4, 6], describe: (v) => (v > 1 ? `개장 첫 1분 손님 ×${v}` : '개장 첫 1분 손님 그대로') },
+  { id: 'buildCut', name: '야간 공사 효율', icon: '', group: 'ops', values: [0, 0.07, 0.14, 0.2],
+    costs: [6000, 30000, 120000], need: [3, 5, 7], describe: (v) => `건물 · 업그레이드 값 −${Math.round(v * 100)}%` },
 ];
+export const UPGRADE_GROUPS = [['zoo', '동물원'], ['pick', '줍기 · 피버'], ['gacha', '뽑기'], ['ops', '운영']] as const;
 export const upgradeDef = (id: UpgradeId) => UPGRADES.find((u) => u.id === id)!;
 
 /** 관람객 */
