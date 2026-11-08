@@ -618,6 +618,6 @@ async function boot() {
   requestAnimationFrame((t) => { last = t; frame(t); });
   showTitle(() => { if (save.season.lost) showClosure(); else showOffline(); });
   // 개발·검증용 핸들 (?debug)
-  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist };
+  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field };
 }
 boot();
