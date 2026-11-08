@@ -770,7 +770,7 @@ function updateHud() {
   openBtn.classList.toggle('tight', tight);
   openBtn.style.top = upx(openBottom - (tight ? 58 : 86) * uiScale); openBtn.style.left = upx(fieldRect.x + fieldRect.w / 2);
   // 안내: 처음 몇 단계
-  const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
+  const msg = !save.freeDrawUsed ? '홈 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
     : save.stats.coinsPicked === 0 ? '관객 길의 동전을 쓸어 담아 코인을 모아요 · 코인으로 뽑기!'
     : '';
@@ -805,6 +805,24 @@ async function boot() {
   // 부지 모양이 바뀐 예전 저장: 부지 밖으로 나간 우리가 있으면 다시 배치
   { const [bw, bh] = boardDims(save); if (save.board.some((_, i) => penCells(save, i).some(([x, y]) => x >= bw || y >= bh))) { autoArrangePens(save); world.relayout(-1); persist(); toast('동물원 부지가 새 모양으로 바뀌어 우리를 다시 놓았어요', 'info', 3200); } }
   // 개발·검증용 핸들 (?debug)
+  // 안드로이드 앱(Capacitor)으로 감쌌을 때: 뒤로가기 = 창 닫기 → 패널 접기 → 종료 확인. 앱이 뒤로 가면 저장
+  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: Record<string, { addListener: (ev: string, cb: () => void) => void; exitApp: () => void }> } }).Capacitor;
+  if (cap?.isNativePlatform?.()) {
+    document.body.classList.add('native-app');
+    cap.Plugins?.App?.addListener('backButton', () => {
+      const ov = [...document.querySelectorAll<HTMLElement>('.overlay')].pop();
+      if (ov) {
+        // 폐원 · 이름 짓기 창은 뒤로가기로 닫지 않는다 (실수로 새 동물원이 열리지 않게)
+        if (ov.classList.contains('closure') || ov.classList.contains('name-ask')) return;
+        const btn = ov.querySelector<HTMLElement>('.btn');
+        if (btn) btn.click(); else ov.remove();
+        return;
+      }
+      if (panel.isOpen) { panel.setOpen(false); panel.render(true); return; }
+      if (window.confirm('게임을 끝낼까요? (진행 상황은 저장돼요)')) { persist(); cap.Plugins!.App.exitApp(); }
+    });
+  }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); });
   if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval, showClosure, showSurvive, showLastStand, gainGod, gainHero, showReveal };
 }
 boot();
