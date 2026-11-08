@@ -399,7 +399,10 @@ export class FieldRenderer {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
       list.push({ y: v.y, f: () => {
         const pose = this.poseSprite(v);
-        if (pose) { const hop = v.pose === 'cheer' && !v.tossT && !reduceMotion ? Math.round(Math.abs(Math.sin(v.t * 7)) * 4) : 0; this.blitDev(pose, v.x, v.y, pose.height / FieldRenderer.R, false, hop); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 14 + Math.sin(t * 6), 6); return; }
+        if (pose) { const hop = v.pose === 'cheer' && !v.tossT && !reduceMotion ? Math.round(Math.abs(Math.sin(v.t * 7)) * 4) : 0; this.blitDev(pose, v.x, v.y, pose.height / FieldRenderer.R, false, hop); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 15 + Math.sin(t * 6), 6); return; }
+        // 걷기: 새 관객 8명(계절 옷) · VIP · 분장 손님 (도트 그대로)
+        const wk = this.walkKey(v, seasonOf(save.season.n).key, fr);
+        if (hasPng(wk)) { const im = sprite(wk); this.blitDev(im, v.x, v.y, im.height / FieldRenderer.R, v.dir > 0, 0); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 15 + Math.sin(t * 6), 6); return; }
         const p16 = person16(seasonOf(save.season.n).key, v.kind, fr);
         if (p16) this.blitDev(p16, v.x, v.y, 13, v.dir > 0, 0);
         else this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
@@ -413,6 +416,8 @@ export class FieldRenderer {
         const si = STAFF.findIndex((d) => d.kind === e.kind);
         const ak = `v2_sa_${String(si).padStart(2, '0')}_f${Math.floor(e.anim * 3) % 2}`;
         if ((e.act ?? 0) > 0 && hasPng(ak)) { const im = sprite(ak); this.blitDev(im, e.x, e.y, im.height / FieldRenderer.R, e.face > 0, 0); return; }
+        const wk = `v2_sw_${String(si).padStart(2, '0')}_f${fr}`;
+        if (hasPng(wk)) { const im = sprite(wk); this.blitDev(im, e.x, e.y, im.height / FieldRenderer.R, e.face > 0, 0); return; }
         const s16 = staff16(e.kind, fr);
         if (s16) this.blitDev(s16, e.x, e.y, 13.5, e.face > 0, 0);
         else { this.blit(staffFrame(e.kind, fr), e.x, e.y, 8, 12, e.face > 0, 0); c.fillStyle = e.kind === 'collector' ? '#ef7d32' : '#38a35b'; c.fillRect(Math.round(e.x) - 1, Math.round(e.y) - 15, 2, 2); }
@@ -527,12 +532,17 @@ export class FieldRenderer {
     else c.drawImage(img, px, py, w, h);
   }
 
-  /** 멈춰 선 관람객의 정면 자세 그림 (4종: 아이 · 여자 · 남자 · 어르신). 걷는 중이면 null */
+  /** 관객 그림 이름: 보통 손님 8명(kind % 8, 계절 옷) · VIP(kind 15~18 → 금빛 신사 · 스타 · 마녀 · 유령) */
+  private walkKey(v: VisitorEnt, season: string, fr: number) { return v.vip ? `v2_vip_${Math.max(0, v.kind - 15)}_f${fr}` : `v2_pw_${season}_${v.kind % 8}_f${fr}`; }
+  /** 멈춰 선 관람객의 정면 자세 그림. 걷는 중이면 null */
   private poseSprite(v: VisitorEnt): Sprite | null {
     if (v.state !== 'view' && v.state !== 'sit') return null;
     const p = v.tossT ? 'toss' : v.state === 'sit' ? 'sit' : v.pose ?? 'watch';
-    const k = `v2_va_${v.vip ? 1 : v.kind % 4}_${p}`;
-    return hasPng(k) ? sprite(k) : null;
+    const se = seasonOf(this.seasonN).key;
+    const k = v.vip ? `v2_vip_${Math.max(0, v.kind - 15)}_${p}` : `v2_pp_${se}_${v.kind % 8}_${p}`;
+    if (hasPng(k)) return sprite(k);
+    const old = `v2_va_${v.vip ? 1 : v.kind % 4}_${p}`;
+    return hasPng(old) ? sprite(old) : null;
   }
 
   /** 작은 그림 (동전 · 말풍선): 바닥 가운데 기준, 큰 쪽을 size칸에 맞춰 도트 그대로 */

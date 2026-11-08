@@ -704,7 +704,7 @@ export class World {
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
     const gx = gateX(L.w), dir = targetX >= gx ? 1 : -1;
     const laneY = PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6);
-    this.visitors.push({ vip, x: gx + (this.rng() - 0.5) * 8, y: GATE_Y, laneY, dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
+    this.visitors.push({ vip, x: gx + (this.rng() - 0.5) * 8, y: GATE_Y, laneY, dir, kind: vip ? 15 + (this.event?.id === 'halloween' ? 2 : 0) + (this.rng() < 0.5 ? 1 : 0) : Math.floor(this.rng() * 16),
       state: 'enter', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng(),
       bench: this.benches.length && this.rng() < 0.18 ? Math.floor(this.rng() * this.benches.length) : -1 });
   }

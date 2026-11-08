@@ -420,7 +420,8 @@ export class Panel {
   private staffCard(c: Extract<Card, { kind: 'staff' }>, inSlot: boolean) {
     const s = this.ctx.save;
     const d = staffDef(c.staff), g = GRADES[c.grade];
-    const art = staff16(c.staff, 0) ?? staffFrame(c.staff, 0);
+    const sw = `v2_sw_${String(STAFF.findIndex((x) => x.kind === c.staff)).padStart(2, '0')}_f0`;
+    const art = hasPng(sw) ? sw : (staff16(c.staff, 0) ?? staffFrame(c.staff, 0));
     const strike = inSlot && s.strike && !c.opts.some((o) => o.id === 'loyal');
     const act = inSlot
       ? h('button', { class: 'btn small ghost', onclick: () => { audio.sfx('click'); unplace(s, c.uid); this.changed(); } }, '빼기')

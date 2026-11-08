@@ -176,6 +176,122 @@ def gate():
     SRC = old
 
 
+def extract_raw(a, fg, box, s):
+    """도트 크기 s로 원래 색 그대로 뜬다 (팔레트에 맞추지 않음: 사람 피부 · 머리색이 바뀌지 않게). 그림자 칸은 그림자로"""
+    x0, y0, x1, y1 = box
+    best = None
+    for ox in np.linspace(0, s, 6, endpoint=False):
+        for oy in np.linspace(0, s, 6, endpoint=False):
+            gx0, gy0 = x0 - s + ox, y0 - s + oy
+            nw, nh = int(np.ceil((x1 - gx0) / s)), int(np.ceil((y1 - gy0) / s))
+            err = 0.0
+            for j in range(0, nh, 2):
+                for i in range(0, nw, 2):
+                    cx0, cy0, cx1, cy1 = int(gx0 + (i + 0.2) * s), int(gy0 + (j + 0.2) * s), int(gx0 + (i + 0.8) * s), int(gy0 + (j + 0.8) * s)
+                    if cx0 < 0 or cy0 < 0 or cx1 <= cx0 or cy1 <= cy0: continue
+                    blk = a[cy0:cy1, cx0:cx1].reshape(-1, 3).astype(np.float32)
+                    if len(blk): err += blk.std(axis=0).sum()
+            if best is None or err < best[0]: best = (err, gx0, gy0, nw, nh)
+    _, gx0, gy0, nw, nh = best
+    out = np.zeros((nh, nw, 4), np.uint8)
+    for j in range(nh):
+        for i in range(nw):
+            cx0, cy0 = max(0, int(gx0 + (i + 0.25) * s)), max(0, int(gy0 + (j + 0.25) * s))
+            cx1, cy1 = max(cx0 + 1, int(gx0 + (i + 0.75) * s)), max(cy0 + 1, int(gy0 + (j + 0.75) * s))
+            blk = a[cy0:cy1, cx0:cx1].reshape(-1, 3); fm = fg[cy0:cy1, cx0:cx1].reshape(-1)
+            if blk.size == 0 or fm.mean() < 0.5: continue
+            px = blk[fm]
+            sh = (px == SH).all(axis=1)
+            if sh.mean() > 0.5: out[j, i] = (24, 16, 32, 70); continue
+            px = px[~sh]
+            out[j, i, :3] = np.median(px, axis=0); out[j, i, 3] = 255
+    out = S.keep_main(out)
+    al = out[..., 3] > 0
+    if not al.any(): return out
+    ys, xs = np.nonzero(al)
+    return out[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+def figures(rel, cols, rows, target_h):
+    """사람 시트: 큰 덩어리를 줄 → 왼쪽부터 순서대로 칸에 넣고, 작은 조각(동전 · 효과선)은 가장 가까운 사람에 붙인다"""
+    a, fg, _ = load(rel)
+    H, W = fg.shape
+    boxes = S.components(fg, 4, 1)
+    tall = [b for b in boxes if (b[3] - b[1]) > H / rows * 0.35]
+    small = [b for b in boxes if b not in tall and (b[2] - b[0]) * (b[3] - b[1]) > 60]
+    s = float(np.median([b[3] - b[1] for b in tall])) / target_h
+    big = [list(b) for b in tall]
+    for b in small:
+        cx, cy = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        k = min(range(len(big)), key=lambda i: abs((big[i][0] + big[i][2]) / 2 - cx) + abs((big[i][1] + big[i][3]) / 2 - cy) * 1.5)
+        g = big[k]
+        if abs((g[0] + g[2]) / 2 - cx) < W / cols * 0.6 and abs((g[1] + g[3]) / 2 - cy) < H / rows * 0.6:
+            big[k] = [min(g[0], b[0]), min(g[1], b[1]), max(g[2], b[2]), max(g[3], b[3])]
+    rws = S.order_rows([tuple(b) for b in big], H / rows * 0.45)
+    # 붙어서 한 덩어리가 된 사람들: 너비가 보통의 1.5배 넘으면 그림이 가장 적은 세로줄에서 나눈다
+    mw = float(np.median([b[2] - b[0] for row in rws for b in row]))
+    def split(b):
+        k = int(round((b[2] - b[0]) / mw))
+        if k <= 1: return [b]
+        colsum = fg[b[1]:b[3], b[0]:b[2]].sum(axis=0)
+        cuts, w = [], b[2] - b[0]
+        for j in range(1, k):
+            c0 = int(w * j / k - w / k * 0.3); c1 = int(w * j / k + w / k * 0.3)
+            cuts.append(c0 + int(np.argmin(colsum[c0:c1])))
+        xs = [0] + cuts + [w]
+        parts = []
+        for x0, x1 in zip(xs, xs[1:]):
+            sub = fg[b[1]:b[3], b[0] + x0:b[0] + x1]
+            ys = np.nonzero(sub.sum(axis=1) > 0)[0]
+            if len(ys): parts.append((b[0] + x0, b[1] + ys.min(), b[0] + x1, b[1] + ys.max() + 1))
+        return parts
+    rws = [[p for b in row for p in split(b)] if len(row) < cols else row for row in rws]
+    # 칸보다 많으면 가장 좁은 조각을 옆 사람에 붙인다 (동전 · 효과선 조각)
+    for r, row in enumerate(rws):
+        row = sorted(row, key=lambda b: b[0])
+        while len(row) > cols:
+            k = min(range(len(row)), key=lambda i: row[i][2] - row[i][0])
+            nb = k - 1 if k == len(row) - 1 or (k > 0 and row[k][0] - row[k - 1][2] < row[k + 1][0] - row[k][2]) else k + 1
+            a_, b_ = row[k], row[nb]
+            row[min(k, nb)] = (min(a_[0], b_[0]), min(a_[1], b_[1]), max(a_[2], b_[2]), max(a_[3], b_[3]))
+            del row[max(k, nb)]
+        rws[r] = row
+    out = [None] * (cols * rows)
+    for r, row in enumerate(rws[:rows]):
+        if len(row) != cols: print('  !', rel, 'row', r, 'has', len(row), flush=True)
+        for c, b in enumerate(row[:cols]): out[r * cols + c] = extract_raw(a, fg, b, s)
+    print(rel, 'pixel', round(s, 2), flush=True)
+    return out
+
+
+def auto_s(rel, target_h, cols, rows):
+    """시트마다 사람 크기가 달라서, 덩어리 키의 중앙값이 target_h도트가 되는 도트 크기"""
+    a, fg, _ = load(rel)
+    H, W = fg.shape
+    hs = [b[3] - b[1] for b in S.components(fg, 4, 1) if (b[3] - b[1]) > H / rows * 0.4]
+    return float(np.median(hs)) / target_h if hs else 5.5
+
+
+def people():
+    """관객 8명: 계절 걷기(8×2) · 계절 자세(8×4 두 장) · VIP(10×4), 직원 걷기(4×5)"""
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16'
+    poses = ['watch', 'cheer', 'photo', 'snack', 'point', 'sit', 'toss', 'sad']
+    for se in SEASONS:
+        for i, t in enumerate(figures(f'people-actions/walk/people_walk16_{se}.png', 8, 2, 40)):
+            if t is not None: S.save(t, OUT / f'pw_{se}_{i % 8}_f{i // 8}.png')
+        for half, base in (('a', 0), ('b', 4)):
+            for i, t in enumerate(figures(f'people-actions/poses/people_pose16_{se}_{half}.png', 8, 4, 40)):
+                if t is not None: S.save(t, OUT / f'pp_{se}_{base + i // 8}_{poses[i % 8]}.png')
+    for i, t in enumerate(figures('people-actions/vip/vip16.png', 10, 4, 40)):
+        if t is not None:
+            r, c = i // 10, i % 10
+            S.save(t, OUT / (f'vip_{r}_f{c}.png' if c < 2 else f'vip_{r}_{poses[c - 2]}.png'))
+    for i, t in enumerate(figures('staff-walk/staff_walk16.png', 4, 5, 42)):
+        if t is not None: S.save(t, OUT / f'sw_{i // 2:02d}_f{i % 2}.png')
+    SRC = old
+
+
 def buildings():
     bl, _, _ = cells('buildings/buildings16.png', 6, 3, crop=True)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
@@ -186,6 +302,7 @@ def buildings():
 if __name__ == '__main__':
     if sys.argv[1:] == ['buildings']: buildings()
     elif sys.argv[1:] == ['gate']: gate()
+    elif sys.argv[1:] == ['people']: people()
     elif sys.argv[1:] == ['tiles']:
         tiles(); shapes('paths/path16.png', ['path_sq', 'path_ring', 'path_sq_w', 'path_ring_w'])
     else: run()
