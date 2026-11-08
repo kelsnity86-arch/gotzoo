@@ -108,7 +108,19 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   } else machine = useArt
     ? h('div', { class: 'machine art' }, pix('gacha_01', 128, 'pix m-idle'), pix('gacha_02', 128, 'pix m-shake'), pix(`gacha_${String(3 + capIdx).padStart(2, '0')}`, 40, 'pix cap-closed'), pix(`gacha_${String(8 + capIdx).padStart(2, '0')}`, 40, 'pix cap-open'))
     : h('div', { class: 'machine' }, h('div', { class: 'dome' }, ...Array.from({ length: 9 }, (_, i) => h('i', { style: `--k:${i}` }))), h('div', { class: 'body' }, h('b', {})));
-  const grid = h('div', { class: `reveal-grid n${cards.length}` });
+  // (시안 ?mock2) 여러 장: 탁자에 흩뿌린 듯 · 가장 높은 등급 한 장만 가운데 크게
+  const scatter = cards.length > 1 && new URLSearchParams(location.search).has('mock2');
+  const bestIdx = cards.reduce((bi, c, i) => (cardGrade(c) > cardGrade(cards[bi]) || (isNamed(c) && !isNamed(cards[bi])) ? i : bi), 0);
+  const grid = h('div', { class: `reveal-grid n${cards.length}${scatter ? ' scatter' : ''}` });
+  const placeCell = (wrap: HTMLElement, i: number) => {
+    if (!scatter) return;
+    if (i === bestIdx) { wrap.classList.add('star-card'); return; }
+    const others = cards.length - 1, k = i < bestIdx ? i : i - 1;
+    const ang = (k / others) * Math.PI * 2 + 0.4, rx = 38 + (k % 2) * 6, ry = 30 + ((k + 1) % 3) * 5;
+    const rnd = Math.sin(i * 12.9898) * 43758.5453; const jit = rnd - Math.floor(rnd);
+    wrap.style.left = `${50 + Math.cos(ang) * rx}%`; wrap.style.top = `${50 + Math.sin(ang) * ry}%`;
+    wrap.style.setProperty('--rot', `${(jit - 0.5) * 36}deg`);
+  };
   const skip = h('button', { class: 'btn ghost' }, '모두 보기');
   const close = h('button', { class: 'btn', style: 'display:none' }, '확인');
   const back = h('div', { class: 'overlay reveal' },
@@ -164,15 +176,16 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     if (shown >= cards.length) { finish(); return; }
     const c = cards[shown++];
     const g = cardGrade(c);
-    const front = cardEl(c, { isNew: newUids.has(c.uid), size: cards.length > 5 ? 'r' : 'l' });
+    const front = cardEl(c, { isNew: newUids.has(c.uid), size: scatter ? (shown - 1 === bestIdx ? 'l' : 'r') : cards.length > 5 ? 'r' : 'l' });
     const bk = cardBack(backPx);
     const wrap = h('div', { class: `reveal-cell${g >= 2 ? ' shine' : ''}${bk ? ' has-back' : ''}`, style: g >= 0 ? `--glow:${GRADES[g].color}` : '--glow:#ef7d32' }, bk ? h('div', { class: 'cell-back' }, bk) : null, h('div', { class: 'cell-front' }, front));
+    placeCell(wrap, shown - 1);
     grid.append(wrap);
     if (bk) window.setTimeout(() => wrap.classList.add('flipped'), motion.reduce ? 0 : 160);
     audio.sfx(g >= 2 ? 'rare' : 'reveal');
     timer = window.setTimeout(showOne, motion.reduce ? 0 : cards.length > 1 ? 240 : 0);
   };
-  const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: cards.length > 5 ? 'r' : 'l' }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
+  const finish = () => { clearTimeout(timer); while (shown < cards.length) { const cell = h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: scatter ? (shown === bestIdx ? 'l' : 'r') : cards.length > 5 ? 'r' : 'l' })); placeCell(cell, shown); grid.append(cell); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
   if (v3 && gs) {
     const G = gs, R = motion.reduce, amp = R ? 0.35 : 1;
     const show = (els: HTMLElement[], i: number) => els.forEach((e, k) => { e.style.opacity = k === i ? '1' : '0'; });

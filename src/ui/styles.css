@@ -772,3 +772,11 @@ body.reduce-motion .confetti { display: none; }
 .newcomer-banner.g2 { --gb: #41a6f6; } .newcomer-banner.g3 { --gb: #c084fc; } .newcomer-banner.g4 { --gb: #f7c948; } .newcomer-banner.g5 { --gb: #fff3a3; box-shadow: 0 0 24px #fff3a3; }
 .newcomer-banner.hidden { display: none; }
 @keyframes nb-in { from { transform: translateX(-50%) scale(.4); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+/* (시안) 흩뿌린 카드: 다른 카드는 비스듬히 둘레에, 최고 등급 한 장만 가운데 크게 · 아래 정보 숨김 */
+.reveal-grid.scatter { display: block; position: relative; width: min(900px, 92vw); height: min(62vh, 520px); }
+.reveal-grid.scatter .reveal-cell { position: absolute; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(.72); transition: transform .3s; }
+.reveal-grid.scatter .reveal-cell .card-sub, .reveal-grid.scatter .reveal-cell:not(.star-card) .card-grade { display: none; }
+.reveal-grid.scatter .reveal-cell.star-card { left: 50%; top: 50%; z-index: 5; transform: translate(-50%, -50%) scale(1.3); }
+.reveal-grid.scatter .reveal-cell.star-card::before { content: ''; position: absolute; left: 50%; top: 45%; width: 360px; height: 360px; transform: translate(-50%, -50%); background: radial-gradient(circle, color-mix(in srgb, var(--glow) 55%, transparent) 0%, transparent 65%); z-index: -1; animation: star-glow 2.4s ease-in-out infinite; }
+.reveal-grid.scatter .reveal-cell:hover { z-index: 6; }
+@keyframes star-glow { 50% { transform: translate(-50%, -50%) scale(1.12); opacity: .8; } }

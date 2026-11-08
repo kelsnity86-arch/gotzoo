@@ -40,6 +40,7 @@ finishLegacy(save); // 예전 저장(우리 늘리기·넓히기) → 우리 조
 syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
+field.mock2 = new URLSearchParams(location.search).has('mock2');
 field.mock = new URLSearchParams(location.search).has("mock");
 const LOOP = true; // 코인(바닥 동전) → 뽑기 고리
 let dpr = 1, W = 0, H = 0;

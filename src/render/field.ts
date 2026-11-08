@@ -4,7 +4,7 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import type { AnimalEnt, StaffEnt } from '../game/world';
-import { penAttract , penBest, cardById } from '../game/rules';
+import { penAttract , penBest, cardById , isHot } from '../game/rules';
 import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite , godFrame, heroFrame } from './sprites';
 import { GODS, HEROES } from '../data/olympus';
 import { seasonOf } from '../data/seasons';
@@ -83,6 +83,17 @@ export class FieldRenderer {
   /** 입장식: 카메라가 우리로 다가갔다가 돌아온다 · 스포트라이트 */
   private focusFx: { x: number; y: number; z: number; t: number; dur: number; z0: number; cx0: number; cy0: number } | null = null;
   spot: { pen: number; t: number; grade: number } | null = null;
+  /** 시안: 선 대신 효과 그림으로 꾸미기 (?mock2) */
+  mock2 = false;
+  /** 그림 하나를 월드 좌표에 (아래 가운데 기준, 크기 w×h 월드 칸) */
+  private spr(key: string, cx: number, by: number, w: number, h: number, alpha = 1, rot = 0) {
+    if (!hasPng(key)) return;
+    const c = this.ctx, im = sprite(key);
+    c.save(); c.globalAlpha *= alpha;
+    if (rot) { c.translate(cx, by - h / 2); c.rotate(rot); c.drawImage(im, -w / 2, -h / 2, w, h); }
+    else c.drawImage(im, cx - w / 2, by - h, w, h);
+    c.restore();
+  }
   focus(x: number, y: number, z: number, dur = 2.8) { this.focusFx = { x, y, z, t: performance.now(), dur: dur * 1000, z0: this.userZoom, cx0: this.camX, cy0: this.camY }; }
   get focusing() { return !!this.focusFx; }
   private bgKey = '';
@@ -539,7 +550,8 @@ export class FieldRenderer {
     c.globalAlpha = 1;
     // 등급 높은 우리: 전설 · 신 = 금빛 테두리 · 간판, 영웅 = 은빛 (빛이 테두리를 따라 돈다)
     const tt = performance.now() / 1000;
-    L.pens.forEach((r, i) => {
+    if (this.mock2) this.decorPensFx(world, save, tt);
+    else L.pens.forEach((r, i) => {
       const b = penBest(save, i);
       if (b < 3) return;
       const gold = b >= 4, col = gold ? '#f7c948' : '#c7cfdd', hi = gold ? '#fff3a3' : '#ffffff';
@@ -565,7 +577,8 @@ export class FieldRenderer {
       }
     });
     // 입장식 스포트라이트: 주변을 어둡게, 우리에 빛기둥, 전설 · 신화는 꽃가루
-    if (this.spot) {
+    if (this.spot && this.mock2) this.spotFx(world);
+    else if (this.spot) {
       const k = (performance.now() - this.spot.t) / 3200;
       const r = L.pens[this.spot.pen];
       if (k >= 1 || !r) this.spot = null;
@@ -809,6 +822,69 @@ export class FieldRenderer {
     c.fillStyle = '#5d3a24'; c.fillRect(Math.round(e.x - wd / 2), Math.round(top - 4), Math.ceil(wd), 4.4);
     c.fillStyle = '#fff3a3'; c.fillText(d.name, e.x, top);
     c.restore();
+  }
+  /** (시안) 등급별 우리 꾸밈: 발밑 후광 · 모서리 대리석 기둥 · 월계관 간판 · 반짝임, 화제의 신입은 파티 · 하트 */
+  private decorPensFx(world: World, save: SaveData, tt: number) {
+    const L = world.layout, c = this.ctx;
+    L.pens.forEach((r, i) => {
+      const b = penBest(save, i);
+      const hot = (save.pens[i] ?? []).some((u) => isHot(save, u));
+      if (b >= 3) {
+        const cards = (save.pens[i] ?? []).map((u) => cardById(save, u)).filter((x): x is Extract<typeof save.cards[number], { kind: 'animal' }> => x?.kind === 'animal');
+        const best = cards.sort((a, z) => (z.god !== undefined ? 5 : ANIMALS[z.animal].grade) - (a.god !== undefined ? 5 : ANIMALS[a.animal].grade))[0];
+        const ent = world.animals.find((a) => a.uid === best?.uid);
+        const aura = b >= 5 ? 'v2_mt_rainbow_aura' : b >= 4 ? 'v2_mt_gold_aura' : 'v2_mt_silver_aura';
+        // 발밑 후광: 숨 쉬듯
+        if (ent) { const s = 26 + Math.sin(tt * 2) * 2; c.save(); c.globalCompositeOperation = 'lighter'; this.spr(aura, ent.x, ent.y + s * 0.32, s, s * 0.62, 0.55); c.restore(); }
+        // 모서리 대리석 기둥 (전설 · 신화)
+        if (b >= 4) { this.spr('v2_oly_column', r.x + 3, r.y + 10, 6, 12); this.spr('v2_oly_column', r.x + r.w - 3, r.y + 10, 6, 12); if (b >= 5) { this.spr('v2_oly_star', r.x + 3, r.y - 1, 6, 6); this.spr('v2_oly_star', r.x + r.w - 3, r.y - 1, 6, 6); } }
+        // 간판: 월계관 위에 이름
+        if (best) {
+          const name = best.god !== undefined ? GODS[best.god].name : ANIMALS[best.animal].name;
+          const label = `${b >= 5 ? '신화' : b >= 4 ? '전설' : '영웅'}의 ${name}`;
+          const cx = r.x + r.w / 2, y = r.y + 9;
+          if (b >= 4) this.spr('v2_oly_laurel', cx, y + 3, 22, 16, 0.95); else this.spr('v2_ui_star1', cx - 14, y + 1, 5, 5);
+          c.save(); c.font = '3.4px Jua, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+          c.lineJoin = 'round'; c.lineWidth = 1.2; c.strokeStyle = '#3e2f5b'; c.strokeText(label, cx, y - 2);
+          c.fillStyle = b >= 4 ? '#fff3a3' : '#e9f3ff'; c.fillText(label, cx, y - 2); c.restore();
+        }
+        // 반짝임 · 별이 가끔 떠오른다
+        for (let n = 0; n < (b >= 4 ? 3 : 2); n++) {
+          const ph = (tt * 0.6 + n * 0.37 + i * 0.21) % 1;
+          const x = r.x + ((n * 53 + i * 31) % Math.max(1, r.w - 8)) + 4, y = r.y + r.h - 6 - ph * (r.h - 10);
+          this.spr(n % 2 ? 'v2_wx_twinkle' : 'v2_fx_sparkle', x, y, 5, 5, Math.sin(ph * Math.PI));
+        }
+      }
+      if (hot) {
+        const bob = Math.abs(Math.sin(tt * 3)) * 2;
+        this.spr('v2_ui_party', r.x + r.w - 9, r.y - 1 - bob, 7, 7);
+        this.spr('v2_fx_excl', r.x + r.w - 3, r.y - 3 - bob, 5, 5);
+        const ph = (tt * 0.5 + i * 0.3) % 1;
+        this.spr('v2_gf_hearts', r.x + r.w / 2 + Math.sin(tt + i) * 6, r.y + r.h * 0.5 - ph * 20, 9, 9, Math.sin(ph * Math.PI) * 0.9);
+      }
+    });
+  }
+  /** (시안) 입장식: 등급별 빛기둥 · 회전 광선 · 터짐 · 꽃가루 그림, 신화는 후광 고리 */
+  private spotFx(world: World) {
+    const sp = this.spot!, L = world.layout, c = this.ctx, r = L.pens[sp.pen];
+    const k = (performance.now() - sp.t) / 3200;
+    if (k >= 1 || !r) { this.spot = null; return; }
+    const a = Math.min(1, k * 5, (1 - k) * 4);
+    const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+    const g = c.createRadialGradient(cx, cy, Math.max(r.w, r.h) * 0.45, cx, cy, Math.max(L.w, L.h) * 0.7);
+    g.addColorStop(0, 'rgba(10,8,20,0)'); g.addColorStop(1, `rgba(10,8,20,${0.55 * a})`);
+    c.fillStyle = g; c.fillRect(0, 0, L.w, L.h);
+    const gk = ['common', 'uncommon', 'rare', 'epic', 'legend', 'shiny'][Math.min(5, sp.grade)];
+    c.save(); c.globalCompositeOperation = 'lighter';
+    this.spr(`v2_gf_rays`, cx, cy, 60, 60, 0.6 * a, k * 3);
+    this.spr(`v2_gf_pillar_${gk}`, cx, r.y + r.h, r.w * 0.55, r.h + 40, 0.75 * a);
+    if (k < 0.3) { const s = 20 + k * 120; this.spr(`v2_gf_burst_${gk}`, cx, cy + s / 2, s, s, 1 - k / 0.3); }
+    c.restore();
+    if (sp.grade >= 5) this.spr('v2_oly_halo', cx, cy - 10 + Math.sin(k * 20), 16, 7, a);
+    if (sp.grade >= 4 && !motion.reduce) for (let n = 0; n < 14; n++) {
+      const px = r.x + ((n * 37.7) % r.w), py = r.y - 16 + ((k * 80 + n * 17) % (r.h + 16));
+      this.spr(['v2_gf_confetti', 'v2_gf_star', 'v2_gf_sparkle'][n % 3], px, py, 6, 6, a, k * 6 + n);
+    }
   }
   private sparkle(x: number, y: number, t: number) {
     const ph = (t * 2) % 3;
