@@ -1,0 +1,1142 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 3,
+  "requested_slot_count": 96,
+  "count_note": "40 primary UI icons + 32 secondary UI icons + 24 weather/night sprites.",
+  "references": [
+    {
+      "path": "assets/spritesheets16/ui-effects/icons/icons16.png",
+      "sha256": "f5f64662d42bc4fd8791c04ce6ad93af9f1830892458bede42a62d8e678cf897"
+    },
+    {
+      "path": "assets/spritesheets16/expansion/icons/icons16_2.png",
+      "sha256": "82843fe21af8d38702208982e8ae1f3d048a6af5de52a57acdece312d0ca0c35"
+    },
+    {
+      "path": "assets/spritesheets16/world-life/effects/fx_life16.png",
+      "sha256": "a000f5ec552fcc426dabf4e038efe330139f380673e99bfc83e65c2c41522b98"
+    }
+  ],
+  "sheets": [
+    {
+      "filename": "icons_ui16_a.png",
+      "path": "assets/spritesheets16/ui-weather/icons/icons_ui16_a.png",
+      "sha256": "c9c2bf1d0e5c5e55cd4dcacdb49f543d70fee762aaf03d8ab954a1c5f23a6e58",
+      "actual_size": [
+        1586,
+        992
+      ],
+      "requested_size": [
+        1536,
+        960
+      ],
+      "requested_grid": [
+        8,
+        5
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "label": "gacha machine",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "label": "zoo entrance gate",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "label": "stack of cards",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "label": "clipboard with a gear",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "label": "open record book",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "label": "paw print",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "label": "staff name badge",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "label": "square enclosure block piece",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "label": "grid board",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "label": "small shop building",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "label": "flower pot",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "label": "list made of blank horizontal bars",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "label": "two cards merging with a plus",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "label": "green up arrow",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "label": "three empty rectangular slots",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "label": "money bag",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "label": "mission flag",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "label": "encyclopedia book with a paw",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "label": "chain link",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "label": "trophy",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "label": "single gold coin",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "label": "stack of gold coins",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "label": "golden ticket",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "label": "food bowl",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "label": "pink heart",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "label": "little person",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "label": "sun",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "label": "moon",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "label": "hourglass",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "label": "blank calendar",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "label": "gear",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "label": "speaker on with sound waves",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 33,
+          "row": 5,
+          "column": 1,
+          "label": "muted speaker",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 34,
+          "row": 5,
+          "column": 2,
+          "label": "magnifier plus",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 35,
+          "row": 5,
+          "column": 3,
+          "label": "magnifier minus",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 36,
+          "row": 5,
+          "column": 4,
+          "label": "four outward arrows for fit-to-screen",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 37,
+          "row": 5,
+          "column": 5,
+          "label": "close X symbol",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 38,
+          "row": 5,
+          "column": 6,
+          "label": "check mark",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 39,
+          "row": 5,
+          "column": 7,
+          "label": "padlock",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 40,
+          "row": 5,
+          "column": 8,
+          "label": "rival zoo flag with a lightning bolt",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        }
+      ]
+    },
+    {
+      "filename": "icons_ui16_b.png",
+      "path": "assets/spritesheets16/ui-weather/icons/icons_ui16_b.png",
+      "sha256": "c228ecdc7f48390a3403ac5e535ee61cb8084b902670e8367899cc98648689da",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "label": "meadow grass tuft",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "label": "desert cactus and sun",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "label": "water wave",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "label": "snowflake",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "label": "rocky mountain peak",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "label": "magic cloud with a star",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "label": "spring cherry blossom",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "label": "summer sun with sunglasses",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "label": "autumn maple leaf",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "label": "winter snowman head",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "label": "one gray star",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "label": "one green star",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "label": "one blue star",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "label": "one purple star",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "label": "one gold star with sparkle",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "label": "rainbow sparkle",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "label": "coin with grabber hand",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "label": "food bucket",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "label": "small yellow guide flag",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "label": "broom",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "label": "ticket stub",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "label": "mop",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "label": "whistle",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "label": "stethoscope",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "label": "megaphone",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "label": "juggling balls",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "label": "thermometer",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "label": "wrench",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "label": "blank picket sign",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "label": "piggy bank",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "label": "gift box",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "label": "party popper",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        }
+      ]
+    },
+    {
+      "filename": "weather16.png",
+      "path": "assets/spritesheets16/ui-weather/weather/weather16.png",
+      "sha256": "167d5052d84096a647d71e587f3c8b275dd8f1f21b5eea18749a212daea32483",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        6,
+        4
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "label": "raindrop streak",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "label": "raindrop splash frame 1",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "label": "raindrop splash frame 2",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "label": "small puddle",
+          "target_native_size": [
+            24,
+            8
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "label": "open umbrella",
+          "target_native_size": [
+            16,
+            12
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "label": "rain cloud",
+          "target_native_size": [
+            32,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "label": "small snowflake",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "label": "big snowflake",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "label": "snow clump",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "label": "cherry blossom petal A",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "label": "cherry blossom petal B",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "label": "cherry blossom petal C",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "label": "red maple leaf",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "label": "orange maple leaf",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "label": "yellow ginkgo leaf",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "label": "heat shimmer wave lines",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "label": "sun glare sparkle",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "label": "dust gust",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "label": "firefly glow, yellow dot with two lighter rings",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "label": "lamp light pool, three flat warm elliptical bands",
+          "target_native_size": [
+            32,
+            16
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "label": "lit window square, warm yellow",
+          "target_native_size": [
+            8,
+            8
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "label": "star twinkle",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "requested_no_outline": true
+        },
+        {
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "label": "moon",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "requested_no_outline": false
+        },
+        {
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "label": "shooting star",
+          "target_native_size": [
+            32,
+            16
+          ],
+          "requested_no_outline": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "source_delivery": "PASS_5_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "canvas_matches": 3,
+  "canvas_mismatches": 2,
+  "checks": [
+    {
+      "filename": "gacha_machine16.png",
+      "readable_png": true,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "canvas_pass": true,
+      "unique_rgb_colors": 290531,
+      "off_palette_pixels": 1572838,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_playback": "NOT_TESTED",
+      "card_window_uniformity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "gacha_capsule16.png",
+      "readable_png": true,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "canvas_pass": true,
+      "unique_rgb_colors": 126206,
+      "off_palette_pixels": 1572833,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_playback": "NOT_TESTED",
+      "card_window_uniformity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "gacha_fx16.png",
+      "readable_png": true,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 167224,
+      "off_palette_pixels": 1572454,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_playback": "NOT_TESTED",
+      "card_window_uniformity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "cards16.png",
+      "readable_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 150179,
+      "off_palette_pixels": 1572472,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_playback": "NOT_TESTED",
+      "card_window_uniformity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "gacha_cutin16.png",
+      "readable_png": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "canvas_pass": true,
+      "unique_rgb_colors": 51671,
+      "off_palette_pixels": 1572674,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fills": "NOT_CERTIFIED",
+      "animation_registration_and_playback": "NOT_TESTED",
+      "card_window_uniformity": "NOT_CERTIFIED"
+    }
+  ],
+  "corrections": [
+    "Cut-in ray fills edited to reduce smooth lighting; exact flat RGB areas remain uncertified."
+  ],
+  "remaining": [
+    "Exact native grid, 38-color palette, uniform magenta and 1px brown outline not met.",
+    "Card and FX canvases differ from requested dimensions.",
+    "Machine body equality, capsule diameter, animation anchors and playback need review.",
+    "Staff machine dome retains a round capsule behind ID-card shapes.",
+    "Cut-in ray fills still contain intermediate colors; no true flat-palette certification.",
+    "Empty card window geometry and no-text requirement checked visually only."
+  ]
+}

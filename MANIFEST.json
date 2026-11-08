@@ -1,0 +1,1138 @@
+{
+  "project": "BbopZOO",
+  "snapshot_date_kst": "2026-11-08",
+  "source_repository": "kelsnity86-arch/gotzoo",
+  "source_branch": "main",
+  "source_commit": "378033f8af311dd6990519ed343430f964dec751",
+  "sheet_count": 79,
+  "main_and_supporting_sheet_count": 63,
+  "earlier_design_reference_count": 16,
+  "category_counts": {
+    "01_animals": 15,
+    "02_people": 17,
+    "03_world": 8,
+    "04_buildings_and_gates": 4,
+    "05_seasonal_decor": 4,
+    "06_gacha_and_cards": 7,
+    "07_ui_icons": 4,
+    "08_effects": 4,
+    "90_earlier_designs": 16
+  },
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "selection": "Every tracked 16-series source sheet at this commit, each at its final committed revision. Older designs with unique content are retained separately, not selected over newer role equivalents.",
+  "exclusions": [
+    "Old 8px series and runtime-derived crops",
+    "Rejected/intermediate imagegen outputs",
+    "Game code and previously packaged ZIPs"
+  ],
+  "files": [
+    {
+      "archive_path": "01_animals/large/big16_1.png",
+      "repository_path": "assets/spritesheets16/animals-large/big16_1.png",
+      "sha256": "8cf5fe500017bf07f7f3e68f7a71934de7aaa1b8375f4de76a53b1fa2c241e98",
+      "git_blob": "9a3d881820738a9a9d4d65c13dbe5dc1f90c9aa3",
+      "bytes": 1929937,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/large/big16_2.png",
+      "repository_path": "assets/spritesheets16/animals-large/big16_2.png",
+      "sha256": "f41150006e28c0c30b6529fc718691c48c7adfabef352dbc0e38f2fad3bc2a0a",
+      "git_blob": "2f940d0b7485899c8bd929da44b1d58a7f44a37e",
+      "bytes": 1766141,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/large/big16_3.png",
+      "repository_path": "assets/spritesheets16/animals-large/big16_3.png",
+      "sha256": "85b680ffc65f17ea057bfefaea85b5498c29a36e793a339de59a582c18cff0c2",
+      "git_blob": "d0d0bd7f7e890655e0c6fc0e57311fc10066c0ea",
+      "bytes": 2028681,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 30,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_01.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_01.png",
+      "sha256": "41baa7fe4addee5b78e15f3c843d4537fe632ddd2e7247b270c23abe7b158176",
+      "git_blob": "55d4b0b57a36680cbb3be403015f04d43a55ec04",
+      "bytes": 1548338,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_02.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_02.png",
+      "sha256": "a7f0717eba1504eb1edd1f566dd86c9f0d8b4c9d8e1995b2ebb0cfbc9e8ca996",
+      "git_blob": "750347f15b6921dfc163240668b3f5cc41b459da",
+      "bytes": 1572157,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_03.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_03.png",
+      "sha256": "89cec3927f20b0967d2a8e36cf4a1dd8ed0c9c3eca485f352cfabe66d7697b72",
+      "git_blob": "5d21dd58f4d65988d52e3ef3a99a19a63e8e965b",
+      "bytes": 1535920,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_04.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_04.png",
+      "sha256": "b5085d448e303222871ce4cea323cd6eca90ea83e5811cd260e032a393bf3eef",
+      "git_blob": "7cbb2e512eed7f256515a76e3a13926eda893f6f",
+      "bytes": 1562930,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_05.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_05.png",
+      "sha256": "d8c693c085f00e8f13fa5cdbd8c0c492723b34f6cf82657e29cd752ddedb51ad",
+      "git_blob": "d3c3fbf93fab6e6b491d6a12eb9a58ba10825568",
+      "bytes": 1571231,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_06.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_06.png",
+      "sha256": "e83c187febc74f63655a08ae10dc085d0094578d511d991121b0e165c5456a8b",
+      "git_blob": "9c14d3c3658e220249b6e7ff060bd06a86fe480a",
+      "bytes": 1672450,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_07.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_07.png",
+      "sha256": "0de5f077feebbe5520a9030301768421be1ef7b75c4279bf5d1f6f25dcfecc66",
+      "git_blob": "ea479509865abd64b52e423485d088b5cef55d5c",
+      "bytes": 1683852,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_08.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_08.png",
+      "sha256": "a98c33f26ec92c4b4014713c65c7071d8750ff11695de2b4d20cb89b0805c8f3",
+      "git_blob": "119277d091a69718f27f2f7557e700c0ed989999",
+      "bytes": 1639578,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_09.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+      "sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb",
+      "git_blob": "6f91f0898d13b96865ec65156bfb6908898e7215",
+      "bytes": 1738519,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/permanent/animals16_10.png",
+      "repository_path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+      "sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c",
+      "git_blob": "1df21a96c5cad252c1e2bd8ebd6189a674cd703c",
+      "bytes": 1913122,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/seasonal/animals16_11.png",
+      "repository_path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+      "sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5",
+      "git_blob": "c1cda031ba4cfb4d90c6baa4afc29113c4b819a9",
+      "bytes": 1882030,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "01_animals/standard/seasonal/animals16_12.png",
+      "repository_path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+      "sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201",
+      "git_blob": "1ff8206cce746556cddad83663eaa1367b934d76",
+      "bytes": 1853206,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 25,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "04_buildings_and_gates/entrance/gates/gate16.png",
+      "repository_path": "assets/spritesheets16/entrance/gates/gate16.png",
+      "sha256": "8a9162dc45a64182528c25223dd461400647c972fe93631252814e4480804173",
+      "git_blob": "ed55685619ac274d53cf98c5b19c4240f7fd395b",
+      "bytes": 1803922,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 4,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "04_buildings_and_gates/entrance/parts/gate_parts16.png",
+      "repository_path": "assets/spritesheets16/entrance/parts/gate_parts16.png",
+      "sha256": "2873f63fd29bdb0e2e9eb7bdb9563d99316caeb2b86231c9733fd4201b93de18",
+      "git_blob": "bd93c6488a8b747aed6e5340dbd3b25f8b041560",
+      "bytes": 1603369,
+      "actual_size": [
+        1373,
+        1145
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 20,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "04_buildings_and_gates/entrance/seasonal/gate_season16.png",
+      "repository_path": "assets/spritesheets16/entrance/seasonal/gate_season16.png",
+      "sha256": "7f30cca66ee2410f8e0c93f504e4e2ee1627e125babd9f8e669501bb9ed6ba6b",
+      "git_blob": "92a7074bb9a0436a390f474ccf04215099639c03",
+      "bytes": 1431818,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 8,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/fences/diagonal/fencesdiag16.png",
+      "repository_path": "assets/spritesheets16/expansion/fences/fencesdiag16.png",
+      "sha256": "ccee354329ab6b92f552180c67937beae893c0127cb0867bdfc482084ec74d79",
+      "git_blob": "16a9e871b51928d2f1223e1c7c63f654cad2a1b1",
+      "bytes": 1618334,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/enclosure/pengacha16.png",
+      "repository_path": "assets/spritesheets16/expansion/gacha/pengacha16.png",
+      "sha256": "8de7883c7ede16accfd073cf33aea28efe4062613180f81085594b5ac953a040",
+      "git_blob": "2a4118ad5d6412988b4b48fb17e1cf2d75d4c732",
+      "bytes": 1446322,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 17,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "07_ui_icons/supplemental/icons16_2.png",
+      "repository_path": "assets/spritesheets16/expansion/icons/icons16_2.png",
+      "sha256": "82843fe21af8d38702208982e8ae1f3d048a6af5de52a57acdece312d0ca0c35",
+      "git_blob": "11ad39003dc4c4081185e0f3b01985b1d2833e31",
+      "bytes": 1497247,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "supporting_source",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/incidents/incidents16.png",
+      "repository_path": "assets/spritesheets16/expansion/incidents/incidents16.png",
+      "sha256": "3cb139d4fab80c46c699276fb57bce85d41f2bccb4696083873ec97a31f72b73",
+      "git_blob": "4b469094b947709de6bef5ab666c4cd508992933",
+      "bytes": 1439757,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 17,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/latest/banners/gacha_cutin16.png",
+      "repository_path": "assets/spritesheets16/gacha-reveal/banners/gacha_cutin16.png",
+      "sha256": "2f06d7ef2d6f4cf1d2561ab431cb81e34719b20d2db4c7c677d047898ec4e842",
+      "git_blob": "3dd757a5ad45eccbfb71434cc837e3ec2f0f84c1",
+      "bytes": 1263430,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 2,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/latest/capsules/gacha_capsule16.png",
+      "repository_path": "assets/spritesheets16/gacha-reveal/capsules/gacha_capsule16.png",
+      "sha256": "f9d09c0a57f9ca8117c34ef076b54d25d02464002cb827176741fa6f9931efe8",
+      "git_blob": "af5c3e2b61fa92870d5366a4993699cc317fd167",
+      "bytes": 1468304,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/latest/cards/cards16.png",
+      "repository_path": "assets/spritesheets16/gacha-reveal/cards/cards16.png",
+      "sha256": "7af4098d796e9fe3bba1ff5fc1559a277d2bd947923e31ed2bf57d8e4b31abba",
+      "git_blob": "33cd6fb6f364d4402ff99c809e8b97381d3df4bb",
+      "bytes": 1349672,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 8,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/latest/effects/gacha_fx16.png",
+      "repository_path": "assets/spritesheets16/gacha-reveal/effects/gacha_fx16.png",
+      "sha256": "c7c380f84637d6308498d84a3b5c3ddcae38a289516b622085cebc5a9c689705",
+      "git_blob": "7d21f4e2267821cca20e0b2e8da8c301ea3a3abd",
+      "bytes": 1459997,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 18,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/latest/machines/gacha_machine16.png",
+      "repository_path": "assets/spritesheets16/gacha-reveal/machines/gacha_machine16.png",
+      "sha256": "3150f816f612d89c431e2ff42d00bbdba30d1af26eba4cceea29c10d839f4675",
+      "git_blob": "98a77873e65ce1317d68c7c3d0753187ac2a0ac6",
+      "bytes": 1831123,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 18,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/model/people_lineup16.png",
+      "repository_path": "assets/spritesheets16/people-actions/model/people_lineup16.png",
+      "sha256": "153949cfee2a07e8b2de9fb039defe26286e3936c6bf6a814d31f5a9abbc67f2",
+      "git_blob": "bf8e1b2b3f8e37bba94d51400ebecc5d27304ba1",
+      "bytes": 1743524,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_autumn_a.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_a.png",
+      "sha256": "4e9be27c9392433dd6d42cec713c8782eaba0f537645879dcf0a2088af0bfd9e",
+      "git_blob": "f7f9b2c7d11e6cf736622df70ecc28139b5722e1",
+      "bytes": 1924145,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_autumn_b.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_b.png",
+      "sha256": "1c04ca5b20b9c5cc63db4c99801e7f34addfa8573e149211d00046ae1c81eb20",
+      "git_blob": "8ab9ebbd7778db8461e978f858509bd0c84f8a55",
+      "bytes": 1978185,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_spring_a.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_a.png",
+      "sha256": "09e5a8cd0d80204a6b401dc6ac175f20cd58887e412539e86ebebe176ce44e3f",
+      "git_blob": "76fb7ca428f281de10e61c869ee5caaebab1425f",
+      "bytes": 1871289,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_spring_b.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_b.png",
+      "sha256": "a5389420f3e09e22b920adc37315a9c583e1832460e79cc7040031f4a1528511",
+      "git_blob": "a2ec8481e6914fd16ec8dc14c7b15316fede8e11",
+      "bytes": 1904581,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_summer_a.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_a.png",
+      "sha256": "a94e416d57f4584c7391bde827fbc807d7ccb5058b90d9582891afdd6866a216",
+      "git_blob": "81823a5156c86eb4c4cfa25af2cb01405fb1f15f",
+      "bytes": 1875340,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_summer_b.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_b.png",
+      "sha256": "4f08d51c8499b7b251bf2110b25950400f9471b22bb0408d00aba105da35aa7f",
+      "git_blob": "9bdf5579419c3e94f25f186c0a626c8baaf28def",
+      "bytes": 1941533,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_winter_a.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_a.png",
+      "sha256": "2da1dc5f175c18d6e2bb0e9e762f3217f2a12485456d8db8713cba57e127924f",
+      "git_blob": "97e35f666ef4cc3620518860e74a2b54b4dbf5f1",
+      "bytes": 1954599,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/poses/people_pose16_winter_b.png",
+      "repository_path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_b.png",
+      "sha256": "4c47fbce8a2db5d54042c4fadbb248bd0976979aa9dd4713ac61168f01fb5aed",
+      "git_blob": "395b5ffb1e522f4745de23d69d94260af68a2750",
+      "bytes": 1992405,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/vip/vip16.png",
+      "repository_path": "assets/spritesheets16/people-actions/vip/vip16.png",
+      "sha256": "cc90793b608e2306aa1cb073e0375d725595f64f56c306480aaa13cbf98631b3",
+      "git_blob": "5ec02589b7486dcfe8e5f68c0ace0d211d85075d",
+      "bytes": 2258313,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 40,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/walk/people_walk16_autumn.png",
+      "repository_path": "assets/spritesheets16/people-actions/walk/people_walk16_autumn.png",
+      "sha256": "f3f798ffd1d9aec04ed025b2404030223dcbcde0087606cc12228e7bcce7d388",
+      "git_blob": "f132a716a53026379a67417d3ab3616afee47775",
+      "bytes": 1751896,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/walk/people_walk16_spring.png",
+      "repository_path": "assets/spritesheets16/people-actions/walk/people_walk16_spring.png",
+      "sha256": "739a17e72ac190a06403e646cd41cc625f137b3b8e497589c42a4f9631e61682",
+      "git_blob": "6a2415e9f9080590bbfe9db792a164ffd3c879c2",
+      "bytes": 1761846,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/walk/people_walk16_summer.png",
+      "repository_path": "assets/spritesheets16/people-actions/walk/people_walk16_summer.png",
+      "sha256": "7310be7f0cfae8dafcb85a8162af46d49ea3326e3bdc1dfeb9bdb50fe384d870",
+      "git_blob": "f4a8c548679f771b0c9a9e55117b0d7c129858ae",
+      "bytes": 1811565,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/visitors/walk/people_walk16_winter.png",
+      "repository_path": "assets/spritesheets16/people-actions/walk/people_walk16_winter.png",
+      "sha256": "839f4aa714e7197bd295654fa03139cf83dd3797000aa3173fd9775c43474d46",
+      "git_blob": "b210e42a3b818fde1568616aa4048fcf2b8c1d95",
+      "bytes": 1826120,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "05_seasonal_decor/decor16_autumn.png",
+      "repository_path": "assets/spritesheets16/seasonal-decor/decor16_autumn.png",
+      "sha256": "997447b8e722bec4a62d94c1b79e5cabf78fa575649aac9764240dca561b5268",
+      "git_blob": "d616b07d64f14445013c9ed8e1c6171c687417b5",
+      "bytes": 1643078,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 12,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "05_seasonal_decor/decor16_spring.png",
+      "repository_path": "assets/spritesheets16/seasonal-decor/decor16_spring.png",
+      "sha256": "ac09e534ff639d4ea38e06b44583228c51fbacb6f2cf7c8fbd5ab3558f35ea5b",
+      "git_blob": "8a5b6b384bf80e787ff8865e4610995f146c1a35",
+      "bytes": 1611013,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 12,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "05_seasonal_decor/decor16_summer.png",
+      "repository_path": "assets/spritesheets16/seasonal-decor/decor16_summer.png",
+      "sha256": "f851560dffdb3d58a523a6d0a54ada987e23b080bf62e11c2c5a05540546eb4d",
+      "git_blob": "d901cea75e3830fcfa12451652ec224d3bf4a35d",
+      "bytes": 1608935,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 12,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "05_seasonal_decor/decor16_winter.png",
+      "repository_path": "assets/spritesheets16/seasonal-decor/decor16_winter.png",
+      "sha256": "ba19b319d8b519125157f942505e5e25884bc41241d93e8c35c818b48f9ebbdb",
+      "git_blob": "4afca602cb557bc4406b82a286fb09ef87015c96",
+      "bytes": 1622658,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 12,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/staff/walk/staff_walk16.png",
+      "repository_path": "assets/spritesheets16/staff-walk/staff_walk16.png",
+      "sha256": "8c73878a762a3571a97667903ea20261ab222700e32985f8de1f5c9df7873a62",
+      "git_blob": "25982699cda542aaed315b90543ee61677a0a42f",
+      "bytes": 1783347,
+      "actual_size": [
+        1122,
+        1402
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 20,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/gacha_and_cards/cards/cards16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/cards/cards16.png",
+      "sha256": "d325f3fa2db0a5fae75f34a9f28a9052fdcfd7af46e355a865d48f76b7817c65",
+      "git_blob": "82ecea4ab1e45bd46cae7b2bba8bef558b544508",
+      "bytes": 1394591,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 14,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "08_effects/general_and_ribbons/fx16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/effects/fx16.png",
+      "sha256": "3e187d35acede34c44fae5ba59c4159be6655b296f5e87edce91caa4c84ced05",
+      "git_blob": "2826f96ae9657ae10067da61e46a1e5ac4ed96cd",
+      "bytes": 1462082,
+      "actual_size": [
+        1374,
+        1145
+      ],
+      "version_usage": "supporting_source",
+      "source_entry_count": 30,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "08_effects/general_and_ribbons/fxbig16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/effects/fxbig16.png",
+      "sha256": "a4f044fdf76e432d4ca5b91909e218bd53131c2853aad9cc20fdee49d90bc8ea",
+      "git_blob": "07166750287028295c298f44baa49f3b097ddcad",
+      "bytes": 1392089,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "supporting_source",
+      "source_entry_count": 12,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/gacha_and_cards/gacha/gacha16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/gacha/gacha16.png",
+      "sha256": "309d99a8bfe263fbd409a086d091090bd4d797ded20ffd6500c9c8df7ba35035",
+      "git_blob": "5273e4f5dd4a24d4e79bb12427d015af5c8086ed",
+      "bytes": 1672213,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 20,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "06_gacha_and_cards/hiring/staffgacha16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/hiring/staffgacha16.png",
+      "sha256": "46236862b13ca8b6107c6726868c662beab6e2d96c3a3fc129bc50f5a028ac3f",
+      "git_blob": "2afb049b8f60faf004a669f8c2283203a94d6a9f",
+      "bytes": 1449426,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 15,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "07_ui_icons/supplemental/icons16.png",
+      "repository_path": "assets/spritesheets16/ui-effects/icons/icons16.png",
+      "sha256": "f5f64662d42bc4fd8791c04ce6ad93af9f1830892458bede42a62d8e678cf897",
+      "git_blob": "7cbdd43fa17873e8848f380ac7f6ec7c2f862bb5",
+      "bytes": 1580070,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "version_usage": "supporting_source",
+      "source_entry_count": 40,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "07_ui_icons/latest/icons_ui16_a.png",
+      "repository_path": "assets/spritesheets16/ui-weather/icons/icons_ui16_a.png",
+      "sha256": "c9c2bf1d0e5c5e55cd4dcacdb49f543d70fee762aaf03d8ab954a1c5f23a6e58",
+      "git_blob": "763de2d6c5f561b114a666617a17a1cdc5877e81",
+      "bytes": 1625522,
+      "actual_size": [
+        1586,
+        992
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 40,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "07_ui_icons/latest/icons_ui16_b.png",
+      "repository_path": "assets/spritesheets16/ui-weather/icons/icons_ui16_b.png",
+      "sha256": "c228ecdc7f48390a3403ac5e535ee61cb8084b902670e8367899cc98648689da",
+      "git_blob": "2775b72f3bb4e2d551daaf1ad1bb6a4e97354c90",
+      "bytes": 1665493,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "08_effects/weather/weather16.png",
+      "repository_path": "assets/spritesheets16/ui-weather/weather/weather16.png",
+      "sha256": "167d5052d84096a647d71e587f3c8b275dd8f1f21b5eea18749a212daea32483",
+      "git_blob": "d2864f30563e4b6f51728c5dad27488e672c9143",
+      "bytes": 1345826,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "04_buildings_and_gates/buildings/buildings16.png",
+      "repository_path": "assets/spritesheets16/world-life/buildings/buildings16.png",
+      "sha256": "d01292e429219001df31d661309a928baa3601e37836c95006168aa62b0631af",
+      "git_blob": "69c356023d376e2dd9f163c3b5f2acb8f4cd28fb",
+      "bytes": 1687481,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 18,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "08_effects/life/fx_life16.png",
+      "repository_path": "assets/spritesheets16/world-life/effects/fx_life16.png",
+      "sha256": "a000f5ec552fcc426dabf4e038efe330139f380673e99bfc83e65c2c41522b98",
+      "git_blob": "194b715f83ea2d1d87681588aef957bb298cccfb",
+      "bytes": 1360561,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/enclosure-props/penprops16.png",
+      "repository_path": "assets/spritesheets16/world-life/enclosure-props/penprops16.png",
+      "sha256": "247080ef03dc699cc6b7854634c623e7c6c4bc5602c96777d1bdd43d73d4e5a9",
+      "git_blob": "78b248df0aabb703d4279fa715a5dc58ab77c659",
+      "bytes": 1675797,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 36,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/fences/fences16_a.png",
+      "repository_path": "assets/spritesheets16/world-life/fences/fences16_a.png",
+      "sha256": "46a49b8ae1bb4b7199c2a43b66d099acf5baa1f77b6027e40ffb90dfaf314fb4",
+      "git_blob": "1f25f2598975c4a021af241330cc0f6c416fb2be",
+      "bytes": 1501318,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 4,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/fences/fences16_b.png",
+      "repository_path": "assets/spritesheets16/world-life/fences/fences16_b.png",
+      "sha256": "a54bff1f9343bac13e0a88d8ca3798bd3b7fd64c2a04aa31b2e6cdb609a7913b",
+      "git_blob": "93859089bb04d0b7fe7bad22ca573d65cba2d48d",
+      "bytes": 1527503,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 4,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/floors/penfloor16.png",
+      "repository_path": "assets/spritesheets16/world-life/floors/penfloor16.png",
+      "sha256": "2a3aa870f135fab37714b5aa5e7827a9dce7f90b7760a1ab90777eabe6429cd9",
+      "git_blob": "e2676e3f85f8b9b2bbf535b5564ff0bfe123b1f5",
+      "bytes": 1251968,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/ground/ground16.png",
+      "repository_path": "assets/spritesheets16/world-life/ground/ground16.png",
+      "sha256": "727be730ddd1496302a108370074299a3764f493ad95a6265e4261ad1c07a1d1",
+      "git_blob": "a20bfaa2e3b8ac16ba352387bca69e13de97f04a",
+      "bytes": 1253716,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/park-props/parkprops16.png",
+      "repository_path": "assets/spritesheets16/world-life/park-props/parkprops16.png",
+      "sha256": "f5c81afa95e8329b773d46fd26cf56ee5a16f655c996373cea6aa7cf01df0f3e",
+      "git_blob": "5d0b35b242c978ac02346669ecd6bf0f9962883b",
+      "bytes": 1527665,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 18,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "03_world/paths/path16.png",
+      "repository_path": "assets/spritesheets16/world-life/paths/path16.png",
+      "sha256": "70678e030247c57756a6b7f2d5bb055c0327c1ddb46cc67ff15a44d6d5631f9d",
+      "git_blob": "fae5f3c32f23c35e31c4fec18e4e2ec24dcd916d",
+      "bytes": 1417877,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 4,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "02_people/staff/actions/staff_act16.png",
+      "repository_path": "assets/spritesheets16/world-life/staff-actions/staff_act16.png",
+      "sha256": "7e0423d3ded477fc34c2fbb581354d6aa19ab0d301c74a5d469240daa201c7c7",
+      "git_blob": "f71fe09672b9a9b036ef3f942b5ad289cc857be7",
+      "bytes": 1813579,
+      "actual_size": [
+        1122,
+        1402
+      ],
+      "version_usage": "latest_set_for_role",
+      "source_entry_count": 20,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/visitor-actions/visitors_act16.png",
+      "repository_path": "assets/spritesheets16/world-life/visitor-actions/visitors_act16.png",
+      "sha256": "806202523664afed6473511b0fb937bc21b44c35f9b6406a61e791ffff2ee60e",
+      "git_blob": "cb322f03bea633dd51688041eafb50fe37f4c027",
+      "bytes": 1822930,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/decor/decor16_1.png",
+      "repository_path": "assets/spritesheets16/world/decor/decor16_1.png",
+      "sha256": "d1af65249a4eb6af96f67dffbd8a0cf5cb9c1373039f2cda8a880ab3a64728f8",
+      "git_blob": "0e54dc9ed0bf455a78e3961ee9b451cae204df8d",
+      "bytes": 1846139,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/decor/decor16_2.png",
+      "repository_path": "assets/spritesheets16/world/decor/decor16_2.png",
+      "sha256": "0723573d6307c3ffd2b908b67aba6476dcfc33b06ff6d57a7023199cdb7b51de",
+      "git_blob": "b924d1fb1274e6972f729e508c05824641ec6c43",
+      "bytes": 1871814,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 24,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/facilities/facilities16.png",
+      "repository_path": "assets/spritesheets16/world/facilities/facilities16.png",
+      "sha256": "5e75bf1fe4dc01a707f1855a765d6bce1d97ad1a29363f75a08cc2da8680cea0",
+      "git_blob": "8c0dddb2ee10a00bb8fcac6a0be46c42f0ceb4c9",
+      "bytes": 1525880,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 10,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/fences/fences16.png",
+      "repository_path": "assets/spritesheets16/world/fences/fences16.png",
+      "sha256": "7c6f4dc95aa18cb56c5755201e6f6594b7c08daaaf1bca7130d7c7123c7010b2",
+      "git_blob": "cf0177ff004698394ef827b250772bdc4feff5d6",
+      "bytes": 1554350,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 48,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/people/people16_autumn.png",
+      "repository_path": "assets/spritesheets16/world/people/people16_autumn.png",
+      "sha256": "e6e23b50f28da5e32d958371a912b8f0c6dac9ae9338484ef564c727b5567818",
+      "git_blob": "51b99c329cb67c3afed7215b2156b1d36d6fb94b",
+      "bytes": 1848950,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/people/people16_spring.png",
+      "repository_path": "assets/spritesheets16/world/people/people16_spring.png",
+      "sha256": "926e3a34881ff28362c9de329c0a0275323be33a1d5336dd008860f3a66a90b6",
+      "git_blob": "29196b66de0352a78ed1b69925c3375b63034cc7",
+      "bytes": 1774938,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/people/people16_summer.png",
+      "repository_path": "assets/spritesheets16/world/people/people16_summer.png",
+      "sha256": "69060761ad34ccb3ef614da82706c8cbb3c017aff0a9e4873258f2d16f5439ee",
+      "git_blob": "10b0d63b2df4e37b5bbf1b71e069a1470d96fa2e",
+      "bytes": 1843698,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/people/people16_winter.png",
+      "repository_path": "assets/spritesheets16/world/people/people16_winter.png",
+      "sha256": "3dd7b958511ab251d6467675944ad740bd8e866f524520bb76869406c99a7034",
+      "git_blob": "d709696a3da7725916686b0e58ea00e9fd5f93c5",
+      "bytes": 1845026,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 32,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/staff/staff16.png",
+      "repository_path": "assets/spritesheets16/world/staff/staff16.png",
+      "sha256": "0001c06e0ee1b3c136995385d49298f5892bbd4680b5a6def32948d3f340b555",
+      "git_blob": "fd4d9a71d2eb0f8b97621a5d020490dec7346170",
+      "bytes": 1716214,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 20,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/tiles/tiles16_autumn.png",
+      "repository_path": "assets/spritesheets16/world/tiles/tiles16_autumn.png",
+      "sha256": "3a48074c55eac43154ac77d4f4fd3507bac75da861aeb4aac4b962a4ca8a5a19",
+      "git_blob": "d5bb848ab397772ee634c220a1c59741f2da4009",
+      "bytes": 1371132,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/tiles/tiles16_spring.png",
+      "repository_path": "assets/spritesheets16/world/tiles/tiles16_spring.png",
+      "sha256": "8dced97965396773f61ad8174f9a4788953a5a9e00014076c6c3642462c5372c",
+      "git_blob": "19f8f7d7937bb48883e06414bcb057e5b8f19e87",
+      "bytes": 1348630,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/tiles/tiles16_summer.png",
+      "repository_path": "assets/spritesheets16/world/tiles/tiles16_summer.png",
+      "sha256": "342084cfd4c3407aca3e5f863c0ae23f5ee2c6c100ad18b945fea611d56b5a7a",
+      "git_blob": "e13e0844ed19144e9c5f9a7864fd9f2ceea4537c",
+      "bytes": 1351514,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 16,
+      "engine_ready": false
+    },
+    {
+      "archive_path": "90_earlier_designs/world/tiles/tiles16_winter.png",
+      "repository_path": "assets/spritesheets16/world/tiles/tiles16_winter.png",
+      "sha256": "b16b1f9a76ccdd02a2b8ad9db48d2315523eb0b79b77b3da2420655396d0df39",
+      "git_blob": "7bf8e7b7dc9533d94ebba094c96f49ced72b22c2",
+      "bytes": 1422198,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "version_usage": "earlier_design_reference",
+      "source_entry_count": 16,
+      "engine_ready": false
+    }
+  ]
+}

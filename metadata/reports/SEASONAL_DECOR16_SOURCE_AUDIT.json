@@ -1,0 +1,95 @@
+{
+  "source_delivery": "PASS_4_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "decor16_spring.png",
+      "readable_png": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "canvas_pass": false,
+      "aspect_ratio_2_to_1_pass": true,
+      "unique_rgb_colors": 209563,
+      "off_palette_pixels": 1573472,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_shadow": "NOT_CERTIFIED",
+      "footprint_pivot_and_game_scale": "NOT_TESTED"
+    },
+    {
+      "filename": "decor16_summer.png",
+      "readable_png": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "canvas_pass": false,
+      "aspect_ratio_2_to_1_pass": true,
+      "unique_rgb_colors": 203251,
+      "off_palette_pixels": 1573504,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_shadow": "NOT_CERTIFIED",
+      "footprint_pivot_and_game_scale": "NOT_TESTED"
+    },
+    {
+      "filename": "decor16_autumn.png",
+      "readable_png": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "canvas_pass": false,
+      "aspect_ratio_2_to_1_pass": true,
+      "unique_rgb_colors": 224288,
+      "off_palette_pixels": 1573509,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_shadow": "NOT_CERTIFIED",
+      "footprint_pivot_and_game_scale": "NOT_TESTED"
+    },
+    {
+      "filename": "decor16_winter.png",
+      "readable_png": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "canvas_pass": false,
+      "aspect_ratio_2_to_1_pass": true,
+      "unique_rgb_colors": 196451,
+      "off_palette_pixels": 1573510,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_shadow": "NOT_CERTIFIED",
+      "footprint_pivot_and_game_scale": "NOT_TESTED"
+    }
+  ],
+  "corrections": [
+    "Spring sheet recomposed from 3:2 to requested 2:1 aspect ratio."
+  ],
+  "remaining": [
+    "Actual canvas differs from requested 1536x768.",
+    "Exact native art grid, 38-color palette, pure magenta and 1px brown outline not met.",
+    "Flat shadow colors, footprint, common baseline and per-prop pivots need native-size review.",
+    "No transparent extraction or game-scale scene test completed."
+  ]
+}

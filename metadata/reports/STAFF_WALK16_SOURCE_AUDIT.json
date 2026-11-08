@@ -1,0 +1,195 @@
+{
+  "asset_kind": "image_generator_source_sheet",
+  "engine_ready": false,
+  "strict_gate": "HOLD",
+  "path": "assets/spritesheets16/staff-walk/staff_walk16.png",
+  "reference": "assets/spritesheets16/world-life/staff-actions/staff_act16.png",
+  "sha256": "8c73878a762a3571a97667903ea20261ab222700e32985f8de1f5c9df7873a62",
+  "actual_size": [
+    1122,
+    1402
+  ],
+  "requested_size": [
+    1024,
+    1280
+  ],
+  "canvas_pass": false,
+  "unique_rgb_colors": 202551,
+  "off_palette_pixels": 1572999,
+  "palette_pass": false,
+  "entries_describe_requested_slots": true,
+  "entries": [
+    {
+      "slot": 1,
+      "staff": "coin collector",
+      "row": 1,
+      "column": 1,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 2,
+      "staff": "coin collector",
+      "row": 1,
+      "column": 2,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 3,
+      "staff": "zookeeper",
+      "row": 1,
+      "column": 3,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 4,
+      "staff": "zookeeper",
+      "row": 1,
+      "column": 4,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 5,
+      "staff": "tour guide",
+      "row": 2,
+      "column": 1,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 6,
+      "staff": "tour guide",
+      "row": 2,
+      "column": 2,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 7,
+      "staff": "groundskeeper",
+      "row": 2,
+      "column": 3,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 8,
+      "staff": "groundskeeper",
+      "row": 2,
+      "column": 4,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 9,
+      "staff": "ticket seller",
+      "row": 3,
+      "column": 1,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 10,
+      "staff": "ticket seller",
+      "row": 3,
+      "column": 2,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 11,
+      "staff": "cleaner",
+      "row": 3,
+      "column": 3,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 12,
+      "staff": "cleaner",
+      "row": 3,
+      "column": 4,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 13,
+      "staff": "security guard",
+      "row": 4,
+      "column": 1,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 14,
+      "staff": "security guard",
+      "row": 4,
+      "column": 2,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 15,
+      "staff": "veterinarian",
+      "row": 4,
+      "column": 3,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 16,
+      "staff": "veterinarian",
+      "row": 4,
+      "column": 4,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 17,
+      "staff": "promoter",
+      "row": 5,
+      "column": 1,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 18,
+      "staff": "promoter",
+      "row": 5,
+      "column": 2,
+      "phase": "B",
+      "facing": "left"
+    },
+    {
+      "slot": 19,
+      "staff": "performer",
+      "row": 5,
+      "column": 3,
+      "phase": "A",
+      "facing": "left"
+    },
+    {
+      "slot": 20,
+      "staff": "performer",
+      "row": 5,
+      "column": 4,
+      "phase": "B",
+      "facing": "left"
+    }
+  ],
+  "visual_review": [
+    "All 10 job identities and 4x5 arrangement checked against staff_act16.png.",
+    "Work-action effects removed; leftward walk poses provided.",
+    "Zookeeper and guide B mouth expressions corrected to match A."
+  ],
+  "remaining": [
+    "Actual canvas differs from requested size.",
+    "Exact 16x26 art grid, 38-color palette, pure magenta and 1px outline not met.",
+    "A/B identity and planted-foot animation not certified; no playback test.",
+    "Carried broom and mop angle/height still varies between frames; mop stays close to ground.",
+    "Head registration and leg-side swap need native-size refinement."
+  ]
+}

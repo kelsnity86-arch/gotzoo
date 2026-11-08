@@ -1,0 +1,97 @@
+{
+  "source_delivery": "PASS_3_READABLE_PNGS",
+  "strict_pixel_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "big16_1.png",
+      "readable_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 349271,
+      "off_palette_pixels": 1572405,
+      "palette_pass": false,
+      "empty_cell_samples": [],
+      "native_grid_and_outline": "NOT_CERTIFIED",
+      "all_left_facing": "NOT_CERTIFIED",
+      "exact_character_identity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "big16_2.png",
+      "readable_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 276226,
+      "off_palette_pixels": 1572394,
+      "palette_pass": false,
+      "empty_cell_samples": [],
+      "native_grid_and_outline": "NOT_CERTIFIED",
+      "all_left_facing": "NOT_CERTIFIED",
+      "exact_character_identity": "NOT_CERTIFIED"
+    },
+    {
+      "filename": "big16_3.png",
+      "readable_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 330886,
+      "off_palette_pixels": 1572477,
+      "palette_pass": false,
+      "empty_cell_samples": [
+        {
+          "slot": 27,
+          "sample": "inner 90 percent of nominal cell",
+          "near_magenta_fraction": 1.0,
+          "note": "Approximate color test, not exact chromakey certification."
+        },
+        {
+          "slot": 28,
+          "sample": "inner 90 percent of nominal cell",
+          "near_magenta_fraction": 1.0,
+          "note": "Approximate color test, not exact chromakey certification."
+        },
+        {
+          "slot": 29,
+          "sample": "inner 90 percent of nominal cell",
+          "near_magenta_fraction": 1.0,
+          "note": "Approximate color test, not exact chromakey certification."
+        },
+        {
+          "slot": 30,
+          "sample": "inner 90 percent of nominal cell",
+          "near_magenta_fraction": 1.0,
+          "note": "Approximate color test, not exact chromakey certification."
+        }
+      ],
+      "native_grid_and_outline": "NOT_CERTIFIED",
+      "all_left_facing": "NOT_CERTIFIED",
+      "exact_character_identity": "NOT_CERTIFIED"
+    }
+  ],
+  "remaining": [
+    "All canvases differ from requested 1536x1536.",
+    "Exact 48x48/60x60 native grid, palette, magenta background and brown outline not met.",
+    "Some faces remain near frontal; exact character identity and left-facing view need review.",
+    "Native-size redrawing/extraction and in-game rendering have not been completed."
+  ]
+}

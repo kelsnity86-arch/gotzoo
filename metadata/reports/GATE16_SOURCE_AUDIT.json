@@ -1,0 +1,77 @@
+{
+  "source_delivery": "PASS_3_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "gate16.png",
+      "readable_png": true,
+      "requested_slots": 4,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 339635,
+      "off_palette_pixels": 1572484,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "gate_alignment_wall_tiling_overlay_status": "NOT_TESTED"
+    },
+    {
+      "filename": "gate_parts16.png",
+      "readable_png": true,
+      "requested_slots": 20,
+      "actual_size": [
+        1373,
+        1145
+      ],
+      "requested_size": [
+        1536,
+        1280
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 210187,
+      "off_palette_pixels": 1572079,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "gate_alignment_wall_tiling_overlay_status": "NOT_TESTED"
+    },
+    {
+      "filename": "gate_season16.png",
+      "readable_png": true,
+      "requested_slots": 8,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 154283,
+      "off_palette_pixels": 1573479,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "gate_alignment_wall_tiling_overlay_status": "NOT_TESTED"
+    }
+  ],
+  "canvas_matches": 0,
+  "canvas_mismatches": 3,
+  "corrections": [
+    "Removed oversized terminal posts and pots from wall segments using image editing."
+  ],
+  "remaining": [
+    "Exact native grid, requested dimensions, 38-color palette, flat magenta and brown outlines.",
+    "Equal gate opening widths, proportions, replacement pivots and open-door geometry.",
+    "32px wall repeat joins and seamless edge patterns.",
+    "Seasonal overlay placement on all four gates; 96px garland and paired pillar anchors."
+  ]
+}

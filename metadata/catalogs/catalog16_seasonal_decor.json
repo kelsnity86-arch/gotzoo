@@ -1,0 +1,466 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 4,
+  "requested_prop_count": 48,
+  "reference": "assets/spritesheets16/world-life/park-props/parkprops16.png",
+  "reference_sha256": "f5c81afa95e8329b773d46fd26cf56ee5a16f655c996373cea6aa7cf01df0f3e",
+  "sheets": [
+    {
+      "filename": "decor16_spring.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_spring.png",
+      "season": "spring",
+      "sha256": "ac09e534ff639d4ea38e06b44583228c51fbacb6f2cf7c8fbd5ab3558f35ea5b",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        6,
+        2
+      ],
+      "target_native_size": [
+        32,
+        40
+      ],
+      "max_tree_size": [
+        40,
+        48
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "cherry blossom tree",
+          "detail": "Round pink blossom canopy, cream-yellow flower centers, warm brown trunk, same canopy style as reference pink tree."
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "tulip flower bed",
+          "detail": "Compact rectangular warm wooden edging, green leaves, coral pink and yellow tulip cups; low planted bed."
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "flower arch",
+          "detail": "Wooden garden arch with green climbing leaves and pink/cream flowers, clear open passage below, no panel."
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "picnic mat with basket",
+          "detail": "Red/cream checkered mat foreshortened on ground, small closed wicker basket, no people."
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "kite on a short string stand",
+          "detail": "Bright small diamond kite on a SHORT taut string anchored to a compact wooden stand; kite and base fit same cell."
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "pink paper lantern on a post",
+          "detail": "Ribbed round pink paper lantern on warm wooden post with little hanging tassel and simple base."
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "tiered flower pot stand",
+          "detail": "Three-tier small wooden display with terracotta pots and pink/yellow spring flowers."
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "wooden birdhouse on a pole",
+          "detail": "Tiny warm wood house with brown roof, round black entrance, short perch, standing pole and base."
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "watering can with flowers",
+          "detail": "Muted blue-green watering can with handle and long spout, small spring flowers coming out of can."
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "carp streamer pole",
+          "detail": "Wooden pole with two small carp-shaped windsocks in plain blue and red flat colors; readable fish shapes, no writing."
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "wooden swing",
+          "detail": "Warm brown A-frame wood swing, two ropes and one hanging plank seat, empty."
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "bush with butterflies",
+          "detail": "Rounded low green bush, a few small pink blossoms, two tiny yellow/pink butterflies nearby within same cell."
+        }
+      ]
+    },
+    {
+      "filename": "decor16_summer.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_summer.png",
+      "season": "summer",
+      "sha256": "f851560dffdb3d58a523a6d0a54ada987e23b080bf62e11c2c5a05540546eb4d",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        6,
+        2
+      ],
+      "target_native_size": [
+        32,
+        40
+      ],
+      "max_tree_size": [
+        40,
+        48
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "striped beach parasol",
+          "detail": "Red/cream striped domed beach parasol on simple central pole and small round foot; no table."
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "small inflatable pool",
+          "detail": "Low oval cyan/pale blue inflatable ring pool, blue water with two flat white ripple strokes, no swimmers."
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "sandcastle",
+          "detail": "Cute compact tan sandcastle with two turret towers, central arch doorway, blocky crenellations."
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "watermelon stand",
+          "detail": "Small warm wood stand with green/red striped canopy, whole striped watermelons and cut red slices on counter, blank sign."
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "wind chime on a post",
+          "detail": "Slim wooden post with short hanging arm supporting small glass-blue bell and pale blank dangling paper strip."
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "hibiscus bush",
+          "detail": "Low rich green bush with several large coral-red hibiscus flowers, pale yellow centers."
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "beach lounge chair",
+          "detail": "Angled wooden folding lounge chair with blue/cream striped fabric, clearly reclined, seen from above."
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "surfboard standing in sand",
+          "detail": "Upright turquoise surfboard with a bold cream stripe, planted slightly leaning in a small sand mound, no writing."
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "lawn sprinkler with water spray",
+          "detail": "Small green sprinkler with two curved cyan streams made of separated solid pixel droplets, no glow or mist."
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "ice cream cart",
+          "detail": "Small warm cream/wood cart with two wheels, coral/cream umbrella canopy, ice cream tubs and cone-shaped pictogram only, no text."
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "life ring on a post",
+          "detail": "Cream life ring with four coral-red segments on warm wooden upright, rope loop, compact base."
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "palm tree",
+          "detail": "Curving brown segmented trunk, spreading chunky bright green fronds, two coconuts, compact ground base."
+        }
+      ]
+    },
+    {
+      "filename": "decor16_autumn.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_autumn.png",
+      "season": "autumn",
+      "sha256": "997447b8e722bec4a62d94c1b79e5cabf78fa575649aac9764240dca561b5268",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        6,
+        2
+      ],
+      "target_native_size": [
+        32,
+        40
+      ],
+      "max_tree_size": [
+        40,
+        48
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "red maple tree",
+          "detail": "Round layered red/orange maple canopy, distinct leaf clusters, warm brown trunk."
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "yellow ginkgo tree",
+          "detail": "Round golden-yellow canopy with fan-shaped ginkgo leaf clusters, brown trunk, same scale as maple."
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "scarecrow",
+          "detail": "Friendly straw-headed scarecrow on wooden cross post, straw hat, orange shirt, blue/olive trousers, no scary face."
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "pile of pumpkins",
+          "detail": "Three orange pumpkins of different sizes, ribbed shapes and green stems, no carved faces."
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "hay bales",
+          "detail": "Two golden straw bales, one rectangular and one round, tied with dark brown bands."
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "persimmon tree with orange fruit",
+          "detail": "Green/olive round canopy, several orange persimmons with green leaf caps, brown trunk."
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "harvest basket with vegetables",
+          "detail": "Wicker basket filled with orange carrots, green cabbage and yellow squash, clear cozy harvest silhouette."
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "carved pumpkin lantern",
+          "detail": "Single orange jack-o-lantern with friendly triangular eyes and smiling mouth, bright yellow flat interior, NO glow haze."
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "pile of fallen leaves",
+          "detail": "Low heap of large orange, ochre and red maple leaves, no tree or container."
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "wooden wheelbarrow with leaves",
+          "detail": "Warm brown wheelbarrow with one dark wheel and two handles, overflowing red/orange leaves."
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "cosmos flower patch",
+          "detail": "Small patch of pink, cream and coral cosmos flowers, slender green leaves, compact soil base."
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "full moon paper lantern on a post",
+          "detail": "Round pale-gold paper lantern like a full moon, visible rib lines, hangs from short wooden post, no printed face or writing."
+        }
+      ]
+    },
+    {
+      "filename": "decor16_winter.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_winter.png",
+      "season": "winter",
+      "sha256": "ba19b319d8b519125157f942505e5e25884bc41241d93e8c35c818b48f9ebbdb",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        6,
+        2
+      ],
+      "target_native_size": [
+        32,
+        40
+      ],
+      "max_tree_size": [
+        40,
+        48
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "snowman",
+          "detail": "Two round snowballs, small black eyes, orange carrot nose, red scarf, simple brown hat and stick arms."
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "decorated christmas tree",
+          "detail": "Green triangular pine, gold star topper, small red/gold ornaments, light snow touches, no gift pile."
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "snow-covered pine tree",
+          "detail": "Plain layered pine with thick white snowy branch tops, dark green lower branches, brown trunk."
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "small igloo",
+          "detail": "Small rounded white/ice blue block igloo, low curved dark doorway, no interior furniture."
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "wooden sled",
+          "detail": "Warm wood slatted sled, two curved runners, short rope, resting on ground."
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "ice sculpture of a swan",
+          "detail": "Recognizable pale blue crystalline swan, graceful S-shaped neck, folded ice wings, small solid ice pedestal, flat facets no transparency."
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "pile of wrapped presents",
+          "detail": "Three boxes in red, green and gold with cream bows, stacked neatly, blank wrapping."
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "giant candy cane",
+          "detail": "One tall hooked red/cream striped candy cane planted in a tiny white snow base."
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "pile of snowballs",
+          "detail": "Low pyramid of five or six white snowballs with flat pale-blue undersides, no characters."
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "campfire with logs",
+          "detail": "Small orange/gold flame above crossed warm brown logs, flat bright shapes, no bloom or smoke haze."
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "arch of string lights",
+          "detail": "Simple dark wooden arch with a looping string of red/gold/blue light dots, open passage, no solid panel, no glow."
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "hot cocoa stand",
+          "detail": "Cozy small wooden stall with red/cream striped awning and snow cap, cocoa pot and steaming mugs on counter, blank sign with optional mug pictogram only."
+        }
+      ]
+    }
+  ]
+}

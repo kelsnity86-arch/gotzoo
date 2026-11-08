@@ -1,0 +1,317 @@
+{
+  "delivery_check": "PASS_12_DISTINCT_READABLE_PNGS_AND_300_ORDERED_ENTRIES",
+  "strict_pixel_specification": "HOLD",
+  "sheets": 12,
+  "animals": 300,
+  "permanent": 250,
+  "seasonal": 50,
+  "rarity_counts": {
+    "common": 80,
+    "uncommon": 82,
+    "rare": 71,
+    "epic": 41,
+    "legendary": 26
+  },
+  "season_counts": {
+    "spring": 13,
+    "summer": 12,
+    "autumn": 13,
+    "winter": 12
+  },
+  "checks": [
+    {
+      "filename": "animals16_01.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 187293,
+      "pixels_outside_requested_palette": 1572348,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_02.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 220679,
+      "pixels_outside_requested_palette": 1572464,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_03.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 190668,
+      "pixels_outside_requested_palette": 1572355,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_04.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 199300,
+      "pixels_outside_requested_palette": 1572497,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_05.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 214814,
+      "pixels_outside_requested_palette": 1572427,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_06.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 258497,
+      "pixels_outside_requested_palette": 1572449,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_07.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 259946,
+      "pixels_outside_requested_palette": 1571997,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_08.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 229724,
+      "pixels_outside_requested_palette": 1572382,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_09.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 290501,
+      "pixels_outside_requested_palette": 1572327,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_10.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 359749,
+      "pixels_outside_requested_palette": 1572482,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_11.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 344828,
+      "pixels_outside_requested_palette": 1572453,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    },
+    {
+      "filename": "animals16_12.png",
+      "decoded_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 337183,
+      "pixels_outside_requested_palette": 1572453,
+      "requested_palette_pass": false,
+      "outer_border_exact_magenta_pass": false,
+      "native_16x16_grid_status": "NOT_VERIFIED_OR_EXPORTED",
+      "visual_review": {
+        "five_rows_of_five_animals": true,
+        "reviewed_against_requested_order": true,
+        "visible_text_or_grid_lines": false,
+        "note": "Visual review does not certify exact bitmap grid, color palette, or every pose direction."
+      }
+    }
+  ],
+  "remaining": [
+    "1024x1024 sheet export",
+    "exact native 16x16 redraw/normalization",
+    "38-color palette and exact #FF00FF background",
+    "pixel-level outline, pose direction and silhouette review"
+  ]
+}

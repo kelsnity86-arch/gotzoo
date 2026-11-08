@@ -1,0 +1,879 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 5,
+  "requested_slot_count": 70,
+  "count_note": "18 machine frames + 24 capsule frames + 18 effects + 8 cards + 2 banners.",
+  "references": [
+    {
+      "path": "assets/spritesheets16/ui-effects/gacha/gacha16.png",
+      "sha256": "309d99a8bfe263fbd409a086d091090bd4d797ded20ffd6500c9c8df7ba35035"
+    },
+    {
+      "path": "assets/spritesheets16/ui-effects/cards/cards16.png",
+      "sha256": "d325f3fa2db0a5fae75f34a9f28a9052fdcfd7af46e355a865d48f76b7817c65"
+    },
+    {
+      "path": "assets/spritesheets16/ui-effects/effects/fxbig16.png",
+      "sha256": "a4f044fdf76e432d4ca5b91909e218bd53131c2853aad9cc20fdee49d90bc8ea"
+    },
+    {
+      "path": "assets/spritesheets16/world-life/park-props/parkprops16.png",
+      "sha256": "f5c81afa95e8329b773d46fd26cf56ee5a16f655c996373cea6aa7cf01df0f3e"
+    }
+  ],
+  "sheets": [
+    {
+      "filename": "gacha_machine16.png",
+      "path": "assets/spritesheets16/gacha-reveal/machines/gacha_machine16.png",
+      "group": "machines",
+      "sha256": "3150f816f612d89c431e2ff42d00bbdba30d1af26eba4cceea29c10d839f4675",
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "requested_grid": [
+        3,
+        6
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "spring pink animal machine with cherry blossoms",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "spring pink animal machine with cherry blossoms",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "spring pink animal machine with cherry blossoms",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 2,
+          "column": 1,
+          "name": "summer sky-blue animal machine with little sun and palm leaf",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 2,
+          "name": "summer sky-blue animal machine with little sun and palm leaf",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 3,
+          "name": "summer sky-blue animal machine with little sun and palm leaf",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 3,
+          "column": 1,
+          "name": "autumn orange animal machine with maple leaves",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 3,
+          "column": 2,
+          "name": "autumn orange animal machine with maple leaves",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 3,
+          "name": "autumn orange animal machine with maple leaves",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 4,
+          "column": 1,
+          "name": "winter white/red animal machine with snow cap and tiny wreath",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 4,
+          "column": 2,
+          "name": "winter white/red animal machine with snow cap and tiny wreath",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 4,
+          "column": 3,
+          "name": "winter white/red animal machine with snow cap and tiny wreath",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 5,
+          "column": 1,
+          "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 5,
+          "column": 2,
+          "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 5,
+          "column": 3,
+          "name": "staff recruit machine navy/gold with ID badge emblem and little ID-card capsules",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 6,
+          "column": 1,
+          "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 6,
+          "column": 2,
+          "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 6,
+          "column": 3,
+          "name": "enclosure blueprint machine yellow/black construction with rolled blueprint capsules",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "gacha_capsule16.png",
+      "path": "assets/spritesheets16/gacha-reveal/capsules/gacha_capsule16.png",
+      "group": "capsules",
+      "sha256": "f9d09c0a57f9ca8117c34ef076b54d25d02464002cb827176741fa6f9931efe8",
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "requested_grid": [
+        4,
+        6
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "common gray capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "common gray capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "common gray capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "common gray capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "uncommon green capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "uncommon green capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "uncommon green capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "uncommon green capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "rare blue capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "rare blue capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "rare blue capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "rare blue capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "name": "epic purple capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "name": "epic purple capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "name": "epic purple capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "name": "epic purple capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 5,
+          "column": 1,
+          "name": "legendary gold capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 5,
+          "column": 2,
+          "name": "legendary gold capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 5,
+          "column": 3,
+          "name": "legendary gold capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 5,
+          "column": 4,
+          "name": "legendary gold capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 6,
+          "column": 1,
+          "name": "shiny pastel rainbow capsule",
+          "action": "closed",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 6,
+          "column": 2,
+          "name": "shiny pastel rainbow capsule",
+          "action": "wobbling",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 6,
+          "column": 3,
+          "name": "shiny pastel rainbow capsule",
+          "action": "cracking",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 6,
+          "column": 4,
+          "name": "shiny pastel rainbow capsule",
+          "action": "popped open",
+          "target_native_size": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "gacha_fx16.png",
+      "path": "assets/spritesheets16/gacha-reveal/effects/gacha_fx16.png",
+      "group": "effects",
+      "sha256": "c7c380f84637d6308498d84a3b5c3ddcae38a289516b622085cebc5a9c689705",
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "requested_grid": [
+        6,
+        3
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "common gray light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "uncommon green light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "rare blue light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "epic purple light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "legendary gold light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "shiny pastel rainbow light pillar",
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "common gray starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "uncommon green starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "rare blue starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "epic purple starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "legendary gold starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "shiny pastel rainbow starburst ring",
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "small 4-point sparkle",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "big 5-point star",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "confetti burst",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "sun rays burst",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "puff of smoke",
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "heart fireworks",
+          "target_native_size": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "cards16.png",
+      "path": "assets/spritesheets16/gacha-reveal/cards/cards16.png",
+      "group": "cards",
+      "sha256": "7af4098d796e9fe3bba1ff5fc1559a277d2bd947923e31ed2bf57d8e4b31abba",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_grid": [
+        4,
+        2
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "common gray animal front",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "uncommon green leaf-corner animal front",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "rare blue gem-corner animal front",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "epic purple silver-trim animal front",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "legendary gold ornate animal front",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "cream paw-print card back",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "navy staff ID front with clip hole",
+          "target_native_size": [
+            48,
+            64
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "yellow-black enclosure front with blueprint grid window",
+          "target_native_size": [
+            48,
+            64
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "gacha_cutin16.png",
+      "path": "assets/spritesheets16/gacha-reveal/banners/gacha_cutin16.png",
+      "group": "banners",
+      "sha256": "2f06d7ef2d6f4cf1d2561ab431cb81e34719b20d2db4c7c677d047898ec4e842",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        1,
+        2
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "legendary gold rays, clouds and sparkles",
+          "target_native_size": [
+            256,
+            80
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 2,
+          "column": 1,
+          "name": "epic purple and silver rays with stars",
+          "target_native_size": [
+            256,
+            80
+          ]
+        }
+      ]
+    }
+  ]
+}

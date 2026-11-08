@@ -1,0 +1,102 @@
+{
+  "source_delivery": "PASS_4_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "icons16_2.png",
+      "readable_png": true,
+      "requested_slots": 24,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 193321,
+      "off_palette_pixels": 1573500,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE",
+      "seamless_and_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "pengacha16.png",
+      "readable_png": true,
+      "requested_slots": 17,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 184604,
+      "off_palette_pixels": 1572848,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED",
+      "seamless_and_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "fencesdiag16.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 245165,
+      "off_palette_pixels": 1573518,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE",
+      "seamless_and_connection_status": "NOT_TESTED"
+    },
+    {
+      "filename": "incidents16.png",
+      "readable_png": true,
+      "requested_slots": 17,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 125227,
+      "off_palette_pixels": 1572828,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED",
+      "seamless_and_connection_status": "NOT_APPLICABLE"
+    }
+  ],
+  "canvas_matches": 2,
+  "canvas_mismatches": 2,
+  "manual_review": "See EXPANSION16_SOURCE_REVIEW.md; catalog counts are requested slots, not automatic object recognition.",
+  "corrections": [
+    "Turned caught pickpocket toward left; removed bubble backdrops around healing, whistle and shield effects with image editing."
+  ],
+  "remaining": [
+    "Exact native pixel grids, specified palette, flat magenta background and outline width/color.",
+    "Requested canvas dimensions for icons16_2.png and fencesdiag16.png.",
+    "Native fence endpoints, diagonal front/back orientation and straight-fence joins; floor tiling.",
+    "Walk/run leg alternation, identity, common frame pivots and animation playback."
+  ]
+}
