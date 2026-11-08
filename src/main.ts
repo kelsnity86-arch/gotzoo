@@ -41,7 +41,7 @@ function persist() { if (replacing) return; save.lastSeen = Date.now(); if (!wri
 
 // ── HUD ──
 const hudCoins = h('b', {}), hudIncome = h('b', {});
-const stat = (icon: string, val: HTMLElement, title: string) => h('span', { class: 'stat', title }, hasPng(icon) ? iconSlot(icon, 14) : null, val);
+const stat = (icon: string, val: HTMLElement, title: string) => h('span', { class: 'stat', title }, hasPng(icon) ? iconSlot(icon, 16) : null, val);
 const strikeTag = h('span', { class: 'strike-tag hidden' }, '파업');
 const clockText = h('b', {}), clockFill = h('i', {});
 const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
@@ -49,8 +49,8 @@ const rivalText = h('b', {}), rivalFill = h('i', {});
 const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 우리 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
-  h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
-  stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'),
+  h('div', { class: 'hud-coins' }, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 18) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
+  stat('v2_ui_up', hudIncome, '분당 수입 · 줍기 보너스'),
   h('div', { class: 'hud-stats' }, clock, rivalChip));
 const hint = h('div', { class: 'field-hint' });
 const eventBanner = h('div', { class: 'event-banner hidden' });
@@ -65,7 +65,7 @@ const zoomReset = h('div', { class: 'zoom-btns' },
   h('button', { type: 'button', 'aria-label': '확대', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom * 1.5); } }, '＋'),
   h('button', { type: 'button', 'aria-label': '축소', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom / 1.5); } }, '－'),
   h('button', { type: 'button', class: 'all', onclick: () => { audio.sfx('click'); zoomAnim = null; fling = null; field.resetZoom(); } }, '전체'));
-const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
+const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('v2_ui_gear') ? iconSlot('v2_ui_gear', 20) : '⚙');
 hud.append(zoomReset, settingsBtn);
 
 // ── 우리 놓기: 조각을 고르면 부지 위에 미리 보기, 누른 자리에 놓는다 ──
@@ -501,7 +501,7 @@ function showOffline() {
     h('div', { class: 'fuse-result win' },
       h('div', { class: 'reveal-title' }, '어서 오세요!'),
       h('div', { class: 'sub' }, `자리를 비운 ${hrs ? `${hrs}시간 ` : ''}${mins}분 동안 관람객이 다녀갔어요 (최대 8시간, 평소의 30%)`),
-      h('div', { class: 'offline-amount' }, hasPng('icons_01') ? pix('icons_01', 24) : null, `+${fmt(r.amount)}`),
+      h('div', { class: 'offline-amount' }, hasPng('v2_ui_coin') ? pix('v2_ui_coin', 28) : null, `+${fmt(r.amount)}`),
       h('button', { class: 'btn big', onclick: take }, '받기')));
   ui.append(back);
 }

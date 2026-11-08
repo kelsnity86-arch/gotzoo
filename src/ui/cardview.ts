@@ -14,15 +14,19 @@ import { penOptDef, pieceDef, PEN_THEME_BONUS } from '../data/pieces';
 
 /** 프레임 + 창 안 그림을 원본 크기(24×32)로 합친다 */
 function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
-  // 3배로 합친다: 프레임(24×32)은 도트 그대로 키우고, 창(4,4~19,19) 안에 그림을 비율대로 크게
-  const K = 3;
+  // 새 카드 틀(28×44, 창 5,9~23,27)은 4배, 예전 틀(24×32, 창 4,4~19,19)은 3배로. 창 안 그림은 도트가 고르게 정수 배로 키우고,
+  // 창보다 크면 창의 정수 배 캔버스에 줄여 넣지 않고 틀 쪽을 키워서 도트를 지킨다
+  const v3 = frameKey.startsWith('v2_card_');
+  const fw = v3 ? 28 : 24, fh = v3 ? 44 : 32, wx = v3 ? 5 : 4, wy = v3 ? 9 : 4, ws = v3 ? 18 : 16;
+  const need = Math.max(art.width, art.height);
+  const K = v3 ? Math.max(4, Math.ceil(need / ws)) : 3;
   const cv = document.createElement('canvas');
-  cv.width = 24 * K; cv.height = 32 * K;
+  cv.width = fw * K; cv.height = fh * K;
   const c = cv.getContext('2d')!;
   c.imageSmoothingEnabled = false;
-  c.drawImage(sprite(frameKey), 0, 0, 24 * K, 32 * K);
-  const box = 16 * K, bx = 4 * K, by = 4 * K;
-  const sc = box / Math.max(art.width, art.height);
+  c.drawImage(sprite(frameKey), 0, 0, fw * K, fh * K);
+  const box = ws * K, bx = wx * K, by = wy * K;
+  const sc = (box - (v3 ? 2 * K : 0)) / need;
   const k = sc >= 1 ? Math.floor(sc) : sc;
   const w = art.width * k, h = art.height * k;
   c.drawImage(art, Math.round(bx + (box - w) / 2), Math.round(by + (box - h) / 2), w, h);
@@ -52,12 +56,13 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
     sub = `♥${g.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
     art = shiny ? shinyOf(animalFrame(c.animal, 0)) : animalFrame(c.animal, 0);
   }
-  if (hasPng('cards_01')) {
-    const frame = `cards_0${g.id + 1}`;
+  if (hasPng('cards_01') || hasPng('v2_card_common')) {
+    const v3 = hasPng('v2_card_common');
+    const frame = v3 ? `v2_card_${c.kind === 'staff' ? 'staff' : c.kind === 'pen' ? 'pen' : key}` : `cards_0${g.id + 1}`;
     // 여러 장일 때는 화면 폭에 3장이 들어가게
     const rPx = typeof window !== 'undefined' ? Math.min(160, Math.floor((window.innerWidth - 70) / 3.6), Math.floor(window.innerHeight / 4.2)) : 160;
     const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
-    return h('div', { class: `card art g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
+    return h('div', { class: `card art${v3 ? ' v3' : ''} g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
       h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
       h('div', { class: 'card-grade' }, gradeLabel),
       sub ? h('div', { class: 'card-sub' }, sub) : null,
@@ -73,5 +78,5 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
 
 /** 카드 뒷면 (연출용) */
 export function cardBack(px = 72): HTMLElement | null {
-  return hasPng('cards_07') ? pix('cards_07', px) : null;
+  return hasPng('v2_card_back') ? pix('v2_card_back', px) : hasPng('cards_07') ? pix('cards_07', px) : null;
 }

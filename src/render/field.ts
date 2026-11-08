@@ -4,7 +4,7 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import { penAttract } from '../game/rules';
-import { animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
+import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
 import { itemSprite } from '../data/facilities';
 import { fmt } from '../ui/dom';
@@ -248,7 +248,8 @@ export class FieldRenderer {
       if (it.x < 0) continue;
       const X = bx0 + it.x * BLOCK, Y = by0 + it.y * BLOCK;
       const k2 = itemSprite(it.type);
-      if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
+      if (hasPng(`v2_${k2}`)) obj(k2, X + BLOCK / 2, Y + BLOCK - 3);
+      else if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
     }
     this.bg = cv;
     return cv;
@@ -436,18 +437,31 @@ export class FieldRenderer {
     }
     c.globalAlpha = 1;
     // 해 질 녘·밤: 붉게 → 남색, 밤에는 가로등 불빛
+    const sea0 = seasonOf(save.season.n).key;
     if (world.phase !== 'day') {
       const k = world.phase === 'dusk' ? Math.min(1, (world.phaseT - (DAY.dayLen - DAY.duskLen)) / DAY.duskLen) : 1;
       c.fillStyle = world.phase === 'dusk' ? `rgba(239,125,50,${0.16 * k})` : 'rgba(20,24,60,0.38)';
       c.fillRect(0, 0, L.w, L.h);
       if (world.phase === 'night') {
         c.globalCompositeOperation = 'lighter';
-        for (let x = 0, k2 = 0; x < L.w - 4; x += TILE, k2++) if (k2 % 8 === 5) {
-          const g = c.createRadialGradient(x + 4, 8, 0, x + 4, 8, 22);
-          g.addColorStop(0, 'rgba(247,201,72,0.45)'); g.addColorStop(1, 'rgba(247,201,72,0)');
-          c.fillStyle = g; c.fillRect(x - 20, -14, 48, 44);
+        // 가로등 불빛 (관객존 가로등 자리 · 공원 가로등)
+        const lamps = zoneRow(L.w).filter((z) => z.kind === 'prop' && z.name === 'lamp').map((z) => z.x);
+        for (const lx of lamps) {
+          const g = c.createRadialGradient(lx, PATH_Y0 - 12, 0, lx, PATH_Y0 - 6, 20);
+          g.addColorStop(0, 'rgba(247,201,72,0.5)'); g.addColorStop(1, 'rgba(247,201,72,0)');
+          c.fillStyle = g; c.fillRect(lx - 22, PATH_Y0 - 32, 44, 44);
         }
         c.globalCompositeOperation = 'source-over';
+        if (hasPng('v2_wx_lamplight')) { c.globalAlpha = 0.55; for (const lx of lamps) this.icon(sprite('v2_wx_lamplight'), lx, PATH_Y0 + 2, sprite('v2_wx_lamplight').width / FieldRenderer.R); c.globalAlpha = 1; }
+        // 반딧불 (여름 · 가을 밤, 우리 위를 천천히)
+        if (!reduceMotion && hasPng('v2_wx_firefly') && (sea0 === 'summer' || sea0 === 'autumn')) {
+          const ff = sprite('v2_wx_firefly');
+          for (let i = 0; i < 14; i++) {
+            const fx = ((i * 97.3 + Math.sin(t * 0.4 + i) * 20) % L.w + L.w) % L.w, fy = ZONE_H + ((i * 61.7 + Math.cos(t * 0.5 + i * 2) * 14) % (L.h - ZONE_H));
+            c.globalAlpha = 0.5 + 0.5 * Math.sin(t * 3 + i); this.icon(ff, fx, fy, Math.max(ff.width, ff.height) / FieldRenderer.R);
+          }
+          c.globalAlpha = 1;
+        }
       }
     }
     // 계절: 살짝 덧칠 + 날리는 꽃잎 · 낙엽 · 눈 (이벤트가 눈이면 더 많이)
@@ -455,7 +469,17 @@ export class FieldRenderer {
     const ev = world.event ? eventDef(world.event.id) : null;
     c.fillStyle = sea.tint; c.fillRect(0, 0, L.w, L.h);
     const parts = ev?.snow ? ['#f4f4f4', '#e9f3ff'] : sea.particle;
-    if (parts.length && !reduceMotion) {
+    // 날리는 것: 봄 꽃잎 · 가을 낙엽 · 겨울(눈 이벤트) 눈송이는 그림으로, 그 밖엔 점
+    const wxKeys = ev?.snow || sea.key === 'winter' ? ['v2_wx_flake1'] : sea.key === 'spring' ? ['v2_wx_petal1', 'v2_wx_petal2', 'v2_wx_petal3'] : sea.key === 'autumn' ? ['v2_wx_leaf1', 'v2_wx_leaf2', 'v2_wx_ginkgo'] : [];
+    if (!reduceMotion && wxKeys.length && hasPng(wxKeys[0])) {
+      const n = ev?.snow ? 34 : 10, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
+      for (let i = 0; i < n; i++) {
+        const sway = Math.sin(t * 1.3 + i) * 6;
+        const x = ((i * 71.3 + t * 7 + sway) % L.w + L.w) % L.w, y = ((i * 43.7 + t * fall) % L.h);
+        const im = sprite(wxKeys[i % wxKeys.length]);
+        this.icon(im, x, y, Math.max(im.width, im.height) / FieldRenderer.R); // 도트 그대로 (줄이면 외곽선만 남아 검은 점이 된다)
+      }
+    } else if (parts.length && !reduceMotion) {
       const n = ev?.snow ? 60 : 12, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
       for (let i = 0; i < n; i++) {
         const sway = Math.sin(t * 1.3 + i) * 6;
@@ -467,7 +491,10 @@ export class FieldRenderer {
     // 비 (소나기 · 장마)
     if (ev?.rain) {
       c.fillStyle = 'rgba(115,239,247,0.55)';
-      for (let i = 0; i < 90; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); c.fillRect(Math.round(x), Math.round(y), 1, 3); }
+      const rain = hasPng('v2_wx_rain') ? sprite('v2_wx_rain') : null;
+      for (let i = 0; i < 60; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); if (rain) this.icon(rain, x, y, Math.max(rain.width, rain.height) / FieldRenderer.R); else c.fillRect(Math.round(x), Math.round(y), 1, 3); }
+      // 땅에 튀는 빗방울
+      if (hasPng('v2_wx_splash1')) for (let i = 0; i < 16; i++) { const ph = (t * 2 + i * 0.37) % 1; const sx = (i * 131.7) % L.w, sy = ZONE_H * 0.6 + (i * 77.1) % (L.h - ZONE_H * 0.6); c.globalAlpha = 1 - ph; { const sp = sprite(ph < 0.5 ? 'v2_wx_splash1' : 'v2_wx_splash2'); this.icon(sp, sx, sy, Math.max(sp.width, sp.height) / FieldRenderer.R); } c.globalAlpha = 1; }
       c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(0, 0, L.w, L.h);
     }
     // 우리 놓기: 들어갈 자리 미리 보기 (초록 = 놓을 수 있음, 빨강 = 겹침·밖)
@@ -519,7 +546,9 @@ export class FieldRenderer {
       // 물가 우리: 몸 아래가 잠기고 물결
       const sink = water ? 0.32 : 0;
       if (water && hasPng('v2_fx_ripple1')) { const rp = sprite(Math.floor(a.t * 1.5) % 2 ? 'v2_fx_ripple2' : 'v2_fx_ripple1'); this.ctx.globalAlpha = 0.7; this.icon(rp, x, a.y + 1.5, (rp.width / FieldRenderer.R) * Math.min(1, mul)); this.ctx.globalAlpha = 1; }
-      this.blitAnimal(a.shiny ? shinyOf(img) : img, x, a.y, mul, a.face > 0, hop, sink);
+      // 크게 다시 그린 영웅 · 전설: 줄이지 않고 도트 그대로 (줄이면 점이 뭉개진다)
+      if (BIG.has(a.animal)) { const im = a.shiny ? shinyOf(img) : img; this.blitDev(im, x, a.y, im.height / FieldRenderer.R, a.face > 0, hop, false, sink); }
+      else this.blitAnimal(a.shiny ? shinyOf(img) : img, x, a.y, mul, a.face > 0, hop, sink);
       if (a.shiny) this.sparkle(x, a.y - 4 * mul, a.t + a.uid);
     }
   }

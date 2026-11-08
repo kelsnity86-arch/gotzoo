@@ -490,3 +490,45 @@ body.landscape .hud .hud-stats { flex: 0 1 auto; }
 body.compact .hud .stat, body.compact .hud .zoom-btns { display: none; }
 body.compact .hud .rival .bar, body.compact .hud .clock .bar { display: none; }
 body.compact .hud-coins b { font-size: 15px; }
+
+/* ── 뽑기 연출 (새 그림): 기계 → 캡슐 → 빛기둥 → 카드 뒤집기 ── */
+.machine.v3 { position: relative; width: 200px; height: 190px; }
+.machine.v3 .gm { position: absolute; inset: 0; display: grid; place-items: center; }
+.machine.v3 .gm .pix { grid-area: 1 / 1; display: none; }
+.machine.v3 .gm .gm-0 { display: block; }
+.machine.v3.st-shake .gm .gm-0 { display: none; } .machine.v3.st-shake .gm .gm-1 { display: block; animation: shake 0.12s linear infinite; }
+.machine.v3.st-drop .gm .gm-0 { display: none; } .machine.v3.st-drop .gm .gm-2 { display: block; }
+.machine.v3.st-wobble .gm, .machine.v3.st-crack .gm, .machine.v3.st-open .gm { opacity: 0; transition: opacity 0.25s; }
+.machine.v3 .cap-stage { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.machine.v3 .cap-stage > .pix { grid-area: 1 / 1; display: none; }
+.machine.v3.st-drop .cap-0 { display: block; animation: capDrop 0.45s cubic-bezier(.3,1.6,.6,1) both; }
+.machine.v3.st-wobble .cap-1 { display: block; animation: wobble 0.15s ease-in-out infinite alternate; }
+.machine.v3.st-crack .cap-2 { display: block; animation: shake 0.08s linear infinite; }
+.machine.v3.st-open .cap-3 { display: block; animation: pop2 0.3s ease-out; }
+.machine.v3.st-open .cap-pillar { display: block; animation: pillar 0.6s ease-out both; }
+.machine.v3.st-open .cap-burst { display: block; animation: burst 0.6s ease-out both; }
+.machine.v3.done { display: none; }
+@keyframes capDrop { from { transform: translateY(-60px) scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes wobble { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes pillar { from { transform: scaleY(0.1); opacity: 0; } 40% { opacity: 1; } to { transform: scaleY(1); opacity: 0.85; } }
+@keyframes burst { from { transform: scale(0.3) rotate(0); opacity: 1; } to { transform: scale(1.4) rotate(40deg); opacity: 0; } }
+/* 영웅 · 전설 컷인: 화면을 가로지르는 띠 */
+.cutin { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; background: rgba(18, 20, 30, 0.6); overflow: hidden; animation: legendIn 0.3s ease-out; }
+.cutin > * { grid-area: 1 / 1; }
+.cutin .cutin-band { width: min(120vw, 170vh) !important; height: auto !important; max-width: none; animation: bandIn 0.45s cubic-bezier(.2,.9,.3,1) both; }
+.cutin .cutin-art { position: relative; animation: legendPop 0.7s ease-out 0.25s both; }
+.cutin .cutin-art .pix { filter: drop-shadow(0 0 14px rgba(255,255,255,0.8)); }
+.cutin .legend-text { align-self: center; margin-top: 54vh; z-index: 1; }
+.cutin.epic .legend-text { text-shadow: 3px 3px 0 #5d275d; }
+@keyframes bandIn { from { transform: translateX(-120%) skewX(-8deg); } to { transform: none; } }
+/* 카드 뒤집기: 뒷면 → 앞면 */
+.reveal-cell.has-back { position: relative; animation: none; perspective: 600px; }
+.reveal-cell.has-back .cell-back, .reveal-cell.has-back .cell-front { backface-visibility: hidden; transition: transform 0.35s ease-out; }
+.reveal-cell.has-back .cell-back { position: absolute; inset: 0; display: grid; place-items: center; }
+.reveal-cell.has-back .cell-front { transform: rotateY(180deg); }
+.reveal-cell.has-back.flipped .cell-back { transform: rotateY(-180deg); }
+.reveal-cell.has-back.flipped .cell-front { transform: none; }
+@media (prefers-reduced-motion: reduce) { .machine.v3 *, .cutin, .cutin * { animation: none !important; } .reveal-cell.has-back * { transition: none; } }
+/* 새 카드 틀(28×44): 이름 칸은 아래쪽 31~36줄 */
+.card.art.v3 .card-name-in { left: 18%; right: 18%; top: 70.5%; height: 11.5%; color: #3b2a1a; }
+.card.art.v3.g-epic .card-name-in, .card.art.v3.g-legend .card-name-in { left: 20%; right: 20%; }

@@ -10,6 +10,8 @@ export type Sprite = HTMLCanvasElement | HTMLImageElement;
 const files = import.meta.glob('../../assets/sprites/**/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** 게임 이름 → URL. 동물은 시트 번호·칸 순서대로 animal_000~099 (data/animals.ts 순서와 같다) */
 const URLS: Record<string, string> = {};
+/** 크게 다시 그린 영웅 · 전설 동물 (필드에서 도트 그대로 그린다) */
+export const BIG = new Set<number>();
 {
   const num = (p: string, re: RegExp) => Number(re.exec(p)?.[1] ?? 0);
   const animals = Object.keys(files).filter((p) => p.includes('/sprites/animals/'))
@@ -43,6 +45,12 @@ const files16 = import.meta.glob('../../assets/sprites16/**/*.png', { eager: tru
     else if ((m = /^decor16\/(\w+)_(\d+)$/.exec(k))) URLS[`decor_${m[1]}_${Number(m[2])}`] = u;
     else if ((m = /^v2\/(\w+)$/.exec(k))) URLS[`v2_${m[1]}`] = u;
     else if ((m = /^fx16\/(\d+)$/.exec(k))) { URLS[`fx_${m[1]}`] = u; if (Number(m[1]) <= 4) URLS[`coin_${Number(m[1]) - 1}`] = u; }
+  }
+  // 새 그림이 있으면 예전 그림 대신: 영웅 · 전설 동물(크게), 계절 소품
+  for (const [k, u] of byName) {
+    let m: RegExpExecArray | null;
+    if ((m = /^v2\/big_(\d{3})$/.exec(k))) { URLS[`animal_${m[1]}`] = u; BIG.add(Number(m[1])); }
+    else if ((m = /^v2\/decor_(\w+)_(\d+)$/.exec(k))) URLS[`decor_${m[1]}_${Number(m[2])}`] = u;
   }
 }
 

@@ -10,6 +10,11 @@ import slice16 as S
 
 SRC = S.ROOT / 'assets' / 'spritesheets16' / 'world-life'
 OUT = S.OUT / 'v2'
+# 배경: 거의 순수한 마젠타만. 예전 판정(slice16.bg_mask)은 분홍 · 보라 그림(풍선, 꽃, 구름)까지 배경으로 지워 구멍이 났다
+def bg_strict(a: np.ndarray) -> np.ndarray:
+    r, g, b = a[..., 0].astype(int), a[..., 1].astype(int), a[..., 2].astype(int)
+    return (g < 70) & (r > 170) & (b > 170) & (np.abs(r - b) < 45)
+S.bg_mask = bg_strict
 SH = np.array([1, 254, 1])  # 그림자 표시용 임시 색 (그림에 없는 색)
 S.PAL = np.vstack([S.PAL, SH.astype(np.float32)[None]])
 
@@ -76,10 +81,21 @@ def cells(rel, cols, rows, mode='sprite', s=5.5, crop=False):
             for c in range(cols):
                 x0, y0, x1, y1 = int(c * W / cols), int(r * H / rows), int((c + 1) * W / cols), int((r + 1) * H / rows)
                 sa, sf = a[y0:y1, x0:x1], fg[y0:y1, x0:x1]
-                bs = [b for b in S.components(sf, 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= (s * 3) ** 2]
+                bs = [b for b in S.components(sf, 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= (s * 2) ** 2]
                 if not bs: res.append(None); continue
+                # 칸 가장자리에 닿은 조각은 옆 칸 그림이 넘어온 것: 가장 큰 그림과 겹치지 않으면 버린다
+                ch_, cw_ = sf.shape
+                main = max(bs, key=lambda b: (b[2] - b[0]) * (b[3] - b[1]))
+                m_ = s * 2
+                edge = lambda b: b[0] <= m_ or b[1] <= m_ or b[2] >= cw_ - m_ or b[3] >= ch_ - m_
+                near = lambda b: not (b[2] < main[0] - s * 3 or b[0] > main[2] + s * 3 or b[3] < main[1] - s * 3 or b[1] > main[3] + s * 3)
+                bs = [b for b in bs if b is main or not edge(b) or (near(b) and (b[2] - b[0]) * (b[3] - b[1]) > 0.08 * (main[2] - main[0]) * (main[3] - main[1]))]
+                # 남은 그림 밖(가장자리 쪽) 픽셀은 지운다 (덩어리 상자 밖 조각이 섞이지 않게)
+                keep = np.zeros_like(sf)
+                for b in bs: keep[b[1]:b[3], b[0]:b[2]] = True
+                sf = sf & keep
                 bb = (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs))
-                res.append(S.extract(sa, sf, bb, s))
+                res.append(extract_raw(sa, sf, bb, s))
     else:
         boxes = S.components(fg, 4, 1)
         groups = {}
@@ -88,7 +104,7 @@ def cells(rel, cols, rows, mode='sprite', s=5.5, crop=False):
             k = (min(rows - 1, int(cy / (H / rows))), min(cols - 1, int(cx / (W / cols))))
             if (b[2] - b[0]) * (b[3] - b[1]) < (s * 3) ** 2: continue
             g = groups.get(k); groups[k] = b if g is None else (min(g[0], b[0]), min(g[1], b[1]), max(g[2], b[2]), max(g[3], b[3]))
-        res = [S.extract(a, fg, groups[(r, c)], s) if (r, c) in groups else None for r in range(rows) for c in range(cols)]
+        res = [extract_raw(a, fg, groups[(r, c)], s) if (r, c) in groups else None for r in range(rows) for c in range(cols)]
     print(rel, 'pixel', round(s, 2), [None if c is None else c.shape[:2] for c in res][:6], flush=True)
     return [fix_shadow(c) for c in res], a, fg
 
@@ -99,7 +115,7 @@ def shapes(rel, names):
     H, W = fg.shape
     for k, n in enumerate(names):
         c, r = k % 2, k // 2
-        S.save(patch(a, fg, int(c * W / 2), int(r * H / 2), int((c + 1) * W / 2), int((r + 1) * H / 2), TILE * 3, quant=not rel.startswith('paths')), OUT / f'{n}.png')
+        S.save(patch(a, fg, int(c * W / 2), int(r * H / 2), int((c + 1) * W / 2), int((r + 1) * H / 2), TILE * 3, quant=False), OUT / f'{n}.png')
 
 
 SEASONS = ['spring', 'summer', 'autumn', 'winter']
@@ -165,14 +181,14 @@ def gate():
         bs = [b for b in S.components(fg[:H // 2, x0:x1], 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= 300]
         if bs:
             bb = (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs))
-            S.save(fix_shadow(S.extract(a[:H // 2, x0:x1], fg[:H // 2, x0:x1], bb, 5.5)), OUT / f'gatedeco_{se}_arch.png')
+            S.save(extract_raw(a[:H // 2, x0:x1], fg[:H // 2, x0:x1], bb, 5.5), OUT / f'gatedeco_{se}_arch.png')
         for j in range(2):
             c0, c1 = int((k * 2 + j) * W / 8), int((k * 2 + j + 1) * W / 8)
             sa, sf = a[H // 2:, c0:c1], fg[H // 2:, c0:c1]
             bs = [b for b in S.components(sf, 4, 1) if (b[2] - b[0]) * (b[3] - b[1]) >= 300]
             if bs:
                 bb = (min(b[0] for b in bs), min(b[1] for b in bs), max(b[2] for b in bs), max(b[3] for b in bs))
-                S.save(fix_shadow(S.extract(sa, sf, bb, 5.5)), OUT / f'gatedeco_{se}_base{j}.png')
+                S.save(extract_raw(sa, sf, bb, 5.5), OUT / f'gatedeco_{se}_base{j}.png')
     SRC = old
 
 
@@ -264,6 +280,25 @@ def figures(rel, cols, rows, target_h):
     return out
 
 
+from collections import Counter
+
+
+def est_s(a, fg):
+    lum = a.astype(int).sum(axis=2)
+    dark = (lum < 200) & fg
+    runs = Counter()
+    for arr in (dark, dark.T):
+        for row in arr[::3]:
+            d = np.diff(np.concatenate([[0], row.astype(int), [0]]))
+            st, en = np.nonzero(d == 1)[0], np.nonzero(d == -1)[0]
+            L = en - st
+            runs.update(L[(L >= 3) & (L <= 16)].tolist())
+    best = max(runs.items(), key=lambda kv: kv[1] + 0.6 * runs.get(kv[0]-1, 0) + 0.6 * runs.get(kv[0]+1, 0))[0]
+    # 1도트 외곽선 두께 = 도트 크기 (가장 흔한 어두운 연속 길이 근처 가중 평균)
+    tot = sum(runs.get(k, 0) for k in (best-1, best, best+1))
+    return sum(k * runs.get(k, 0) for k in (best-1, best, best+1)) / tot
+
+
 def auto_s(rel, target_h, cols, rows):
     """시트마다 사람 크기가 달라서, 덩어리 키의 중앙값이 target_h도트가 되는 도트 크기"""
     a, fg, _ = load(rel)
@@ -292,8 +327,95 @@ def people():
     SRC = old
 
 
+def objects(rel, cols, rows, s=None, min_px=None):
+    """물체 시트: 칸마다 가장 큰 덩어리를 그 칸의 주인으로 삼고, 나머지 조각은 상자가 가장 가까운 주인에게 붙인다.
+    (칸 경계를 넘는 그림 · 옆 칸으로 삐져나온 기둥이 잘리거나 옆 그림에 붙지 않게)"""
+    from scipy import ndimage
+    a, fg, _ = load(rel)
+    if s is None: s = est_s(a, fg)
+    H, W = fg.shape
+    lab, n = ndimage.label(fg, structure=np.ones((3, 3)))
+    objs = ndimage.find_objects(lab)
+    sizes = ndimage.sum(np.ones_like(lab), lab, index=range(1, n + 1))
+    min_px = min_px or (s * 1.5) ** 2
+    comps = [(i + 1, objs[i], sizes[i]) for i in range(n) if sizes[i] >= min_px]
+    cw, ch = W / cols, H / rows
+    owner = {}
+    for lid, sl, sz in comps:
+        cy, cx = (sl[0].start + sl[0].stop) / 2, (sl[1].start + sl[1].stop) / 2
+        k = (min(rows - 1, int(cy / ch)), min(cols - 1, int(cx / cw)))
+        if k not in owner or sz > owner[k][2]: owner[k] = (lid, sl, sz)
+    mains = {k: v for k, v in owner.items()}
+    groups = {k: [v[0]] for k, v in mains.items()}
+    gap = lambda s1, s2: max(0, max(s1[1].start - s2[1].stop, s2[1].start - s1[1].stop)) + max(0, max(s1[0].start - s2[0].stop, s2[0].start - s1[0].stop))
+    main_ids = {v[0] for v in mains.values()}
+    for lid, sl, sz in comps:
+        if lid in main_ids: continue
+        k, (d, _) = min(((k, (gap(sl, v[1]), 0)) for k, v in mains.items()), key=lambda kv: kv[1][0])
+        if d < min(cw, ch) * 0.25: groups[k].append(lid)
+    out = [None] * (cols * rows)
+    for (r, c), ids in groups.items():
+        m = np.isin(lab, ids)
+        ys, xs = np.nonzero(m)
+        box = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
+        out[r * cols + c] = extract_raw(a, m, box, s)
+    print(rel, 'pixel', round(s, 2), sum(o is not None for o in out), '/', cols * rows, flush=True)
+    return out
+
+
+def grid(rel, cols, rows, s=None):
+    """칸이 고른 시트: 칸마다 잘라서 원래 색 그대로. 도트 크기는 외곽선 두께로"""
+    a, fg, _ = load(rel)
+    if s is None: s = est_s(a, fg)
+    out, _, _ = cells(rel, cols, rows, s=s, crop=True)
+    print(rel, 'pixel', round(s, 2), sum(o is not None for o in out), '/', cols * rows, flush=True)
+    return out
+
+
+def final():
+    """마지막 묶음: 영웅 · 전설 동물 크게, 계절 소품, 뽑기 화면, 아이콘, 날씨"""
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16'
+    import json
+    big = json.load(open(sys.argv[2])) if len(sys.argv) > 2 else []
+    epic = [b for b in big if b['g'] == 3]; leg = [b for b in big if b['g'] == 4]
+    for rel, cols, rows, lst in (('animals-large/big16_1.png', 5, 5, epic[:25]), ('animals-large/big16_2.png', 4, 4, epic[25:]), ('animals-large/big16_3.png', 6, 5, leg)):
+        for i, t in enumerate(grid(rel, cols, rows)):
+            if t is not None and i < len(lst): S.save(t, OUT / f"big_{lst[i]['id']:03d}.png")
+    for se in SEASONS:
+        for i, t in enumerate(objects(f'seasonal-decor/decor16_{se}.png', 6, 2)):
+            if t is not None: S.save(t, OUT / f'decor_{se}_{i + 1}.png')
+    grades = ['common', 'uncommon', 'rare', 'epic', 'legend', 'shiny']
+    for i, t in enumerate(grid('gacha-reveal/machines/gacha_machine16.png', 3, 6)):
+        if t is not None: S.save(t, OUT / f"gm_{['spring', 'summer', 'autumn', 'winter', 'staff', 'pen'][i // 3]}_{i % 3}.png")
+    for i, t in enumerate(grid('gacha-reveal/capsules/gacha_capsule16.png', 4, 6)):
+        if t is not None: S.save(t, OUT / f'gc_{grades[i // 4]}_{i % 4}.png')
+    fxn = [f'pillar_{g}' for g in grades] + [f'burst_{g}' for g in grades] + ['sparkle', 'star', 'confetti', 'rays', 'smoke', 'hearts']
+    for n, t in zip(fxn, grid('gacha-reveal/effects/gacha_fx16.png', 6, 3)):
+        if t is not None: S.save(t, OUT / f'gf_{n}.png')
+    cn = ['common', 'uncommon', 'rare', 'epic', 'legend', 'back', 'staff', 'pen']
+    for n, t in zip(cn, grid('gacha-reveal/cards/cards16.png', 4, 2)):
+        if t is not None: S.save(t, OUT / f'card_{n}.png')
+    for n, t in zip(['legend', 'epic'], grid('gacha-reveal/banners/gacha_cutin16.png', 1, 2)):
+        if t is not None: S.save(t, OUT / f'cutin_{n}.png')
+    ia = ['gacha', 'zoo', 'cards', 'manage', 'log', 'paw', 'badge', 'block', 'board', 'shop', 'pot', 'list', 'fuse', 'up', 'slots', 'money',
+          'mission', 'dex', 'synergy', 'trophy', 'coin', 'coins', 'ticket', 'food', 'heart', 'visitor', 'sun', 'moon', 'hourglass', 'calendar', 'gear', 'sound',
+          'mute', 'zoomin', 'zoomout', 'fit', 'close', 'check', 'lock', 'rival']
+    for n, t in zip(ia, grid('ui-weather/icons/icons_ui16_a.png', 8, 5)):
+        if t is not None: S.save(t, OUT / f'ui_{n}.png')
+    ib = ['grass', 'sand', 'water', 'snow', 'rock', 'cloud', 'spring', 'summer', 'autumn', 'winter', 'star0', 'star1', 'star2', 'star3', 'star4', 'shiny',
+          'collector', 'keeper', 'guide', 'janitor', 'ticket2', 'cleaner', 'guard', 'vet', 'promoter', 'performer', 'thermo', 'wrench', 'strike', 'piggy', 'gift', 'party']
+    for n, t in zip(ib, grid('ui-weather/icons/icons_ui16_b.png', 8, 4)):
+        if t is not None: S.save(t, OUT / f'ui_{n}.png')
+    wn = ['rain', 'splash1', 'splash2', 'puddle', 'umbrella', 'raincloud', 'flake1', 'flake2', 'clump', 'petal1', 'petal2', 'petal3',
+          'leaf1', 'leaf2', 'ginkgo', 'heat', 'glare', 'gust', 'firefly', 'lamplight', 'window', 'twinkle', 'moon', 'shooting']
+    for n, t in zip(wn, grid('ui-weather/weather/weather16.png', 6, 4)):
+        if t is not None: S.save(t, OUT / f'wx_{n}.png')
+    SRC = old
+
+
 def buildings():
-    bl, _, _ = cells('buildings/buildings16.png', 6, 3, crop=True)
+    bl = objects('buildings/buildings16.png', 6, 3, s=5.5)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
     for i, t in enumerate(bl):
         if t is not None: S.save(t, OUT / f'bld_{bn[i % 6]}_{i // 6}.png')
@@ -303,6 +425,11 @@ if __name__ == '__main__':
     if sys.argv[1:] == ['buildings']: buildings()
     elif sys.argv[1:] == ['gate']: gate()
     elif sys.argv[1:] == ['people']: people()
+    elif sys.argv[1:2] == ['final']: final()
+    elif sys.argv[1:] == ['park']:
+        names = ['tree', 'pine', 'blossom', 'fruit', 'bush', 'flowerbush', 'lamp', 'bench', 'bin', 'sign', 'planter', 'flowerbed', 'hedge', 'boulder', 'drink', 'picnic', 'balloon', 'pond']
+        for n, t in zip(names, cells('park-props/parkprops16.png', 6, 3)[0]):
+            if t is not None: S.save(t, OUT / f'park_{n}.png')
     elif sys.argv[1:] == ['tiles']:
         tiles(); shapes('paths/path16.png', ['path_sq', 'path_ring', 'path_sq_w', 'path_ring_w'])
     else: run()

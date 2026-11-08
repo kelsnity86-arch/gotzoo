@@ -26,7 +26,7 @@ import { showReveal } from './reveal';
 export interface PanelCtx { save: SaveData; world: World; persist: () => void; overlayRoot: HTMLElement; startPlace?: (uid: number) => void; startPlaceItem?: (uid: number) => void; reports?: DayReport[] }
 type Tab = 'gacha' | 'zoo' | 'cards' | 'manage' | 'log';
 const TABS: [Tab, string][] = [['gacha', '뽑기'], ['zoo', '동물원'], ['cards', '카드'], ['manage', '운영'], ['log', '기록']];
-const TAB_ICON: Record<Tab, string> = { gacha: 'icons_12', zoo: 'icons_05', cards: 'icons_10', manage: 'icons_13', log: 'icons_15' };
+const TAB_ICON: Record<Tab, string> = { gacha: 'v2_ui_gacha', zoo: 'v2_ui_zoo', cards: 'v2_ui_cards', manage: 'v2_ui_manage', log: 'v2_ui_log' };
 /** 큰 탭 안의 작은 탭 */
 const SUBS: Record<Tab, [string, string][]> = {
   gacha: [['animal', '동물'], ['staff', '직원'], ['pen', '우리']],
@@ -35,7 +35,7 @@ const SUBS: Record<Tab, [string, string][]> = {
   manage: [['up', '업그레이드'], ['slots', '직원 배치'], ['money', '돈']],
   log: [['mission', '미션'], ['dex', '도감'], ['syn', '시너지'], ['record', '라이벌']],
 };
-const UP_ICON: Record<string, string> = { land: 'icons_05', quality: 'icons_06', gate: 'icons_03', staff: 'icons_07', pickup: 'icons_08' };
+const UP_ICON: Record<string, string> = { land: 'v2_ui_board', deco: 'v2_ui_pot', quality: 'v2_ui_ticket', gate: 'v2_ui_visitor', staff: 'v2_ui_badge', pickup: 'v2_ui_coins' };
 
 /** 직원 효과 한 줄 (카드에 크게) */
 function staffShort(kind: string, v: number): string {
@@ -76,7 +76,7 @@ export class Panel {
       // 세로 화면: 탭을 누르면 서랍이 열리고, 같은 탭을 다시 누르면 닫힌다
       if (this.tab === t && this.isOpen) { this.setOpen(false); this.render(true); return; }
       this.tab = t; this.setOpen(true); this.render(true);
-    } }, hasPng(TAB_ICON[t]) ? iconSlot(TAB_ICON[t], 14) : null, h('span', {}, name), h('i', { class: 'dot' })));
+    } }, hasPng(TAB_ICON[t]) ? iconSlot(TAB_ICON[t], 20) : null, h('span', {}, name), h('i', { class: 'dot' })));
     const handle = h('button', { class: 'drawer-close', title: '닫기', onclick: () => this.setOpen(false) }, '▼');
     this.el = h('aside', { class: 'panel closed' }, h('nav', { class: 'ptabs' }, ...this.tabBtns, handle), this.body);
   }
@@ -211,7 +211,7 @@ export class Panel {
       const hired = newStaff.filter((c) => s.staffSlots.some((u, i) => u === null && i < staffSlotCount(s)) && assignStaff(s, c.uid));
       if (hired.length) toast(`${hired.map((c) => staffDef(c.staff).name).join(', ')} 배치!`, 'gold');
       this.changed();
-    });
+    }, curSeason(s).key);
   }
 
   // ── 보관함 ──
@@ -347,7 +347,7 @@ export class Panel {
       const cost = upgradeCost(s, u.id), lock = upgradeLockedBy(s, u.id);
       const lv = s.upgrades[u.id];
       return h('div', { class: 'up-row' },
-        h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, hasPng(UP_ICON[u.id]) ? pix(UP_ICON[u.id], 16) : null, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
+        h('div', { class: 'up-info' }, h('div', { class: 'up-name' }, hasPng(UP_ICON[u.id]) ? pix(UP_ICON[u.id], 20) : null, u.name, h('span', { class: 'sub' }, ` Lv.${lv + 1}/${u.values.length}`)),
           h('div', { class: 'sub' }, cost === null ? u.describe(u.values[lv]) : `${u.describe(u.values[lv])} → ${u.describe(u.values[lv + 1])}`),
           lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
         cost === null ? h('span', { class: 'max' }, '최고')
@@ -527,7 +527,7 @@ export class Panel {
       const out = penDraw(s, n);
       if (!out) { audio.sfx('deny'); toast(s.coins < 0 ? '빚이 있으면 우리를 뽑을 수 없어요' : '코인이 모자라요', 'bad'); return; }
       this.ctx.persist();
-      showReveal(this.ctx.overlayRoot, out, new Set(), () => { this.sub.zoo = 'board'; toast('동물원 탭에서 부지에 놓아요 (자동 배치도 있어요)', 'info', 2400); this.changed(); });
+      showReveal(this.ctx.overlayRoot, out, new Set(), () => { this.sub.zoo = 'board'; toast('동물원 탭에서 부지에 놓아요 (자동 배치도 있어요)', 'info', 2400); this.changed(); }, curSeason(s).key);
     };
     return h('div', {},
       h('div', { class: 'hero' }, h('div', { class: 'title' }, '우리 뽑기'), h('div', { class: 'sub' }, `1개 ${fmt(price)}코인 (동물 뽑기 ×${PEN_DRAW_MUL}) · 등급이 높을수록 크고 특이한 모양 · 서식지는 카드에 정해져요`)),
