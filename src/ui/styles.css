@@ -560,3 +560,12 @@ body.reduce-motion .reveal-cell.has-back * { transition-duration: 0.15s; }
 .combo-pop { position: absolute; transform: translateX(-50%) scale(var(--s, 1)); font: 26px 'Jua', sans-serif; color: #fff3a3; text-shadow: 3px 3px 0 #8a5a3b, 0 0 10px #f7c948; pointer-events: none !important; z-index: 6; }
 .combo-pop.end { font-size: 22px; color: #fff; text-shadow: 3px 3px 0 #2f7a4b; }
 body.reduce-motion .gacha-gauge { animation: none !important; }
+/* 통합 뽑기 확률 표 */
+.odds-table { display: grid; gap: 2px; margin-top: 6px; font-size: 12px; }
+.odds-table .ot-row { display: grid; grid-template-columns: 1.4fr repeat(5, 1fr); gap: 2px; align-items: center; }
+.odds-table .ot-row > * { padding: 2px 4px; text-align: center; background: #fffaf0; border-radius: 4px; font-variant-numeric: tabular-nums; }
+.odds-table .ot-row > b:first-child { text-align: left; }
+.odds-table .head b { font: 12px 'Jua', sans-serif; color: #fff; background: var(--g, #8a7458); }
+.odds-table .head b:first-child { background: transparent; }
+/* 정보 줄: 돈(입장료) · 코인(뽑기) */
+.hud-money b { color: #a7d65b; }

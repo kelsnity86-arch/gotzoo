@@ -51,6 +51,10 @@ export const VISITOR = {
   tipMin: 10, tipMax: 20,
   /** 수거 보너스 = 투척액 × 이 값 */
   pickupBonus: 0.5,
+  /** 손님이 바닥에 떨어뜨리는 코인(뽑기용) = 입장료 × 이 값 */
+  tokenShare: 0.6,
+  /** 행운의 동전 확률 (주우면 뽑기권) */
+  luckyChance: 0.025,
   /** 수요가 게이트 한도를 넘으면 넘친 만큼 투척액이 오른다 (최대 배율) */
   overflowMaxMul: 1.6,
   walkSpeed: 16,

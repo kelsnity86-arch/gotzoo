@@ -1,4 +1,5 @@
 // 저장 데이터. 저장 시점: 뽑기·합성·배치·업그레이드·승급 직후, 그리고 30초마다(코인).
+import { GACHA } from '../data/balance';
 import { FACILITIES, FAC_MAX_LV, type FacilityType } from '../data/facilities';
 import { ANIMALS } from '../data/animals';
 import { STAFF_PAY, isStaffKind, type StaffKind, type StaffOptId } from '../data/staff';
@@ -20,7 +21,10 @@ export interface StaffCard { uid: number; kind: 'staff'; staff: StaffKind; grade
 
 export interface SaveData {
   version: number;
+  /** 돈: 입장료로 들어온다. 업그레이드 · 시설 · 꾸미기 · 월급 · 유지비 (빚 가능) */
   coins: number;
+  /** 코인: 바닥 동전을 주워 모은다. 뽑기 전용 (0 밑으로 안 내려감) */
+  tokens: number;
   cards: Card[];
   nextUid: number;
   /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
@@ -84,10 +88,11 @@ export const SAVE_KEY = 'bbopzoo.save';
 export function defaultSave(): SaveData {
   const upgrades = Object.fromEntries(UPGRADES.map((u) => [u.id, 0])) as Record<UpgradeId, number>;
   return {
-    version: SAVE_VERSION, coins: 0, nextUid: 1, staffSlots: [null],
-    // 처음 우리 두 개: 네모 우리(풀밭) · 네모 우리(물가). uid는 일반 카드와 겹치지 않게 크게
-    cards: [{ uid: 900001, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900002, kind: 'pen', piece: 'O', grade: 0, habitat: 'water', opts: [] }],
-    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []], items: [], facLv: { snack: 0, restroom: 0, bench: 0, fountain: 0, photo: 0, clinic: 0 },
+    version: SAVE_VERSION, coins: 0, tokens: 0, nextUid: 1, staffSlots: [null],
+    // 처음 우리 네 개 (네모 우리: 풀밭 · 물가 · 풀밭 · 사막). uid는 일반 카드와 겹치지 않게 크게
+    cards: [{ uid: 900001, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900002, kind: 'pen', piece: 'O', grade: 0, habitat: 'water', opts: [] },
+      { uid: 900003, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900004, kind: 'pen', piece: 'O', grade: 0, habitat: 'sand', opts: [] }],
+    board: [{ uid: 900001, x: 0, y: 1, rot: 0 }, { uid: 900002, x: 2, y: 1, rot: 0 }, { uid: 900003, x: 4, y: 1, rot: 0 }, { uid: 900004, x: 6, y: 1, rot: 0 }], pens: [[], [], [], []], items: [], facLv: { snack: 0, restroom: 0, bench: 0, fountain: 0, photo: 0, clinic: 0, souvenir: 0, restaurant: 0, icecream: 0, carousel: 0, tower: 0, lab: 0 },
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
@@ -156,6 +161,8 @@ export function normalize(raw: unknown): SaveData {
   for (const c of out.cards) if (c.kind === 'animal') out.dex[c.animal] = true;
   out.lockedSpecies = Array.isArray(out.lockedSpecies) ? out.lockedSpecies.filter((n) => typeof n === 'number') : [];
   out.tickets = Number.isFinite(out.tickets) ? Math.max(0, Math.floor(out.tickets)) : 0;
+  // 코인(뽑기용)이 없던 예전 저장: 10회 뽑기 1번 분량을 선물
+  out.tokens = Number.isFinite(rr.tokens as number) ? Math.max(0, Math.floor(rr.tokens as number)) : (rr.coins !== undefined ? GACHA.price[Math.min(out.stage, GACHA.price.length) - 1] * 10 : 0);
   out.dexClaimed = Array.isArray(out.dexClaimed) ? out.dexClaimed.filter((x) => typeof x === 'string') : [];
   out.lastSeen = Number.isFinite(out.lastSeen) ? out.lastSeen : 0;
   out.day = Number.isFinite(out.day) && out.day >= 1 ? Math.floor(out.day) : 1;

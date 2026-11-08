@@ -8,7 +8,7 @@ const round = (n: number, step: number) => Math.max(step, Math.round(n / step) *
 export const MISSION_POOL: readonly { kind: MissionKind; target: (day: number, stage: number, k: number) => number; text: (n: number) => string }[] = [
   { kind: 'visitors', target: (_d, st, k) => round(STAGE_VISITORS[st - 1] * k, 5), text: (n) => `관람객 ${n}명 맞이하기` },
   { kind: 'pickup', target: (_d, st, k) => round(STAGE_VISITORS[st - 1] * 0.6 * k, 5), text: (n) => `바닥 동전 ${n}개 직접 줍기` },
-  { kind: 'earn', target: (d, _st, k) => round(rivalDaily(d) * k, 100), text: (n) => `오늘 ${n.toLocaleString('ko-KR')}코인 벌기` },
+  { kind: 'earn', target: (d, _st, k) => round(rivalDaily(d) * k, 100), text: (n) => `오늘 입장료 ${n.toLocaleString('ko-KR')}돈 벌기` },
   { kind: 'feed', target: (_d, _st, k) => Math.round(4 * k), text: (n) => `먹이 ${n}번 주기` },
 ];
 /** 난이도 계수 (쉬움 · 보통 · 어려움) */

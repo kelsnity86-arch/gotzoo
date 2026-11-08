@@ -21,22 +21,24 @@ describe('필드', () => {
   it('우리 배치는 화면 비율을 따른다', () => {
     const s = defaultSave();
     const L = computeLayout(s);
-    expect(L.pens).toHaveLength(2);
+    expect(L.pens).toHaveLength(4);
     expect(L.w).toBe(L.bx0 * 2 + 8 * 32);
-    expect(L.pens[0]).toEqual({ x: L.bx0 + 32, y: L.by0 + 32, w: 64, h: 64 });
+    expect(L.pens[0]).toEqual({ x: L.bx0, y: L.by0 + 32, w: 64, h: 64 });
   });
-  it('첫 동물을 배치하면 30초 안에 투척이 시작되고, 기본 수입은 바로 들어온다', () => {
+  it('첫 동물을 배치하면 손님이 오고, 입장료(돈)는 들어올 때 바로 들어온다 · 코인은 바닥에', () => {
     const { s, w } = setup();
     run(w, 30);
     expect(s.coins).toBeGreaterThan(0);
+    expect(s.tokens).toBe(0); // 코인은 주워야 들어온다
     expect(w.coins.length + w.missed).toBeGreaterThan(0);
   });
-  it('수거 보너스는 동전 하나에 한 번만, 오래 방치하면 사라진다', () => {
+  it('바닥 동전(코인)은 한 번만 주워지고, 오래 방치하면 사라진다', () => {
     const { s, w } = setup();
     const c = waitCoin(w);
-    const before = s.coins;
+    const before = s.tokens, money = s.coins;
     w.pick(c, 'hand'); w.pick(c, 'staff');
-    expect(s.coins - before).toBe(c.value);
+    expect(s.tokens - before).toBe(c.value);
+    expect(s.coins).toBe(money);
     const t = defaultSave(); const tc = freeDraw(t)!; placeAnimal(t, tc.uid);
     const w2 = new World(t); w2.relayout(1.6); w2.sync();
     waitCoin(w2);

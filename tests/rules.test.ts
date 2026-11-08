@@ -41,38 +41,37 @@ describe('뽑기', () => {
   });
   it('1·5·10회는 가격을 정확히 한 번 차감하고 장수만큼 지급', () => {
     for (const n of [1, 5, 10]) {
-      const s = defaultSave(); s.coins = 100000;
+      const s = defaultSave(); s.tokens = 100000; s.coins = 0;
+      const before = s.cards.length;
       const out = draw(s, n)!;
       expect(out).toHaveLength(n);
-      expect(s.coins).toBe(100000 - GACHA.price[0] * n);
-      expect(s.cards.filter((c) => c.kind !== 'pen')).toHaveLength(n);
+      expect(s.tokens).toBe(100000 - GACHA.price[0] * n); // 뽑기는 코인으로
+      expect(s.coins).toBe(0); // 돈은 그대로
+      expect(s.cards.length - before).toBe(n);
     }
   });
-  it('코인이 모자라면 아무것도 바뀌지 않음', () => {
-    const s = defaultSave(); s.coins = 99;
+  it('코인이 모자라면 아무것도 바뀌지 않음 (돈이 많아도)', () => {
+    const s = defaultSave(); s.tokens = 99; s.coins = 1e9;
+    const before = s.cards.length;
     expect(draw(s, 1)).toBeNull();
-    expect(s.coins).toBe(99); expect(s.cards.filter((c) => c.kind !== 'pen')).toHaveLength(0);
+    expect(s.tokens).toBe(99); expect(s.cards.length).toBe(before);
   });
   it('단계가 오르면 가격이 오른다', () => { const s = defaultSave(); s.stage = 3; expect(drawPrice(s)).toBe(GACHA.price[2]); });
-  it('확률: 동물만, 전설 약 1%', () => {
-    const s = defaultSave(); s.coins = 1e12;
-    const out = draw(s, 10, Math.random)!; void out;
-    const big = defaultSave(); big.coins = 1e12;
-    const cards = draw(big, 1, Math.random)!; void cards;
-    let staff = 0, legend = 0; const N = 40000;
-    const t = defaultSave(); t.coins = 1e15;
-    for (const c of draw(t, N)!) { if (c.kind !== 'animal') staff++; else if (ANIMALS[c.animal].grade === 4) legend++; }
-    expect(staff).toBe(0);
-    expect(legend / N).toBeGreaterThan(0.007); expect(legend / N).toBeLessThan(0.013);
+  it('확률: 동물 90% · 직원 5% · 우리 5%, 동물 중 전설 약 1%', () => {
+    let staff = 0, pen = 0, animal = 0, legend = 0; const N = 40000;
+    const t = defaultSave(); t.tokens = 1e15;
+    for (const c of draw(t, N)!) { if (c.kind === 'staff') staff++; else if (c.kind === 'pen') pen++; else { animal++; if (ANIMALS[c.animal].grade === 4) legend++; } }
+    expect(animal / N).toBeCloseTo(0.9, 1); expect(staff / N).toBeCloseTo(0.05, 1); expect(pen / N).toBeCloseTo(0.05, 1);
+    expect(legend / animal).toBeGreaterThan(0.007); expect(legend / animal).toBeLessThan(0.013);
   });
 });
 
 describe('배치 · 매력도', () => {
-  it('네모 우리 2개(4칸 = 6마리씩)부터, 가득 차면 더 못 넣음', () => {
-    const s = defaultSave(); s.coins = 1e9;
-    draw(s, 14, seq(0.5, 0.01, 0.1));
-    expect(penCount(s)).toBe(2); expect(penCap(s, 0)).toBe(6);
-    expect(autoPlace(s)).toBe(12);
+  it('네모 우리 4개(4칸 = 6마리씩)부터, 가득 차면 더 못 넣음', () => {
+    const s = defaultSave();
+    for (let i = 0; i < 26; i++) s.cards.push({ uid: s.nextUid++, kind: 'animal', animal: i % 20 });
+    expect(penCount(s)).toBe(4); expect(penCap(s, 0)).toBe(6);
+    expect(autoPlace(s)).toBe(24);
     const left = s.cards.find((c) => c.kind === 'animal' && !placedSet(s).has(c.uid))!;
     expect(placeAnimal(s, left.uid)).toBe(false);
   });
@@ -155,6 +154,6 @@ describe('최대 수익 배치', () => {
     const after = optimizePlacement(s);
     expect(after).toBeGreaterThanOrEqual(before);
     expect(s.pens.flat()).toContain(s.cards.find((c) => c.kind === 'animal' && c.animal === 95)!.uid);
-    expect(s.pens.flat().length).toBe(12);
+    expect(s.pens.flat().length).toBe(24);
   });
 });

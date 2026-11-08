@@ -10,7 +10,7 @@ import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, buyItem, buyFacility, facPrice, zooScale, placeItem, facSum, penTheme, penDraw, canPlacePen, placePen, removePen, autoArrangePens, boardGrid, penCells, fusePens, finishLegacy, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
+  assignStaff, buyUpgrade, buyItem, buyFacility, facPrice, zooScale, placeItem, facSum, penTheme, penDraw, canPlacePen, placePen, removePen, autoArrangePens, boardGrid, penCells, fusePens, finishLegacy, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
@@ -97,9 +97,20 @@ describe('직원 뽑기 · 해고', () => {
       if (c.grade < 4) expect(c.opts.some((o) => o.id === 'luck')).toBe(false);
     }
   });
-  it('동물 뽑기에서는 직원이 나오지 않는다', () => {
-    const s = defaultSave(); s.coins = 1e7;
-    expect(draw(s, 300)!.every((c) => c.kind === 'animal')).toBe(true);
+  it('뽑기 하나에서 직원 · 우리도 가끔 나오고 등급이 있다', () => {
+    const s = defaultSave(); s.tokens = 1e9;
+    const out = draw(s, 2000)!;
+    expect(out.some((c) => c.kind === 'staff')).toBe(true);
+    expect(out.some((c) => c.kind === 'pen')).toBe(true);
+    expect(out.every((c) => c.kind === 'animal' || (c.grade >= 0 && c.grade <= 4))).toBe(true);
+  });
+  it('부지를 넓히면 일반 우리를 하나 선물로 받는다', () => {
+    const s = defaultSave(); s.coins = 1e6;
+    const n = s.cards.filter((c) => c.kind === 'pen').length;
+    expect(buyUpgrade(s, 'land')).toBe(true);
+    const pens = s.cards.filter((c) => c.kind === 'pen');
+    expect(pens.length).toBe(n + 1);
+    expect(pens[pens.length - 1].kind === 'pen' && pens[pens.length - 1].grade).toBe(0);
   });
   it('해고하면 등급별로 돌려받고 슬롯에서 빠진다', () => {
     const s = defaultSave();
@@ -136,12 +147,12 @@ describe('계절 · 반짝이 · 시너지', () => {
     expect(seasonOf(5).key).toBe('spring'); expect(yearOf(5)).toBe(2);
   });
   it('계절 한정 동물은 그 계절에만 나온다', () => {
-    const s = defaultSave(); s.coins = 1e12; s.season.n = 3; // 가을
+    const s = defaultSave(); s.tokens = 1e12; s.season.n = 3; // 가을
     const out = draw(s, 20000)!;
     const lim = out.filter((c) => c.kind === 'animal' && ANIMALS[c.animal].season);
     expect(lim.length).toBeGreaterThan(0);
     expect(lim.every((c) => c.kind === 'animal' && ANIMALS[c.animal].season === 'autumn')).toBe(true);
-    const sh = out.filter((c) => c.kind === 'animal' && c.shiny).length / out.length;
+    const sh = out.filter((c) => c.kind === 'animal' && c.shiny).length / out.filter((c) => c.kind === 'animal').length;
     expect(sh).toBeGreaterThan(0.005); expect(sh).toBeLessThan(0.016);
   });
   it('반짝이는 매력 1.5배, 제철 서식지 +20% · 약한 서식지 −15%', () => {
@@ -227,9 +238,9 @@ describe('우리 조각 · 부지', () => {
     expect(canPlacePen(s, 50, 1, 1, 0)).toBe(false); // 처음 우리와 겹침
     expect(canPlacePen(s, 50, 6, 3, 0)).toBe(false); // 부지 밖 (8칸 넘음)
     expect(placePen(s, 50, 0, 3, 0)).toBe(true);
-    expect(s.board).toHaveLength(3); expect(s.pens).toHaveLength(3);
-    s.cards.push({ uid: 51, kind: 'animal', animal: 0 }); s.pens[2].push(51);
-    expect(removePen(s, 2)).toBe(true);
+    expect(s.board).toHaveLength(5); expect(s.pens).toHaveLength(5);
+    s.cards.push({ uid: 51, kind: 'animal', animal: 0 }); s.pens[4].push(51);
+    expect(removePen(s, 4)).toBe(true);
     expect(s.pens.flat()).not.toContain(51);
     expect(s.cards.some((c) => c.uid === 50)).toBe(true); // 조각은 남는다
   });

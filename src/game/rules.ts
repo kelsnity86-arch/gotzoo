@@ -266,10 +266,12 @@ export function freeDraw(s: SaveData, rng: Rng = Math.random): Card | null {
 }
 
 /** n장 뽑기. 코인이 모자라면 null (아무것도 바뀌지 않음) */
+/** 뽑기 하나: 동물 90% · 직원 5% · 우리 5%, 나온 것 안에서 등급. 코인(뽑기용)이 모자라면 null */
+export const DRAW_KIND = { animal: 0.9, staff: 0.05, pen: 0.05 } as const;
 export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
   const cost = drawPrice(s) * n;
-  if (s.coins < cost) return null;
-  s.coins -= cost;
+  if ((s.tokens ?? 0) < cost) return null;
+  s.tokens -= cost;
   s.stats.draws += n;
   return rollCards(s, n, rng);
 }
@@ -316,7 +318,10 @@ export const staffPay = (s: SaveData, c: StaffCard) => Math.round(costUnit(s) * 
 function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
   const out: Card[] = [];
   for (let i = 0; i < n; i++) {
-    const g = rollGrade(rng, optSum(s, 'luck'));
+    const k = rng();
+    if (k >= DRAW_KIND.animal + DRAW_KIND.staff) { out.push(addCard(s, rollPen(rng))); continue; }
+    if (k >= DRAW_KIND.animal) { out.push(addCard(s, rollStaff(rng))); continue; }
+    const g = rollGrade(rng, optSum(s, 'luck') + facSum(s, 'lab'));
     out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < SHINY.chance }));
   }
   return out;
@@ -419,6 +424,13 @@ export function autoPlace(s: SaveData): number {
  *  2) 우리 나누기: 같은 서식지끼리 한 우리에, 같은 종은 같은 우리에 모은다 (같은 종·같은 서식지 보너스)
  *  여러 방법을 시도해 총 매력도가 가장 높은 배치를 고른다. 돌려주는 값: 배치 후 총 매력도 */
 export function optimizePlacement(s: SaveData): number {
+  // 지금 배치보다 나빠지면 되돌린다 (찾기가 놓친 경우)
+  const keep = s.pens.map((p) => p.slice()), before = totalAttract(s);
+  const after = optimizePlacementRaw(s);
+  if (after < before) { s.pens = keep; return before; }
+  return after;
+}
+function optimizePlacementRaw(s: SaveData): number {
   syncSlots(s);
   const nPens = penCount(s), caps = s.board.map((_, i) => penCap(s, i)), capacity = caps.reduce((a, b) => a + b, 0);
   const staffUids = new Set(s.staffSlots.filter((u): u is number => u !== null));
@@ -662,7 +674,7 @@ export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'))
 /** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
 export const eventGapMul = (s: SaveData) => 1 - staffSum(s, 'performer');
 export const eventExtraSec = (s: SaveData) => optSum(s, 'party');
-export const vipMul = (s: SaveData) => Math.max(1, placedStaffCards(s).reduce((m, c) => m * (c.opts.find((o) => o.id === 'vip')?.v ?? 1), 1));
+export const vipMul = (s: SaveData) => Math.max(1, placedStaffCards(s).reduce((m, c) => m * (c.opts.find((o) => o.id === 'vip')?.v ?? 1), 1)) * (1 + facSum(s, 'carousel'));
 /** 수거 직원 · 사육사 속도 배율 (그 직원 하나의 등급) */
 export const staffSpeed = (c: StaffCard) => staffDef(c.staff).values[c.grade];
 
@@ -806,6 +818,8 @@ export function buyUpgrade(s: SaveData, id: UpgradeId): boolean {
   s.coins -= cost;
   s.upgrades[id]++;
   syncSlots(s);
+  // 부지를 넓히면 일반 우리 하나를 선물
+  if (id === 'land') addCard(s, rollPen(Math.random, 0));
   return true;
 }
 

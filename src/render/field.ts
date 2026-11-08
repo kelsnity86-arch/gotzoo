@@ -2,7 +2,7 @@
 import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
+import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import { penAttract } from '../game/rules';
 import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
@@ -185,10 +185,10 @@ export class FieldRenderer {
 
     // 3. 관객존 꾸미기: 길 위쪽 잔디에 나무 · 벤치 · 가로등 · 화단을 번갈아, 길 아래엔 낮은 생울타리
     // 관객존 위 건물 줄: 지은 관객 건물(단계 그림)과 사이 소품. 아직 안 지은 자리는 빈 팻말
-    for (const z of zoneRow(L.w)) {
+    for (const z of zoneRow(L.w, this.facLv)) {
       if (z.kind === 'prop') { obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1)); continue; }
       const lv = this.facLv[z.type] ?? 0;
-      if (lv > 0) obj(`bld_${z.type}_${lv - 1}`, z.x, p0 * TILE - 1);
+      if (lv > 0) obj(`bld_${BLD_ART[z.type]}_${lv - 1}`, z.x, p0 * TILE - 1);
       else obj('park_sign', z.x, p0 * TILE - 2);
     }
     // 가운데 입구: 앞에서 본 아치 문 (손님이 문을 지나 화면 쪽으로 나온다), 양옆 매표소 · 깃대, 간판 이름, 계절 장식
@@ -489,7 +489,7 @@ export class FieldRenderer {
       if (world.phase === 'night') {
         c.globalCompositeOperation = 'lighter';
         // 가로등 불빛 (관객존 가로등 자리 · 공원 가로등)
-        const lamps = zoneRow(L.w).filter((z) => z.kind === 'prop' && z.name === 'lamp').map((z) => z.x);
+        const lamps = zoneRow(L.w, this.facLv).filter((z) => z.kind === 'prop' && z.name === 'lamp').map((z) => z.x);
         for (const lx of lamps) {
           const g = c.createRadialGradient(lx, PATH_Y0 - 12, 0, lx, PATH_Y0 - 6, 20);
           g.addColorStop(0, 'rgba(247,201,72,0.5)'); g.addColorStop(1, 'rgba(247,201,72,0)');

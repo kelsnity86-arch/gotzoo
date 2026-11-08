@@ -33,7 +33,7 @@ syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
 field.mock = new URLSearchParams(location.search).has("mock");
-const LOOP = new URLSearchParams(location.search).has('loop') || location.hash === '#loop';
+const LOOP = true; // 코인(바닥 동전) → 뽑기 고리
 let dpr = 1, W = 0, H = 0;
 let fieldRect = { x: 0, y: 0, w: 1, h: 1 };
 let pointer: { x: number; y: number } | null = null;
@@ -52,8 +52,8 @@ const rivalText = h('b', {}), rivalFill = h('i', {});
 const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 우리 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
-  h('div', { class: 'hud-coins' }, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 18) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
-  stat('v2_ui_up', hudIncome, '분당 수입 · 줍기 보너스'),
+  h('div', { class: 'hud-coins hud-money', title: '돈 (입장료): 건물 · 업그레이드 · 월급' }, hasPng('v2_ui_money') ? iconSlot('v2_ui_money', 18) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
+  stat('v2_ui_up', hudIncome, '분당 입장료(돈) · 주운 코인'),
   h('div', { class: 'hud-stats' }, clock, rivalChip));
 const hint = h('div', { class: 'field-hint' });
 const eventBanner = h('div', { class: 'event-banner hidden' });
@@ -140,9 +140,9 @@ function tryPlace(p: { x: number; y: number }) {
 
 const reports: DayReport[] = [];
 // (시안 ?loop) 뽑기 게이지 · 콤보 표시
-const gaugeFill = h('i', {}), gaugeText = h('b', {});
+const gaugeFill = h('i', {}), gaugeText = h('b', {}), gaugeCoins = h('b', { class: 'gg-coins' });
 const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } },
-  hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, h('span', { class: 'gg-bar' }, gaugeFill), gaugeText);
+  hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 16) : null, gaugeCoins, h('span', { class: 'gg-bar' }, gaugeFill), gaugeText);
 const comboEl = h('div', { class: 'combo-pop hidden' });
 /** 폰 세로: 가로로 돌려 달라는 안내 · PC 마우스 말풍선 */
 const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
@@ -343,7 +343,7 @@ canvas.addEventListener('pointermove', (e) => {
     const pc = penCardAt(save, i);
     text = `${pc ? penPiece(pc).name : '우리'} · ♥${fmt(Math.round(penAttract(save, i)))} · ${save.pens[i]?.length ?? 0}마리`;
   } else if (wp.y < PATH_Y0 && wp.y > PATH_Y0 - 24) {
-    const z = zoneRow(world.layout.w).find((z) => z.kind === 'bld' && Math.abs(z.x - wp.x) < 9);
+    const z = zoneRow(world.layout.w, save.facLv).find((z) => z.kind === 'bld' && Math.abs(z.x - wp.x) < 8);
     if (z && z.kind === 'bld') { const d = facilityDef(z.type), lv = save.facLv[z.type] ?? 0; text = lv ? `${d.name} ${lv}단계 · ${d.desc(facLevelValue(z.type, lv))}` : `${d.name} · 아직 없어요 (밤에 동물원 > 시설에서 지어요)`; }
   }
   tip.classList.toggle('hidden', !text);
@@ -390,13 +390,13 @@ function openSettings() {
     if (pending && pending.ok) { replaceSave(pending.save); back.remove(); toast('불러왔어요', 'good'); return; }
     pending = importCode(area.value);
     if (!pending.ok) { msg.textContent = pending.error; return; }
-    msg.textContent = `코인 ${fmt(pending.save.coins)} · 카드 ${pending.save.cards.length}장 · ${pending.save.stage}단계. 지금 진행을 이 코드로 바꿀까요?`;
+    msg.textContent = `돈 ${fmt(pending.save.coins)} · 카드 ${pending.save.cards.length}장 · ${pending.save.stage}단계. 지금 진행을 이 코드로 바꿀까요?`;
     load.textContent = '바꾸기 (지금 진행은 사라짐)';
   });
   let armed = false;
   const reset = h('button', { class: 'btn small danger' }, '저장 초기화') as HTMLButtonElement;
   reset.addEventListener('click', () => {
-    if (!armed) { armed = true; reset.textContent = '정말 초기화 (되돌릴 수 없음)'; msg.textContent = '모든 카드·코인·업그레이드가 지워져요. 먼저 저장 코드를 복사해 두세요.'; return; }
+    if (!armed) { armed = true; reset.textContent = '정말 초기화 (되돌릴 수 없음)'; msg.textContent = '모든 카드·돈·코인·업그레이드가 지워져요. 먼저 저장 코드를 복사해 두세요.'; return; }
     replaceSave(defaultSave()); back.remove(); toast('처음부터 시작해요', 'gold');
   });
   const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
@@ -451,7 +451,7 @@ function showReport(r: import('./game/world').DayReport) {
           r.costs.climate ? h('div', {}, h('span', {}, r.costs.climateName), h('b', { class: 'minus' }, `-${fmt(r.costs.climate)}`)) : null,
           r.costs.facility ? h('div', {}, h('span', {}, '시설 유지비'), h('b', { class: 'minus' }, `-${fmt(r.costs.facility)}`)) : null,
           h('div', { class: 'net' }, h('span', {}, '오늘 순이익'), h('b', { class: r.net >= 0 ? 'plus' : 'minus' }, `${r.net >= 0 ? '+' : ''}${fmt(r.net)}`)),
-          h('div', { class: 'after' }, h('span', {}, '남은 코인'), h('b', { class: r.coinsAfter >= 0 ? '' : 'minus' }, fmt(r.coinsAfter)))),
+          h('div', { class: 'after' }, h('span', {}, '남은 돈'), h('b', { class: r.coinsAfter >= 0 ? '' : 'minus' }, fmt(r.coinsAfter)))),
         h('div', {}, h('b', {}, fmt(r.visitors)), h('span', {}, '다녀간 관람객')),
         h('div', {}, h('b', {}, fmt(r.coins)), h('span', {}, '주운 동전')),
         h('div', {}, h('b', {}, fmt(r.bonus + r.janitor)), h('span', {}, '줍기 보너스')),
@@ -497,7 +497,7 @@ function showClosure() {
         h('div', {}, h('b', {}, `${save.season.n - 1}번 · ${Math.floor((save.season.n - 1) / 4)}년`), h('span', {}, '이긴 라이벌 · 버틴 해')),
         h('div', {}, h('b', {}, `${Math.max(rc.bestDay, save.day)}일`), h('span', {}, '최고 기록')),
         h('div', {}, h('b', {}, `${save.dex.filter(Boolean).length}종`), h('span', {}, '도감 (그대로 남아요)'))),
-      h('div', { class: 'sub' }, '동물원·코인·카드는 처음부터 다시 시작해요. 도감과 기록은 남아요.'),
+      h('div', { class: 'sub' }, '동물원·돈·코인·카드는 처음부터 다시 시작해요. 도감과 기록은 남아요.'),
       h('button', { class: 'btn big', onclick: () => replaceSave(closeZoo(save)) }, '새 동물원 열기')));
   ui.append(back);
 }
@@ -547,11 +547,11 @@ function frame(now: number) {
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
     else if (ev.type === 'synergy') { audio.sfx('rare'); toast(`✨ 시너지 발견! ${ev.name} · ${ev.desc}`, 'gold', 3000); panel.render(true); }
     else if (ev.type === 'incident') {
-      if (ev.kind === 'thief') toast(ev.blocked ? '경비원이 소매치기를 잡았어요!' : `소매치기! 오늘 수입 중 ${fmt(ev.loss)}코인을 잃었어요 (경비원이 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
+      if (ev.kind === 'thief') toast(ev.blocked ? '경비원이 소매치기를 잡았어요!' : `소매치기! 오늘 수입 중 ${fmt(ev.loss)}돈을 잃었어요 (경비원이 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
       else toast(ev.blocked ? '수의사가 동물 감기를 미리 막았어요!' : `우리 ${ev.pen + 1} 동물들이 감기에 걸렸어요. 오늘 매력 −40% (수의사가 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
       audio.sfx(ev.blocked ? 'buy' : 'deny');
     }
-    else if (ev.type === 'vip') { audio.sfx('rare'); toast(`VIP 손님이 ${fmt(ev.amount)}코인을 던졌어요!`, 'gold', 2200); }
+    else if (ev.type === 'vip') { audio.sfx('rare'); toast(`VIP 손님이 큰 동전(${fmt(ev.amount)})을 떨어뜨렸어요! 주워요`, 'gold', 2200); }
   }
   world.events.length = 0;
   field.draw(world, save, fieldRect, dpr, pointer);
@@ -566,9 +566,10 @@ function updateHud() {
   hudCoins.textContent = fmt(save.coins);
   if (LOOP) {
     // 동전이 날아갈 곳 = 코인 칸 · 뽑기 게이지 (다음 1회 / 10회)
-    const r = hudCoins.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
+    const r = gaugeCoins.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
     field.hudTarget = { x: (r.left + r.width / 2) * 1 - cr.left, y: r.top + r.height / 2 - cr.top };
-    const price = drawPrice(save), ten = price * 10, coins = Math.max(0, save.coins);
+    const price = drawPrice(save), ten = price * 10, coins = Math.max(0, save.tokens ?? 0);
+    gaugeCoins.textContent = fmt(coins);
     const ready10 = coins >= ten, ready = coins >= price;
     gaugeFill.style.width = `${Math.min(100, ready ? (coins / ten) * 100 : (coins / price) * 100)}%`;
     gauge.classList.toggle('ready', ready && !ready10); gauge.classList.toggle('ready10', ready10);
@@ -578,7 +579,7 @@ function updateHud() {
     else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');
   }
   hudCoins.parentElement!.classList.toggle('debt', save.coins < 0);
-  hudIncome.textContent = `+${fmt(inc.base + inc.bonus)}/분`;
+  hudIncome.textContent = `+${fmt(inc.base)}돈 · +${fmt(inc.bonus)}코인 /분`;
   strikeTag.classList.toggle('hidden', !save.strike);
   placeBar.style.top = upx(fieldRect.y + 6); placeBar.style.left = upx(fieldRect.x + fieldRect.w / 2);
   // 이벤트 띠 · 확대 해제 버튼
@@ -614,7 +615,7 @@ function updateHud() {
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
-    : save.stats.coinsPicked === 0 ? '바닥 동전을 눌러서 주우면 보너스!'
+    : save.stats.coinsPicked === 0 ? '관객 길의 동전을 쓸어 담아 코인을 모아요 · 코인으로 뽑기!'
     : '';
   hint.textContent = msg;
   hint.classList.toggle('hidden', !msg || night || !!placing || (panel.isOpen && !document.body.classList.contains('landscape')));

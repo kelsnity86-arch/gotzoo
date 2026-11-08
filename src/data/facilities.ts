@@ -2,7 +2,8 @@
 // 계절 소품 = 부지 블록 1칸에 놓고 붙어 있는 우리 매력 + (그 계절이면 2배), 울타리·입구 꾸미기 = 업그레이드 4단계.
 import type { SeasonKey } from './seasons';
 
-export type FacilityType = 'snack' | 'restroom' | 'bench' | 'fountain' | 'photo' | 'clinic';
+export type FacilityType = 'snack' | 'restroom' | 'bench' | 'fountain' | 'photo' | 'clinic'
+  | 'souvenir' | 'restaurant' | 'icecream' | 'carousel' | 'tower' | 'lab';
 export interface FacilityDef {
   type: FacilityType; name: string;
   /** 1단계 효과 · 3단계(최대) 효과. 단계 효과 = cap × 단계 / 3 */
@@ -19,6 +20,13 @@ export const FACILITIES: readonly FacilityDef[] = [
   { type: 'fountain', name: '분수 광장', value: 0.05, cap: 0.15, desc: (v) => `모든 동물 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'photo', name: '포토존', value: 0.13, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'clinic', name: '동물병원', value: 0.3, cap: 0.9, desc: (v) => `동물 감기를 ${pct(v)} 확률로 막아요 (수의사와 따로)`, price: 5, upkeep: 0.2 },
+  // 새 건물 6종 (업그레이드 효과가 하나씩)
+  { type: 'souvenir', name: '기념품점', value: 0.1, cap: 0.3, desc: (v) => `입장료 +${pct(v)}`, price: 4, upkeep: 0.2 },
+  { type: 'restaurant', name: '식당', value: 0.1, cap: 0.3, desc: (v) => `손님이 떨어뜨리는 코인 +${pct(v)}`, price: 4, upkeep: 0.2 },
+  { type: 'icecream', name: '아이스크림 가게', value: 0.33, cap: 1, desc: (v) => `행운의 동전이 ${pct(v)} 더 자주`, price: 3, upkeep: 0.15 },
+  { type: 'carousel', name: '회전목마', value: 0.33, cap: 1, desc: (v) => `VIP 손님이 ${pct(v)} 더 자주`, price: 5, upkeep: 0.25 },
+  { type: 'tower', name: '전망대', value: 0.17, cap: 0.5, desc: (v) => `동전 줍는 범위 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'lab', name: '동물 연구소', value: 0.01, cap: 0.03, desc: (v) => `희귀 이상 동물 확률 +${(v * 100).toFixed(0)}%p`, price: 6, upkeep: 0.25 },
 ];
 export const facilityDef = (t: FacilityType) => FACILITIES.find((f) => f.type === t)!;
 /** 시설 최대 단계 · 단계별 증축 값 배율 (0→1, 1→2, 2→3) */

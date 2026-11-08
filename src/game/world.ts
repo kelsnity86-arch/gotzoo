@@ -54,23 +54,36 @@ export type PropKind = 'den' | 'plant' | 'water' | 'rock' | 'food' | 'toy';
 /** 우리 안 소품 (x = 가운데, y = 바닥) */
 export interface PropEnt { pen: number; kind: PropKind; x: number; y: number; flip: boolean }
 /** 관객존 위 건물 줄: 관객 건물 6자리(시설) 사이사이에 가로등 · 벤치 · 꽃 · 나무 (x = 가운데) */
-export const ZONE_BUILDINGS = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic'] as const;
-const ZONE_FILL = ['bench', 'flowerbed', 'bush', 'bench', 'blossom', 'flowerbush'] as const;
-export type ZoneItem = { kind: 'bld'; type: (typeof ZONE_BUILDINGS)[number]; x: number } | { kind: 'prop'; name: string; x: number };
-export function zoneRow(w: number): ZoneItem[] {
-  // 입구(가운데) 왼쪽에 3동, 오른쪽에 3동
+/** 관객 건물 12종: 입구 왼쪽 6 · 오른쪽 6, 입구에서 가까운 순서 */
+export const ZONE_BUILDINGS = ['snack', 'restroom', 'photo', 'souvenir', 'restaurant', 'icecream', 'fountain', 'bench', 'clinic', 'carousel', 'tower', 'lab'] as const;
+export type ZoneBuilding = (typeof ZONE_BUILDINGS)[number];
+/** 새 건물 그림이 오기 전까지 빌려 쓰는 그림 */
+export const BLD_ART: Record<ZoneBuilding, string> = { snack: 'snack', restroom: 'restroom', photo: 'photo', fountain: 'fountain', bench: 'bench', clinic: 'clinic', souvenir: 'snack', restaurant: 'restroom', icecream: 'snack', carousel: 'fountain', tower: 'clinic', lab: 'clinic' };
+const ZONE_FILL = ['bench', 'flowerbed', 'bush', 'tree', 'flowerbush', 'bench', 'lamp', 'blossom'] as const;
+/** 건물 너비 (월드 칸): 안 지음(팻말) · 1 · 2 · 3단계 */
+const BLD_W = [11, 15, 17, 19];
+export type ZoneItem = { kind: 'bld'; type: ZoneBuilding; x: number; lv: number } | { kind: 'prop'; name: string; x: number };
+/** 관객 건물 줄: 입구 양옆부터 어깨를 맞대고 붙여 세운다 (단계가 오르면 넓어지고 옆 건물이 밀린다). 남는 끝은 소품으로 */
+export function zoneRow(w: number, lv: Partial<Record<string, number>> = {}): ZoneItem[] {
   const gx = gateX(w), out: ZoneItem[] = [];
-  const side = (x0: number, x1: number, types: readonly (typeof ZONE_BUILDINGS)[number][], fill: readonly string[]) => {
-    const slot = (x1 - x0) / types.length;
+  const side = (dir: 1 | -1, types: readonly ZoneBuilding[]) => {
+    const start = gx + dir * GATE_HALF, end = dir > 0 ? w - 6 : 6, room = Math.abs(end - start);
+    const widths = types.map((ty) => BLD_W[Math.max(0, Math.min(3, lv[ty] ?? 0))] + 1);
+    const lamps = Math.floor(types.length / 2);
+    const need = widths.reduce((a, b) => a + b, 0) + lamps * 5;
+    const k = need > room ? room / need : 1; // 좁으면 조금씩 겹쳐서라도 다 세운다
+    let x = start;
     types.forEach((type, i) => {
-      const c = x0 + slot * (i + 0.5);
-      out.push({ kind: 'prop', name: 'lamp', x: x0 + slot * i + 3 });
-      out.push({ kind: 'bld', type, x: c - slot * 0.1 });
-      if (slot > 36) out.push({ kind: 'prop', name: fill[i], x: c + slot * 0.3 });
+      const bw = widths[i] * k;
+      out.push({ kind: 'bld', type, x: x + dir * bw / 2, lv: lv[type] ?? 0 });
+      x += dir * bw;
+      if (i % 2 === 1 && i < types.length - 1) { out.push({ kind: 'prop', name: 'lamp', x: x + dir * 2.5 * k }); x += dir * 5 * k; }
     });
+    // 남는 끝: 소품을 촘촘히
+    for (let j = 0; Math.abs(x - start) + 10 < room; j++) { out.push({ kind: 'prop', name: ZONE_FILL[j % ZONE_FILL.length], x: x + dir * 7 }); x += dir * 13; }
   };
-  side(6, gx - GATE_HALF, ZONE_BUILDINGS.slice(0, 3), ZONE_FILL.slice(0, 3));
-  side(gx + GATE_HALF, w - 6, ZONE_BUILDINGS.slice(3), ZONE_FILL.slice(3));
+  side(-1, ZONE_BUILDINGS.slice(0, 6));
+  side(1, ZONE_BUILDINGS.slice(6));
   return out;
 }
 /** 관람객 자세 (정면): 구경 · 환호 · 사진 · 간식 · 가리키기 · 앉기 · 동전 던지기 · 실망 */
@@ -131,7 +144,7 @@ export class World {
   visitors: VisitorEnt[] = [];
   coins: CoinEnt[] = [];
   /** (시안 ?loop) 돈은 주워야 들어온다 · 콤보 · 행운의 동전 */
-  loop = false;
+  loop = true;
   combo = { n: 0, sum: 0, t: 0 };
   /** 주운 동전이 날아가는 연출 (월드 좌표에서 출발, 남은 시간) */
   flying: { x: number; y: number; t: number; lucky?: boolean }[] = [];
@@ -229,7 +242,13 @@ export class World {
       }
       kinds.forEach((kind, k) => { const [x, y] = spots[k]; this.props.push({ pen: i, kind, x: g.gx + (x + 0.5) * TILE, y: g.gy + (y + 1) * TILE - 1, flip: hash2(x, y + i) < 0.5 && kind !== 'den' }); });
     });
-    this.benches = zoneRow(this.layout.w).filter((z) => z.kind === 'prop' && z.name === 'bench').map((z) => ({ x: z.x, y: Math.floor(PATH_Y0 / TILE) * TILE - 2, busy: false }));
+    this.placeBenches();
+  }
+  /** 관객존 벤치: 건물 단계가 바뀌면 자리가 밀리므로 다시 */
+  private benchKey = '';
+  placeBenches() {
+    this.benchKey = `${this.layout.w}|${Object.values(this.save.facLv ?? {}).join('')}`;
+    this.benches = zoneRow(this.layout.w, this.save.facLv).filter((z) => z.kind === 'prop' && z.name === 'bench').map((z) => ({ x: z.x, y: Math.floor(PATH_Y0 / TILE) * TILE - 2, busy: false }));
   }
   /** 소품 앞 빈자리 (못 찾으면 null) */
   private spotNear(a: AnimalEnt, kind: PropKind): [number, number] | null {
@@ -334,7 +353,7 @@ export class World {
   }
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save); }
-  get pickupRadius() { return upValue(this.save, 'pickup'); }
+  get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
   /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */
   get canSweep() { return true; }
@@ -357,9 +376,11 @@ export class World {
 
   private earn(base: number, bonus: number) {
     this.today.base += base; this.today.bonus += bonus;
-    if (this.phase !== 'night') bumpMission(this.save, 'earn', base + bonus);
-    this.save.coins += base + bonus;
-    this.save.stats.coinsEarned += base + bonus;
+    // base = 돈(입장료), bonus = 코인(바닥에서 주운 뽑기용)
+    if (this.phase !== 'night') bumpMission(this.save, 'earn', base);
+    this.save.coins += base;
+    this.save.tokens = (this.save.tokens ?? 0) + bonus;
+    this.save.stats.coinsEarned += base;
     if (bonus) this.save.stats.coinsPicked += bonus;
     this.incomeLog.push({ t: this.time, base, bonus });
     if (this.incomeLog.length > 600) this.incomeLog.splice(0, this.incomeLog.length - 600);
@@ -466,7 +487,7 @@ export class World {
     // 돈 정산: 월급 + 유지비
     const c = dailyCosts(sv);
     sv.coins -= c.total;
-    const income = this.today.base + this.today.bonus;
+    const income = this.today.base; // 돈 수입 = 입장료 (코인은 뽑기용이라 정산에 안 넣는다)
     const net = income - this.today.stolen - c.total;
     sv.debtDays = sv.coins < 0 ? sv.debtDays + 1 : 0;
     sv.strike = sv.debtDays >= DEBT.strikeAfter;
@@ -638,6 +659,7 @@ export class World {
       if (pointer && this.canSweep && segDist(c.x, c.y - 1 - c.z, this.lastPointer ?? pointer, pointer) < this.pickupRadius) this.pick(c, 'hand');
     }
 
+    if (this.benchKey !== `${this.layout.w}|${Object.values(this.save.facLv ?? {}).join('')}`) this.placeBenches();
     this.lastPointer = pointer ? { x: pointer.x, y: pointer.y } : null;
     if (this.loop) {
       for (let i = this.flying.length - 1; i >= 0; i--) { this.flying[i].t += dt; if (this.flying[i].t > 0.55) this.flying.splice(i, 1); }
@@ -732,6 +754,10 @@ export class World {
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
+    // 입장료(돈): 문을 들어오는 순간. 매표원 · 기념품점이 늘려 준다
+    this.today.visitors++; bumpMission(this.save, 'visitors', 1);
+    const fee = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (vip ? EVENT_TIMING.vipTipMul : 1) * (1 + staffSum(this.save, 'ticket') + facSum(this.save, 'souvenir')));
+    this.earn(fee, 0);
     const gx = gateX(L.w), dir = targetX >= gx ? 1 : -1;
     const laneY = PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6);
     this.visitors.push({ vip, x: gx + (this.rng() - 0.5) * 8, y: GATE_Y, laneY, dir, kind: vip ? 15 + (this.event?.id === 'halloween' ? 2 : 0) + (this.rng() < 0.5 ? 1 : 0) : Math.floor(this.rng() * 16),
@@ -740,19 +766,13 @@ export class World {
   }
 
   private throwCoin(v: VisitorEnt) {
-    this.today.visitors++;
-    bumpMission(this.save, 'visitors', 1);
+    // 입장료(돈)는 들어올 때 받았다. 우리 앞에서는 코인(뽑기용)을 바닥에 떨어뜨린다
     const raw = (VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul;
     const tip = Math.round(raw * (v.vip ? EVENT_TIMING.vipTipMul : 1));
-    // 매표원: 관람객마다 입장료 (투척액 기준, VIP 배율 제외)
-    const fee = Math.round(raw * staffSum(this.save, 'ticket'));
-    if (fee > 0) this.earn(fee, 0);
-    if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
-    // 기본: 던지는 순간 바로 들어오고 바닥엔 보너스만. 시안(loop): 전부 바닥 동전으로 (주워야 들어온다)
-    if (!this.loop) this.earn(tip, 0);
+    if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: 'VIP 손님!', t: 0, color: '#f7c948' }); }
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
-    const bonus = this.loop ? Math.max(1, Math.round(tip * (1 + VISITOR.pickupBonus))) : Math.max(1, Math.round(tip * VISITOR.pickupBonus));
-    const lucky = this.loop && this.rng() < 0.025;
+    const bonus = Math.max(1, Math.round(tip * VISITOR.tokenShare * (1 + facSum(this.save, 'restaurant'))));
+    const lucky = this.rng() < VISITOR.luckyChance * (1 + facSum(this.save, 'icecream'));
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 6, Math.max(PATH_Y0 + 2, v.y + 4 + this.rng() * 6));
     // 가까운 동전과 합친다 (오래된 쪽 시간을 그대로 따라서 수명이 늘지 않게)
     const near = this.coins.find((c) => !c.picked && c.z === 0 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
@@ -767,7 +787,7 @@ export class World {
     this.earn(0, c.value);
     if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
     this.today.coins += c.count;
-    if (this.loop && by === 'hand') {
+    if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
       this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = 1.2;
       this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
@@ -776,7 +796,7 @@ export class World {
       return;
     }
     this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by });
-    this.floats.push({ x: c.x, y: c.y - 4, text: `+${c.value}`, t: 0, color: by === 'hand' ? '#fff3a3' : '#a7d65b' });
+    this.floats.push({ x: c.x, y: c.y - 4, text: `+${c.value}`, t: 0, color: '#a7d65b' });
   }
 
   /** 손으로 먹이 주기 (우리별 대기 시간) */
