@@ -1,0 +1,18 @@
+{
+  "selected": [
+    {
+      "source": "/workspace/generated_images/exec-cfb633c4-4910-46b6-b390-ede25f108404.png",
+      "destination": "assets/spritesheets16/machine-animation/parts/machine_parts16.png",
+      "status": "CONCEPT_ONLY_REGISTRATION_FAILED"
+    },
+    {
+      "source": "/workspace/generated_images/exec-84fcfffe-f284-4208-aee5-2c4701343449.png",
+      "destination": "assets/spritesheets16/machine-animation/tiers/machine_tiers16.png",
+      "status": "SOURCE_ONLY_PIXEL_GATE_HOLD"
+    }
+  ],
+  "rejected_correction": {
+    "source": "/workspace/generated_images/exec-f1c7c7b0-3c24-41aa-8d1c-0ae366b12776.png",
+    "reason": "Dome was moved down into body layer area; crank registration remained inconsistent. Kept initial source as the less-overlapping concept, not an approved registered atlas."
+  }
+}

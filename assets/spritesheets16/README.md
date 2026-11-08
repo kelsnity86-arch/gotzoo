@@ -1,5 +1,7 @@
 # BbopZOO 그림 자료 — 최신 모음과 제작 기록
 
+기계 애니메이션 추가: [분리 부품 시안·등급별 기계 원본 2장](machine-animation/README.md) · [신규 건물과 합친 3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-buildings-new-and-machine16-sources.zip). 부품 좌표 정합 실패이며 바로 사용 가능한 레이어가 아닙니다. 전체 픽셀 규격은 HOLD입니다.
+
 신규 건물 6종: [기념품점·식당·아이스크림·회전목마·전망대·연구소](buildings-new/README.md) · [18칸 시트 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-buildings-new16-source.zip). 생성 원본이며 정확한 픽셀 규격은 HOLD입니다.
 
 신규 확대 건물: [6종×3단계 시트](buildings-large/README.md) · [건물 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-buildings-big16-source.zip). 아래 79장 스냅샷 이후 추가된 생성 원본이며 정확한 크기·픽셀 규격은 HOLD입니다.

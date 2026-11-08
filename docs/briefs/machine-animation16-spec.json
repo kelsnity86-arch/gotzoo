@@ -1,0 +1,410 @@
+{
+  "project": "BbopZOO",
+  "reference": "assets/spritesheets16/gacha-reveal/machines/gacha_machine16.png",
+  "request_source": "docs/briefs/machine-animation16-original-request.txt",
+  "background": "#FF00FF",
+  "outline": "#2b1d14",
+  "requested_slot_count": 68,
+  "sheets": [
+    {
+      "filename": "machine_parts16.png",
+      "group": "parts",
+      "size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "assembled_native_size": [
+        64,
+        80
+      ],
+      "proposed_alignment_cell_native": [
+        96,
+        96
+      ],
+      "rows": [
+        [
+          {
+            "machine": "spring pink animal",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "crank up"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "crank right"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "crank down"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "crank left"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "spring pink animal",
+            "part": "exit flap open"
+          }
+        ],
+        [
+          {
+            "machine": "summer blue animal",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "crank up"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "crank right"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "crank down"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "crank left"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "summer blue animal",
+            "part": "exit flap open"
+          }
+        ],
+        [
+          {
+            "machine": "autumn orange animal",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "crank up"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "crank right"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "crank down"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "crank left"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "autumn orange animal",
+            "part": "exit flap open"
+          }
+        ],
+        [
+          {
+            "machine": "winter white/red animal",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "crank up"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "crank right"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "crank down"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "crank left"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "winter white/red animal",
+            "part": "exit flap open"
+          }
+        ],
+        [
+          {
+            "machine": "staff navy/gold",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "crank up"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "crank right"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "crank down"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "crank left"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "staff navy/gold",
+            "part": "exit flap open"
+          }
+        ],
+        [
+          {
+            "machine": "enclosure yellow/black",
+            "part": "body only with decorations"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "empty glass dome only"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "crank up"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "crank right"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "crank down"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "crank left"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "exit flap closed"
+          },
+          {
+            "machine": "enclosure yellow/black",
+            "part": "exit flap open"
+          }
+        ]
+      ]
+    },
+    {
+      "filename": "machine_tiers16.png",
+      "group": "tiers",
+      "size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        8
+      ],
+      "rows": [
+        [
+          {
+            "tier": "silver",
+            "action": "idle",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "silver",
+            "action": "shaking",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "silver",
+            "action": "dispensing",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "silver",
+            "action": "aura ring only",
+            "target_native_size": [
+              96,
+              96
+            ]
+          }
+        ],
+        [
+          {
+            "tier": "gold",
+            "action": "idle",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "gold",
+            "action": "shaking",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "gold",
+            "action": "dispensing",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "gold",
+            "action": "aura ring only",
+            "target_native_size": [
+              96,
+              96
+            ]
+          }
+        ],
+        [
+          {
+            "tier": "rainbow",
+            "action": "idle",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "rainbow",
+            "action": "shaking",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "rainbow",
+            "action": "dispensing",
+            "target_native_size": [
+              64,
+              80
+            ]
+          },
+          {
+            "tier": "rainbow",
+            "action": "aura ring only",
+            "target_native_size": [
+              96,
+              96
+            ]
+          }
+        ],
+        [
+          {
+            "name": "gray capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "green capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "blue capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "purple capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "gold capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "rainbow capsule",
+            "target_native_size": [
+              12,
+              12
+            ]
+          },
+          {
+            "name": "white sparkle",
+            "target_native_size": null
+          },
+          {
+            "name": "gold sparkle",
+            "target_native_size": null
+          }
+        ]
+      ]
+    }
+  ]
+}

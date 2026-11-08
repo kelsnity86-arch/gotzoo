@@ -1,0 +1,603 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 2,
+  "requested_slot_count": 68,
+  "count_note": "48 logical part cells + 12 large tier/action/aura cells + 8 tiny capsule/sparkle cells.",
+  "reference": "assets/spritesheets16/gacha-reveal/machines/gacha_machine16.png",
+  "reference_sha256": "3150f816f612d89c431e2ff42d00bbdba30d1af26eba4cceea29c10d839f4675",
+  "sheets": [
+    {
+      "filename": "machine_parts16.png",
+      "path": "assets/spritesheets16/machine-animation/parts/machine_parts16.png",
+      "sha256": "286ee272adb6b24966bc0c746c83dc9810690c1680e1f86cc76b2acca343990f",
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "delivery_status": "CONCEPT_ONLY_REGISTRATION_FAILED",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "machine": "spring pink animal",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "machine": "spring pink animal",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "machine": "spring pink animal",
+          "part": "crank up"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "machine": "spring pink animal",
+          "part": "crank right"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "machine": "spring pink animal",
+          "part": "crank down"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "machine": "spring pink animal",
+          "part": "crank left"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "machine": "spring pink animal",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "machine": "spring pink animal",
+          "part": "exit flap open"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "machine": "summer blue animal",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "machine": "summer blue animal",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "machine": "summer blue animal",
+          "part": "crank up"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "machine": "summer blue animal",
+          "part": "crank right"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "machine": "summer blue animal",
+          "part": "crank down"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "machine": "summer blue animal",
+          "part": "crank left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "machine": "summer blue animal",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "machine": "summer blue animal",
+          "part": "exit flap open"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "machine": "autumn orange animal",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "machine": "autumn orange animal",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "machine": "autumn orange animal",
+          "part": "crank up"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "machine": "autumn orange animal",
+          "part": "crank right"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "machine": "autumn orange animal",
+          "part": "crank down"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "machine": "autumn orange animal",
+          "part": "crank left"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "machine": "autumn orange animal",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "machine": "autumn orange animal",
+          "part": "exit flap open"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "machine": "winter white/red animal",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "machine": "winter white/red animal",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "machine": "winter white/red animal",
+          "part": "crank up"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "machine": "winter white/red animal",
+          "part": "crank right"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "machine": "winter white/red animal",
+          "part": "crank down"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "machine": "winter white/red animal",
+          "part": "crank left"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "machine": "winter white/red animal",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "machine": "winter white/red animal",
+          "part": "exit flap open"
+        },
+        {
+          "slot": 33,
+          "row": 5,
+          "column": 1,
+          "machine": "staff navy/gold",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 34,
+          "row": 5,
+          "column": 2,
+          "machine": "staff navy/gold",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 35,
+          "row": 5,
+          "column": 3,
+          "machine": "staff navy/gold",
+          "part": "crank up"
+        },
+        {
+          "slot": 36,
+          "row": 5,
+          "column": 4,
+          "machine": "staff navy/gold",
+          "part": "crank right"
+        },
+        {
+          "slot": 37,
+          "row": 5,
+          "column": 5,
+          "machine": "staff navy/gold",
+          "part": "crank down"
+        },
+        {
+          "slot": 38,
+          "row": 5,
+          "column": 6,
+          "machine": "staff navy/gold",
+          "part": "crank left"
+        },
+        {
+          "slot": 39,
+          "row": 5,
+          "column": 7,
+          "machine": "staff navy/gold",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 40,
+          "row": 5,
+          "column": 8,
+          "machine": "staff navy/gold",
+          "part": "exit flap open"
+        },
+        {
+          "slot": 41,
+          "row": 6,
+          "column": 1,
+          "machine": "enclosure yellow/black",
+          "part": "body only with decorations"
+        },
+        {
+          "slot": 42,
+          "row": 6,
+          "column": 2,
+          "machine": "enclosure yellow/black",
+          "part": "empty glass dome only"
+        },
+        {
+          "slot": 43,
+          "row": 6,
+          "column": 3,
+          "machine": "enclosure yellow/black",
+          "part": "crank up"
+        },
+        {
+          "slot": 44,
+          "row": 6,
+          "column": 4,
+          "machine": "enclosure yellow/black",
+          "part": "crank right"
+        },
+        {
+          "slot": 45,
+          "row": 6,
+          "column": 5,
+          "machine": "enclosure yellow/black",
+          "part": "crank down"
+        },
+        {
+          "slot": 46,
+          "row": 6,
+          "column": 6,
+          "machine": "enclosure yellow/black",
+          "part": "crank left"
+        },
+        {
+          "slot": 47,
+          "row": 6,
+          "column": 7,
+          "machine": "enclosure yellow/black",
+          "part": "exit flap closed"
+        },
+        {
+          "slot": 48,
+          "row": 6,
+          "column": 8,
+          "machine": "enclosure yellow/black",
+          "part": "exit flap open"
+        }
+      ]
+    },
+    {
+      "filename": "machine_tiers16.png",
+      "path": "assets/spritesheets16/machine-animation/tiers/machine_tiers16.png",
+      "sha256": "ca49ca2a073c90c3ed08816cc499c765b87267497dcb310907545248b9b3f0ff",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        4,
+        8
+      ],
+      "delivery_status": "SOURCE_ONLY_PIXEL_GATE_HOLD",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "tier": "silver",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "tier": "silver",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "tier": "silver",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "tier": "silver",
+          "action": "aura ring only",
+          "target_native_size": [
+            96,
+            96
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "tier": "gold",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "tier": "gold",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "tier": "gold",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "tier": "gold",
+          "action": "aura ring only",
+          "target_native_size": [
+            96,
+            96
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "tier": "rainbow",
+          "action": "idle",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "tier": "rainbow",
+          "action": "shaking",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "tier": "rainbow",
+          "action": "dispensing",
+          "target_native_size": [
+            64,
+            80
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "tier": "rainbow",
+          "action": "aura ring only",
+          "target_native_size": [
+            96,
+            96
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "name": "gray capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "name": "green capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "name": "blue capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "name": "purple capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 4,
+          "column": 5,
+          "name": "gold capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 4,
+          "column": 6,
+          "name": "rainbow capsule",
+          "target_native_size": [
+            12,
+            12
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 7,
+          "name": "white sparkle",
+          "target_native_size": null
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 8,
+          "name": "gold sparkle",
+          "target_native_size": null
+        }
+      ]
+    }
+  ]
+}

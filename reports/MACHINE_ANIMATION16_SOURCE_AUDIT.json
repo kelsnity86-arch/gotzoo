@@ -1,0 +1,62 @@
+{
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "engine_ready": false,
+  "checks": [
+    {
+      "filename": "machine_parts16.png",
+      "readable_png": true,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 129748,
+      "off_palette_pixels": 1572509,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fill": "NOT_CERTIFIED",
+      "delivery_status": "CONCEPT_ONLY_REGISTRATION_FAILED"
+    },
+    {
+      "filename": "machine_tiers16.png",
+      "readable_png": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "canvas_pass": false,
+      "unique_rgb_colors": 255923,
+      "off_palette_pixels": 1572455,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_outline_and_flat_fill": "NOT_CERTIFIED",
+      "delivery_status": "SOURCE_ONLY_PIXEL_GATE_HOLD"
+    }
+  ],
+  "parts_registration": {
+    "result": "FAIL_VISUAL",
+    "issue": "Dome and body do not meet at a shared local edge; crank hubs shift between directional cells. Same-origin compositing would not assemble the requested machine.",
+    "basis": "Visual inspection of original and correction; no calibrated native-grid extraction or gameplay playback.",
+    "correction": "Correction moved dome down into body region without fixing hubs; rejected. Initial file retained only as a concept.",
+    "flap_hinge": "NOT_CERTIFIED"
+  },
+  "tiers_review": {
+    "layout": "3 rows x 4 large cells plus 8 small items on bottom row, visually inspected.",
+    "animation_pivots_and_native_size": "NOT_CERTIFIED",
+    "playback": "NOT_TESTED"
+  },
+  "remaining": [
+    "Both canvases differ from requested output sizes.",
+    "Strict palette, native grid, flat fills and uniform magenta not met.",
+    "Parts atlas needs pixel-accurate reauthoring before use; source is not a usable animation rig.",
+    "Tier animation needs frame registration and in-game playback review."
+  ]
+}

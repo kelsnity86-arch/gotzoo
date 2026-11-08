@@ -1,0 +1,29 @@
+You are drawing the WORLD art for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The animals and visitors already exist (chunky cute pixel sprites, soft dark-brown outline, 2-tone flat shading, left-facing). Everything you draw now must look like it belongs in the SAME world as them: same pixel size, same outline, same light, same colors.
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. One tile = 16x16 art pixels. Scale the image up so each art pixel is one solid square block. No anti-aliasing, no gradients, no blur, no soft or transparent shadows, no painterly texture.
+- View: gentle 3/4 top-down (we see the top and a little of the front of objects). Light comes from the TOP-LEFT on everything. Shadows are a solid darker shape on the ground, down-right of the object.
+- Objects and characters: soft 1-pixel dark-brown outline (#2b1d14). Ground tiles: NO outline.
+- Colors: cozy, warm and slightly muted, never neon. Ground is calm and low-contrast so characters stand out; objects are a little brighter than the ground. Prefer this world palette: #2b1d14 outline; grass #6b8f2e #a7d65b #38a35b #1f5d3a; earth #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8; stone #333c57 #566c86 #94b0c2 #c7cfdd; water #29366f #3b5dc9 #41a6f6 #73eff7; snow #e9f3ff #f4f4f4 #7fb5d6; accents #d83a3a #ef7d32 #f7c948 #f08cbe #ffc8dd #8e44ad. Only use colors from this full palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Lay items out on the requested invisible grid with clear magenta space between them, never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, watermarks, frames or borders.
+
+I attached reference images from the same game. Match their style exactly.
+Now generate the following 2 images ONE BY ONE, in order. Make each one a separate image. After each image, write only its file name and immediately continue with the next image without asking me. If you have to stop, continue from where you left off when I say "next".
+
+=== IMAGE 1 of 2: machine_parts16.png ===
+The machines are the same 6 capsule machines as the attached gacha_machine16.png (rows: 1 spring animal machine, 2 summer animal machine, 3 autumn animal machine, 4 winter animal machine, 5 staff recruit machine, 6 enclosure blueprint machine). Keep each machine's exact colors, decorations and size (about 64 wide x 80 tall art pixels when assembled).
+Sheet machine_parts16.png: each machine split into separate PARTS so a game can animate them. Same art style (chunky pixel art, soft dark-brown outline, 2-tone flat shading, light from top-left). All parts of one machine must line up exactly when stacked at the same position, so draw every part of a row inside the SAME-SIZED cell, at the SAME place it has on the assembled machine (like layers of one picture), with magenta everywhere else.
+Layout: 8 columns x 6 rows. Rows = the 6 machines above. Columns:
+1. BODY only: the machine base, front panel, coin slot, decorations; NO glass dome, NO crank handle, and the capsule exit hole drawn as a dark empty opening.
+2. GLASS DOME only: the round glass dome with its rim and 2-3 white shine streaks; the INSIDE of the glass is magenta (see-through) so capsules can be drawn behind it. No capsules.
+3. CRANK handle pointing UP (pivot at its center), 4. CRANK pointing RIGHT, 5. CRANK pointing DOWN, 6. CRANK pointing LEFT. Same crank in 4 rotations, each drawn as clean pixel art (not a blurry rotation).
+7. EXIT FLAP closed (the little door over the capsule exit hole), 8. EXIT FLAP open (swung down).
+Image size 1536x1152, solid #FF00FF background, no text.
+
+=== IMAGE 2 of 2: machine_tiers16.png ===
+Sheet machine_tiers16.png: special upgraded versions of the same capsule machine shape as the attached gacha_machine16.png (same size, about 64 wide x 80 tall art pixels), shown when the player saved up many coins. Same chunky pixel art style, soft dark-brown outline, light from top-left.
+Layout: 4 columns x 4 rows.
+Rows 1-3 = machine tier: row 1 SILVER machine (polished silver and pale blue, small star rivets), row 2 GOLD machine (shiny gold and red velvet, crown on top), row 3 RAINBOW machine (pastel rainbow stripes, cloud and star decorations, sparkles). Columns: 1. idle, 2. shaking (tilted, motion lines, capsules jumping inside), 3. dispensing (a glowing capsule popping out of the exit), 4. a soft AURA ring of light to put BEHIND the machine (about 96x96, flat pixel bands of the tier color: silver-blue, gold, rainbow), no machine in this cell.
+Row 4 = small capsules that rattle inside the glass dome, each about 12x12: 1. gray, 2. green, 3. blue, 4. purple. (then continue in the same row, smaller cells are fine): 5. gold, 6. rainbow, 7. tiny white sparkle, 8. tiny gold sparkle. Put all 8 small items evenly in row 4.
+Image size 1024x1024, solid #FF00FF background, no text.

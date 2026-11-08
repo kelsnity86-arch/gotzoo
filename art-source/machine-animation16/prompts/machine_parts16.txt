@@ -1,0 +1,33 @@
+You are drawing the WORLD art for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The animals and visitors already exist (chunky cute pixel sprites, soft dark-brown outline, 2-tone flat shading, left-facing). Everything you draw now must look like it belongs in the SAME world as them: same pixel size, same outline, same light, same colors.
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. One tile = 16x16 art pixels. Scale the image up so each art pixel is one solid square block. No anti-aliasing, no gradients, no blur, no soft or transparent shadows, no painterly texture.
+- View: gentle 3/4 top-down (we see the top and a little of the front of objects). Light comes from the TOP-LEFT on everything. Shadows are a solid darker shape on the ground, down-right of the object.
+- Objects and characters: soft 1-pixel dark-brown outline (#2b1d14). Ground tiles: NO outline.
+- Colors: cozy, warm and slightly muted, never neon. Ground is calm and low-contrast so characters stand out; objects are a little brighter than the ground. Prefer this world palette: #2b1d14 outline; grass #6b8f2e #a7d65b #38a35b #1f5d3a; earth #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8; stone #333c57 #566c86 #94b0c2 #c7cfdd; water #29366f #3b5dc9 #41a6f6 #73eff7; snow #e9f3ff #f4f4f4 #7fb5d6; accents #d83a3a #ef7d32 #f7c948 #f08cbe #ffc8dd #8e44ad. Only use colors from this full palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Lay items out on the requested invisible grid with clear magenta space between them, never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, watermarks, frames or borders.
+
+
+Use the attached gacha_machine16.png only as the precise machine identity reference. Output ONE LANDSCAPE4:3 image, exactly1536x1152. This is a technical aligned LAYER atlas, not a lineup of complete machines.
+The machines are the same 6 capsule machines as the attached gacha_machine16.png (rows: 1 spring animal machine, 2 summer animal machine, 3 autumn animal machine, 4 winter animal machine, 5 staff recruit machine, 6 enclosure blueprint machine). Keep each machine's exact colors, decorations and size (about 64 wide x 80 tall art pixels when assembled).
+Sheet machine_parts16.png: each machine split into separate PARTS so a game can animate them. Same art style (chunky pixel art, soft dark-brown outline, 2-tone flat shading, light from top-left). All parts of one machine must line up exactly when stacked at the same position, so draw every part of a row inside the SAME-SIZED cell, at the SAME place it has on the assembled machine (like layers of one picture), with magenta everywhere else.
+Layout: 8 columns x 6 rows. Rows = the 6 machines above. Columns:
+1. BODY only: the machine base, front panel, coin slot, decorations; NO glass dome, NO crank handle, and the capsule exit hole drawn as a dark empty opening.
+2. GLASS DOME only: the round glass dome with its rim and 2-3 white shine streaks; the INSIDE of the glass is magenta (see-through) so capsules can be drawn behind it. No capsules.
+3. CRANK handle pointing UP (pivot at its center), 4. CRANK pointing RIGHT, 5. CRANK pointing DOWN, 6. CRANK pointing LEFT. Same crank in 4 rotations, each drawn as clean pixel art (not a blurry rotation).
+7. EXIT FLAP closed (the little door over the capsule exit hole), 8. EXIT FLAP open (swung down).
+Image size 1536x1152, solid #FF00FF background, no text.
+ALIGNMENT TEMPLATE IS CRITICAL. Draw on a768x576 native art-pixel canvas and enlarge2x with crisp square blocks. There are8columns by6rows of96x96 native-pixel cells (192x192 output pixels per cell). Each row uses one shared local coordinate system; DO NOT CENTER each part independently. Each assembled machine occupies roughly x16..80,y8..88 of its96x96 cell. Keep this coordinate placement identical in ALL EIGHT cells of that row. Blank space is intentional. NO drawn cell lines, labels, arrows, registration marks or coordinate text.
+Local native coordinates: machine horizontal center x48; overall baseline y88. Solid body lower region approximately x16..80,y56..88. Keep all nonglass seasonal topper ornaments and body decoration in column1 at their original assembled locations (topper y8..26); the absent glass region y26..56 stays magenta. Column1 has the empty dark capsule exit at x40..56,y77..88, coin slot near x27,y65 and paw emblem near x45,y67; NO handle/hub/glass/capsules in BODY layer.
+Column2 GLASS ONLY: match reference wide rounded dome shape, rim roughly x19..77,y26..56, thin pale-blue glass rim,2-3 tiny white shine streaks top-left; EVERYTHING inside rim remains pure MAGENTA, no solid pale-blue pane, no capsules, no base or ornament. It must sit in the UPPER part of its cell, not the middle.
+Columns3,4,5,6: all share crank HUB PIVOT at(x64,y66). Crank stem length8native pixels and knob same shape/size, pointing cardinal UP, RIGHT, DOWN, LEFT respectively. Include gray central hub and short gray arm with colored round knob. The hub NEVER MOVES, same area lower-right of each cell. Leave generous magenta above and to the left. Do not center handles in the cell! No diagonal handles. Knob colors match rows:pink,sky-blue,orange,red/gold per winter reference,gold,gold. Only the crank is visible in these cells.
+Columns7,8: EXIT FLAP ONLY. Closed flap lies x40..56,y77..87 covering hole; hinge along top y77. Open flap swings down so its lower edge projects to y92, with visible underside and same hinge atx48,y77. Both low in cell, no body or capsules. Small dark-brown outline and machine-body color on flap.
+ROW IDENTITIES from the first idle column of reference, in exact order:
+1 spring pink body, two cherry blossom topper flowers.
+2 summer sky-blue body, sun/cloud/palm topper.
+3 autumn orange body, red/orange maple-leaf topper.
+4 winter cream-white/red body, snowy cap and green wreath with red bow.
+5 staff navy-and-gold body, ID badge topper and gold laurel.
+6 enclosure golden-yellow/black construction body, striped safety trim and hardhat topper.
+Only requested isolated parts, zero capsules anywhere in this sheet. Exactly48cells (6rows x8columns), never replace a body layer with a complete machine. Pure flat magenta inside dome opening and all unoccupied regions. Work in true flat pixel colors, no antialiasing, gradients, smooth glass shading or noise.
