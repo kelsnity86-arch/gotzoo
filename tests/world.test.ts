@@ -19,9 +19,11 @@ const waitCoin = (w: World) => { const ok = (x: { z: number; picked: boolean }) 
 
 describe('필드', () => {
   it('우리 배치는 화면 비율을 따른다', () => {
-    const wide = computeLayout(6, 4, 2.5), tall = computeLayout(6, 4, 0.6);
-    expect(wide.cols).toBeGreaterThan(tall.cols);
-    expect(wide.pens).toHaveLength(6);
+    const s = defaultSave();
+    const L = computeLayout(s);
+    expect(L.pens).toHaveLength(2);
+    expect(L.w).toBe(L.bx0 * 2 + 8 * 32);
+    expect(L.pens[0]).toEqual({ x: L.bx0 + 32, y: L.by0 + 32, w: 64, h: 64 });
   });
   it('첫 동물을 배치하면 30초 안에 투척이 시작되고, 기본 수입은 바로 들어온다', () => {
     const { s, w } = setup();
@@ -130,7 +132,7 @@ describe('라이벌 동물원 (규모 대결)', () => {
   async function playDays(n: number, big: boolean) {
     const { DAY } = await import('../src/data/balance');
     const { s, w } = setup();
-    if (big) s.upgrades.pens = 50; // 규모를 크게 부풀린다 (업그레이드 레벨 × 10)
+    if (big) for (let i = 0; i < 6; i++) { s.cards.push({ uid: 700 + i, kind: 'animal', animal: 95 }); s.pens[i % 2].push(700 + i); } // 전설로 규모를 키운다
     const reports: DayReport[] = [];
     for (let d = 0; d < n; d++) {
       for (let i = 0; i < 30 * (DAY.dayLen + 1); i++) { w.update(1 / 30, null); for (const e of w.events) if (e.type === 'night') reports.push(e.report); w.events.length = 0; }
@@ -157,7 +159,7 @@ describe('라이벌 동물원 (규모 대결)', () => {
     const { s } = await playDays(7, false);
     s.dex[5] = true;
     const n = closeZoo(s);
-    expect(n.cards).toHaveLength(0);
+    expect(n.cards.filter((c) => c.kind !== 'pen')).toHaveLength(0);
     expect(n.coins).toBe(0);
     expect(n.dex[5]).toBe(true);
     expect(n.records.closures).toBe(1);

@@ -5,8 +5,9 @@ import font14 from 'galmuri/dist/Galmuri14.woff2?url';
 import { defaultSave, loadSave, writeSave } from './game/state';
 import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
-import { World, ZONE_H } from './game/world';
-import { syncSlots, totalAttract, placedAnimals, penCount, penSize, offlineEarnings, ensureMissions, missionText, closeZoo } from './game/rules';
+import { BLOCK, World, ZONE_H, type DayReport } from './game/world';
+import { rotateCells } from './data/pieces';
+import { syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -21,6 +22,7 @@ const ctx = canvas.getContext('2d', { alpha: false })!;
 const habitatKo: Record<string, string> = { grass: '풀밭', sand: '사막', water: '물가', snow: '설원', rock: '바위산', cloud: '구름' };
 
 let save = loadSave();
+finishLegacy(save); // 예전 저장(우리 늘리기·넓히기) → 우리 조각
 syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
@@ -33,17 +35,18 @@ let replacing = false;
 function persist() { if (replacing) return; save.lastSeen = Date.now(); if (!writeSave(save)) toast('저장에 실패했어요 (브라우저 저장소 확인)', 'bad'); }
 
 // ── HUD ──
-const hudCoins = h('b', {}), hudIncome = h('b', {}), hudAttract = h('b', {}), hudStage = h('b', {}), hudAnimals = h('b', {}), hudTickets = h('b', {});
+const hudCoins = h('b', {}), hudIncome = h('b', {});
 const stat = (icon: string, val: HTMLElement, title: string) => h('span', { class: 'stat', title }, hasPng(icon) ? iconSlot(icon, 14) : null, val);
-const ticketChip = stat('icons_12', hudTickets, '무료 뽑기권');
+const strikeTag = h('span', { class: 'strike-tag hidden' }, '파업');
 const clockText = h('b', {}), clockFill = h('i', {});
 const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
 const rivalText = h('b', {}), rivalFill = h('i', {});
-const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
+const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 우리 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
-  h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins),
-  h('div', { class: 'hud-stats' }, stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'), stat('icons_02', hudAttract, '총 매력도'), stat('icons_05', hudAnimals, '전시 / 수용'), stat('icons_04', hudStage, '진행 단계'), ticketChip, clock, rivalChip));
+  h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
+  stat('icons_13', hudIncome, '분당 수입 · 줍기 보너스'),
+  h('div', { class: 'hud-stats' }, clock, rivalChip));
 const hint = h('div', { class: 'field-hint' });
 const eventBanner = h('div', { class: 'event-banner hidden' });
 const openLeft = h('small', {});
@@ -53,8 +56,55 @@ const zoomReset = h('button', { class: 'zoom-reset hidden', onclick: () => { fie
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
 hud.append(settingsBtn);
 
-const panel = new Panel({ save, world, persist, overlayRoot: ui });
-ui.append(hud, hint, eventBanner, zoomReset, openBtn, panel.el);
+// ── 우리 놓기: 조각을 고르면 부지 위에 미리 보기, 누른 자리에 놓는다 ──
+let placing: { uid: number; rot: number } | null = null;
+const placeInfo = h('span', {});
+const placeBar = h('div', { class: 'place-bar hidden' }, placeInfo,
+  h('button', { class: 'btn small', onclick: () => { if (placing) { placing.rot = (placing.rot + 1) % 4; audio.sfx('click'); updateGhost(); } } }, '⟳ 돌리기'),
+  h('button', { class: 'btn small ghost', onclick: () => endPlace() }, '취소'));
+function startPlace(uid: number) {
+  placing = { uid, rot: 0 };
+  if (!document.body.classList.contains('landscape')) panel.setOpen(false);
+  const c = cardById(save, uid);
+  placeInfo.textContent = c?.kind === 'pen' ? `${penPiece(c).name} 놓기 · 부지를 눌러요` : '';
+  placeBar.classList.remove('hidden');
+  updateGhost();
+}
+function endPlace() { placing = null; field.ghost = null; placeBar.classList.add('hidden'); panel.render(true); }
+/** 커서(또는 마지막으로 누른 자리)를 블록 좌표로 */
+let lastPlaceAt: { x: number; y: number } | null = null;
+function blockAt(p: { x: number; y: number }, cells: [number, number][]) {
+  const L = world.layout;
+  const w = Math.max(...cells.map((c) => c[0])) + 1, hh = Math.max(...cells.map((c) => c[1])) + 1;
+  return { bx: Math.round((p.x - L.bx0) / BLOCK - w / 2), by: Math.round((p.y - L.by0) / BLOCK - hh / 2) };
+}
+function updateGhost() {
+  if (!placing) return;
+  const c = cardById(save, placing.uid);
+  if (c?.kind !== 'pen') { endPlace(); return; }
+  const cells = rotateCells(penPiece(c).cells, placing.rot);
+  const p = pointer ?? lastPlaceAt ?? { x: world.layout.bx0 + world.layout.bw * BLOCK / 2, y: world.layout.by0 + world.layout.bh * BLOCK / 2 };
+  const { bx, by } = blockAt(p, cells);
+  field.ghost = { cells: cells.map(([x, y]) => [x + bx, y + by]), ok: canPlacePen(save, placing.uid, bx, by, placing.rot) };
+}
+function tryPlace(p: { x: number; y: number }) {
+  if (!placing) return;
+  lastPlaceAt = p;
+  const c = cardById(save, placing.uid);
+  if (c?.kind !== 'pen') { endPlace(); return; }
+  const cells = rotateCells(penPiece(c).cells, placing.rot);
+  const { bx, by } = blockAt(p, cells);
+  if (placePen(save, placing.uid, bx, by, placing.rot)) {
+    audio.sfx('buy');
+    world.relayout(); autoPlace(save); world.sync(); persist();
+    toast('우리를 놓았어요. 빈 칸에 동물을 넣었어요', 'good');
+    endPlace();
+  } else { audio.sfx('deny'); updateGhost(); toast('겹치거나 부지 밖이에요. 다른 자리를 눌러요', 'bad', 1600); }
+}
+
+const reports: DayReport[] = [];
+const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, reports });
+ui.append(hud, hint, eventBanner, zoomReset, openBtn, placeBar, panel.el);
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
 
@@ -105,6 +155,7 @@ canvas.addEventListener('pointermove', (e) => {
     if (dragging || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 6) { dragging = true; field.panBy(e.movementX, e.movementY); }
   }
   pointer = field.toWorld(p.sx, p.sy);
+  if (placing) updateGhost();
 });
 canvas.addEventListener('pointerleave', () => { pointer = null; });
 canvas.addEventListener('pointerdown', (e) => {
@@ -115,6 +166,7 @@ canvas.addEventListener('pointerdown', (e) => {
   if (touches.size >= 2) { pinch = null; return; }
   downAt = { ...p, t: performance.now() }; dragging = false;
   pointer = field.toWorld(p.sx, p.sy);
+  if (placing) { lastPlaceAt = pointer; updateGhost(); return; }
   // 누른 자리의 동전 줍기 (주웠으면 우리 창은 열지 않는다)
   if (world.clickAt(pointer.x, pointer.y) > 0) downAt = null;
 });
@@ -128,6 +180,7 @@ canvas.addEventListener('pointerup', (e) => {
   if (wasMulti || dragging || !downAt || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 8 || performance.now() - downAt.t > 400) { downAt = null; dragging = false; return; }
   downAt = null;
   const wp = field.toWorld(p.sx, p.sy);
+  if (placing) { tryPlace(wp); return; }
   const i = world.layout.pens.findIndex((r) => wp.x >= r.x && wp.x <= r.x + r.w && wp.y >= r.y && wp.y <= r.y + r.h);
   if (i >= 0 && !penSheetOpen) {
     audio.sfx('click');
@@ -290,7 +343,7 @@ function frame(now: number) {
   world.sync();
   world.update(dt, pointer);
   for (const ev of world.events) {
-    if (ev.type === 'night') { audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
+    if (ev.type === 'night') { reports.push(ev.report); if (reports.length > 14) reports.shift(); audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
     else if (ev.type === 'morning') {
       const sd = world.seasonDay;
       if (sd === 1) {
@@ -326,10 +379,9 @@ function updateHud() {
   const inc = world.incomePerMin();
   hudCoins.textContent = fmt(save.coins);
   hudCoins.parentElement!.classList.toggle('debt', save.coins < 0);
-  hudIncome.textContent = `${fmt(inc.base)}/분 · 줍기 +${fmt(inc.bonus)}`;
-  hudAttract.textContent = fmt(world.attract);
-  hudAnimals.textContent = `${placedAnimals(save)}/${penCount(save) * penSize(save)}`;
-  hudStage.textContent = `${save.stage}단계`;
+  hudIncome.textContent = `+${fmt(inc.base + inc.bonus)}/분`;
+  strikeTag.classList.toggle('hidden', !save.strike);
+  placeBar.style.top = `${fieldRect.y + 6}px`; placeBar.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   // 이벤트 띠 · 확대 해제 버튼
   if (world.event) { const d = eventDef(world.event.id); eventBanner.textContent = `${d.name} · ${Math.ceil(world.event.left)}초`; eventBanner.classList.remove('hidden'); }
   else eventBanner.classList.add('hidden');
@@ -358,15 +410,13 @@ function updateHud() {
   openBtn.classList.toggle('tight', tight);
   openBtn.style.top = `${openBottom - (tight ? 58 : 86)}px`; openBtn.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   zoomReset.style.top = `${fieldRect.y + 6}px`; zoomReset.style.left = `${fieldRect.x + fieldRect.w - 6}px`;
-  hudTickets.textContent = `뽑기권 ${save.tickets}`;
-  ticketChip.classList.toggle('hidden', save.tickets <= 0);
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
     : save.stats.coinsPicked === 0 ? '바닥 동전을 눌러서 주우면 보너스!'
     : '';
   hint.textContent = msg;
-  hint.classList.toggle('hidden', !msg || night);
+  hint.classList.toggle('hidden', !msg || night || !!placing);
   hint.style.top = `${fieldRect.y + 4}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   void ZONE_H; void totalAttract;
 }

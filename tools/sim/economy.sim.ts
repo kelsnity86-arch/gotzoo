@@ -6,7 +6,7 @@ import { World } from '../../src/game/world';
 import { UPGRADES } from '../../src/data/balance';
 import {
   assignStaff, autoFusionPick, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, optimizePlacement, placedAnimals,
-  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, staffDraw, staffDrawPrice, staffSlotCount,
+  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, staffDraw, staffDrawPrice, staffSlotCount, penDraw, penDrawPrice, autoArrangePens, boardGrid, penFusionCandidates, fusePens,
 } from '../../src/game/rules';
 import type { Grade } from '../../src/data/grades';
 
@@ -43,10 +43,18 @@ it('경제 곡선', () => {
     ups.sort((a, b) => a.cost - b.cost);
     const price = drawPrice(s);
     // 업그레이드는 밤에만: 밤이 되면 살 수 있는 만큼 사고 바로 개장
+    const landBefore = s.upgrades.land;
     if (w.isNight) {
       for (let k = 0; k < 10 && ups[0] && ups[0].cost <= s.coins && ups[0].cost <= price * 8; k++) {
         buyUpgrade(s, ups[0].id); ups.shift(); ups.sort((a, b) => a.cost - b.cost);
       }
+      // 우리: 부지에 빈칸이 넉넉하면 우리 뽑기, 남는 조각은 합성, 그리고 자동 배치
+      const freeCells = () => boardGrid(s).flat().filter((v) => v < 0).length;
+      const waiting = () => s.cards.filter((c) => c.kind === 'animal').length - placedAnimals(s);
+      let changed = s.board.length === 0 || landBefore !== s.upgrades.land;
+      for (let k = 0; k < 4 && freeCells() >= 6 && waiting() > 0 && s.coins >= penDrawPrice(s); k++) { penDraw(s, 1); changed = true; }
+      for (const g of [0, 1, 2, 3] as Grade[]) { const c = penFusionCandidates(s, g); if (c.length >= 10) { fusePens(s, c.slice(0, 10).map((x) => x.uid)); changed = true; } }
+      if (changed) autoArrangePens(s);
       // 빈 직원 슬롯: 여유가 있으면 직원 뽑기
       const free = s.staffSlots.filter((u, i) => u === null && i < staffSlotCount(s)).length;
       if (free > 0 && s.coins >= staffDrawPrice(s) + price * 5) staffDraw(s, 1);

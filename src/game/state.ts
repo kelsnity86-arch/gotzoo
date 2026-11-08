@@ -2,11 +2,18 @@
 import { ANIMALS } from '../data/animals';
 import { STAFF_PAY, isStaffKind, type StaffKind, type StaffOptId } from '../data/staff';
 import type { Grade } from '../data/grades';
+import type { Habitat } from '../data/animals';
+import { HABITATS, pieceDef, type PenOptId } from '../data/pieces';
 import { UPGRADES, type UpgradeId } from '../data/balance';
 
 export type Card =
   | { uid: number; kind: 'animal'; animal: number; shiny?: boolean }
-  | StaffCard;
+  | StaffCard
+  | PenCard;
+/** 우리 조각 카드: 조각 모양 · 등급 · 서식지 · 특수옵션 */
+export interface PenCard { uid: number; kind: 'pen'; piece: string; grade: Grade; habitat: Habitat; opts: { id: PenOptId; v: number }[] }
+/** 부지에 놓은 우리: 카드 · 블록 좌표 · 회전(0~3). s.pens[i]는 board[i]에 든 동물 */
+export interface Placement { uid: number; x: number; y: number; rot: number }
 /** 직원 카드: 등급 · 월급(직원 뽑기 가격 대비 하루 비율) · 특수옵션 */
 export interface StaffCard { uid: number; kind: 'staff'; staff: StaffKind; grade: Grade; pay: number; opts: { id: StaffOptId; v: number }[] }
 
@@ -15,8 +22,12 @@ export interface SaveData {
   coins: number;
   cards: Card[];
   nextUid: number;
-  /** 우리마다 배치된 카드 uid */
+  /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
   pens: number[][];
+  /** 부지에 놓은 우리 조각 */
+  board: Placement[];
+  /** 예전 저장에서 옮겨 온 우리 (불러온 뒤 rules.finishLegacy가 부지에 놓는다) */
+  legacyPens?: { uid: number; animals: number[] }[];
   /** 직원 슬롯마다 배치된 카드 uid (빈 칸 null) */
   staffSlots: (number | null)[];
   /** 업그레이드 레벨 (0 = 기본) */
@@ -68,7 +79,10 @@ export const SAVE_KEY = 'bbopzoo.save';
 export function defaultSave(): SaveData {
   const upgrades = Object.fromEntries(UPGRADES.map((u) => [u.id, 0])) as Record<UpgradeId, number>;
   return {
-    version: SAVE_VERSION, coins: 0, cards: [], nextUid: 1, pens: [[], []], staffSlots: [null],
+    version: SAVE_VERSION, coins: 0, nextUid: 1, staffSlots: [null],
+    // 처음 우리 두 개: 네모 우리(풀밭) · 네모 우리(물가). uid는 일반 카드와 겹치지 않게 크게
+    cards: [{ uid: 900001, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900002, kind: 'pen', piece: 'O', grade: 0, habitat: 'water', opts: [] }],
+    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []],
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
@@ -83,7 +97,12 @@ export function normalize(raw: unknown): SaveData {
   const r = raw as Partial<SaveData>;
   const out: SaveData = { ...d, ...r, upgrades: { ...d.upgrades, ...(r.upgrades ?? {}) }, stats: { ...d.stats, ...(r.stats ?? {}) } };
   out.coins = Number.isFinite(out.coins) ? out.coins : 0; // 빚(마이너스) 허용
-  out.cards = Array.isArray(out.cards) ? out.cards.filter((c) => c && typeof c.uid === 'number' && (c.kind === 'animal' ? ANIMALS[c.animal] : c.kind === 'staff' && isStaffKind(c.staff))) : [];
+  out.cards = Array.isArray(r.cards) ? r.cards.filter((c) => c && typeof c.uid === 'number' && (c.kind === 'animal' ? ANIMALS[c.animal] : c.kind === 'staff' ? isStaffKind(c.staff) : c.kind === 'pen' && typeof c.piece === 'string')) : d.cards;
+  for (const c of out.cards) if (c.kind === 'pen') {
+    if (typeof c.grade !== 'number' || c.grade < 0 || c.grade > 4) c.grade = 0;
+    if (!HABITATS.includes(c.habitat)) c.habitat = 'grass';
+    if (!Array.isArray(c.opts)) c.opts = [];
+  }
   // 예전 직원 카드(등급 없음) → 일반~희귀 중 하나, 월급은 범위 가운데
   for (const c of out.cards) if (c.kind === 'staff') {
     if (typeof c.grade !== 'number' || c.grade < 0 || c.grade > 4) c.grade = (c.uid % 3) as Grade;
@@ -95,6 +114,31 @@ export function normalize(raw: unknown): SaveData {
   const seen = new Set<number>();
   const keep = (u: unknown) => typeof u === 'number' && uids.has(u) && !seen.has(u) && (seen.add(u), true);
   out.pens = Array.isArray(out.pens) ? out.pens.map((p) => (Array.isArray(p) ? p.filter(keep) : [])) : d.pens;
+  const rr = r as Record<string, unknown>;
+  if (!Array.isArray(rr.board)) {
+    // 예전 저장 (우리 늘리기 · 넓히기): 우리마다 마릿수가 들어갈 사각 조각을 만들고, 동물은 불러온 뒤 다시 넣는다
+    const oldUp = (rr.upgrades ?? {}) as Record<string, number>;
+    const sizeVals = [4, 6, 8, 10, 12, 15, 18, 22, 26, 30], countVals = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const cap = sizeVals[Math.min(9, Math.max(0, oldUp.size ?? 0))], n = countVals[Math.min(8, Math.max(0, oldUp.pens ?? 0))];
+    const cells = Math.ceil(cap / 1.6), h = Math.max(1, Math.round(Math.sqrt(cells / 2))), w = Math.ceil(cells / h);
+    out.cards = out.cards.filter((c) => c.kind !== 'pen');
+    out.legacyPens = [];
+    for (let i = 0; i < n; i++) {
+      const uid = 900001 + i;
+      const hab = (() => { const cnt = new Map<Habitat, number>(); for (const u of out.pens[i] ?? []) { const c = out.cards.find((x) => x.uid === u); if (c?.kind === 'animal') cnt.set(ANIMALS[c.animal].habitat, (cnt.get(ANIMALS[c.animal].habitat) ?? 0) + 1); } let b: Habitat = 'grass', m = 0; for (const [k, v] of cnt) if (v > m) { m = v; b = k; } return b; })();
+      out.cards.push({ uid, kind: 'pen', piece: `RECT${w}x${h}`, grade: 0, habitat: hab, opts: [] });
+      out.legacyPens.push({ uid, animals: out.pens[i] ?? [] });
+    }
+    out.board = []; out.pens = [];
+    out.upgrades.land = Math.min(8, Math.max(oldUp.pens ?? 0, oldUp.size ?? 0));
+  } else {
+    const pens = new Set(out.cards.filter((c) => c.kind === 'pen').map((c) => c.uid));
+    const used = new Set<number>();
+    const ok = (rr.board as Placement[]).map((b, i) => ({ b, i })).filter(({ b }) => b && pens.has(b.uid) && !used.has(b.uid) && (used.add(b.uid), true) && pieceDef((out.cards.find((c) => c.uid === b.uid) as PenCard).piece));
+    out.board = ok.map(({ b }) => ({ uid: b.uid, x: Math.floor(b.x) || 0, y: Math.floor(b.y) || 0, rot: ((Math.floor(b.rot) || 0) % 4 + 4) % 4 }));
+    out.pens = ok.map(({ i }) => out.pens[i] ?? []);
+  }
+  delete (out.upgrades as Record<string, number>).pens; delete (out.upgrades as Record<string, number>).size;
   out.staffSlots = Array.isArray(out.staffSlots) ? out.staffSlots.map((u) => (u !== null && keep(u) ? u : null)) : d.staffSlots;
   out.dex = ANIMALS.map((_, i) => !!(Array.isArray(r.dex) && r.dex[i]));
   for (const c of out.cards) if (c.kind === 'animal') out.dex[c.animal] = true;

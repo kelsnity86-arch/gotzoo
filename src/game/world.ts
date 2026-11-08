@@ -4,11 +4,12 @@ import { ANIMALS } from '../data/animals';
 import { COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
-import { SHAPE_OF, isEdge, penMask, type PenShape } from '../data/shapes';
+import { isEdge, penMask, type PenShape } from '../data/shapes';
+import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { curSeason, discoverSynergies, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -16,54 +17,27 @@ export const TILE = 8;
 export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
 export const ZONE_H = 48;      // 관객존 높이
 export const PATH_Y0 = 18, PATH_Y1 = 40; // 관람객이 걷는 길 (관객존 안)
-const GAP = 10;                // 우리 사이 산책길
 
 export interface PenRect { x: number; y: number; w: number; h: number }
 /** 우리 모양: 타일 격자 원점 · 칸 수 · 마스크(우리 칸) · 바닥(테두리 아닌 우리 칸) */
 export interface PenGeo { gx: number; gy: number; cols: number; rows: number; shape: PenShape; theme: Habitat | null; mask: boolean[][]; floor: boolean[][]; floorCells: [number, number][] }
-export interface Layout { w: number; h: number; pens: PenRect[]; cols: number }
+export interface Layout { w: number; h: number; pens: PenRect[]; cols: number; bx0: number; by0: number; bw: number; bh: number }
 
-/** 우리 안쪽 크기: 한 마리당 약 3타일 */
-export function penInner(cap: number): [number, number] {
-  const tiles = Math.max(12, Math.round(cap * 3));
-  const w = Math.max(4, Math.ceil(Math.sqrt(tiles * 1.4)));
-  const h = Math.max(3, Math.ceil(tiles / w));
-  return [w * TILE, h * TILE];
-}
-
-/** 화면 비율(aspect = 가로/세로)에 맞춰 우리를 몇 열로 놓을지 정한다 */
-export function computeLayout(n: number, cap: number, aspect: number): Layout {
-  const [iw, ih] = penInner(cap);
-  const pw = iw + TILE * 2, ph = ih + TILE * 2;
-  let best = 1, bestScore = Infinity;
-  for (let cols = 1; cols <= n; cols++) {
-    const rows = Math.ceil(n / cols);
-    const w = cols * (pw + GAP) + GAP, h = ZONE_H + rows * (ph + GAP) + GAP;
-    // 화면 비율과 가까울수록, 빈 칸이 적을수록 좋다
-    const score = Math.abs(Math.log((w / h) / aspect)) + (cols * rows - n) * 0.15;
-    if (score < bestScore) { bestScore = score; best = cols; }
-  }
-  const cols = best, rows = Math.ceil(n / cols);
-  let w = cols * (pw + GAP) + GAP, h = ZONE_H + rows * (ph + GAP) + GAP;
-  // 화면 비율에 맞춰 우리를 늘려서 동물존 전체를 채운다 (남는 잔디 없이)
-  let qw = pw, qh = ph;
-  if (w / h < aspect) { const nw = h * aspect; qw = Math.floor((nw - GAP) / cols - GAP); w = cols * (qw + GAP) + GAP; }
-  else { const nh = w / aspect; qh = Math.floor((nh - ZONE_H - GAP) / rows - GAP); h = ZONE_H + rows * (qh + GAP) + GAP; }
-  const pens: PenRect[] = [];
-  // 줄마다 우리 폭을 조금씩 다르게 (바둑판 대신 공원처럼). 마지막 줄이 덜 차면 그 줄 우리를 넓힌다
-  const WEIGHT = [1.14, 0.88, 1.04, 0.94, 1.1, 0.9, 1.0];
-  for (let r = 0; r < rows; r++) {
-    const first = r * cols, inRow = Math.min(cols, n - first);
-    const ws = Array.from({ length: inRow }, (_, k) => (inRow > 1 ? WEIGHT[(first + k + r * 3) % WEIGHT.length] : 1));
-    const sum = ws.reduce((a, b) => a + b, 0), avail = w - GAP - inRow * GAP;
-    let x = GAP;
-    for (let k = 0; k < inRow; k++) {
-      const rw = k === inRow - 1 ? w - GAP - x : Math.floor((avail * ws[k]) / sum);
-      pens.push({ x, y: ZONE_H + GAP + r * (qh + GAP), w: rw, h: qh });
-      x += rw + GAP;
-    }
-  }
-  return { w, h, pens, cols };
+/** 블록 1칸 크기(px) · 부지 가장자리 여백 */
+export const BLOCK = BLOCK_TILES * TILE;
+const MARGIN = 8;
+/** 부지(블록 격자) 화면 배치: 관객존 아래에 부지, 놓은 우리마다 바깥 사각형 */
+export function computeLayout(s: SaveData): Layout {
+  const [bw, bh] = boardDims(s);
+  const bx0 = MARGIN, by0 = ZONE_H + MARGIN;
+  const pens: PenRect[] = s.board.map((_, i) => {
+    const cells = penCells(s, i);
+    if (!cells.length) return { x: bx0, y: by0, w: BLOCK, h: BLOCK };
+    const xs = cells.map((c) => c[0]), ys = cells.map((c) => c[1]);
+    const x0 = Math.min(...xs), y0 = Math.min(...ys);
+    return { x: bx0 + x0 * BLOCK, y: by0 + y0 * BLOCK, w: (Math.max(...xs) - x0 + 1) * BLOCK, h: (Math.max(...ys) - y0 + 1) * BLOCK };
+  });
+  return { w: bx0 * 2 + bw * BLOCK, h: by0 + bh * BLOCK + MARGIN, pens, cols: bw, bx0, by0, bw, bh };
 }
 
 export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean }
@@ -100,7 +74,7 @@ export interface DayReport {
 }
 
 export class World {
-  layout: Layout = { w: 100, h: 100, pens: [], cols: 1 };
+  layout: Layout = { w: 100, h: 100, pens: [], cols: 1, bx0: 0, by0: 0, bw: 1, bh: 1 };
   animals: AnimalEnt[] = [];
   visitors: VisitorEnt[] = [];
   coins: CoinEnt[] = [];
@@ -140,12 +114,12 @@ export class World {
   }
 
   /** 화면 비율이 바뀌거나 우리가 늘면 다시 배치 */
-  relayout(aspect: number) {
-    const n = penCount(this.save), cap = penSize(this.save);
-    const key = `${n}:${cap}:${aspect.toFixed(2)}`;
+  relayout(_aspect?: number) {
+    const s = this.save, n = penCount(s);
+    const key = `${s.upgrades.land}|${s.board.map((b) => `${b.uid},${b.x},${b.y},${b.rot}`).join(';')}`;
     if (key === this.layoutKey) return;
     this.layoutKey = key;
-    this.layout = computeLayout(n, cap, aspect);
+    this.layout = computeLayout(s);
     while (this.fedLeft.length < n) { this.fedLeft.push(0); this.feedCooldown.push(0); }
     this.geoKey = '';
     this.updateShapes();
@@ -156,19 +130,23 @@ export class World {
   private geoKey = '';
   private updateShapes() {
     const themes = this.layout.pens.map((_, i) => penTheme(this.save, i));
-    const key = themes.join(',');
+    const key = `${this.layoutKey}|${themes.join(',')}`;
     if (key === this.geoKey && this.geo.length === this.layout.pens.length) return;
     this.geoKey = key;
+    // 조각의 블록 칸을 타일로 펼치고, 둥근 연못·팔각은 바깥 사각형 기준으로 깎는다
     this.geo = this.layout.pens.map((r, i) => {
-      const cols = Math.floor(r.w / TILE), rows = Math.floor(r.h / TILE);
-      const gx = r.x + Math.floor((r.w - cols * TILE) / 2), gy = r.y + Math.floor((r.h - rows * TILE) / 2);
-      const theme = themes[i];
-      const shape: PenShape = theme ? SHAPE_OF[theme] : 'rect';
-      const mask = penMask(shape, cols, rows);
+      const cols = Math.round(r.w / TILE), rows = Math.round(r.h / TILE);
+      const gx = r.x, gy = r.y;
+      const cells = new Set(penCells(this.save, i).map(([x, y]) => `${x - (r.x - this.layout.bx0) / BLOCK},${y - (r.y - this.layout.by0) / BLOCK}`));
+      const pc = penCardAt(this.save, i);
+      const carve = pc ? penPiece(pc).carve : undefined;
+      const cut = carve ? penMask(carve, cols, rows) : null;
+      const mask = Array.from({ length: rows }, (_, y) => Array.from({ length: cols }, (_, x) => cells.has(`${Math.floor(x / BLOCK_TILES)},${Math.floor(y / BLOCK_TILES)}`) && (!cut || cut[y][x])));
       const floor = mask.map((row, y) => row.map((v, x) => v && !isEdge(mask, x, y)));
       const floorCells: [number, number][] = [];
       floor.forEach((row, y) => row.forEach((v, x) => { if (v) floorCells.push([x, y]); }));
-      return { gx, gy, cols, rows, shape: penMask(shape, cols, rows).flat().every(Boolean) ? 'rect' as PenShape : shape, theme, mask, floor, floorCells };
+      const shape: PenShape = mask.flat().every(Boolean) ? 'rect' : (carve ?? 'L');
+      return { gx, gy, cols, rows, shape, theme: themes[i], mask, floor, floorCells };
     });
     for (const a of this.animals) this.placeIn(a, true);
   }
@@ -239,7 +217,7 @@ export class World {
     const e = this.event ? eventDef(this.event.id) : null;
     return { allMul: e?.allMul, habitatMul: e?.habitat ? { [e.habitat]: e.habitatMul ?? 1 } : undefined };
   }
-  get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1), this.attractCtx); }
+  get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb * (penOpt(this.save, i, 'feeder') ? 2 : 1) : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1), this.attractCtx); }
   get gateCap() { return upValue(this.save, 'gate'); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }

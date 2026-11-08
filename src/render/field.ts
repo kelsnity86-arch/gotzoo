@@ -2,7 +2,7 @@
 import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
+import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
 import { animalFrame, personFrame, shinyOf, sprite, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
@@ -46,6 +46,8 @@ export class FieldRenderer {
   resetZoom() { this.userZoom = 1; this.camX = -1; }
   private dev = 1; private dpr = 1;
   selectedPen = -1;
+  /** 우리 놓기 미리 보기 (부지 블록 좌표) */
+  ghost: { cells: [number, number][]; ok: boolean } | null = null;
 
   private bg: HTMLCanvasElement | null = null;
   private bgKey = '';
@@ -56,7 +58,7 @@ export class FieldRenderer {
     if (!hasPng('tiles_01')) return null;
     const L = world.layout;
     const habs = L.pens.map((_, i) => `${world.geo[i]?.theme ?? '-'}:${world.geo[i]?.shape ?? '-'}`);
-    const key = `${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}`;
+    const key = `${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -79,12 +81,19 @@ export class FieldRenderer {
     fill('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
     for (let x = 12; x < L.w - 8; x += 56) { tile('tiles_18', x, PATH_Y0 - 9); tile('tiles_21', x + 26, PATH_Y0 - 9); }
     for (let x = 0; x < L.w; x += TILE) tile('tiles_05', x, ZONE_H - 8);
-    // 산책길: 우리 줄 사이 가로길 + 우리 사이 세로길
-    const rowYs = [...new Set(L.pens.map((r) => r.y))];
-    for (const y of rowYs) fill('tiles_03', 0, y - 9, L.w, 8);
-    fill('tiles_03', 0, L.h - 9, L.w, 8);
-    for (const r of L.pens) fill('tiles_03', r.x - 9, r.y - 9, 8, r.h + 10);
-    fill('tiles_03', L.w - 9, ZONE_H, 8, L.h - ZONE_H);
+    // 부지: 빈 블록 칸에는 풀밭 소품 (나무 · 덤불 · 꽃), 부지 둘레는 낮은 울타리
+    const occ = new Set<string>();
+    world.layout.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((v, x) => { if (v) occ.add(`${g.gx + x * TILE},${g.gy + y * TILE}`); })); });
+    const { bx0, by0, bw, bh } = L;
+    const BL = BLOCK;
+    for (let y = by0; y < by0 + bh * BL; y += TILE) for (let x = bx0; x < bx0 + bw * BL; x += TILE) {
+      if (occ.has(`${x},${y}`)) continue;
+      const k = (x * 13 + y * 7) / TILE;
+      if (k % 9 === 0) tile(['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_22'][(k / 9) % 5 | 0], x, y);
+      else if (k % 23 === 5) tile('tiles_17', x, y);
+    }
+    for (let x = bx0 - TILE / 2; x < bx0 + bw * BL; x += TILE) { tile('tiles_05', x, by0 - TILE); tile('tiles_05', x, by0 + bh * BL); }
+    for (let y = by0; y < by0 + bh * BL; y += TILE) { tile('tiles_06', bx0 - TILE, y); tile('tiles_06', bx0 + bw * BL, y); }
     // 우리: 모양(마스크)대로 바닥 · 울타리, 모양 밖 빈 곳은 공원 소품
     const PROPS = ['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_18', 'tiles_22', 'tiles_17', 'tiles_23'];
     L.pens.forEach((_, i) => {
@@ -245,8 +254,18 @@ export class FieldRenderer {
       for (let i = 0; i < 90; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); c.fillRect(Math.round(x), Math.round(y), 1, 3); }
       c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(0, 0, L.w, L.h);
     }
+    // 우리 놓기: 들어갈 자리 미리 보기 (초록 = 놓을 수 있음, 빨강 = 겹침·밖)
+    if (this.ghost) {
+      const gh = this.ghost;
+      c.globalAlpha = 0.55;
+      c.fillStyle = gh.ok ? '#38a35b' : '#d83a3a';
+      for (const [x, y] of gh.cells) c.fillRect(L.bx0 + x * BLOCK + 1, L.by0 + y * BLOCK + 1, BLOCK - 2, BLOCK - 2);
+      c.globalAlpha = 1;
+      c.strokeStyle = gh.ok ? '#a7d65b' : '#ffc8dd'; c.lineWidth = 1 / z;
+      for (const [x, y] of gh.cells) c.strokeRect(L.bx0 + x * BLOCK + 1, L.by0 + y * BLOCK + 1, BLOCK - 2, BLOCK - 2);
+    }
     // 손 수거 범위
-    if (pointer) {
+    if (pointer && !this.ghost) {
       c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 1 / z;
       c.beginPath(); c.arc(pointer.x, pointer.y, world.pickupRadius, 0, Math.PI * 2); c.stroke();
     }

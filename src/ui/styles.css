@@ -370,3 +370,41 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 body[data-season="spring"] .clock:not(.night) { background: rgba(240,140,190,.35); } body[data-season="autumn"] .clock:not(.night) { background: rgba(239,125,50,.35); } body[data-season="winter"] .clock:not(.night) { background: rgba(148,176,194,.4); } body[data-season="summer"] .clock:not(.night) { background: rgba(65,166,246,.35); }
 
 .theme-box { margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
+
+/* ── UI 정리: 큰 탭 5개 · 작은 탭 · 같은 틀의 목록 줄 ── */
+.ptab { position: relative; }
+.ptab .dot { display: none; position: absolute; top: 4px; right: calc(50% - 22px); width: 8px; height: 8px; border-radius: 50%; background: #e84a4a; box-shadow: 0 0 0 2px #a8744d; }
+.ptab.on .dot { box-shadow: 0 0 0 2px var(--panel); }
+.ptab.has-dot .dot { display: block; }
+.subtabs { display: flex; gap: 4px; margin: 0 0 10px; padding: 3px; border-radius: 10px; background: #ead9b8; position: sticky; top: 0; z-index: 2; }
+.subtab { flex: 1; padding: 6px 0; border: none; border-radius: 7px; background: transparent; color: #6b5536; font-size: 13px; }
+.subtab.on { background: #fffaf0; color: var(--ink); box-shadow: 0 1px 0 rgba(0,0,0,.12); }
+.seg { display: flex; gap: 0; margin: 0 0 8px; border: 2px solid #c9a97d; border-radius: 8px; overflow: hidden; }
+.seg-b { flex: 1; padding: 5px 0; border: none; background: #f3e6cf; color: #6b5536; font-size: 13px; }
+.seg-b.on { background: #38a35b; color: #fff; }
+.hero { padding: 10px 12px; margin-bottom: 8px; border-radius: 10px; background: #f1e3c6; border: 2px solid #d8c7a6; }
+.hero .title { font-size: 16px; color: var(--ink); }
+.hero .sub { font-size: 12px; color: #6b5536; }
+.list { display: flex; flex-direction: column; gap: 5px; }
+.row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 8px 6px 6px; border-radius: 8px; background: #fffaf0; border: none; border-left: 4px solid #b9b3a5; text-align: left; font: inherit; color: inherit; width: 100%; }
+.row.g-uncommon { border-left-color: #38a35b; } .row.g-rare { border-left-color: #3b5dc9; } .row.g-epic { border-left-color: #8e44ad; } .row.g-legend { border-left-color: #e0a526; }
+.row.empty { grid-template-columns: 1fr; border-left-style: dashed; background: transparent; border: 1px dashed #d8c7a6; }
+.row-art { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 6px; background: #f3e6cf; }
+.row-info { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.row-name { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; color: var(--ink); }
+.row-btns-col { display: flex; flex-direction: column; gap: 4px; }
+.row .opts { display: flex; flex-wrap: wrap; gap: 3px; } .row .opt { font-size: 11px; padding: 0 6px; border-radius: 6px; background: #efe0ff; color: #5d275d; }
+.row .pay { color: #8b1e2d; }
+.row.pick.on { background: #e7f6dc; outline: 2px solid #38a35b; }
+.row .check { color: #38a35b; font-size: 18px; font-weight: 400; }
+.gtag.hab-grass { background: #38a35b; } .gtag.hab-sand { background: #c28a5c; } .gtag.hab-water { background: #41a6f6; } .gtag.hab-snow { background: #94b0c2; } .gtag.hab-rock { background: #566c86; } .gtag.hab-cloud { background: #f08cbe; }
+.btn.danger-ghost { background: transparent; color: #c0392b; border: 2px solid #e2a39b; box-shadow: none; }
+.money-list { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+.money-list > div { display: flex; justify-content: space-between; gap: 8px; padding: 5px 8px; border-radius: 6px; background: #fffaf0; font-size: 13px; color: #6b5536; }
+.money-list b { font-weight: 400; color: var(--ink); white-space: nowrap; }
+.money-list .total { background: #f3e1c4; } .money-list b.plus { color: #2e7d32; } .money-list b.minus { color: #c0392b; }
+.odds-box { margin: 8px 0; } .odds-box summary { cursor: pointer; color: #6b5536; font-size: 13px; padding: 4px 0; }
+.place-bar { position: absolute; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; background: rgba(18,20,30,.9); color: #fff3a3; font-size: 13px; z-index: 6; white-space: nowrap; }
+.strike-tag { margin-left: 4px; padding: 0 6px; border-radius: 6px; background: #c94c4c; color: #fff; font-size: 11px; }
+.hud > .stat { display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 999px; background: rgba(0,0,0,0.35); color: #d7f5c0; font-size: 13px; }
+.hud > .stat b { font-weight: 400; }

@@ -8,6 +8,9 @@ import { seasonByKey } from '../data/seasons';
 import { h, pix } from './dom';
 
 export function cardGrade(c: Card): number { return c.kind === 'animal' ? ANIMALS[c.animal].grade : c.grade; }
+import { pieceArt } from './pieceart';
+import { capOfCells } from '../game/rules';
+import { penOptDef, pieceDef, PEN_THEME_BONUS } from '../data/pieces';
 
 /** 프레임 + 창 안 그림을 원본 크기(24×32)로 합친다 */
 function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
@@ -25,16 +28,26 @@ function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
 export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean } = {}): HTMLElement {
   // l = 크게(한두 장), r = 뽑기 결과 여러 장, m = 작게
   const big = opts.size === 'l' || opts.size === 'r';
-  const isStaff = c.kind === 'staff';
-  const g = GRADES[isStaff ? c.grade : ANIMALS[c.animal].grade];
+  const g = GRADES[c.kind === 'animal' ? ANIMALS[c.animal].grade : c.grade];
   const key = g.key;
-  const name = isStaff ? staffDef(c.staff).name : ANIMALS[c.animal].name;
-  const shiny = !isStaff && !!c.shiny;
-  const seasonTag = !isStaff && ANIMALS[c.animal].season ? ` · ${seasonByKey(ANIMALS[c.animal].season!).name} 한정` : '';
-  const gradeLabel = isStaff ? `${g.name} 직원` : `${shiny ? '✦반짝이 ' : ''}${g.name}${seasonTag}`;
-  // 직원: 효과 + 특수옵션 (큰 카드만 설명까지)
-  const sub = isStaff ? (big ? [staffDef(c.staff).desc(staffDef(c.staff).values[c.grade]), ...c.opts.map((o) => `★ ${staffOptDef(o.id).name}`)].join(' · ') : '') : `♥${g.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
-  const art = isStaff ? staffFrame(c.staff, 0) : shiny ? shinyOf(animalFrame(c.animal, 0)) : animalFrame(c.animal, 0);
+  let name: string, gradeLabel: string, sub: string, art: Sprite, shiny = false;
+  if (c.kind === 'staff') {
+    name = staffDef(c.staff).name; gradeLabel = `${g.name} 직원`;
+    // 직원: 효과 + 특수옵션 (큰 카드만 설명까지)
+    sub = big ? [staffDef(c.staff).desc(staffDef(c.staff).values[c.grade]), ...c.opts.map((o) => `★ ${staffOptDef(o.id).name}`)].join(' · ') : '';
+    art = staffFrame(c.staff, 0);
+  } else if (c.kind === 'pen') {
+    const pd = pieceDef(c.piece);
+    name = pd.name; gradeLabel = `${g.name} 우리 · ${HABITAT_NAMES[c.habitat]}`;
+    sub = big ? [`${pd.cells.length}칸 · ${capOfCells(pd.cells.length)}마리`, `${HABITAT_NAMES[c.habitat]} +${Math.round(PEN_THEME_BONUS[c.grade] * 100)}%`, ...c.opts.map((o) => `★ ${penOptDef(o.id).name}`)].join(' · ') : `${pd.cells.length}칸`;
+    art = pieceArt(c);
+  } else {
+    name = ANIMALS[c.animal].name; shiny = !!c.shiny;
+    const seasonTag = ANIMALS[c.animal].season ? ` · ${seasonByKey(ANIMALS[c.animal].season!).name} 한정` : '';
+    gradeLabel = `${shiny ? '✦반짝이 ' : ''}${g.name}${seasonTag}`;
+    sub = `♥${g.attract} · ${HABITAT_NAMES[ANIMALS[c.animal].habitat]}`;
+    art = shiny ? shinyOf(animalFrame(c.animal, 0)) : animalFrame(c.animal, 0);
+  }
   if (hasPng('cards_01')) {
     const frame = `cards_0${g.id + 1}`;
     // 여러 장일 때는 화면 폭에 3장이 들어가게

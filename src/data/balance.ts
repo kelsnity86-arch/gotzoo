@@ -1,3 +1,4 @@
+import { BOARD } from './pieces';
 // 경제·확률 수치. 기획서 0.2를 바탕으로 하고, '우리 하나에 여러 마리'와 '많이 넣을수록 확률이 오르는 합성'에 맞춰 늘렸다.
 // 숫자는 플레이 테스트(tools/sim)로 다시 맞춘다.
 
@@ -24,13 +25,11 @@ export interface UpgradeDef {
   values: readonly number[]; costs: readonly number[]; need: readonly number[];
   describe: (v: number) => string;
 }
-export type UpgradeId = 'pens' | 'size' | 'quality' | 'gate' | 'staff' | 'pickup';
+export type UpgradeId = 'land' | 'quality' | 'gate' | 'staff' | 'pickup';
 
 export const UPGRADES: readonly UpgradeDef[] = [
-  { id: 'pens', name: '우리 늘리기', icon: 'icon_cage', values: [2, 3, 4, 5, 6, 7, 8, 9, 10],
-    costs: [300, 800, 1800, 4000, 9000, 20000, 45000, 100000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `우리 ${v}개` },
-  { id: 'size', name: '우리 넓히기', icon: 'icon_cage', values: [4, 6, 8, 10, 12, 15, 18, 22, 26, 30],
-    costs: [250, 600, 1400, 3000, 6500, 14000, 30000, 65000, 140000], need: [1, 2, 2, 3, 4, 5, 6, 7, 8], describe: (v) => `우리마다 ${v}마리` },
+  { id: 'land', name: '부지 넓히기', icon: 'icon_cage', values: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸` },
   { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.25, 1.6, 2.1, 2.7, 3.5, 4.5, 6],
     costs: [250, 700, 2000, 5000, 12000, 30000, 75000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `투척액 ×${v}` },
   { id: 'gate', name: '입장 게이트', icon: 'icon_visitor', values: [30, 45, 60, 80, 110, 150, 200],
@@ -75,9 +74,9 @@ export const DAY = { dayLen: 180, duskLen: 20, nightAvg: 30, janitorShare: 0.5 }
 
 /** 유지비 (매일 영업이 끝날 때). unit = 단계별 비용 단위(코인): 1~2단계는 작게, 뒤로는 수입이 느는 만큼만 (뽑기 가격보다 완만).
  * 우리 하나당 고정비 + 전시 동물 사료비(등급별). 직원 월급도 이 단위 × 3 × 카드의 월급 비율 */
-export const UPKEEP = { perPen: 0.25, feed: [0.012, 0.025, 0.05, 0.09, 0.16], unit: [30, 120, 450, 1000, 1500, 2000, 2700, 3600] } as const;
+export const UPKEEP = { perCell: 0.06, feed: [0.012, 0.025, 0.05, 0.09, 0.16], unit: [30, 120, 450, 1000, 1500, 2000, 2700, 3600] } as const;
 
-/** 동물원 규모 점수: 전시 동물(등급별) + 배치 직원(staff.ts STAFF_SCALE) + 업그레이드 레벨 − 빚 감점 */
+/** 동물원 규모 점수: 전시 동물(등급별) + 배치 직원(staff.ts STAFF_SCALE) + 놓은 우리(pieces.ts PEN_SCALE) + 업그레이드 레벨 − 빚 감점 */
 export const SCALE = { animal: [1, 3, 8, 20, 50], upgradeLv: 10, debtPerDraw: 5 } as const;
 
 /** 빚: 빚으로 끝난 날이 strikeAfter일 이어지면 다음 날 직원 파업 */

@@ -1,12 +1,12 @@
 // 규칙 계산 (화면 없음): 뽑기, 합성, 배치, 매력도, 업그레이드, 승급. 모두 SaveData를 직접 바꾼다.
 import { ANIMALS, animalsOfGrade, seasonalOfGrade, type Habitat } from '../data/animals';
 import { SEASON_FX, seasonOf, type SeasonDef } from '../data/seasons';
-import { THEME_BONUS, SHAPE_NAME, SHAPE_OF } from '../data/shapes';
+import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, PEN_THEME_BONUS, PIECES, pieceDef, rotateCells, type PieceDef } from '../data/pieces';
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
 import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
 import { DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
-import { defaultSave, type Card, type MissionKind, type SaveData, type StaffCard } from './state';
+import { defaultSave, type Card, type MissionKind, type PenCard, type SaveData, type StaffCard } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/missions';
 
@@ -14,13 +14,159 @@ export type Rng = () => number;
 
 // ── 업그레이드 값 ──
 export const upValue = (s: SaveData, id: UpgradeId) => upgradeDef(id).values[s.upgrades[id]];
-export const penCount = (s: SaveData) => upValue(s, 'pens');
-export const penSize = (s: SaveData) => upValue(s, 'size');
+// ── 부지 · 우리 조각 ──
+/** 부지 크기 (블록 칸) */
+export const boardDims = (s: SaveData) => BOARD[Math.min(BOARD.length - 1, s.upgrades.land ?? 0)];
+/** 놓은 우리 수 */
+export const penCount = (s: SaveData) => s.board.length;
+export const penCardAt = (s: SaveData, i: number) => cardById(s, s.board[i]?.uid ?? -1) as PenCard | undefined;
+export const penPiece = (c: PenCard): PieceDef => pieceDef(c.piece);
+/** 우리 i가 차지하는 블록 칸 (부지 좌표) */
+export function penCells(s: SaveData, i: number): [number, number][] {
+  const b = s.board[i], c = penCardAt(s, i);
+  if (!b || !c) return [];
+  return rotateCells(penPiece(c).cells, b.rot).map(([x, y]) => [x + b.x, y + b.y]);
+}
+/** 우리 i 수용 마릿수 = 블록 칸 × CAP_PER_CELL */
+export const capOfCells = (n: number) => Math.max(2, Math.round(n * CAP_PER_CELL));
+export const penCap = (s: SaveData, i: number) => { const c = penCardAt(s, i); return c ? capOfCells(penPiece(c).cells.length) : 0; };
+export const totalCap = (s: SaveData) => s.board.reduce((t, _, i) => t + penCap(s, i), 0);
+/** 우리 특수옵션 값 */
+export const penOpt = (s: SaveData, i: number, id: string) => penCardAt(s, i)?.opts.find((o) => o.id === id)?.v ?? 0;
+/** 부지 칸 점유 [y][x] = 우리 번호 (-1 = 빈 칸) */
+export function boardGrid(s: SaveData, skip = -1): number[][] {
+  const [w, h] = boardDims(s);
+  const g = Array.from({ length: h }, () => Array.from({ length: w }, () => -1));
+  s.board.forEach((_, i) => { if (i !== skip) for (const [x, y] of penCells(s, i)) if (g[y]?.[x] !== undefined) g[y][x] = i; });
+  return g;
+}
+function fits(grid: number[][], cells: [number, number][], ox: number, oy: number): boolean {
+  return cells.every(([x, y]) => grid[y + oy]?.[x + ox] === -1);
+}
+/** 이 우리 조각을 (x, y, rot)에 놓을 수 있는지 */
+export function canPlacePen(s: SaveData, uid: number, x: number, y: number, rot: number): boolean {
+  const c = cardById(s, uid);
+  if (!c || c.kind !== 'pen' || s.board.some((b) => b.uid === uid)) return false;
+  return fits(boardGrid(s), rotateCells(penPiece(c).cells, rot), x, y);
+}
+export function placePen(s: SaveData, uid: number, x: number, y: number, rot: number): boolean {
+  if (!canPlacePen(s, uid, x, y, rot)) return false;
+  s.board.push({ uid, x, y, rot: ((rot % 4) + 4) % 4 });
+  s.pens.push([]);
+  return true;
+}
+/** 우리 치우기: 안의 동물은 보관함으로 */
+export function removePen(s: SaveData, i: number): boolean {
+  if (!s.board[i]) return false;
+  s.board.splice(i, 1); s.pens.splice(i, 1); s.penTheme.splice(i, 1);
+  return true;
+}
+/** 우리 조각 하나의 가치 (자동 배치 순서): 수용 × (1 + 서식지 보너스) + 등급 */
+const penValue = (c: PenCard) => capOfCells(penPiece(c).cells.length) * (1 + PEN_THEME_BONUS[c.grade]) + c.grade * 3;
+/** 자동 배치 (가장 효율 좋게): 가진 우리 조각을 부지에 빈틈이 적고 가치가 크게 끼워 넣는다. 동물은 다시 최대 수익 배치. 놓은 우리 수 */
+export function autoArrangePens(s: SaveData, rng: Rng = Math.random): number {
+  const [w, h] = boardDims(s);
+  const all = s.cards.filter((c): c is PenCard => c.kind === 'pen');
+  const tryOrder = (order: PenCard[]) => {
+    const grid = Array.from({ length: h }, () => Array.from({ length: w }, () => -1));
+    const out: { uid: number; x: number; y: number; rot: number }[] = [];
+    let value = 0;
+    for (const c of order) {
+      let best: { x: number; y: number; rot: number; sc: number } | null = null;
+      const seen = new Set<string>();
+      for (let rot = 0; rot < 4; rot++) {
+        const cells = rotateCells(penPiece(c).cells, rot);
+        const key = cells.map((p) => p.join(',')).sort().join(';');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+          if (!fits(grid, cells, x, y)) continue;
+          // 왼쪽 위로 붙이고, 이웃(벽·다른 우리)에 많이 닿을수록 좋다 → 빈틈이 덜 생긴다
+          let touch = 0;
+          for (const [cx, cy] of cells) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const v = grid[cy + y + dy]?.[cx + x + dx]; if (v === undefined || v >= 0) touch++; }
+          const sc = touch * 10 - y * 2 - x;
+          if (!best || sc > best.sc) best = { x, y, rot, sc };
+        }
+      }
+      if (!best) continue;
+      for (const [cx, cy] of rotateCells(penPiece(c).cells, best.rot)) grid[cy + best.y][cx + best.x] = out.length;
+      out.push({ uid: c.uid, x: best.x, y: best.y, rot: best.rot });
+      value += penValue(c);
+    }
+    return { out, value };
+  };
+  const byValue = all.slice().sort((a, b) => penValue(b) - penValue(a));
+  const bySize = all.slice().sort((a, b) => penPiece(b).cells.length - penPiece(a).cells.length || b.grade - a.grade);
+  let best = tryOrder(byValue);
+  for (const order of [bySize, ...Array.from({ length: 10 }, () => byValue.slice().sort(() => rng() - 0.5))]) {
+    const t = tryOrder(order);
+    if (t.value > best.value) best = t;
+  }
+  s.board = best.out;
+  s.pens = best.out.map(() => []);
+  s.penTheme = [];
+  optimizePlacement(s);
+  return best.out.length;
+}
+/** 예전 저장에서 옮겨 온 우리를 부지에 놓고 동물을 그대로 다시 넣는다 */
+export function finishLegacy(s: SaveData) {
+  if (!s.legacyPens) return;
+  const legacy = s.legacyPens; delete s.legacyPens;
+  // 부지가 모자라면 넓혀 준다
+  const need = s.cards.filter((c): c is PenCard => c.kind === 'pen').reduce((t, c) => t + penPiece(c).cells.length, 0) * 1.35;
+  while (s.upgrades.land < BOARD.length - 1 && BOARD[s.upgrades.land][0] * BOARD[s.upgrades.land][1] < need) s.upgrades.land++;
+  autoArrangePens(s, () => 0.5);
+  // 원래 우리에 있던 동물을 같은 조각에 다시
+  s.pens = s.board.map((b) => { const l = legacy.find((x) => x.uid === b.uid); return l ? l.animals.filter((u) => s.cards.some((c) => c.uid === u)) : []; });
+  s.pens = s.pens.map((p, i) => p.slice(0, penCap(s, i)));
+}
+
+// ── 우리 뽑기 (코인) ──
+export const penDrawPrice = (s: SaveData) => drawPrice(s) * PEN_DRAW_MUL;
+export function rollPen(rng: Rng, grade: Grade = rollGrade(rng)): Omit<PenCard, 'uid'> {
+  const pool = PIECES.filter((p) => p.grade === grade);
+  const piece = pick(pool, rng);
+  const habitats = ['grass', 'sand', 'water', 'snow', 'rock', 'cloud'] as const;
+  const optPool = PEN_OPTS.slice();
+  const opts: PenCard['opts'] = [];
+  for (let i = 0; i < PEN_OPT_COUNT[grade] && optPool.length; i++) {
+    const o = optPool.splice(Math.floor(rng() * optPool.length), 1)[0];
+    const step = o.step ?? 0.01;
+    opts.push({ id: o.id, v: Math.round(Math.round((o.range[0] + rng() * (o.range[1] - o.range[0])) / step) * step * 1000) / 1000 });
+  }
+  return { kind: 'pen', piece: piece.id, grade, habitat: pick(habitats, rng), opts };
+}
+export function penDraw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
+  const cost = penDrawPrice(s) * n;
+  if (s.coins < cost) return null;
+  s.coins -= cost;
+  const out: Card[] = [];
+  for (let i = 0; i < n; i++) out.push(addCard(s, rollPen(rng)));
+  return out;
+}
+/** 우리 합성 재료: 놓지 않은 이 등급 우리 조각 */
+export const penFusionCandidates = (s: SaveData, grade: Grade) => grade >= 4 ? [] : s.cards.filter((c): c is PenCard => c.kind === 'pen' && c.grade === grade && !s.board.some((b) => b.uid === c.uid));
+/** 같은 등급 우리 조각 2~10장 → 다음 등급 1장 (동물 합성과 같은 확률). 실패하면 1장 돌려받음 */
+export function fusePens(s: SaveData, uids: number[], rng: Rng = Math.random): FusionResult {
+  const set = [...new Set(uids)];
+  if (set.length < FUSION_MIN || set.length > FUSION_MAX) return { ok: false, reason: `${FUSION_MIN}~${FUSION_MAX}장을 넣어야 해요` };
+  const first = cardById(s, set[0]);
+  if (!first || first.kind !== 'pen') return { ok: false, reason: '우리 조각만 넣을 수 있어요' };
+  const allowed = new Set(penFusionCandidates(s, first.grade).map((c) => c.uid));
+  if (!set.every((u) => allowed.has(u))) return { ok: false, reason: '같은 등급의 놓지 않은 우리만 넣을 수 있어요' };
+  const chance = fusionChance(set.length);
+  const success = rng() < chance;
+  const keepUid = success ? -1 : set[Math.floor(rng() * set.length)];
+  s.cards = s.cards.filter((c) => !set.includes(c.uid) || c.uid === keepUid);
+  if (success) return { ok: true, success: true, card: addCard(s, rollPen(rng, (first.grade + 1) as Grade)), chance };
+  return { ok: true, success: false, card: cardById(s, keepUid)!, chance };
+}
 export const staffSlotCount = (s: SaveData) => upValue(s, 'staff');
 
 /** 우리·직원 슬롯 수가 업그레이드와 맞게 배열 길이를 맞춘다 */
 export function syncSlots(s: SaveData) {
-  while (s.pens.length < penCount(s)) s.pens.push([]);
+  while (s.pens.length < s.board.length) s.pens.push([]);
+  if (s.pens.length > s.board.length) s.pens.length = s.board.length;
   while (s.staffSlots.length < staffSlotCount(s)) s.staffSlots.push(null);
 }
 
@@ -41,7 +187,7 @@ function rollGrade(rng: Rng, luck = 0): Grade {
 }
 const pick = <T>(list: readonly T[], rng: Rng) => list[Math.min(list.length - 1, Math.floor(rng() * list.length))];
 
-type NewCard = { kind: 'animal'; animal: number; shiny?: boolean } | Omit<StaffCard, 'uid'>;
+type NewCard = { kind: 'animal'; animal: number; shiny?: boolean } | Omit<StaffCard, 'uid'> | Omit<PenCard, 'uid'>;
 function addCard(s: SaveData, card: NewCard): Card {
   const c = { ...card, uid: s.nextUid++ } as Card;
   if (c.kind === 'animal' && !c.shiny) delete c.shiny;
@@ -180,9 +326,8 @@ export function placeAnimal(s: SaveData, uid: number, pen?: number): boolean {
   syncSlots(s);
   const c = cardById(s, uid);
   if (!c || c.kind !== 'animal' || placedSet(s).has(uid)) return false;
-  const size = penSize(s);
-  const target = pen ?? s.pens.findIndex((p) => p.length < size);
-  if (target < 0 || target >= penCount(s) || s.pens[target].length >= size) return false;
+  const target = pen ?? s.pens.findIndex((p, i) => p.length < penCap(s, i));
+  if (target < 0 || target >= penCount(s) || s.pens[target].length >= penCap(s, target)) return false;
   s.pens[target].push(uid);
   return true;
 }
@@ -198,14 +343,13 @@ export function autoPlace(s: SaveData): number {
   const placed = placedSet(s);
   const free = s.cards.filter((c): c is Extract<Card, { kind: 'animal' }> => c.kind === 'animal' && !placed.has(c.uid))
     .sort((a, b) => ANIMALS[b.animal].grade - ANIMALS[a.animal].grade || a.animal - b.animal);
-  const size = penSize(s);
   let n = 0;
   for (const c of free) {
-    // 같은 종이 이미 있는 우리 → 같은 서식지 우리 → 아무 빈 우리
+    // 같은 종이 이미 있는 우리 → 서식지가 같은 우리 → 아무 빈 우리
     const pens = s.pens.slice(0, penCount(s));
-    const hasRoom = (i: number) => pens[i].length < size;
+    const hasRoom = (i: number) => pens[i].length < penCap(s, i);
     const species = (i: number) => pens[i].some((u) => (cardById(s, u) as { animal?: number })?.animal === c.animal);
-    const habitat = (i: number) => pens[i].length > 0 && pens[i].every((u) => ANIMALS[(cardById(s, u) as { animal: number }).animal].habitat === ANIMALS[c.animal].habitat);
+    const habitat = (i: number) => penTheme(s, i) === ANIMALS[c.animal].habitat;
     let i = pens.findIndex((_, k) => hasRoom(k) && species(k));
     if (i < 0) i = pens.findIndex((_, k) => hasRoom(k) && habitat(k));
     if (i < 0) i = pens.findIndex((_, k) => hasRoom(k) && pens[k].length === 0);
@@ -223,7 +367,7 @@ export function autoPlace(s: SaveData): number {
  *  여러 방법을 시도해 총 매력도가 가장 높은 배치를 고른다. 돌려주는 값: 배치 후 총 매력도 */
 export function optimizePlacement(s: SaveData): number {
   syncSlots(s);
-  const nPens = penCount(s), size = penSize(s), capacity = nPens * size;
+  const nPens = penCount(s), caps = s.board.map((_, i) => penCap(s, i)), capacity = caps.reduce((a, b) => a + b, 0);
   const staffUids = new Set(s.staffSlots.filter((u): u is number => u !== null));
   const animals = s.cards.filter((c): c is Extract<Card, { kind: 'animal' }> => c.kind === 'animal' && !staffUids.has(c.uid));
   const attractOf = (id: number) => GRADES[ANIMALS[id].grade].attract;
@@ -261,22 +405,36 @@ export function optimizePlacement(s: SaveData): number {
     let p = 0;
     for (let i = 0; i < sorted.length; i++) {
       // 서식지가 바뀌고 지금 우리가 반 넘게 찼으면 다음 우리로 넘어가서 서식지를 섞지 않는다
-      if (i > 0 && p < nPens - 1 && pens[p].length >= size / 2) {
+      if (i > 0 && p < nPens - 1 && pens[p].length >= caps[p] / 2) {
         const prev = groupOf((cardById(s, sorted[i - 1]) as { animal: number }).animal);
         const cur = groupOf((cardById(s, sorted[i]) as { animal: number }).animal);
-        const left = nPens - 1 - p, need = Math.ceil((sorted.length - i) / size);
-        if (prev !== cur && left >= need) p++;
+        const leftCap = caps.slice(p + 1).reduce((a, b) => a + b, 0);
+        if (prev !== cur && leftCap >= sorted.length - i) p++;
       }
-      if (pens[p].length >= size) p++;
+      while (p < nPens && pens[p].length >= caps[p]) p++;
       if (p >= nPens) break;
       pens[p].push(sorted[i]);
     }
     return pens;
   };
   const score = (pens: number[][]) => { const old = s.pens; s.pens = pens; const t = totalAttract(s); s.pens = old; return t; };
-  const tries = [arrange(plainPick), arrange(groupPick), arrange(plainPick, true), arrange(groupPick, true)];
+  // 우리 서식지에 맞춰 넣기: 서식지가 같은 동물부터 그 우리에 (큰 우리 먼저), 남는 칸은 나머지로
+  const byHabitat = (uids: number[]): number[][] => {
+    const pens: number[][] = Array.from({ length: nPens }, () => []);
+    const left = uids.slice();
+    const order = caps.map((c, i) => [c, i]).sort((a, b) => b[0] - a[0]).map((x) => x[1]);
+    for (const i of order) {
+      const th = penTheme(s, i);
+      for (let k = 0; k < left.length && pens[i].length < caps[i];) {
+        if (ANIMALS[(cardById(s, left[k]) as { animal: number }).animal].habitat === th) { pens[i].push(left[k]); left.splice(k, 1); } else k++;
+      }
+    }
+    for (const i of order) while (pens[i].length < caps[i] && left.length) pens[i].push(left.shift()!);
+    return pens;
+  };
+  const tries = [arrange(plainPick), arrange(groupPick), arrange(plainPick, true), arrange(groupPick, true), byHabitat(plainPick), byHabitat(groupPick)];
   // 서식지를 섞지 않고 단순히 채운 배치도 비교 (우리가 적을 때 더 나을 수 있다)
-  tries.push(Array.from({ length: nPens }, (_, i) => plainPick.slice(i * size, (i + 1) * size)));
+  { let k = 0; tries.push(caps.map((c) => plainPick.slice(k, (k += c)))); }
   let best = tries[0], bestScore = score(best);
   for (const t of tries.slice(1)) { const sc = score(t); if (sc > bestScore) { best = t; bestScore = sc; } }
   s.pens = best;
@@ -303,6 +461,8 @@ export function penSets(s: SaveData, pen: number): SynergySet[] {
 }
 /** 우리 테마: 지정했으면 그것, 아니면 우리 안 가장 많은 서식지 (빈 우리는 null) */
 export function penTheme(s: SaveData, pen: number): Habitat | null {
+  const pc = penCardAt(s, pen);
+  if (pc) return pc.habitat;
   const t = s.penTheme[pen];
   if (t) return t as Habitat;
   const cnt = new Map<Habitat, number>();
@@ -341,7 +501,11 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
   }
   // 우리 모양 (테마와 같은 서식지)
   const theme = penTheme(s, pen);
-  if (theme && habitats.has(theme)) syn.push({ kind: 'habitat', name: SHAPE_NAME[SHAPE_OF[theme]], desc: `${habitatName(theme)} 동물 ${pctTxt(THEME_BONUS)} (우리 모양)` });
+  const pc = penCardAt(s, pen);
+  const themeBonus = pc ? PEN_THEME_BONUS[pc.grade] : 0;
+  const star = penOpt(s, pen, 'star'), seasonMul = penOpt(s, pen, 'season') ? 2 : 1;
+  if (theme && habitats.has(theme) && themeBonus) syn.push({ kind: 'habitat', name: `${habitatName(theme)} 우리`, desc: `${habitatName(theme)} 동물 ${pctTxt(themeBonus)} (${GRADES[pc!.grade].name} 우리)` });
+  if (star) syn.push({ kind: 'set', name: '인기 우리', desc: `이 우리 동물 ${pctTxt(star)}` });
   // 등급
   const grades = new Set(ids.map((a) => ANIMALS[a].grade));
   const rainbow = grades.size === 5 ? GRADE_SYN.rainbow : 0;
@@ -366,10 +530,11 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     bonus += SAME_SPECIES_BONUS.find(([at]) => n >= at)?.[1] ?? 0;
     bonus += HABITAT_TIERS.find(([at]) => habitats.get(a.habitat)! >= at)?.[1] ?? 0;
     bonus += habitatDexBonus(s, a.habitat);
-    if (theme === a.habitat) bonus += THEME_BONUS;
+    if (theme === a.habitat) bonus += themeBonus;
+    bonus += star;
     if (kingHabs.has(a.habitat) && a.grade <= 1) bonus += GRADE_SYN.king;
-    if (a.season === season.key) bonus += SEASON_FX.limitedSelf; else bonus += aura;
-    if (a.habitat === season.strong) bonus += SEASON_FX.strong;
+    if (a.season === season.key) bonus += SEASON_FX.limitedSelf * seasonMul; else bonus += aura * seasonMul;
+    if (a.habitat === season.strong) bonus += SEASON_FX.strong * seasonMul;
     if (a.habitat === season.weak) bonus += SEASON_FX.weak;
     bonus = Math.max(-0.5, Math.min(SYNERGY_CAP, bonus));
     const ev = (ctx.habitatMul?.[a.habitat] ?? 1) * (ctx.allMul ?? 1);
@@ -434,7 +599,7 @@ export function closingShare(s: SaveData): number {
   return js.length ? Math.max(...js.map((c) => JANITOR_SHARE[c.grade])) : 0;
 }
 /** 관람객 수 배율: 홍보 담당 + '인기인' */
-export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd');
+export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0);
 /** 먹이 효과 */
 export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'));
 /** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
@@ -451,7 +616,7 @@ export function dailyCosts(s: SaveData) {
   const season = curSeason(s);
   let feed = 0, climateN = 0;
   s.pens.slice(0, penCount(s)).forEach((p, i) => {
-    const farm = penSets(s, i).reduce((m, st) => m * (1 - (st.feedCut ?? 0)), 1);
+    const farm = penSets(s, i).reduce((m, st) => m * (1 - (st.feedCut ?? 0)), 1) * (1 - penOpt(s, i, 'feedcut'));
     for (const u of p) {
       const c = cardById(s, u);
       if (c?.kind !== 'animal') continue;
@@ -460,7 +625,8 @@ export function dailyCosts(s: SaveData) {
     }
   });
   const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver'));
-  const pens = Math.round(UPKEEP.perPen * penCount(s) * unit * (1 - cut));
+  const cells = s.board.reduce((t, _, i) => t + penCells(s, i).length, 0);
+  const pens = Math.round(UPKEEP.perCell * cells * unit * (1 - cut));
   const food = Math.round(feed * unit * (1 - cut));
   const climate = Math.round(climateN * SEASON_FX.climatePerAnimal * unit * (1 - cut));
   return { salary, pens, food, climate, climateName: season.climateName, cut, total: salary + pens + food + climate };
@@ -469,7 +635,11 @@ export function dailyCosts(s: SaveData) {
 // ── 동물원 규모 (라이벌 대결) ──
 export function zooScale(s: SaveData): number {
   let v = 0;
-  for (const u of s.pens.flat()) { const c = cardById(s, u); if (c?.kind === 'animal') v += SCALE.animal[ANIMALS[c.animal].grade] * (c.shiny ? SHINY.scaleMul : 1); }
+  s.pens.forEach((p, i) => {
+    const lm = penOpt(s, i, 'landmark') ? 2 : 1;
+    for (const u of p) { const c = cardById(s, u); if (c?.kind === 'animal') v += SCALE.animal[ANIMALS[c.animal].grade] * (c.shiny ? SHINY.scaleMul : 1) * lm; }
+    const pc = penCardAt(s, i); if (pc) v += PEN_SCALE[pc.grade] * lm;
+  });
   for (const c of placedStaffCards(s, false)) v += STAFF_SCALE[c.grade];
   for (const lv of Object.values(s.upgrades)) v += lv * SCALE.upgradeLv;
   if (s.coins < 0) v -= (-s.coins / drawPrice(s)) * SCALE.debtPerDraw;
