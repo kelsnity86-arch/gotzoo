@@ -67,6 +67,12 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 - [동물 12장 + 환경 13장 + UI·효과 6장 = 전체 31장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-all31-sources.zip)
 - [전체 시트 목록](assets/spritesheets16/README.md) · [31장 통합 인덱스](assets/catalog16_all.json)
 
+## 추가 아이콘·우리 뽑기·대각 울타리·사건 원본
+
+[추가 4장 목록](assets/spritesheets16/expansion/README.md) · [90칸 요청 순서표](assets/catalog16_expansion.json) · [추가 4장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-expansion16-sources.zip).
+
+기존 31장 묶음과 별도로 저장했습니다. **아이콘과 대각 울타리는 요청 캔버스 크기와 다르고, 네이티브 격자·팔레트·울타리 연결/바닥 반복·프레임 재생은 미검증**입니다. [검수 기록](reports/EXPANSION16_SOURCE_REVIEW.md)을 참고하세요.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|

@@ -1,0 +1,302 @@
+{
+  "project": "BbopZOO",
+  "batch": "expansion16",
+  "background": "#FF00FF",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "sheets": [
+    {
+      "filename": "icons16_2.png",
+      "group": "icons",
+      "size": [
+        1536,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "small zoo map with fenced squares",
+          "fanned stack of three cards",
+          "clipboard with check list, no text",
+          "open book with paw print",
+          "rolled blueprint with little crane",
+          "green grid patch with four outward arrows",
+          "circular rotate arrow",
+          "magic wand with sparkles"
+        ],
+        [
+          "small shovel",
+          "pointing hand cursor",
+          "two tetris blocks merging into one with sparkle",
+          "eye",
+          "green leaf",
+          "cactus",
+          "water drop",
+          "snow-capped peak"
+        ],
+        [
+          "gray rock pile",
+          "fluffy pale pink cloud",
+          "thief mask with small sack",
+          "thermometer with sneeze puff",
+          "blue shield with star",
+          "paper receipt with blank lines only",
+          "green up arrow over coin",
+          "red down arrow over coin"
+        ]
+      ],
+      "description": "24 bold readable UI icons, 8 columns x 3 rows. Match prior chunky BbopZOO icons with deep navy outlines and simple flat highlights. No text, no currency symbols. Checklist and receipt only use short abstract rules. Icons contain their requested grids, but there is no visible layout grid."
+    },
+    {
+      "filename": "pengacha16.png",
+      "group": "gacha",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        6,
+        5,
+        6
+      ],
+      "native_by_row": [
+        [
+          32,
+          32
+        ],
+        [
+          24,
+          24
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "native_overrides": {
+        "1:1": [
+          48,
+          48
+        ],
+        "1:2": [
+          48,
+          48
+        ],
+        "1:6": [
+          16,
+          16
+        ]
+      },
+      "rows": [
+        [
+          "toy block-dispensing machine idle, glass box full of colorful tetris blocks, crank, crane arm on top",
+          "same machine shaking, tilted with turned crank and motion marks",
+          "closed wooden construction crate",
+          "same crate bursting open with light and a block popping out",
+          "rolled blueprint paper with blue grid",
+          "small hammer"
+        ],
+        [
+          "blueprint with gray rarity border",
+          "blueprint with green rarity border",
+          "blueprint with blue rarity border",
+          "blueprint with purple rarity border",
+          "blueprint with gold rarity border"
+        ],
+        [
+          "construction dust puff small",
+          "construction dust puff big",
+          "construction dust puff fading",
+          "built sparkle burst frame 1",
+          "built sparkle burst frame 2",
+          "glowing L-shaped placement corner marker"
+        ]
+      ],
+      "description": "Enclosure construction gacha. Exactly 6/5/6 items in 3 rows. Every row2 blueprint has a blue grid and a simple outlined polyomino enclosure shape, no letters. Scale machines larger than crates, hammer smaller. Flat stepped light, no soft glow. Two first-row machines same design with changed pose. Dust and sparkle have visibly different animation stages."
+    },
+    {
+      "filename": "fencesdiag16.png",
+      "group": "fences",
+      "size": [
+        1536,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "native_by_row": [
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "rows": [
+        [
+          "rustic wood diagonal upper-left edge /",
+          "rustic wood diagonal upper-right edge \\",
+          "rustic wood diagonal lower-right edge /",
+          "rustic wood diagonal lower-left edge \\",
+          "gray stone diagonal upper-left edge /",
+          "gray stone diagonal upper-right edge \\",
+          "gray stone diagonal lower-right edge /",
+          "gray stone diagonal lower-left edge \\"
+        ],
+        [
+          "black iron diagonal upper-left edge /",
+          "black iron diagonal upper-right edge \\",
+          "black iron diagonal lower-right edge /",
+          "black iron diagonal lower-left edge \\",
+          "gold gem fence diagonal upper-left edge /",
+          "gold gem fence diagonal upper-right edge \\",
+          "gold gem fence diagonal lower-right edge /",
+          "gold gem fence diagonal lower-left edge \\"
+        ],
+        [
+          "legendary stage floor: polished light wood and repeating gold trim pattern",
+          "lush garden lawn with tiny flowers",
+          "plaza paving stones",
+          "deep blue lake water with ripples",
+          "soft sand with pebbles",
+          "fresh snow with sparkles",
+          "mossy rock floor",
+          "pastel magic cloud floor"
+        ],
+        [
+          "stage spotlight lamp",
+          "flower bed border piece",
+          "pond edge reeds",
+          "small blank wooden enclosure sign",
+          "small blank stone sign",
+          "golden blank plaque",
+          "animal feeding trough",
+          "water bowl"
+        ]
+      ],
+      "description": "32 tiles, top-down 3/4, matching prior fences16 materials: warm wood with posts and two rails; cool stone with blocks; dark iron rails and spear tips; gold rails with blue gems. Diagonal segments are straight corner-to-corner 45 degree segments, NOT bent L shapes or straight horizontal fences. Four orientations follow an octagon clockwise upper-left, upper-right, lower-right, lower-left; alternate / and backslash, with consistent front/back depth. Row3 floors completely fill SQUARE native tiles and repeat seamlessly with NO outline; gold stage trim is a repeating floor pattern, not a standalone round object. Row4 objects outlined. Leave generous magenta gutters outside all tiles."
+    },
+    {
+      "filename": "incidents16.png",
+      "group": "incidents",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        8,
+        4
+      ],
+      "native_by_row": [
+        [
+          16,
+          24
+        ],
+        [
+          16,
+          16
+        ],
+        [
+          16,
+          24
+        ]
+      ],
+      "rows": [
+        [
+          "pickpocket walking frame A, left foot forward",
+          "pickpocket walking frame B, right foot forward",
+          "pickpocket running away frame A, coins flying out",
+          "pickpocket running away frame B, coins flying out",
+          "pickpocket caught, arms up and dizzy stars"
+        ],
+        [
+          "sneeze bubble with droplets",
+          "thermometer bubble",
+          "bandage bubble",
+          "sad sweat-drop bubble",
+          "green healing sparkle frame 1",
+          "green healing sparkle frame 2",
+          "whistle sound burst, lines only",
+          "shield block flash"
+        ],
+        [
+          "seated zoo worker holding BLANK protest sign UP",
+          "same seated zoo worker holding BLANK protest sign DOWN",
+          "standing zoo worker crossed arms, small grumpy puff",
+          "same standing zoo worker crossed arms, larger grumpy puff"
+        ]
+      ],
+      "description": "Exactly three rows with 5/8/4 sprites. Chibi characters native16x24, big 8px head, facing LEFT, same style as earlier BbopZOO spring visitors. Pickpocket has dark hoodie, eye mask, small coin sack; same identity across five poses. Walk A/B swap forward foot, run A/B visibly longer strides and stronger lean. Coins, stars and sign stay within each sprite cell. Worker wears khaki zoo uniform/cap, same identity across four poses. No lettering on protest signs or bubbles; blank signs are held, not free-floating. Whole bodies visible, no cropped feet."
+    }
+  ]
+}

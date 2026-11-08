@@ -1,0 +1,1178 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 4,
+  "requested_slot_count": 90,
+  "sheets": [
+    {
+      "filename": "icons16_2.png",
+      "path": "assets/spritesheets16/expansion/icons/icons16_2.png",
+      "group": "icons",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8
+      ],
+      "sha256": "82843fe21af8d38702208982e8ae1f3d048a6af5de52a57acdece312d0ca0c35",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "small zoo map with fenced squares",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "fanned stack of three cards",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "clipboard with check list, no text",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "open book with paw print",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "rolled blueprint with little crane",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "green grid patch with four outward arrows",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "name": "circular rotate arrow",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "name": "magic wand with sparkles",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "name": "small shovel",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "name": "pointing hand cursor",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "name": "two tetris blocks merging into one with sparkle",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "name": "eye",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "name": "green leaf",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "name": "cactus",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "name": "water drop",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "name": "snow-capped peak",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "name": "gray rock pile",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "name": "fluffy pale pink cloud",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "name": "thief mask with small sack",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "name": "thermometer with sneeze puff",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "name": "blue shield with star",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "name": "paper receipt with blank lines only",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "name": "green up arrow over coin",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "name": "red down arrow over coin",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        }
+      ]
+    },
+    {
+      "filename": "pengacha16.png",
+      "path": "assets/spritesheets16/expansion/gacha/pengacha16.png",
+      "group": "gacha",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        6,
+        5,
+        6
+      ],
+      "sha256": "8de7883c7ede16accfd073cf33aea28efe4062613180f81085594b5ac953a040",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "toy block-dispensing machine idle, glass box full of colorful tetris blocks, crank, crane arm on top",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "same machine shaking, tilted with turned crank and motion marks",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "closed wooden construction crate",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "same crate bursting open with light and a block popping out",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "rolled blueprint paper with blue grid",
+          "target_native_size": [
+            32,
+            32
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "small hammer",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "blueprint with gray rarity border",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "blueprint with green rarity border",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "blueprint with blue rarity border",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "blueprint with purple rarity border",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "blueprint with gold rarity border",
+          "target_native_size": [
+            24,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 1,
+          "name": "construction dust puff small",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 2,
+          "name": "construction dust puff big",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 3,
+          "name": "construction dust puff fading",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 4,
+          "name": "built sparkle burst frame 1",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 5,
+          "name": "built sparkle burst frame 2",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 6,
+          "name": "glowing L-shaped placement corner marker",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        }
+      ]
+    },
+    {
+      "filename": "fencesdiag16.png",
+      "path": "assets/spritesheets16/expansion/fences/fencesdiag16.png",
+      "group": "fences",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "sha256": "ccee354329ab6b92f552180c67937beae893c0127cb0867bdfc482084ec74d79",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "rustic wood diagonal upper-left edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "rustic wood diagonal upper-right edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "rustic wood diagonal lower-right edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "rustic wood diagonal lower-left edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "gray stone diagonal upper-left edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "gray stone diagonal upper-right edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "name": "gray stone diagonal lower-right edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "name": "gray stone diagonal lower-left edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "name": "black iron diagonal upper-left edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "name": "black iron diagonal upper-right edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "name": "black iron diagonal lower-right edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "name": "black iron diagonal lower-left edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "name": "gold gem fence diagonal upper-left edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "name": "gold gem fence diagonal upper-right edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "name": "gold gem fence diagonal lower-right edge /",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "name": "gold gem fence diagonal lower-left edge \\",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "name": "legendary stage floor: polished light wood and repeating gold trim pattern",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "name": "lush garden lawn with tiny flowers",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "name": "plaza paving stones",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "name": "deep blue lake water with ripples",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "name": "soft sand with pebbles",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "name": "fresh snow with sparkles",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "name": "mossy rock floor",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "name": "pastel magic cloud floor",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": false,
+          "seamless_floor_required": true
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "name": "stage spotlight lamp",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "name": "flower bed border piece",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "name": "pond edge reeds",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "name": "small blank wooden enclosure sign",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "name": "small blank stone sign",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "name": "golden blank plaque",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "name": "animal feeding trough",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "name": "water bowl",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        }
+      ]
+    },
+    {
+      "filename": "incidents16.png",
+      "path": "assets/spritesheets16/expansion/incidents/incidents16.png",
+      "group": "incidents",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        8,
+        4
+      ],
+      "sha256": "3cb139d4fab80c46c699276fb57bce85d41f2bccb4696083873ec97a31f72b73",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "pickpocket walking frame A, left foot forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "pickpocket walking frame B, right foot forward",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "pickpocket running away frame A, coins flying out",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "pickpocket running away frame B, coins flying out",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "pickpocket caught, arms up and dizzy stars",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "sneeze bubble with droplets",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "thermometer bubble",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "bandage bubble",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "sad sweat-drop bubble",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "green healing sparkle frame 1",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 6,
+          "name": "green healing sparkle frame 2",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 7,
+          "name": "whistle sound burst, lines only",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 8,
+          "name": "shield block flash",
+          "target_native_size": [
+            16,
+            16
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 1,
+          "name": "seated zoo worker holding BLANK protest sign UP",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 2,
+          "name": "same seated zoo worker holding BLANK protest sign DOWN",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 3,
+          "name": "standing zoo worker crossed arms, small grumpy puff",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 4,
+          "name": "same standing zoo worker crossed arms, larger grumpy puff",
+          "target_native_size": [
+            16,
+            24
+          ],
+          "outline_required": true,
+          "seamless_floor_required": false
+        }
+      ]
+    }
+  ]
+}

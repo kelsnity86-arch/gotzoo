@@ -1,0 +1,23 @@
+Make a cute BbopZOO game sprite sheet matching the earlier chunky pixel-art zoo collection sheets. TRUE native pixel grids, enlarged by an integer nearest-neighbor scale: every drawn art pixel is one perfectly solid square block. Very simple clean silhouettes, one native pixel dark outline #1a1c2c; flat base color plus at most 1-2 flat shadow/highlight tones. NO anti-aliasing, texture, noise, blur, smooth gradient, soft shadow or tiny subpixel detail. Use ONLY this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely uniform solid #FF00FF background everywhere outside sprites. No hot magenta inside objects; use pastel #ffc8dd or #ffb7d0 for pink. All characters face LEFT. Generous empty magenta gutters and margins, no touching, no overlap, whole shapes visible. No captions, text, numbers, letters, labels, watermark, sheet frame, layout grid or sheet border. Requested signs/papers are BLANK; their object borders are allowed.
+Target file incidents16.png (do not print filename). Canvas 1536x1024.
+Exactly three rows with 5/8/4 sprites. Chibi characters native16x24, big 8px head, facing LEFT, same style as earlier BbopZOO spring visitors. Pickpocket has dark hoodie, eye mask, small coin sack; same identity across five poses. Walk A/B swap forward foot, run A/B visibly longer strides and stronger lean. Coins, stars and sign stay within each sprite cell. Worker wears khaki zoo uniform/cap, same identity across four poses. No lettering on protest signs or bubbles; blank signs are held, not free-floating. Whole bodies visible, no cropped feet.
+ROW 1: EXACTLY 5 items, native grid 16x24, left to right:
+1. pickpocket walking frame A, left foot forward
+2. pickpocket walking frame B, right foot forward
+3. pickpocket running away frame A, coins flying out
+4. pickpocket running away frame B, coins flying out
+5. pickpocket caught, arms up and dizzy stars
+ROW 2: EXACTLY 8 items, native grid 16x16, left to right:
+1. sneeze bubble with droplets
+2. thermometer bubble
+3. bandage bubble
+4. sad sweat-drop bubble
+5. green healing sparkle frame 1
+6. green healing sparkle frame 2
+7. whistle sound burst, lines only
+8. shield block flash
+ROW 3: EXACTLY 4 items, native grid 16x24, left to right:
+1. seated zoo worker holding BLANK protest sign UP
+2. same seated zoo worker holding BLANK protest sign DOWN
+3. standing zoo worker crossed arms, small grumpy puff
+4. same standing zoo worker crossed arms, larger grumpy puff

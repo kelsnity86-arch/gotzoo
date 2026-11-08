@@ -1,0 +1,30 @@
+Make a cute BbopZOO game sprite sheet matching the earlier chunky pixel-art zoo collection sheets. TRUE native pixel grids, enlarged by an integer nearest-neighbor scale: every drawn art pixel is one perfectly solid square block. Very simple clean silhouettes, one native pixel dark outline #1a1c2c; flat base color plus at most 1-2 flat shadow/highlight tones. NO anti-aliasing, texture, noise, blur, smooth gradient, soft shadow or tiny subpixel detail. Use ONLY this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely uniform solid #FF00FF background everywhere outside sprites. No hot magenta inside objects; use pastel #ffc8dd or #ffb7d0 for pink. All characters face LEFT. Generous empty magenta gutters and margins, no touching, no overlap, whole shapes visible. No captions, text, numbers, letters, labels, watermark, sheet frame, layout grid or sheet border. Requested signs/papers are BLANK; their object borders are allowed.
+Target file icons16_2.png (do not print filename). Canvas 1536x768.
+24 bold readable UI icons, 8 columns x 3 rows. Match prior chunky BbopZOO icons with deep navy outlines and simple flat highlights. No text, no currency symbols. Checklist and receipt only use short abstract rules. Icons contain their requested grids, but there is no visible layout grid.
+ROW 1: EXACTLY 8 items, native grid 16x16, left to right:
+1. small zoo map with fenced squares
+2. fanned stack of three cards
+3. clipboard with check list, no text
+4. open book with paw print
+5. rolled blueprint with little crane
+6. green grid patch with four outward arrows
+7. circular rotate arrow
+8. magic wand with sparkles
+ROW 2: EXACTLY 8 items, native grid 16x16, left to right:
+1. small shovel
+2. pointing hand cursor
+3. two tetris blocks merging into one with sparkle
+4. eye
+5. green leaf
+6. cactus
+7. water drop
+8. snow-capped peak
+ROW 3: EXACTLY 8 items, native grid 16x16, left to right:
+1. gray rock pile
+2. fluffy pale pink cloud
+3. thief mask with small sack
+4. thermometer with sneeze puff
+5. blue shield with star
+6. paper receipt with blank lines only
+7. green up arrow over coin
+8. red down arrow over coin
