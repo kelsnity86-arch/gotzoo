@@ -92,11 +92,11 @@ describe('배치 · 매력도', () => {
   });
   it('규모 확장: 조건 + 공사비 → 단계 · 부지 · 우리 선물, 부지 넓히기 업그레이드는 따로 못 산다', async () => {
     const { promote, expandCost, canPromote, stageName } = await import('../src/game/rules');
-    const s = defaultSave(); s.coins = 300;
+    const s = defaultSave(); s.coins = 600;
     expect(buyUpgrade(s, 'land')).toBe(false);
     for (let i = 0; i < 8; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 90 + (i % 4) }); s.pens[i % 4].push(s.nextUid++); }
     expect(canPromote(s)).toBe(true);
-    expect(expandCost(s)).toBe(300);
+    expect(expandCost(s)).toBe(600);
     const [w0, h0] = boardDims(s), pens = s.cards.filter((c) => c.kind === 'pen').length;
     expect(promote(s)).toBe(true);
     expect(s.stage).toBe(2); expect(stageName(s)).toBe('동네 동물원'); expect(s.coins).toBe(0);
@@ -120,8 +120,8 @@ describe('배치 · 매력도', () => {
   it('승급: 조건을 채워야 하고, 올리면 가격이 오른다', () => {
     const s = defaultSave(); s.coins = 1e9;
     expect(canPromote(s)).toBe(false);
-    for (let i = 0; i < 6; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 50 }); placeAnimal(s, s.nextUid++); }
-    expect(totalAttract(s)).toBeGreaterThanOrEqual(120);
+    for (let i = 0; i < 9; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 50 }); placeAnimal(s, s.nextUid++); }
+    expect(totalAttract(s)).toBeGreaterThanOrEqual(260);
     expect(promote(s)).toBe(true);
     expect(s.stage).toBe(2);
   });

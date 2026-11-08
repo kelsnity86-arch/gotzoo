@@ -74,7 +74,10 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
     const v3 = hasPng('v2_card_common');
     const frame = v3 ? `v2_card_${named ? 'legend' : c.kind === 'staff' ? 'staff' : c.kind === 'pen' ? 'pen' : key}` : `cards_0${g.id + 1}`;
     // 여러 장일 때는 화면 폭에 3장이 들어가게
-    const rPx = typeof window !== 'undefined' ? Math.min(160, Math.floor((window.innerWidth - 70) / 3.6), Math.floor(window.innerHeight / 4.2)) : 160;
+    // 여러 장(r): 5장씩 2줄이 화면에 들어가게. 화면 확대(zoom)를 뺀 크기로 계산 (카드 그림은 가로:세로 = 28:44, 아래 글자 약 44)
+    const zm = typeof document !== 'undefined' ? parseFloat((document.getElementById('ui')?.style.zoom || '1')) || 1 : 1;
+    const vw = typeof window !== 'undefined' ? window.innerWidth / zm : 1200, vh = typeof window !== 'undefined' ? window.innerHeight / zm : 800;
+    const rPx = Math.max(56, Math.min(150, Math.floor((vw * 0.9 - 80) / 5.4), Math.floor(((vh * 0.9 - 150) / 2 - 44) / 1.6)));
     const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
     return h('div', { class: `card art${v3 ? ' v3' : ''} g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}${named ? ' mythic' : ''}` },
       h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),

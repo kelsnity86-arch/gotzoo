@@ -57,6 +57,7 @@ export class FieldRenderer {
   /** 처음 화면의 확대: 월드 1칸 = 화면 몇 px */
   static readonly START_PX = 3;
   private autoZoomed = false;
+  static START_ZOOM = false;
   /** 시안 모드 (?mock): 산책로 · 산책하는 손님 */
   mock = false;
   /** 입구 간판 이름 · 별 */
@@ -75,6 +76,10 @@ export class FieldRenderer {
   private facLv: Partial<Record<string, number>> = {};
   /** 올림푸스 완성: 신전 입구 */
   temple = false;
+  /** 규모 확장 직후: 새로 생긴 부지 반짝임 (시작 시각 · 예전 부지 칸 수) */
+  expandFx: { t: number; ow: number; oh: number } | null = null;
+  /** 동물원 단계 (입구 장식이 늘어난다) */
+  stage = 1;
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -124,7 +129,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${this.temple}|${this.zooName}|${this.zooStars}|${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${this.stage}|${this.temple}|${this.zooName}|${this.zooStars}|${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -175,11 +180,26 @@ export class FieldRenderer {
     const tier4 = Math.max(0, Math.min(3, this.decoTier));
     const gx = gateX(L.w), p0 = Math.floor(PATH_Y0 / TILE), p1 = Math.ceil(PATH_Y1 / TILE) - 1;
     const WALL_Y = 34;
-    for (let x = 6, k = 0; x < L.w; x += 22, k++) if (Math.abs(x - gx) > 22) obj(k % 3 === 1 ? 'park_pine' : season === 'spring' && k % 3 === 2 ? 'park_blossom' : 'park_tree', x + (hash(k, 3) - 0.5) * 6, WALL_Y - 8);
+    // 지도 가장자리에 걸치면 반으로 잘려 보이므로 양 끝 12칸 안쪽만
+    for (let x = 6, k = 0; x < L.w; x += 22, k++) if (Math.abs(x - gx) > 22 && x > 12 && x < L.w - 12) obj(k % 3 === 1 ? 'park_pine' : season === 'spring' && k % 3 === 2 ? 'park_blossom' : 'park_tree', x + (hash(k, 3) - 0.5) * 6, WALL_Y - 8);
     if (hasPng(`v2_gatepart_${tier4}_wall`)) {
       const ww = v(`gatepart_${tier4}_wall`).width / R - 1;
       for (let x = 0; x < gx - 12; x += ww) obj(`gatepart_${tier4}_wall`, x + ww / 2, WALL_Y);
       for (let x = L.w; x > gx + 12; x -= ww) obj(`gatepart_${tier4}_wall`, x - ww / 2, WALL_Y);
+    }
+    // 단계 장식: 확장할수록 담장에 만국기(2단계~) · 등불(4단계~) · 큰 깃발(6단계~) · 금빛 장식(8단계~)
+    {
+      const st = this.stage, cols = ['#d83a3a', '#f7c948', '#38a35b', '#41a6f6', '#f08cbe', '#ef7d32'];
+      const y0 = WALL_Y - 11;
+      const sag = (x: number, x0: number, x1: number) => y0 + Math.sin(((x - x0) / (x1 - x0)) * Math.PI) * 3;
+      const spans: [number, number][] = [[4, gx - 26], [gx + 26, L.w - 4]];
+      if (st >= 2) for (const [x0, x1] of spans) {
+        c.fillStyle = '#5d3a24'; for (let x = x0; x < x1; x += 1) c.fillRect(x, Math.round(sag(x, x0, x1)), 1, 0.5);
+        let k = 0; for (let x = x0 + 3; x < x1 - 2; x += st >= 5 ? 4 : 6, k++) { const yy = Math.round(sag(x, x0, x1)); c.fillStyle = cols[k % cols.length]; c.fillRect(x - 1, yy + 0.5, 3, 1); c.fillRect(x - 0.5, yy + 1.5, 2, 1); c.fillRect(x, yy + 2.5, 1, 1); }
+      }
+      if (st >= 4) for (const [x0, x1] of spans) for (let x = x0 + 12; x < x1 - 6; x += 24) { const yy = Math.round(sag(x, x0, x1)); c.fillStyle = '#8b1e2d'; c.fillRect(x - 1, yy + 1, 3, 4); c.fillStyle = '#f7c948'; c.fillRect(x - 0.5, yy + 2, 2, 2); }
+      if (st >= 6) for (const x of [gx - 40, gx + 40, 14, L.w - 14]) { if (x < 8 || x > L.w - 8) continue; c.fillStyle = '#5d3a24'; c.fillRect(x, WALL_Y - 24, 1, 22); c.fillStyle = st >= 8 ? '#e0a526' : '#3b5dc9'; c.fillRect(x + 1, WALL_Y - 24, 7, 9); c.fillStyle = '#fff3a3'; c.fillRect(x + 3, WALL_Y - 21, 3, 3); }
+      if (st >= 8) { c.fillStyle = '#f7c948'; for (const [x0, x1] of spans) for (let x = x0 + 6; x < x1; x += 12) c.fillRect(x, WALL_Y - 2, 2, 1); }
     }
 
     // 3. 관객 길 + 입구 앞 광장 (문 아래로 길이 이어져 들어간다). 길 양 끝은 막힌다
@@ -311,7 +331,8 @@ export class FieldRenderer {
     const fit = Math.min(view.w / L.w, view.h / L.h);
     this.lastView = view; this.lastFit = fit; this.worldW = L.w; this.worldH = L.h;
     // 처음 그릴 때 한 번: 월드 1칸이 화면 3px쯤 되게 키우고 맨 위(입구 · 길)부터 보여 준다. '전체 보기'로 돌아갈 수 있다
-    if (!this.autoZoomed && L.w > 64) {
+    // 지금은 처음부터 동물원 전체를 보여 준다 (확대는 직접). 다시 켜려면 START_ZOOM을 true로
+    if (FieldRenderer.START_ZOOM && !this.autoZoomed && L.w > 64) {
       this.autoZoomed = true;
       const uz = FieldRenderer.START_PX / fit;
       if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = L.w / 2; this.camY = 0; }
@@ -357,6 +378,12 @@ export class FieldRenderer {
     // 지도 바깥(화면 남는 곳): 숲으로 이어서 빈 공간이 없게
     const sur = this.surround(world);
     if (sur) c.drawImage(sur.cv, Math.round((this.ox - sur.mx * z) * dpr), Math.round((this.oy - sur.my * z) * dpr), Math.round((sur.cv.width / FieldRenderer.R) * z * dpr), Math.round((sur.cv.height / FieldRenderer.R) * z * dpr));
+    // 바깥 숲도 지도와 같은 저녁 · 밤 색 (지도 안은 아래 그림에 이미 칠해져 있다)
+    if (world.phase !== 'day') {
+      const k = world.phase === 'dusk' ? Math.min(1, (world.phaseT - (DAY.dayLen - DAY.duskLen)) / DAY.duskLen) : 1;
+      c.fillStyle = world.phase === 'dusk' ? `rgba(239,125,50,${0.16 * k})` : 'rgba(20,24,60,0.38)';
+      c.fillRect(Math.round(view.x * dpr), Math.round(view.y * dpr), Math.round(view.w * dpr), Math.round(view.h * dpr));
+    }
     c.drawImage(this.wc, Math.round(this.ox * dpr), Math.round(this.oy * dpr), Math.round(L.w * z * dpr), Math.round(L.h * z * dpr));
 
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
@@ -413,7 +440,7 @@ export class FieldRenderer {
   /** 동물원 한 장 (월드 좌표, this.ctx = 2도트 캔버스) */
   private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
-    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {}; this.temple = (save.godDex ?? []).filter((x) => x > 0).length >= 12;
+    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {}; this.stage = save.stage + (save.bigLand ? 1 : 0); this.temple = (save.godDex ?? []).filter((x) => x > 0).length >= 12;
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {
@@ -493,6 +520,21 @@ export class FieldRenderer {
       else this.icon(sprite(e.icon), e.x, e.y - k * 6 + 2, 7);
     }
     c.globalAlpha = 1;
+    // 규모 확장 직후 6초: 새로 생긴 부지 칸이 금빛으로 반짝이고 테두리가 깜빡인다
+    if (this.expandFx) {
+      const k = (performance.now() - this.expandFx.t) / 6000;
+      if (k >= 1) this.expandFx = null;
+      else {
+        const { ow, oh } = this.expandFx, a = (1 - k) * (0.35 + 0.25 * Math.sin(k * 40));
+        for (let by = 0; by < L.bh; by++) for (let bx = 0; bx < L.bw; bx++) {
+          if (bx < ow && by < oh) continue;
+          const X = L.bx0 + bx * BLOCK, Y = L.by0 + by * BLOCK;
+          c.fillStyle = `rgba(255,243,163,${a})`; c.fillRect(X + 1, Y + 1, BLOCK - 2, BLOCK - 2);
+          c.fillStyle = `rgba(224,165,38,${Math.min(1, a * 2)})`; c.fillRect(X, Y, BLOCK, 1); c.fillRect(X, Y + BLOCK - 1, BLOCK, 1); c.fillRect(X, Y, 1, BLOCK); c.fillRect(X + BLOCK - 1, Y, 1, BLOCK);
+          if (!motion.reduce && Math.sin(k * 60 + bx * 3 + by * 5) > 0.7) this.sparkle(X + BLOCK / 2, Y + BLOCK / 2, k * 20 + bx + by);
+        }
+      }
+    }
     // 해 질 녘·밤: 붉게 → 남색, 밤에는 가로등 불빛
     const sea0 = seasonOf(save.season.n).key;
     if (world.phase !== 'day') {

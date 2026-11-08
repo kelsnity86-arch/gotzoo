@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero } from './game/rules';
+import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero, stageName, gateCapOf } from './game/rules';
 import { showReveal } from './ui/reveal';
 import { compile, renderSong, wav } from './audio/music';
 import { songById } from './audio/songs';
@@ -191,12 +191,13 @@ function layout() {
     // 오른쪽 패널 (접으면 탭 줄만 세로로)
     const open = panel.isOpen;
     const pw = open ? Math.min(400 * uiScale, Math.max(280 * uiScale, W * 0.34)) : 58 * uiScale;
-    fieldRect = { x: 8, y: hudH + 8, w: W - pw - 16, h: H - hudH - 16 };
+    // 필드는 화면 끝까지 (바깥 숲이 화면 가장자리까지 이어진다)
+    fieldRect = { x: 0, y: hudH, w: W - pw, h: H - hudH };
     panel.el.style.cssText = `width:${pw / uiScale}px`;
     document.body.style.setProperty('--pw', `${pw / uiScale}px`);
   } else {
     const tabsH = (panel.el.querySelector('.ptabs') as HTMLElement | null)?.getBoundingClientRect().height || 40;
-    fieldRect = { x: 4, y: hudH + 4, w: W - 8, h: H - hudH - tabsH - 8 };
+    fieldRect = { x: 0, y: hudH, w: W, h: H - hudH - tabsH };
     panel.el.style.cssText = '';
     document.body.style.setProperty('--pw', '0px');
   }
@@ -304,7 +305,7 @@ function tapAt(wp: { x: number; y: number }) {
   const it = wp.y > world.layout.by0 ? itemAt(save, ibx, iby) : undefined;
   if (it && !penSheetOpen) {
     audio.sfx('click');
-    const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+    const back = h('div', { class: 'overlay', 'data-self': '1', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
       h('div', { class: 'sheet' }, h('div', { class: 'sheet-head' }, h('b', {}, itemName(it.type))),
         h('p', { class: 'hint' }, '치우면 보관함으로 가요. 동물원 > 시설 · 꾸미기에서 다시 놓을 수 있어요.'),
         h('div', { class: 'row-btns' },
@@ -373,7 +374,7 @@ canvas.addEventListener('pointerleave', () => tip.classList.add('hidden'));
 function openCredits() {
   audio.sfx('click');
   const lic = (title: string, text: string) => h('details', { class: 'lic' }, h('summary', {}, title), h('pre', { class: 'lic-text' }, text));
-  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+  const back = h('div', { class: 'overlay', 'data-self': '1', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
     h('div', { class: 'sheet settings credits' },
       h('div', { class: 'sheet-head' }, h('b', {}, '크레딧 · 라이선스'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
       h('div', { class: 'section-title' }, '뽑ZOO'),
@@ -418,7 +419,7 @@ function openSettings() {
     if (!armed) { armed = true; reset.textContent = '정말 초기화 (되돌릴 수 없음)'; msg.textContent = '모든 카드·돈·코인·업그레이드가 지워져요. 먼저 저장 코드를 복사해 두세요.'; return; }
     replaceSave(defaultSave()); back.remove(); toast('처음부터 시작해요', 'gold');
   });
-  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+  const back = h('div', { class: 'overlay', 'data-self': '1', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
     h('div', { class: 'sheet settings' },
       h('div', { class: 'sheet-head' }, h('b', {}, '설정'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
       h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'bgmvol' }, '배경음'), bgmVol), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
@@ -466,7 +467,7 @@ function showReport(r: import('./game/world').DayReport) {
   const missions = r.missions.map((m) => h('div', { class: `mrow${m.progress >= m.target ? ' ok' : ''}` },
     h('span', {}, `${m.progress >= m.target ? '✔' : '✘'} ${missionText(m.kind, m.target)}`), h('small', {}, `${fmt(m.progress)} / ${fmt(m.target)}`)));
   const close = () => { back.remove(); if (r.season) showSeason(r); };
-  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) close(); } },
+  const back = h('div', { class: 'overlay', 'data-self': '1', onclick: (e: Event) => { if (e.target === back) close(); } },
     h('div', { class: 'fuse-result' },
       h('div', { class: 'reveal-title' }, `${r.day}일째 영업 끝!`),
       h('div', { class: 'report' },
@@ -522,13 +523,29 @@ function showSeason(r: import('./game/world').DayReport) {
           h('div', { class: 'side' }, archEl(archTier(r.rival), r.rivalName, RIVAL_HUE[rIdx]), h('b', {}, `라이벌 · ${rivalOf(se.n).owner}`), h('div', { class: 'num rival' }, fmt(r.rival)))),
         h('div', { class: 'scalebar' }, h('i', { style: `width:${(r.mine / total) * 100}%;background:#38a35b` }), h('i', { style: `width:${(r.rival / total) * 100}%;background:hsl(${(330 + RIVAL_HUE[rIdx]) % 360},70%,70%)` })),
         h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
-        se.heartBack ? h('div', { class: 'heart-break good' }, '💔 → ❤️ 평판 하트를 되찾았어요!') : null,
+        se.heartBack ? h('div', { class: 'heart-break good' }, h('i', { class: 'px-heart broken' }), '→', h('i', { class: 'px-heart' }), ' 평판 하트를 되찾았어요!') : null,
         se.cheer ? h('div', { class: 'sub' }, `막판 응원 점수 +${fmt(se.cheer)}`) : null,
         h('div', { class: 'sub' }, `다음 계절 ${seasonOf(se.n + 1).icon}${seasonOf(se.n + 1).name} · 라이벌 ${next.name} (${next.owner}) · 더 강해졌어요`),
         h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); if (r.yearEval) showYearEval(r.yearEval); } }, r.yearEval ? '올해의 동물원 평가 보기' : '좋아!')));
     ui.append(back);
   } else if (se.survived) showSurvive(r);
   else showClosure();
+}
+/** 규모 확장 축하 */
+function showExpand(ow: number, oh: number, capBefore: number) {
+  audio.sting('jingle_legend');
+  const [w, hh] = boardDims(save);
+  const back = h('div', { class: 'overlay expand' },
+    h('div', { class: 'fuse-result win expand-box' },
+      h('div', { class: 'confetti' }, ...Array.from({ length: 24 }, (_, i) => h('i', { style: `--i:${i};--x:${(i * 37) % 100}%` }))),
+      h('div', { class: 'reveal-title' }, '규모 확장!'),
+      h('div', { class: 'expand-name' }, stageName(save)),
+      h('div', { class: 'report' },
+        h('div', {}, h('b', {}, `${ow}×${oh} → ${w}×${hh}`), h('span', {}, '부지')),
+        h('div', {}, h('b', {}, `${capBefore} → ${gateCapOf(save)}명`), h('span', {}, '손님 정원 (분당)')),
+        h('div', { class: 'wide' }, h('b', {}, '일반 우리 1개 선물'), h('span', {}, '새로 생긴 칸이 반짝여요 · 담장 장식이 늘어나요'))),
+      h('button', { class: 'btn big gold', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
+  ui.append(back);
 }
 /** 처음 진 시즌: 하트가 깨지고 최후의 기회 */
 function showSurvive(r: import('./game/world').DayReport) {
@@ -542,7 +559,7 @@ function showSurvive(r: import('./game/world').DayReport) {
         h('div', { class: 'side small' }, archEl(save.upgrades.deco ?? 0, zooName(), null, save.stars ?? 0), h('b', {}, '우리 동물원'), h('div', { class: 'num mine' }, fmt(r.mine))),
         h('div', { class: 'vsx' }, 'VS'),
         h('div', { class: 'side big' }, archEl(archTier(r.rival), r.rivalName, RIVAL_HUE[rIdx]), h('b', {}, `라이벌 · ${rivalOf(se.n).owner}`), h('div', { class: 'num rival' }, fmt(r.rival)))),
-      h('div', { class: 'heart-break' }, '❤️ → 💔'),
+      h('div', { class: 'heart-break' }, h('i', { class: 'px-heart' }), ' → ', h('i', { class: 'px-heart broken' })),
       h('div', { class: 'offline-amount' }, '평판 하트가 깨졌어요'),
       h('div', { class: 'sub' }, '이번 시즌 보상은 없어요. 다음 시즌은 최후의 기회! 이기면 하트가 돌아오고, 지면 폐원해요. 마지막 날 지고 있으면 막판 대목이 열려요.'),
       h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '다시 일어서기')));
@@ -552,7 +569,7 @@ function showSurvive(r: import('./game/world').DayReport) {
 function showLastStand() {
   const back = h('div', { class: 'overlay stand' },
     h('div', { class: 'fuse-result stand-box' },
-      h('div', { class: 'reveal-title' }, '🔥 막판 대목! 🔥'),
+      h('div', { class: 'reveal-title' }, '막판 대목!'),
       h('div', { class: 'sub' }, '최후의 기회 마지막 날, 지고 있어요. 오늘은 피버 게이지가 훨씬 빨리 차고, 동전 비가 두 배! 손으로 주운 동전이 응원 점수가 되어 규모에 더해져요.'),
       h('button', { class: 'btn big gold', onclick: () => back.remove() }, '뒤집어 보자!')));
   ui.append(back);
@@ -688,8 +705,8 @@ function frame(now: number) {
         const se = seasonOf(save.season.n);
         toast(`${se.icon} ${yearOf(save.season.n)}년 ${se.name}이 왔어요! ${habitatKo[se.strong]} 동물 +20%${se.weak ? ` · ${habitatKo[se.weak]} −15%` : ''}${se.climate ? ` · ${se.climateName}` : ''}`, 'gold', 3600);
         const cd = RIVAL_COND[save.season.cond ?? 1];
-        window.setTimeout(() => toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! 컨디션 ${cd.icon} ${cd.name} · ${SEASON.days}일째 밤에 규모로 겨뤄요`, cd.key === 'hot' ? 'bad' : 'gold', 3400), 1400);
-        if (save.lastChance) window.setTimeout(() => toast('💔 최후의 기회! 이번 시즌에 지면 폐원해요', 'bad', 3400), 3000);
+        window.setTimeout(() => toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! 컨디션 ${cd.name} · ${SEASON.days}일째 밤에 규모로 겨뤄요`, cd.key === 'hot' ? 'bad' : 'gold', 3400), 1400);
+        if (save.lastChance) window.setTimeout(() => toast('최후의 기회! 이번 시즌에 지면 폐원해요', 'bad', 3400), 3000);
       }
       else if (sd === SEASON.days) toast(`${ev.day}일째 아침 · 시즌 마지막 날! 오늘 결판나요`, 'bad', 3000);
       else toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200);
@@ -697,7 +714,7 @@ function frame(now: number) {
       persist(); panel.render(true);
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
-    else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`📰 ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
+    else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`라이벌 소식 · ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
     else if (ev.type === 'lastStand') { audio.sfx('legend'); window.setTimeout(() => showLastStand(), 300); }
     else if (ev.type === 'fever') { audio.fever(ev.on, world.lastStand); if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
     else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
@@ -783,8 +800,11 @@ function updateHud() {
   clock.classList.toggle('night', night);
   const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));
   const sea = seasonOf(save.season.n);
-  const when = `${yearOf(save.season.n)}년 ${sea.icon}${sea.name} ${world.seasonDay}일째`;
-  clockText.textContent = night ? `${when} · 🌙 밤 정비 중` : `${when} · ${world.phase === 'dusk' ? '🌇 저녁' : '☀ 낮'} ${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  // 시계: 글자만 (좁으면 줄여 쓴다)
+  const narrow = document.body.classList.contains('hud-xs');
+  const when = narrow ? `${sea.name} ${world.seasonDay}일` : `${yearOf(save.season.n)}년 ${sea.name} ${world.seasonDay}일째`;
+  const tm = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  clockText.textContent = night ? `${when} · ${narrow ? '밤' : '밤 정비 중'}` : `${when} · ${world.phase === 'dusk' ? '저녁' : '낮'} ${tm}`;
   document.body.dataset.season = sea.key;
   clockFill.parentElement!.classList.toggle('hidden', night);
   clockFill.style.width = `${(world.phaseT / 180) * 100}%`;
@@ -793,7 +813,12 @@ function updateHud() {
   const mine = world.scale, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
   rivalChip.classList.toggle('losing', mine < rv);
   const cond = RIVAL_COND[save.season.cond ?? 1];
-  rivalText.innerHTML = ''; rivalText.append(save.lastChance ? h('span', { class: 'last-chance', title: '최후의 기회: 이번에 지면 폐원' }, '💔') : h('span', { title: '평판 하트: 한 번 져도 버텨요' }, '❤️'), `🏆 ${fmt(mine)} vs `, h('span', { class: 'rv-name' }, `${rivalOf(save.season.n).name} `), h('span', { title: `라이벌 컨디션: ${cond.name}` }, cond.icon), ` ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`, world.lastStand ? h('span', { class: 'stand-tag' }, ' 막판 대목!') : '');
+  // 라이벌: [우리 이름] 규모 vs 규모 [라이벌 이름] · 남은 날 (이모티콘 없이, 좁으면 컨디션 글자부터 숨김)
+  rivalText.replaceChildren(
+    h('span', { class: 'rv-me' }, zooName()), h('span', { class: 'rv-num' }, fmt(mine)), h('span', { class: 'rv-vs' }, 'vs'), h('span', { class: 'rv-num' }, fmt(rv)),
+    h('span', { class: 'rv-name' }, rivalOf(save.season.n).name), h('span', { class: `rv-cond c${save.season.cond ?? 1}`, title: '라이벌 컨디션' }, cond.name),
+    h('span', { class: 'rv-day' }, dleft <= 0 ? '마지막 날' : `D-${dleft}`),
+    save.lastChance ? h('span', { class: 'rv-tag last' }, world.lastStand ? '막판 대목' : '최후의 기회') : '');
   rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;
   const pr = panel.el.getBoundingClientRect();
   // 세로 화면 서랍이 필드를 덮을 때만 서랍 위로
@@ -855,6 +880,22 @@ async function boot() {
     });
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); audio.suspend(document.hidden); });
+  // 규모 확장: 축하 창 · 팡파르 · 새 부지 반짝임
+  window.addEventListener('zoo-expand', (e) => {
+    const d = (e as CustomEvent<{ ow: number; oh: number; cap: number }>).detail;
+    field.expandFx = { t: performance.now(), ow: d.ow, oh: d.oh };
+    showExpand(d.ow, d.oh, d.cap);
+  });
+  // 창 바깥(어두운 곳)을 누르면 닫힌다: 창의 마지막 버튼(확인 · 좋아 등)을 누른 것과 같게.
+  // 폐원 · 이름 짓기 · 타이틀 · 뽑기 결과(자체 처리)는 제외, 스스로 처리하는 창(data-self)도 제외
+  ui.addEventListener('click', (e) => {
+    const ov = e.target as HTMLElement;
+    if (!ov.classList?.contains('overlay') || ov.dataset.self) return;
+    if (['closure', 'name-ask', 'title', 'reveal'].some((c) => ov.classList.contains(c))) return;
+    const btns = ov.querySelectorAll<HTMLElement>('.btn');
+    const btn = btns[btns.length - 1];
+    if (btn) btn.click(); else ov.remove();
+  });
   if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval, showClosure, showSurvive, showLastStand, gainGod, gainHero, showReveal, renderSong: async (id: string, layer = 3) => { const s = songById(id); if (!s) return null; const b = await renderSong(compile(s), layer); const u = new Uint8Array(wav(b)); let bin = ''; for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(bin); } };
 }
 boot();

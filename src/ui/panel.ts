@@ -161,7 +161,7 @@ export class Panel {
     const next = s.stage < MAX_STAGE ? STAGE_NAMES[s.stage] : '세계 동물원 (특별 확장)';
     const night = this.ctx.world.isNight;
     const btn = !night ? h('span', { class: 'night-only' }, '🌙 밤에 공사', h('small', {}, fmt(cost)))
-      : (() => { const b = this.costBtn(h('span', {}, `${next}으로 확장`, h('small', {}, `공사비 ${fmt(cost)}`)), cost, () => { if (promote(s)) { audio.sfx('fuseWin'); toast(`${stageName(s)}으로 확장! 부지가 넓어지고 우리 하나를 받았어요`, 'gold', 2800); this.ctx.world.relayout(-1); this.changed(); } }, 'expand-btn' + (canPromote(s) ? ' pulse' : ''), !canPromote(s)); return b; })();
+      : (() => { const b = this.costBtn(h('span', {}, `${next}으로 확장`, h('small', {}, `공사비 ${fmt(cost)}`)), cost, () => { const before = boardDims(s), capBefore = gateCapOf(s); if (promote(s)) { window.dispatchEvent(new CustomEvent('zoo-expand', { detail: { ow: before[0], oh: before[1], cap: capBefore } })); audio.sfx('fuseWin'); this.ctx.world.relayout(-1); this.changed(); } }, 'expand-btn' + (canPromote(s) ? ' pulse' : ''), !canPromote(s)); return b; })();
     const capNow = gateCapOf(s), capNext = gateCapOf(s, (s.upgrades.land ?? 0) + 1), demand = this.ctx.world.visitorDemand;
     return h('div', { class: 'home-box' }, head,
       h('div', { class: 'cap-line' + (demand > capNow ? ' full' : '') }, `손님 정원 ${capNow}명/분${demand > capNow ? ' · 꽉 찼어요' : ''}`, h('small', {}, ` → 확장하면 ${capNext}명`)),
@@ -726,7 +726,7 @@ export class Panel {
 /** 우리를 눌렀을 때: 우리 안 동물, 매력도, 먹이 주기 */
 export function openPenSheet(ctx: PanelCtx, pen: number, onClose: () => void) {
   const s = ctx.save, w = ctx.world;
-  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) close(); } });
+  const back = h('div', { class: 'overlay', 'data-self': '1', onclick: (e: Event) => { if (e.target === back) close(); } });
   const close = () => { back.remove(); onClose(); };
   const render = () => {
     const uids = s.pens[pen] ?? [];
