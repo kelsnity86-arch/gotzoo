@@ -49,5 +49,5 @@ export const RIVAL_EVENTS: readonly { text: string; mul: number }[] = [
   { text: '동물들이 감기에 걸렸대요', mul: 0.94 },
   { text: '나쁜 소문이 돌아요', mul: 0.95 },
 ];
-/** 최후의 기회 마지막 날 지고 있으면 막판 대목: 피버 게이지 ×feverCharge, 동전 비 ×rain, 손으로 주운 동전마다 응원 점수 (라이벌 목표 × cheerPerCoin) */
-export const LAST_STAND = { feverCharge: 2, rain: 2, cheerPerCoin: 0.0006 } as const;
+/** 최후의 기회 마지막 날 지고 있으면 막판 대목: 피버 게이지 ×feverCharge, 동전 비 ×rain, 손으로 주운 동전마다 응원 점수 (라이벌 목표 × cheerPerCoin, 최대 목표 × cheerMax) */
+export const LAST_STAND = { feverCharge: 2, rain: 2, cheerPerCoin: 0.0001, cheerMax: 0.3 } as const;

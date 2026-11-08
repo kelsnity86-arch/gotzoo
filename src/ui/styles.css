@@ -680,8 +680,8 @@ body.reduce-motion .gacha-gauge.fever { animation: none; }
 .mythic-cutin { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; overflow: hidden; cursor: pointer; }
 .mythic-cutin .myth-sky { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--mc) 55%, #fff6d8) 0%, #2b2140 55%, #120c1e 100%); animation: myth-fade .5s ease-out both; }
 .mythic-cutin .myth-crack { position: absolute; left: 50%; top: 0; width: 6px; height: 100%; background: linear-gradient(#fff3a3, #fff, #fff3a3); box-shadow: 0 0 40px 18px #fff3a3; transform: translateX(-50%) scaleX(0); animation: myth-crack 1s .15s ease-out both; }
-.mythic-cutin .myth-col { position: absolute; bottom: 4%; height: 74%; image-rendering: pixelated; animation: myth-rise .7s .2s ease-out both; }
-.mythic-cutin .myth-col:nth-of-type(3) { left: 14%; } .mythic-cutin .myth-col:nth-of-type(4) { right: 14%; }
+.mythic-cutin .myth-col { position: absolute; bottom: 4%; height: 74%; width: auto; image-rendering: pixelated; animation: myth-rise .7s .2s ease-out both; }
+.mythic-cutin .myth-col.l { left: 12%; } .mythic-cutin .myth-col.r { right: 12%; }
 .mythic-cutin .myth-col.plain { width: 46px; background: repeating-linear-gradient(90deg, #f4f4f4 0 8px, #c7cfdd 8px 12px); border-top: 14px solid #f7c948; border-bottom: 14px solid #f7c948; }
 .mythic-cutin .myth-art { position: relative; display: grid; place-items: center; animation: myth-descend .9s .35s cubic-bezier(.2, 1.4, .4, 1) both; filter: drop-shadow(0 0 18px var(--mc)); }
 .mythic-cutin .myth-halo { position: absolute; top: -18px; animation: myth-spin 3s linear infinite; }

@@ -829,7 +829,7 @@ export class World {
     c.picked = true;
     this.earn(0, c.value);
     if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
-    if (by === 'hand' && this.lastStand) { const add = c.count * LAST_STAND.cheerPerCoin * rivalScaleTarget(this.save.season.n) * (this.feverOn ? 2 : 1) * (1 + godVal(this.save, 'lastStand') * 0.5); this.save.season.cheer = (this.save.season.cheer ?? 0) + add; }
+    if (by === 'hand' && this.lastStand) { const add = c.count * LAST_STAND.cheerPerCoin * rivalScaleTarget(this.save.season.n) * (this.feverOn ? 2 : 1) * (1 + godVal(this.save, 'lastStand') * 0.5); this.save.season.cheer = Math.min(LAST_STAND.cheerMax * rivalScaleTarget(this.save.season.n) * (1 + godVal(this.save, 'lastStand') * 0.5), (this.save.season.cheer ?? 0) + add); }
     this.today.coins += c.count;
     if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권

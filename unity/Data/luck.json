@@ -1,0 +1,72 @@
+{
+ "rivalCond": [
+  {
+   "key": "slump",
+   "name": "부진",
+   "icon": "😴",
+   "mul": 0.78,
+   "chance": 0.3
+  },
+  {
+   "key": "normal",
+   "name": "보통",
+   "icon": "🙂",
+   "mul": 1,
+   "chance": 0.45
+  },
+  {
+   "key": "hot",
+   "name": "절호조",
+   "icon": "🔥",
+   "mul": 1.2,
+   "chance": 0.25
+  }
+ ],
+ "rivalEvents": [
+  {
+   "text": "새 동물이 들어왔대요!",
+   "mul": 1.08
+  },
+  {
+   "text": "대형 광고를 냈어요",
+   "mul": 1.06
+  },
+  {
+   "text": "인기 공연을 열었어요",
+   "mul": 1.05
+  },
+  {
+   "text": "공사로 일부 휴관 중",
+   "mul": 0.95
+  },
+  {
+   "text": "동물들이 감기에 걸렸대요",
+   "mul": 0.94
+  },
+  {
+   "text": "나쁜 소문이 돌아요",
+   "mul": 0.95
+  }
+ ],
+ "rivalEventChance": 0.55,
+ "lastStand": {
+  "feverCharge": 2,
+  "rain": 2,
+  "cheerPerCoin": 0.0001,
+  "cheerMax": 0.3
+ },
+ "carry": {
+  "base": 3,
+  "perSeasons": 2,
+  "max": 12,
+  "grade": [
+   1,
+   1,
+   2,
+   3,
+   4
+  ],
+  "named": 3,
+  "shiny": 1
+ }
+}

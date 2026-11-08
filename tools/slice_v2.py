@@ -492,6 +492,26 @@ def machines():
     SRC = old
 
 
+def olympus():
+    """올림푸스 12지신(필드 일반/각성 · 초상) · 영웅 6명(걷기 일반/각성 · 초상) · 신전 소품 12칸 → god_* · godp_* · hero_* · herop_* · oly_*"""
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16' / 'olympus'
+    for i, t in enumerate(objects('gods/gods_field16.png', 6, 4)):
+        r, c = i // 6, i % 6
+        if t is not None: S.save(t, OUT / f'god_{r * 3 + c // 2}{"_aw" if c % 2 else ""}.png')
+    for i, t in enumerate(objects('gods/gods_portrait16.png', 4, 3)):
+        if t is not None: S.save(t, OUT / f'godp_{i}.png')
+    for i, t in enumerate(objects('heroes/heroes_walk16.png', 4, 6)):
+        r, c = i // 4, i % 4
+        if t is not None: S.save(t, OUT / f'hero_{r}{"_aw" if c >= 2 else ""}_f{c % 2}.png')
+    for i, t in enumerate(objects('heroes/heroes_portrait16.png', 3, 2)):
+        if t is not None: S.save(t, OUT / f'herop_{i}.png')
+    names = ['oly_gate', 'oly_ped0', 'oly_ped1', 'oly_ped2', 'oly_capsule0', 'oly_capsule1', 'oly_cloud', 'oly_halo', 'oly_column', 'oly_laurel', 'oly_corner', 'oly_star']
+    for i, t in enumerate(objects('extras/olympus_extras16.png', 4, 3)):
+        if t is not None: S.save(t, OUT / f'{names[i]}.png')
+    SRC = old
+
+
 def buildings():
     bl = objects('buildings/buildings16.png', 6, 3, s=5.5)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
@@ -506,6 +526,7 @@ if __name__ == '__main__':
     elif sys.argv[1:] == ['buildings_big']: buildings_big()
     elif sys.argv[1:] == ['buildings_new']: buildings_new()
     elif sys.argv[1:] == ['machines']: machines()
+    elif sys.argv[1:] == ['olympus']: olympus()
     elif sys.argv[1:2] == ['final']: final()
     elif sys.argv[1:] == ['park']:
         names = ['tree', 'pine', 'blossom', 'fruit', 'bush', 'flowerbush', 'lamp', 'bench', 'bin', 'sign', 'planter', 'flowerbed', 'hedge', 'boulder', 'drink', 'picnic', 'balloon', 'pond']

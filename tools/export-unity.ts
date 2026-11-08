@@ -16,7 +16,9 @@ import { SYNERGY_SETS, HABITAT_TIERS, GRADE_SYN, SYNERGY_CAP, SHINY } from '../s
 import { RIVALS, SEASON, SCALE_TARGET } from '../src/data/rivals';
 import { DEX_SETS } from '../src/data/dex';
 import { MISSION_POOL, MISSION_K, MISSION_REWARD } from '../src/data/missions';
-import { DRAW_KIND, MACHINE_TIERS } from '../src/game/rules';
+import { DRAW_KIND, MACHINE_TIERS, CARRY } from '../src/game/rules';
+import { GODS, HEROES, NAMED } from '../src/data/olympus';
+import { RIVAL_COND, RIVAL_EVENTS, RIVAL_EVENT_CHANCE, LAST_STAND } from '../src/data/rivals';
 
 const out = new URL('../unity/Data/', import.meta.url);
 mkdirSync(out, { recursive: true });
@@ -42,5 +44,7 @@ write('seasons', { seasons: SEASONS, fx: SEASON_FX });
 write('synergy', { sets: SYNERGY_SETS, habitatTiers: HABITAT_TIERS, gradeSyn: GRADE_SYN, cap: SYNERGY_CAP, shiny: SHINY });
 write('rivals', { season: SEASON, rivals: RIVALS, scaleTarget: SCALE_TARGET });
 write('dex', DEX_SETS);
+write('olympus', { named: NAMED, gods: GODS.map((g) => ({ ...g, descNormal: g.desc(g.value), descAwake: g.desc(g.value * NAMED.awakeMul) })), heroes: HEROES.map((x) => ({ ...x, descNormal: x.desc(x.value), descAwake: x.desc(x.value * NAMED.awakeMul) })) });
+write('luck', { rivalCond: RIVAL_COND, rivalEvents: RIVAL_EVENTS, rivalEventChance: RIVAL_EVENT_CHANCE, lastStand: LAST_STAND, carry: CARRY });
 write('missions', { pool: MISSION_POOL, k: MISSION_K, reward: MISSION_REWARD });
 console.log('unity/Data 내보내기 완료');

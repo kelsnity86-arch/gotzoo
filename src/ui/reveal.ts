@@ -125,10 +125,10 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     const awake = c.kind === 'animal' ? !!c.shiny : c.kind === 'staff' ? !!c.awake : false;
     const d = god ?? hero!;
     const art = god ? godPortrait(god.id, awake, god.base) : heroPortrait(hero!.id, awake, (c as StaffCard).staff);
-    const col = () => (hasPng('v2_oly_column') ? pix('v2_oly_column', 260, 'pix myth-col') : h('div', { class: 'myth-col plain' }));
+    const col = (side: string) => (hasPng('v2_oly_column') ? pix('v2_oly_column', 300, `pix myth-col ${side}`) : h('div', { class: `myth-col plain ${side}` }));
     const show = h('div', { class: `mythic-cutin${awake ? ' awake' : ''}`, style: `--mc:${d.color}` },
       h('div', { class: 'myth-sky' }), h('div', { class: 'myth-crack' }),
-      col(), col(),
+      col('l'), col('r'),
       h('div', { class: 'myth-art' }, hasPng('v2_oly_halo') ? pix('v2_oly_halo', 120, 'pix myth-halo') : null, pix(art, 240)),
       h('div', { class: 'myth-title' }, `${d.title}${god ? ` · ${god.god} × ${god.zodiac}` : ''}`),
       h('div', { class: 'myth-name' }, d.name),
