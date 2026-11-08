@@ -115,6 +115,10 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     h('div', { class: 'reveal-box' }, h('div', { class: 'reveal-title' }, `카드 ${cards.length}장`), machine, grid, h('div', { class: 'row-btns' }, skip, close)));
   root.append(back);
   audio.sfx('draw');
+  audio.gachaStart(tier);
+  const jingleKind = cards.some(isNamed) ? 'mythic' : best >= 4 ? 'legend' : best >= 2 ? 'rare' : 'common';
+  let jingled = false;
+  const jingle = () => { if (jingled) return; jingled = true; audio.jingle(jingleKind); };
   // 영웅 · 전설: 화면을 가로지르는 띠(컷인) 위로 큰 그림
   const named = cards.find(isNamed);
   const star = named ?? cards.find((c) => cardGrade(c) === 4) ?? cards.find((c) => cardGrade(c) === 3);
@@ -239,6 +243,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     });
     // 3420: 펑! 빛기둥 · 터지는 빛 · 반짝이, 화면 흔들림 (영웅 이상은 번쩍)
     at(3420, () => {
+      jingle();
       show(G.caps, 3); audio.sfx(best >= 2 ? 'rare' : 'reveal');
       anim(G.caps[3], [{ transform: 'scale(0.7)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }], { duration: 320, easing: 'ease-out' });
       const [pillar, rays, burst] = [G.fx.find((f) => f.classList.contains('gs-pillar')), G.fx.find((f) => f.classList.contains('gs-rays')), G.fx.find((f) => f.classList.contains('gs-burst'))];
@@ -258,10 +263,10 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   } else {
     machine.classList.add('shake');
     if (best >= 0) machine.style.setProperty('--cap', GRADES[best].color);
-    timer = window.setTimeout(() => { machine.classList.add('open'); showStar(); timer = window.setTimeout(showOne, motion.reduce ? 0 : 350); }, motion.reduce ? 0 : 700);
+    timer = window.setTimeout(() => { machine.classList.add('open'); jingle(); showStar(); timer = window.setTimeout(showOne, motion.reduce ? 0 : 350); }, motion.reduce ? 0 : 700);
   }
-  const closeAll = () => { if (closed) return; closed = true; audio.sfx('click'); back.remove(); onClose(); };
-  skip.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('click'); finish(); });
+  const closeAll = () => { if (closed) return; closed = true; audio.sfx('click'); audio.gachaEnd(); back.remove(); onClose(); };
+  skip.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('click'); jingle(); finish(); });
   close.addEventListener('click', (e) => { e.stopPropagation(); closeAll(); });
   // 아무 곳이나 누르면: 공개 중이면 모두 보기, 다 보였으면 확인
   back.addEventListener('click', () => { if (close.style.display === 'none') finish(); else closeAll(); });

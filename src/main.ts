@@ -14,6 +14,8 @@ import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
 import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero } from './game/rules';
 import { showReveal } from './ui/reveal';
+import { compile, renderSong, wav } from './audio/music';
+import { songById } from './audio/songs';
 import { SEASON, rivalOf, RIVAL_COND } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -389,6 +391,8 @@ function openSettings() {
   audio.sfx('click');
   const vol = h('input', { type: 'range', min: 0, max: 100, value: Math.round(audio.volume * 100), id: 'vol' }) as HTMLInputElement;
   vol.addEventListener('input', () => audio.setSettings({ volume: Number(vol.value) / 100 }));
+  const bgmVol = h('input', { type: 'range', min: 0, max: 100, value: Math.round(audio.bgmVolume * 100), id: 'bgmvol' }) as HTMLInputElement;
+  bgmVol.addEventListener('input', () => audio.setSettings({ bgmVolume: Number(bgmVol.value) / 100 }));
   const mute = h('button', { class: 'btn small ghost' }, audio.muted ? '소리 켜기' : '소리 끄기') as HTMLButtonElement;
   mute.addEventListener('click', () => { audio.setSettings({ muted: !audio.muted }); mute.textContent = audio.muted ? '소리 켜기' : '소리 끄기'; });
   const fxBtn = h('button', { class: 'btn small ghost' }, motion.reduce ? '연출 줄이기: 켬' : '연출 줄이기: 끔') as HTMLButtonElement;
@@ -417,7 +421,7 @@ function openSettings() {
   const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
     h('div', { class: 'sheet settings' },
       h('div', { class: 'sheet-head' }, h('b', {}, '설정'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
-      h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
+      h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'bgmvol' }, '배경음'), bgmVol), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
       h('div', { class: 'section-title' }, '동물원 이름'), h('div', { class: 'row-btns' }, h('span', { class: 'sub' }, zooName()), h('button', { class: 'btn small ghost', onclick: () => { back.remove(); askZooName(); } }, '이름 바꾸기')),
       h('div', { class: 'section-title' }, '연출'), h('div', { class: 'row-btns' }, h('span', { class: 'sub' }, '흔들림 · 날아가는 효과를 줄여요'), fxBtn),
       h('div', { class: 'section-title' }, '저장 코드 (다른 기기로 옮기기)'), area, h('div', { class: 'row-btns' }, copy, load),
@@ -443,10 +447,14 @@ function showTitle(onStart?: () => void) {
       h('div', { class: 'title-logo' }, '뽑', h('span', {}, 'ZOO')),
       h('div', { class: 'title-sub' }, '동물 카드를 뽑고 합성해서 나만의 동물원을 키워요'),
       parade,
-      h('button', { class: 'btn big', onclick: () => { audio.unlock(); audio.sfx('draw'); back.remove(); onStart?.(); } }, first ? '시작하기' : '이어하기'),
+      h('button', { class: 'btn big', onclick: () => { audio.unlock(); audio.sfx('draw'); titleOn = false; back.remove(); onStart?.(); } }, first ? '시작하기' : '이어하기'),
       h('div', { class: 'sub' }, 'PC: 커서로 동전 쓸어 담기 · 휠로 확대 / 폰: 손가락으로 쓸기 · 두 손가락 확대')));
   ui.append(back);
+  // 타이틀 곡: 브라우저는 첫 터치 전엔 소리를 못 내서, 화면을 처음 누르면 시작
+  titleOn = true; audio.bgm('title');
+  back.addEventListener('pointerdown', () => audio.unlock(), { once: true });
 }
+let titleOn = false;
 
 // ── 하루 정산 ──
 function showReport(r: import('./game/world').DayReport) {
@@ -748,6 +756,9 @@ function updateHud() {
   zoomReset.classList.toggle('hidden', panelOver || !document.body.classList.contains('landscape'));
   // 하루 시계 · 개장하기
   const night = world.isNight;
+  // 배경음: 타이틀 · 계절 낮/밤 (저녁부터 밤 곡으로 천천히), 규모가 클수록 악기가 많다
+  if (!titleOn) { const sk = seasonOf(save.season.n).key; const toNight = night || world.phase === 'dusk'; audio.bgm(`${sk}_${toNight ? 'night' : 'day'}`, world.phase === 'dusk' ? 10 : 3); }
+  audio.setLayer(save.stage <= 2 ? 0 : save.stage <= 4 ? 1 : save.stage <= 6 ? 2 : 3);
   clock.classList.toggle('night', night);
   const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));
   const sea = seasonOf(save.season.n);
@@ -822,7 +833,7 @@ async function boot() {
       if (window.confirm('게임을 끝낼까요? (진행 상황은 저장돼요)')) { persist(); cap.Plugins!.App.exitApp(); }
     });
   }
-  document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); });
-  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval, showClosure, showSurvive, showLastStand, gainGod, gainHero, showReveal };
+  document.addEventListener('visibilitychange', () => { if (document.hidden) persist(); audio.suspend(document.hidden); });
+  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval, showClosure, showSurvive, showLastStand, gainGod, gainHero, showReveal, renderSong: async (id: string, layer = 3) => { const s = songById(id); if (!s) return null; const b = await renderSong(compile(s), layer); const u = new Uint8Array(wav(b)); let bin = ''; for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(bin); } };
 }
 boot();
