@@ -547,3 +547,16 @@ body.reduce-motion .reveal-cell.has-back * { transition-duration: 0.15s; }
 /* 새 카드 틀(28×44): 이름 칸은 아래쪽 31~36줄 */
 .card.art.v3 .card-name-in { left: 18%; right: 18%; top: 70.5%; height: 11.5%; color: #3b2a1a; }
 .card.art.v3.g-epic .card-name-in, .card.art.v3.g-legend .card-name-in { left: 20%; right: 20%; }
+
+/* (시안 loop) 뽑기 게이지 · 콤보 */
+.gacha-gauge { display: flex; align-items: center; gap: 6px; padding: 2px 10px 2px 4px; border-radius: 999px; border: 2px solid var(--wood); background: #121a10; color: #f6e6c8; font: 13px 'Jua', sans-serif; white-space: nowrap; }
+.gacha-gauge .gg-bar { position: relative; width: 70px; height: 10px; border-radius: 5px; background: #2c3b27; overflow: hidden; border: 1px solid #5d3a24; }
+.gacha-gauge .gg-bar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #f08cbe, #f7c948); transition: width 0.25s; }
+.gacha-gauge.ready { border-color: #f7c948; box-shadow: 0 0 10px #f7c948; animation: ggPulse 1s ease-in-out infinite; }
+.gacha-gauge.ready10 { border-color: #fff3a3; box-shadow: 0 0 16px #fff3a3, 0 0 4px #f08cbe inset; animation: ggShake 0.5s ease-in-out infinite; }
+.gacha-gauge.ready b, .gacha-gauge.ready10 b { color: #fff3a3; }
+@keyframes ggPulse { 50% { transform: scale(1.06); } }
+@keyframes ggShake { 25% { transform: rotate(-3deg) scale(1.05); } 75% { transform: rotate(3deg) scale(1.05); } }
+.combo-pop { position: absolute; transform: translateX(-50%) scale(var(--s, 1)); font: 26px 'Jua', sans-serif; color: #fff3a3; text-shadow: 3px 3px 0 #8a5a3b, 0 0 10px #f7c948; pointer-events: none !important; z-index: 6; }
+.combo-pop.end { font-size: 22px; color: #fff; text-shadow: 3px 3px 0 #2f7a4b; }
+body.reduce-motion .gacha-gauge { animation: none !important; }

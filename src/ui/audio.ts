@@ -15,6 +15,14 @@ class Audio {
     g.gain.setValueAtTime(Math.max(0.0002, v * this.volume * 1.4), t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
     o.connect(g).connect(c.destination); o.start(t); o.stop(t + d + 0.02);
   }
+  /** (시안 loop) 콤보 동전: 이어질수록 음이 올라간다 */
+  coinCombo(n: number) {
+    const c = this.ctx; if (!c || this.muted) return;
+    const t = c.currentTime; if (t - this.last < 0.035) return; this.last = t;
+    const scale = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24];
+    const f = 440 * Math.pow(2, (84 + scale[Math.min(scale.length - 1, Math.floor(n / 2))] - 69) / 12);
+    this.tone(t, f, 0.06, 0.05); this.tone(t + 0.03, f * 1.5, 0.06, 0.03);
+  }
   sfx(id: Sfx) {
     const c = this.ctx; if (!c || this.muted) return;
     const t = c.currentTime;

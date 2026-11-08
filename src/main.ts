@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
+import { drawPrice, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -33,6 +33,7 @@ syncSlots(save);
 const world = new World(save);
 const field = new FieldRenderer(ctx);
 field.mock = new URLSearchParams(location.search).has("mock");
+const LOOP = new URLSearchParams(location.search).has('loop') || location.hash === '#loop';
 let dpr = 1, W = 0, H = 0;
 let fieldRect = { x: 0, y: 0, w: 1, h: 1 };
 let pointer: { x: number; y: number } | null = null;
@@ -138,11 +139,17 @@ function tryPlace(p: { x: number; y: number }) {
 }
 
 const reports: DayReport[] = [];
+// (시안 ?loop) 뽑기 게이지 · 콤보 표시
+const gaugeFill = h('i', {}), gaugeText = h('b', {});
+const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } },
+  hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, h('span', { class: 'gg-bar' }, gaugeFill), gaugeText);
+const comboEl = h('div', { class: 'combo-pop hidden' });
 /** 폰 세로: 가로로 돌려 달라는 안내 · PC 마우스 말풍선 */
 const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
 const tip = h('div', { class: 'hover-tip hidden' });
 const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, startPlaceItem, reports });
-ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip);
+ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip, comboEl);
+if (LOOP) { world.loop = true; hud.insertBefore(gauge, hud.children[2] ?? null); gauge.classList.remove('hidden'); }
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
 panel.onOpenChange = () => layout();
@@ -534,7 +541,8 @@ function frame(now: number) {
       if (ev.strike) window.setTimeout(() => toast('빚이 3일 넘게 밀려서 오늘은 직원들이 파업해요!', 'bad', 3200), 800);
       persist(); panel.render(true);
     }
-    else if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
+    else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
+    else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
     else if (ev.type === 'synergy') { audio.sfx('rare'); toast(`✨ 시너지 발견! ${ev.name} · ${ev.desc}`, 'gold', 3000); panel.render(true); }
@@ -556,6 +564,19 @@ function frame(now: number) {
 function updateHud() {
   const inc = world.incomePerMin();
   hudCoins.textContent = fmt(save.coins);
+  if (LOOP) {
+    // 동전이 날아갈 곳 = 코인 칸 · 뽑기 게이지 (다음 1회 / 10회)
+    const r = hudCoins.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
+    field.hudTarget = { x: (r.left + r.width / 2) * 1 - cr.left, y: r.top + r.height / 2 - cr.top };
+    const price = drawPrice(save), ten = price * 10, coins = Math.max(0, save.coins);
+    const ready10 = coins >= ten, ready = coins >= price;
+    gaugeFill.style.width = `${Math.min(100, ready ? (coins / ten) * 100 : (coins / price) * 100)}%`;
+    gauge.classList.toggle('ready', ready && !ready10); gauge.classList.toggle('ready10', ready10);
+    gaugeText.textContent = ready10 ? '10회 뽑기 가능!' : ready ? `뽑기 ${Math.floor(coins / price)}회 가능` : `다음 뽑기 ${Math.floor((coins / price) * 100)}%`;
+    const cb = world.combo;
+    if (cb.n >= 2 && cb.t > 0) { comboEl.textContent = `콤보 ×${cb.n}`; comboEl.classList.remove('hidden', 'end'); comboEl.style.left = upx(fieldRect.x + fieldRect.w / 2); comboEl.style.top = upx(fieldRect.y + 40); comboEl.style.setProperty('--s', String(1 + Math.min(0.6, cb.n * 0.02))); }
+    else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');
+  }
   hudCoins.parentElement!.classList.toggle('debt', save.coins < 0);
   hudIncome.textContent = `+${fmt(inc.base + inc.bonus)}/분`;
   strikeTag.classList.toggle('hidden', !save.strike);

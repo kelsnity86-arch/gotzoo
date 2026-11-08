@@ -82,7 +82,9 @@ export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; 
   laneY?: number; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number;
   /** 멈춰서 하는 자세 · 던지는 순간 자세 남은 시간 · 앉을 벤치(-1 = 안 앉음) · 효과 타이머 */
   pose?: VisitorPose; tossT?: number; bench?: number; fx?: number }
-export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
+export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean;
+  /** (시안 ?loop) 행운의 동전: 주우면 뽑기권 */
+  lucky?: boolean }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number;
   /** 일하는 동작 남은 시간 (> 0이면 멈춰서 동작) */
   act?: number }
@@ -91,7 +93,8 @@ export interface FloatText { x: number; y: number; text: string; t: number; colo
 export interface Emote { x: number; y: number; t: number; icon: string }
 export type WorldEvent =
   | { type: 'tip'; amount: number; x: number; y: number }
-  | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff' }
+  | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff'; combo?: number; lucky?: boolean }
+  | { type: 'combo'; n: number; bonus: number }
   | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
   | { type: 'eventStart'; id: EventId }
   | { type: 'eventEnd'; id: EventId }
@@ -127,6 +130,11 @@ export class World {
   animals: AnimalEnt[] = [];
   visitors: VisitorEnt[] = [];
   coins: CoinEnt[] = [];
+  /** (시안 ?loop) 돈은 주워야 들어온다 · 콤보 · 행운의 동전 */
+  loop = false;
+  combo = { n: 0, sum: 0, t: 0 };
+  /** 주운 동전이 날아가는 연출 (월드 좌표에서 출발, 남은 시간) */
+  flying: { x: number; y: number; t: number; lucky?: boolean }[] = [];
   staff: StaffEnt[] = [];
   floats: FloatText[] = [];
   emotes: Emote[] = [];
@@ -631,6 +639,17 @@ export class World {
     }
 
     this.lastPointer = pointer ? { x: pointer.x, y: pointer.y } : null;
+    if (this.loop) {
+      for (let i = this.flying.length - 1; i >= 0; i--) { this.flying[i].t += dt; if (this.flying[i].t > 0.55) this.flying.splice(i, 1); }
+      if (this.combo.t > 0) {
+        this.combo.t -= dt;
+        if (this.combo.t <= 0) {
+          // 콤보 끝: 5개 넘게 이었으면 보너스 (최대 +50%)
+          if (this.combo.n >= 5) { const bonus = Math.round(this.combo.sum * Math.min(0.5, this.combo.n * 0.02)); this.earn(0, bonus); this.events.push({ type: 'combo', n: this.combo.n, bonus }); }
+          this.combo = { n: 0, sum: 0, t: 0 };
+        }
+      }
+    }
     this.updateStaff(dt);
     this.updateEvent(dt);
     // 동물 말풍선: 가끔 하트·음표 (먹이 먹은 우리는 먹이 그림)
@@ -729,14 +748,16 @@ export class World {
     const fee = Math.round(raw * staffSum(this.save, 'ticket'));
     if (fee > 0) this.earn(fee, 0);
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
-    this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
+    // 기본: 던지는 순간 바로 들어오고 바닥엔 보너스만. 시안(loop): 전부 바닥 동전으로 (주워야 들어온다)
+    if (!this.loop) this.earn(tip, 0);
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
-    const bonus = Math.max(1, Math.round(tip * VISITOR.pickupBonus));
+    const bonus = this.loop ? Math.max(1, Math.round(tip * (1 + VISITOR.pickupBonus))) : Math.max(1, Math.round(tip * VISITOR.pickupBonus));
+    const lucky = this.loop && this.rng() < 0.025;
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 6, Math.max(PATH_Y0 + 2, v.y + 4 + this.rng() * 6));
     // 가까운 동전과 합친다 (오래된 쪽 시간을 그대로 따라서 수명이 늘지 않게)
     const near = this.coins.find((c) => !c.picked && c.z === 0 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
-    if (near) { near.value += bonus; near.count++; return; }
-    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value: bonus, count: 1, age: 0, z: 8, picked: false });
+    if (near && !lucky && !near.lucky) { near.value += bonus; near.count++; return; }
+    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value: bonus, count: 1, age: 0, z: 8, picked: false, lucky });
   }
 
   /** 동전 줍기: 먼저 닿은 쪽만 보너스 (picked로 한 번만) */
@@ -744,9 +765,17 @@ export class World {
     if (c.picked) return;
     c.picked = true;
     this.earn(0, c.value);
-    this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by });
     if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
     this.today.coins += c.count;
+    if (this.loop && by === 'hand') {
+      // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
+      this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = 1.2;
+      this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
+      if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }
+      this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by, combo: this.combo.n, lucky: c.lucky });
+      return;
+    }
+    this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by });
     this.floats.push({ x: c.x, y: c.y - 4, text: `+${c.value}`, t: 0, color: by === 'hand' ? '#fff3a3' : '#a7d65b' });
   }
 

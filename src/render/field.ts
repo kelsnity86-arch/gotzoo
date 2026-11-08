@@ -57,6 +57,8 @@ export class FieldRenderer {
   private autoZoomed = false;
   /** 시안 모드 (?mock): 산책로 · 산책하는 손님 */
   mock = false;
+  /** (시안 loop) 주운 동전이 날아갈 화면 좌표 (CSS px) */
+  hudTarget: { x: number; y: number } | null = null;
   private walkTiles: [number, number][] = [];
   private walkers: { x: number; y: number; tx: number; ty: number; kind: number; face: number; t: number }[] = [];
   private walkT = -1;
@@ -347,6 +349,20 @@ export class FieldRenderer {
 
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // (시안 loop) 주운 동전이 화면 위 코인 칸으로 빨려 들어간다
+    if (world.flying.length && this.hudTarget) {
+      const coin = hasPng('v2_ui_coin') ? sprite('v2_ui_coin') : sprite('coin_0');
+      c.imageSmoothingEnabled = false;
+      for (const f of world.flying) {
+        const k = Math.min(1, f.t / 0.55), e = k * k * (3 - 2 * k);
+        const x0 = this.ox + f.x * z, y0 = this.oy + f.y * z;
+        const x = x0 + (this.hudTarget.x - x0) * e, y = y0 + (this.hudTarget.y - y0) * e - Math.sin(k * Math.PI) * 60;
+        const s = 20 - k * 6;
+        c.globalAlpha = k > 0.9 ? (1 - k) * 10 : 1;
+        c.drawImage(coin, Math.round(x - s / 2), Math.round(y - s / 2), s, s);
+      }
+      c.globalAlpha = 1;
+    }
     // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
     const outlined = (text: string, x: number, y: number, color: string) => {
       c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
@@ -414,7 +430,10 @@ export class FieldRenderer {
       // 많이 합쳐진 동전은 동전 더미 그림
       const img = co.count >= 3 && hasPng('fx_06') ? sprite('fx_06') : sprite(`coin_${(coinFrame + co.id) % 4}`);
       if (co.count === 2) this.icon(sprite('coin_0'), co.x + 2, co.y - 2 - co.z, 7);
-      this.icon(img, co.x, co.y - 1 - co.z, 7);
+      // 오래 쌓일수록 더미가 커진다 (시안 loop)
+      const sz = world.loop ? Math.min(13, 7 + Math.floor(co.count / 3) * 2) : 7;
+      this.icon(img, co.x, co.y - 1 - co.z, sz);
+      if (co.lucky) { this.sparkle(co.x, co.y - 6 - co.z, t * 2 + co.id); this.sparkle(co.x + 3, co.y - 3 - co.z, t * 2 + co.id + 1.5); }
       c.globalAlpha = 1;
     }
 
