@@ -1,0 +1,245 @@
+{
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 1,
+  "requested_slot_count": 18,
+  "sheets": [
+    {
+      "filename": "buildings_new16.png",
+      "path": "assets/spritesheets16/buildings-new/buildings_new16.png",
+      "sha256": "7086bb6e76fb30aa60ef56a70ca60339eb03c7fd8fbc58a3c47409b105e2d3ef",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1536,
+        1536
+      ],
+      "requested_grid": [
+        6,
+        3
+      ],
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "building": "souvenir shop",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "purple/yellow awning, plush animals, balloons"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "building": "family restaurant",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "orange roof, chimney, parasol tables"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "building": "ice cream parlor",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "pink/mint stripes, rooftop ice cream cone"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "building": "carousel",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "round tent roof, flag, horse and animal seats"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "building": "observation tower",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "wooden tower, roofed deck, telescope, stairs"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "building": "animal research lab",
+          "upgrade": "small",
+          "target_native_size": [
+            48,
+            48
+          ],
+          "identity": "white walls, teal roof, greenhouse dome, paw emblem"
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "building": "souvenir shop",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "purple/yellow awning, plush animals, balloons"
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "building": "family restaurant",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "orange roof, chimney, parasol tables"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "building": "ice cream parlor",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "pink/mint stripes, rooftop ice cream cone"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "building": "carousel",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "round tent roof, flag, horse and animal seats"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "building": "observation tower",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "wooden tower, roofed deck, telescope, stairs"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "building": "animal research lab",
+          "upgrade": "medium",
+          "target_native_size": [
+            64,
+            64
+          ],
+          "identity": "white walls, teal roof, greenhouse dome, paw emblem"
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "building": "souvenir shop",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "purple/yellow awning, plush animals, balloons"
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "building": "family restaurant",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "orange roof, chimney, parasol tables"
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "building": "ice cream parlor",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "pink/mint stripes, rooftop ice cream cone"
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "building": "carousel",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "round tent roof, flag, horse and animal seats"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "building": "observation tower",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "wooden tower, roofed deck, telescope, stairs"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "building": "animal research lab",
+          "upgrade": "large and fancy",
+          "target_native_size": [
+            80,
+            80
+          ],
+          "identity": "white walls, teal roof, greenhouse dome, paw emblem"
+        }
+      ]
+    }
+  ]
+}

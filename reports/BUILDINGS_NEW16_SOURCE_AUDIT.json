@@ -1,0 +1,31 @@
+{
+  "readable_png": true,
+  "path": "assets/spritesheets16/buildings-new/buildings_new16.png",
+  "sha256": "7086bb6e76fb30aa60ef56a70ca60339eb03c7fd8fbc58a3c47409b105e2d3ef",
+  "engine_ready": false,
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "actual_size": [
+    1254,
+    1254
+  ],
+  "requested_size": [
+    1536,
+    1536
+  ],
+  "canvas_pass": false,
+  "square_canvas_pass": true,
+  "unique_rgb_colors": 361746,
+  "off_palette_pixels": 1572506,
+  "palette_pass": false,
+  "exact_magenta_perimeter_pass": false,
+  "native_48_64_80_grid_and_one_pixel_outline": "NOT_CERTIFIED",
+  "size_match_against_existing_buildings_in_game": "NOT_TESTED",
+  "reference": "assets/spritesheets16/buildings-large/buildings_big16.png",
+  "reference_sha256": "4793d394e4027483268fcf37cd029297312dce9b4de1f8d4e25b4c37f7aedc01",
+  "visual_review": "18 requested slots inspected; all six new identities retained through upgrades; tower blank plaques added in a local edit.",
+  "remaining": [
+    "Actual canvas differs from requested1536x1536.",
+    "Strict palette, uniform background and flat two-tone native pixel art not met.",
+    "Exact relative size, pivots and equal cell extraction need runtime/native-grid verification."
+  ]
+}
