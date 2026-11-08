@@ -45,19 +45,17 @@ describe('필드', () => {
     expect(w2.coins.some((x) => ids.includes(x.id))).toBe(false);
     expect(w2.missed).toBeGreaterThan(0);
   });
-  it('기본은 눌러야 줍고, 쓸어 담기 업그레이드 후에는 커서를 대면 줍는다', () => {
+  it('처음부터 끌어서 줍는다: 범위는 작고(1.5) 업그레이드로 커진다, 빨리 그어도 사이 동전을 줍는다', () => {
     const { s, w } = setup();
+    expect(w.pickupRadius).toBe(1.5);
     const c0 = waitCoin(w);
     const b0 = s.stats.coinsPicked;
-    w.update(1 / 30, { x: c0.x, y: c0.y - 1 });
+    w.update(1 / 30, { x: c0.x + 4, y: c0.y - 1 }); // 범위 밖
     expect(s.stats.coinsPicked).toBe(b0);
-    expect(w.clickAt(c0.x, c0.y - 1)).toBeGreaterThan(0);
+    w.update(1 / 30, { x: c0.x - 4, y: c0.y - 1 }); // 동전 위를 지나쳐 그음
     expect(s.stats.coinsPicked).toBeGreaterThan(b0);
-    s.upgrades.pickup = 1;
-    const c = waitCoin(w);
-    const before = s.stats.coinsPicked;
-    w.update(1 / 30, { x: c.x, y: c.y - 1 });
-    expect(s.stats.coinsPicked).toBeGreaterThan(before);
+    s.upgrades.pickup = 2;
+    expect(w.pickupRadius).toBe(4.5);
   });
   it('수거 직원은 동전을 자동으로 줍는다, 직원이 없어도 수입은 생긴다', () => {
     const { s, w } = setup();

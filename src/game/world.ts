@@ -115,6 +115,13 @@ export interface DayReport {
   season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number; year: number } | null;
 }
 
+/** 점 (px, py)와 선분 a–b 사이 거리 */
+function segDist(px: number, py: number, a: { x: number; y: number }, b: { x: number; y: number }) {
+  const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+  const k = l2 ? Math.max(0, Math.min(1, ((px - a.x) * dx + (py - a.y) * dy) / l2)) : 0;
+  return Math.hypot(px - (a.x + dx * k), py - (a.y + dy * k));
+}
+
 export class World {
   layout: Layout = { w: 100, h: 100, pens: [], cols: 1, bx0: 0, by0: 0, bw: 1, bh: 1 };
   animals: AnimalEnt[] = [];
@@ -321,7 +328,9 @@ export class World {
   get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save); }
   get pickupRadius() { return upValue(this.save, 'pickup'); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
-  get canSweep() { return this.save.upgrades.pickup >= 1; }
+  /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */
+  get canSweep() { return true; }
+  private lastPointer: { x: number; y: number } | null = null;
   /** 누른 자리의 동전을 줍는다 (범위 안 모두). 주운 개수 */
   clickAt(x: number, y: number): number {
     let n = 0;
@@ -617,9 +626,11 @@ export class World {
       if (c.picked) { this.coins.splice(i, 1); continue; }
       if (c.age > this.coinLife) { this.coins.splice(i, 1); this.missed += c.value; continue; }
       // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
-      if (pointer && this.canSweep && Math.hypot(c.x - pointer.x, c.y - 1 - c.z - pointer.y) < this.pickupRadius) this.pick(c, 'hand');
+      // 끌기: 지난 프레임 위치 → 지금 위치 선분과의 거리 (빨리 그어도 사이 동전을 놓치지 않게)
+      if (pointer && this.canSweep && segDist(c.x, c.y - 1 - c.z, this.lastPointer ?? pointer, pointer) < this.pickupRadius) this.pick(c, 'hand');
     }
 
+    this.lastPointer = pointer ? { x: pointer.x, y: pointer.y } : null;
     this.updateStaff(dt);
     this.updateEvent(dt);
     // 동물 말풍선: 가끔 하트·음표 (먹이 먹은 우리는 먹이 그림)

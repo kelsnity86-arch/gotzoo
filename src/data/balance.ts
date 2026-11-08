@@ -38,8 +38,8 @@ export const UPGRADES: readonly UpgradeDef[] = [
     costs: [800, 2500, 7000, 20000, 55000, 150000], need: [2, 3, 4, 5, 6, 7], describe: (v) => `분당 최대 관람객 ${v}명` },
   { id: 'staff', name: '직원 슬롯', icon: 'icon_badge', values: [1, 2, 3, 4, 5],
     costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명` },
-  { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [3, 4.5, 6, 8, 10.5, 13],
-    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => (v <= 3 ? '동전을 눌러서 줍기' : `커서를 대면 줍기 · 범위 ${v}`) },
+  { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [1.5, 3, 4.5, 6.5, 9, 12],
+    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `끌거나 커서를 대면 줍기 · 범위 ${v}` },
 ];
 export const upgradeDef = (id: UpgradeId) => UPGRADES.find((u) => u.id === id)!;
 
