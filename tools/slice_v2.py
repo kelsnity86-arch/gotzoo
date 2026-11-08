@@ -434,6 +434,63 @@ def buildings_new():
     SRC = old
 
 
+def machines():
+    """뽑기 기계 부품(6대 × 장식 · 몸통 · 돔 · 손잡이 4각도 · 뚜껑 2)과 등급 기계(은 · 금 · 무지개 × 3동작 + 후광), 돔 속 작은 캡슐"""
+    from scipy import ndimage
+    global SRC
+    old = SRC; SRC = S.ROOT / 'assets' / 'spritesheets16'
+    kinds = ['spring', 'summer', 'autumn', 'winter', 'staff', 'pen']
+    a, fg, _ = load('machine-animation/parts/machine_parts16.png')
+    s = est_s(a, fg)
+    H, W = fg.shape
+    lab, n = ndimage.label(fg, structure=np.ones((3, 3)))
+    sl = ndimage.find_objects(lab)
+    comps = [(i + 1, sl[i]) for i in range(n) if (sl[i][0].stop - sl[i][0].start) * (sl[i][1].stop - sl[i][1].start) > (s * 1.5) ** 2]
+    names = ['dome', 'crank0', 'crank1', 'crank2', 'crank3', 'flap0', 'flap1']
+    def cut(ids):
+        m = np.isin(lab, ids); ys, xs = np.nonzero(m)
+        return extract_raw(a, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), s)
+    for r in range(6):
+        band = [c for c in comps if r * H / 6 <= (c[1][0].start + c[1][0].stop) / 2 < (r + 1) * H / 6]
+        # 세로열: 가로 범위가 겹치면 같은 열 (장식+몸통, 돔+반짝임)
+        band.sort(key=lambda c: c[1][1].start)
+        cols = []
+        for c in band:
+            if cols and c[1][1].start < cols[-1]['x1'] - s: cols[-1]['ids'].append(c); cols[-1]['x1'] = max(cols[-1]['x1'], c[1][1].stop)
+            else: cols.append({'ids': [c], 'x1': c[1][1].stop})
+        if len(cols) != 8: print('  ! row', r, 'cols', len(cols), flush=True)
+        first = sorted(cols[0]['ids'], key=lambda c: c[1][0].start)
+        big = max(first, key=lambda c: (c[1][0].stop - c[1][0].start) * (c[1][1].stop - c[1][1].start))
+        body = [c for c in first if c[1][0].start >= big[1][0].start - s]
+        top = [c for c in first if c not in body]
+        if top: S.save(cut([c[0] for c in top]), OUT / f'mp_{kinds[r]}_top.png')
+        S.save(cut([c[0] for c in body]), OUT / f'mp_{kinds[r]}_body.png')
+        for name, col in zip(names, cols[1:]): S.save(cut([c[0] for c in col['ids']]), OUT / f'mp_{kinds[r]}_{name}.png')
+    print('parts pixel', round(s, 2), flush=True)
+    tiers = ['silver', 'gold', 'rainbow']
+    rel = 'machine-animation/tiers/machine_tiers16.png'
+    a, fg, _ = load(rel)
+    H, W = fg.shape
+    out = objects(rel, 4, 4)
+    for i, t in enumerate(out[:12]):
+        if t is None: continue
+        r, c = i // 4, i % 4
+        S.save(t, OUT / (f'mt_{tiers[r]}_{c}.png' if c < 3 else f'mt_{tiers[r]}_aura.png'))
+    # 마지막 줄: 작은 캡슐 6 + 반짝이 2 (왼쪽부터)
+    s = est_s(a, fg)
+    y0 = int(0.86 * H)
+    sa, sf = a[y0:], fg[y0:]
+    lab, n = ndimage.label(sf, structure=np.ones((3, 3)))
+    sl = ndimage.find_objects(lab)
+    comps = sorted([(i + 1, sl[i]) for i in range(n) if (sl[i][0].stop - sl[i][0].start) * (sl[i][1].stop - sl[i][1].start) > (s * 2) ** 2], key=lambda x: x[1][1].start)
+    sm = ['gray', 'green', 'blue', 'purple', 'gold', 'rainbow', 'spark_w', 'spark_g']
+    for name, (lid, slc) in zip(sm, comps):
+        m = lab == lid; ys, xs = np.nonzero(m)
+        S.save(extract_raw(sa, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), s), OUT / f'mc_{name}.png')
+    print('tiers pixel', round(s, 2), 'small', len(comps), flush=True)
+    SRC = old
+
+
 def buildings():
     bl = objects('buildings/buildings16.png', 6, 3, s=5.5)
     bn = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic']
@@ -447,6 +504,7 @@ if __name__ == '__main__':
     elif sys.argv[1:] == ['people']: people()
     elif sys.argv[1:] == ['buildings_big']: buildings_big()
     elif sys.argv[1:] == ['buildings_new']: buildings_new()
+    elif sys.argv[1:] == ['machines']: machines()
     elif sys.argv[1:2] == ['final']: final()
     elif sys.argv[1:] == ['park']:
         names = ['tree', 'pine', 'blossom', 'fruit', 'bush', 'flowerbush', 'lamp', 'bench', 'bin', 'sign', 'planter', 'flowerbed', 'hedge', 'boulder', 'drink', 'picnic', 'balloon', 'pond']

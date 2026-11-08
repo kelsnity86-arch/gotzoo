@@ -595,3 +595,10 @@ body.reduce-motion .machine.v4 .gs-aura.t3 { animation: none; }
 .gacha-gauge.t2 { border-color: #f7c948; } .gacha-gauge.t2 .gg-bar i { background: linear-gradient(90deg, #e0a526, #fff3a3); }
 .gacha-gauge.t3 { border-color: #f08cbe; } .gacha-gauge.t3 .gg-bar i { background: linear-gradient(90deg, #f08cbe, #f7c948, #a7d65b, #73eff7); }
 .gacha-gauge .gg-tier { font: 12px 'Jua', sans-serif; color: #c7cfdd; }
+/* 조립한 기계 · 등급 기계 */
+.machine.v4 .gs-asm { position: absolute; inset: 0; transition: opacity 0.12s; }
+.machine.v4 .gs-asm.parts { inset: auto; left: 50%; bottom: 0; transform: translateX(-50%); }
+.machine.v4 .gs-asm.parts > .gs-p { position: absolute; }
+.machine.v4 .gs-asm:not(.parts) > .gs-p { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); }
+.machine.v4 .gs-aura.art { background: none !important; -webkit-mask: none; mask: none; display: grid; place-items: center; }
+.machine.v4 .gs-aura.art .pix { opacity: 0.9; }
