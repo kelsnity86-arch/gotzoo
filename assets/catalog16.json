@@ -1,0 +1,2855 @@
+{
+  "schema": 1,
+  "asset_kind": "unchanged_generated_source_sheets",
+  "target_sprite_size": [
+    16,
+    16
+  ],
+  "engine_ready": false,
+  "sheets": [
+    {
+      "filename": "animals16_01.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_01.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "41baa7fe4addee5b78e15f3c843d4537fe632ddd2e7247b270c23abe7b158176",
+      "animals": [
+        {
+          "global_index": 1,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "rabbit",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 2,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "duck",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 3,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "chicken",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 4,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "baby chick",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 5,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "hamster",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 6,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "squirrel",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 7,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "mouse",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 8,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "cat",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 9,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "puppy",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 10,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "pigeon",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 11,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "sparrow",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 12,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "frog",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 13,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "tortoise",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 14,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "snail",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 15,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "pig",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 16,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "sheep",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 17,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "goat",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 18,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "dairy cow",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 19,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "pony",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 20,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "donkey",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 21,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "goose",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 22,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "turkey",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 23,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "guinea pig",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 24,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "hedgehog",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 25,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "raccoon",
+          "rarity": "common",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_02.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_02.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "a7f0717eba1504eb1edd1f566dd86c9f0d8b4c9d8e1995b2ebb0cfbc9e8ca996",
+      "animals": [
+        {
+          "global_index": 26,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "goldfish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 27,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "budgie parakeet",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 28,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "badger",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 29,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "mole",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 30,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "honeybee",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 31,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "quail",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 32,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "magpie",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 33,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "crow",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 34,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "bat",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 35,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "ladybug",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 36,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "butterfly",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 37,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "dragonfly",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 38,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "ant",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 39,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "crayfish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 40,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "crab",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 41,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "hermit crab",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 42,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "salamander",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 43,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "lizard",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 44,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "small garter snake",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 45,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "chinchilla",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 46,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "ferret",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 47,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "weasel",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 48,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "lop-eared rabbit",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 49,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "water deer",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 50,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "wild boar",
+          "rarity": "common",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_03.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_03.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "89cec3927f20b0967d2a8e36cf4a1dd8ed0c9c3eca485f352cfabe66d7697b72",
+      "animals": [
+        {
+          "global_index": 51,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "ox",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 52,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "water buffalo",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 53,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "horse",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 54,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "llama",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 55,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "grasshopper",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 56,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "cricket",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 57,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "firefly",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 58,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "jellyfish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 59,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "starfish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 60,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "shrimp",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 61,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "tiny killifish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 62,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "catfish",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 63,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "seagull",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 64,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "egret",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 65,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "swallow",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 66,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "woodpecker",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 67,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "long-tailed tit",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 68,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "gerbil",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 69,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "gecko",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 70,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "dung beetle",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 71,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "scorpion",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 72,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "arctic hare",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 73,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "lemming",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 74,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "fluffy white harp seal pup",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 75,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "mountain goat",
+          "rarity": "common",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_04.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_04.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "b5085d448e303222871ce4cea323cd6eca90ea83e5811cd260e032a393bf3eef",
+      "animals": [
+        {
+          "global_index": 76,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "marmot",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 77,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "pika",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 78,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "baby owlet",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 79,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "moth",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 80,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "tree frog",
+          "rarity": "common",
+          "season": null
+        },
+        {
+          "global_index": 81,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "red fox",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 82,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "penguin",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 83,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "koala",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 84,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "spotted deer",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 85,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "alpaca",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 86,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "river otter",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 87,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "beaver",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 88,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "meerkat",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 89,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "kangaroo",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 90,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "monkey",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 91,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "owl",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 92,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "scarlet macaw",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 93,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "harbor seal",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 94,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "platypus",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 95,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "armadillo",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 96,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "sloth",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 97,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "skunk",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 98,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "gray wolf",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 99,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "brown bear",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 100,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "zebra",
+          "rarity": "uncommon",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_05.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_05.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "d8c693c085f00e8f13fa5cdbd8c0c492723b34f6cf82657e29cd752ddedb51ad",
+      "animals": [
+        {
+          "global_index": 101,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "camel",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 102,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "ostrich",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 103,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "crocodile",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 104,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "hippo",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 105,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "anteater",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 106,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "toucan",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 107,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "coyote",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 108,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "jackal",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 109,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "hyena",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 110,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "sea lion",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 111,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "sea otter floating on back",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 112,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "pelican",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 113,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "red-crowned crane",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 114,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "stork",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 115,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "cockatoo",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 116,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "heron",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 117,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "vulture",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 118,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "falcon",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 119,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "mandarin duck",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 120,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "swan",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 121,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "reindeer",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 122,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "arctic fox",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 123,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "marten",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 124,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "coati",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 125,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "wombat",
+          "rarity": "uncommon",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_06.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_06.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "e83c187febc74f63655a08ae10dc085d0094578d511d991121b0e165c5456a8b",
+      "animals": [
+        {
+          "global_index": 126,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "wallaby",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 127,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "sugar glider",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 128,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "flying squirrel",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 129,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "iguana",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 130,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "snapping turtle",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 131,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "axolotl",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 132,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "stingray",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 133,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "pufferfish",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 134,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "seahorse",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 135,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "lobster",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 136,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "yak",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 137,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "bison",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 138,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "musk ox",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 139,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "porcupine",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 140,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "emu",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 141,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "kiwi bird",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 142,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "horned lizard",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 143,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "rattlesnake",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 144,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "frilled lizard",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 145,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "fruit bat",
+          "rarity": "uncommon",
+          "season": null
+        },
+        {
+          "global_index": 146,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "capybara",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 147,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "red panda",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 148,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "flamingo",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 149,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "giant panda",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 150,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "giraffe",
+          "rarity": "rare",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_07.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_07.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "0de5f077feebbe5520a9030301768421be1ef7b75c4279bf5d1f6f25dcfecc66",
+      "animals": [
+        {
+          "global_index": 151,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "elephant",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 152,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "lion",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 153,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "tiger",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 154,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "leopard",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 155,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "cheetah",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 156,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "gorilla",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 157,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "orangutan",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 158,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "polar bear",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 159,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "rhino",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 160,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "dolphin",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 161,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "orca",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 162,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "sea turtle",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 163,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "octopus",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 164,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "chameleon",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 165,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "fennec fox",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 166,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "quokka",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 167,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "tapir",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 168,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "moose",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 169,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "jaguar",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 170,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "cougar",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 171,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "lynx",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 172,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "serval",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 173,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "caracal",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 174,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "walrus",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 175,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "manatee",
+          "rarity": "rare",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_08.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_08.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "a98c33f26ec92c4b4014713c65c7071d8750ff11695de2b4d20cb89b0805c8f3",
+      "animals": [
+        {
+          "global_index": 176,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "dugong",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 177,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "hammerhead shark",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 178,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "manta ray",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 179,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "narwhal",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 180,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "beluga whale",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 181,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "emperor penguin",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 182,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "snowy owl",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 183,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "bighorn sheep",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 184,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "ibex",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 185,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "andean condor",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 186,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "cassowary",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 187,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "spectacled bear",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 188,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "asiatic black bear",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 189,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "sun bear",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 190,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "chimpanzee",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 191,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "mandrill",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 192,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "ring-tailed lemur",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 193,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "slow loris",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 194,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "gibbon",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 195,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "python",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 196,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "galapagos giant tortoise",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 197,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "anaconda",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 198,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "basilisk lizard",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 199,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "spoonbill",
+          "rarity": "rare",
+          "season": null
+        },
+        {
+          "global_index": 200,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "gemsbok oryx",
+          "rarity": "rare",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_09.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb",
+      "animals": [
+        {
+          "global_index": 201,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "white tiger",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 202,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "snow leopard",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 203,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "peacock with open tail",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 204,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "black panther",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 205,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "bald eagle",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 206,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "okapi",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 207,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "komodo dragon",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 208,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "white lion",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 209,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "whale shark",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 210,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "humpback whale",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 211,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "golden snub-nosed monkey",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 212,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "aye-aye",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 213,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "pangolin",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 214,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "bird of paradise",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 215,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "amur leopard",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 216,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "blue whale",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 217,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "great white shark",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 218,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "giant squid",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 219,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "harpy eagle",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 220,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "golden eagle",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 221,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "white peacock",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 222,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "silver fox",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 223,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "maned wolf",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 224,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "silverback gorilla",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 225,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "dodo bird",
+          "rarity": "epic",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_10.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+      "group": "permanent",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c",
+      "animals": [
+        {
+          "global_index": 226,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "woolly mammoth",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 227,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "saber-toothed cat",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 228,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "woolly rhinoceros",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 229,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "thylacine (tasmanian tiger)",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 230,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "giant moa bird",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 231,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "albino alligator",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 232,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "przewalski wild horse",
+          "rarity": "epic",
+          "season": null
+        },
+        {
+          "global_index": 233,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "unicorn",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 234,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "phoenix",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 235,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "golden dragon",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 236,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "griffin",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 237,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "pegasus",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 238,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "nine-tailed fox",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 239,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "haetae (Korean lion-like guardian beast)",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 240,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "three-legged sun crow",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 241,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "azure dragon of the east",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 242,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "vermilion phoenix bird of the south",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 243,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "black tortoise entwined with a snake",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 244,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "qilin (chinese unicorn with scales)",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 245,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "baby kraken",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 246,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "cute yeti",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 247,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "thunderbird with lightning wings",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 248,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "cute three-headed puppy cerberus",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 249,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "hippogriff",
+          "rarity": "legendary",
+          "season": null
+        },
+        {
+          "global_index": 250,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "imugi (korean serpent becoming a dragon)",
+          "rarity": "legendary",
+          "season": null
+        }
+      ]
+    },
+    {
+      "filename": "animals16_11.png",
+      "path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+      "group": "seasonal",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5",
+      "animals": [
+        {
+          "global_index": 251,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "rabbit wearing a flower crown",
+          "rarity": "uncommon",
+          "season": "spring"
+        },
+        {
+          "global_index": 252,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "hamster with dandelion fluff fur",
+          "rarity": "uncommon",
+          "season": "spring"
+        },
+        {
+          "global_index": 253,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "yellow forsythia sparrow",
+          "rarity": "uncommon",
+          "season": "spring"
+        },
+        {
+          "global_index": 254,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "rainbow trout",
+          "rarity": "uncommon",
+          "season": "spring"
+        },
+        {
+          "global_index": 255,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "deer with cherry blossom antlers",
+          "rarity": "rare",
+          "season": "spring"
+        },
+        {
+          "global_index": 256,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "queen bee with tiny crown",
+          "rarity": "rare",
+          "season": "spring"
+        },
+        {
+          "global_index": 257,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "turtle with sprouts growing on its shell",
+          "rarity": "rare",
+          "season": "spring"
+        },
+        {
+          "global_index": 258,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "frog holding a leaf umbrella",
+          "rarity": "rare",
+          "season": "spring"
+        },
+        {
+          "global_index": 259,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "fox with pink cherry blossom tail",
+          "rarity": "epic",
+          "season": "spring"
+        },
+        {
+          "global_index": 260,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "peacock with rose petal tail",
+          "rarity": "epic",
+          "season": "spring"
+        },
+        {
+          "global_index": 261,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "crane with lily-of-the-valley crest",
+          "rarity": "epic",
+          "season": "spring"
+        },
+        {
+          "global_index": 262,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "flower qilin covered in blossoms",
+          "rarity": "legendary",
+          "season": "spring"
+        },
+        {
+          "global_index": 263,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "light green spring breeze dragon with petals",
+          "rarity": "legendary",
+          "season": "spring"
+        },
+        {
+          "global_index": 264,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "turtle with a watermelon shell",
+          "rarity": "uncommon",
+          "season": "summer"
+        },
+        {
+          "global_index": 265,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "seal wearing sunglasses",
+          "rarity": "uncommon",
+          "season": "summer"
+        },
+        {
+          "global_index": 266,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "parrot with sunflower crest",
+          "rarity": "uncommon",
+          "season": "summer"
+        },
+        {
+          "global_index": 267,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "duck in a swim ring",
+          "rarity": "uncommon",
+          "season": "summer"
+        },
+        {
+          "global_index": 268,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "fox with glowing firefly tail",
+          "rarity": "rare",
+          "season": "summer"
+        },
+        {
+          "global_index": 269,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "octopus decorated with coral",
+          "rarity": "rare",
+          "season": "summer"
+        },
+        {
+          "global_index": 270,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "dolphin riding a small surfboard",
+          "rarity": "rare",
+          "season": "summer"
+        },
+        {
+          "global_index": 271,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "rainbow jellyfish",
+          "rarity": "rare",
+          "season": "summer"
+        },
+        {
+          "global_index": 272,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "lion with a blazing sun mane",
+          "rarity": "epic",
+          "season": "summer"
+        },
+        {
+          "global_index": 273,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "golden manta ray",
+          "rarity": "epic",
+          "season": "summer"
+        },
+        {
+          "global_index": 274,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "sea god whale with a trident crest",
+          "rarity": "legendary",
+          "season": "summer"
+        },
+        {
+          "global_index": 275,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "rainbow serpent",
+          "rarity": "legendary",
+          "season": "summer"
+        }
+      ]
+    },
+    {
+      "filename": "animals16_12.png",
+      "path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+      "group": "seasonal",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201",
+      "animals": [
+        {
+          "global_index": 276,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "squirrel hugging a big acorn",
+          "rarity": "uncommon",
+          "season": "autumn"
+        },
+        {
+          "global_index": 277,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "raccoon holding a maple leaf",
+          "rarity": "uncommon",
+          "season": "autumn"
+        },
+        {
+          "global_index": 278,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "crow wearing a straw hat",
+          "rarity": "uncommon",
+          "season": "autumn"
+        },
+        {
+          "global_index": 279,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "toad with a mushroom cap",
+          "rarity": "uncommon",
+          "season": "autumn"
+        },
+        {
+          "global_index": 280,
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "kitten playing in a leaf pile",
+          "rarity": "uncommon",
+          "season": "autumn"
+        },
+        {
+          "global_index": 281,
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "hedgehog carrying a tiny pumpkin",
+          "rarity": "rare",
+          "season": "autumn"
+        },
+        {
+          "global_index": 282,
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "deer with golden ginkgo leaf antlers",
+          "rarity": "rare",
+          "season": "autumn"
+        },
+        {
+          "global_index": 283,
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "bat wearing a little cape",
+          "rarity": "rare",
+          "season": "autumn"
+        },
+        {
+          "global_index": 284,
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "crane among silver reeds",
+          "rarity": "rare",
+          "season": "autumn"
+        },
+        {
+          "global_index": 285,
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "moon rabbit with a rice cake mallet",
+          "rarity": "epic",
+          "season": "autumn"
+        },
+        {
+          "global_index": 286,
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "cute ghost cat, pale and floating",
+          "rarity": "epic",
+          "season": "autumn"
+        },
+        {
+          "global_index": 287,
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "golden harvest ox with wheat garland",
+          "rarity": "legendary",
+          "season": "autumn"
+        },
+        {
+          "global_index": 288,
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "jack-o-lantern dragon",
+          "rarity": "legendary",
+          "season": "autumn"
+        },
+        {
+          "global_index": 289,
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "penguin in a knit hat",
+          "rarity": "uncommon",
+          "season": "winter"
+        },
+        {
+          "global_index": 290,
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "bear cub dressed as a snowman",
+          "rarity": "uncommon",
+          "season": "winter"
+        },
+        {
+          "global_index": 291,
+          "slot": 16,
+          "row": 4,
+          "column": 1,
+          "name": "otter wearing a red scarf",
+          "rarity": "uncommon",
+          "season": "winter"
+        },
+        {
+          "global_index": 292,
+          "slot": 17,
+          "row": 4,
+          "column": 2,
+          "name": "white rabbit with snowflake pattern",
+          "rarity": "uncommon",
+          "season": "winter"
+        },
+        {
+          "global_index": 293,
+          "slot": 18,
+          "row": 4,
+          "column": 3,
+          "name": "reindeer with a glowing red nose",
+          "rarity": "rare",
+          "season": "winter"
+        },
+        {
+          "global_index": 294,
+          "slot": 19,
+          "row": 4,
+          "column": 4,
+          "name": "ice crystal fox",
+          "rarity": "rare",
+          "season": "winter"
+        },
+        {
+          "global_index": 295,
+          "slot": 20,
+          "row": 4,
+          "column": 5,
+          "name": "hedgehog with icicle spines",
+          "rarity": "rare",
+          "season": "winter"
+        },
+        {
+          "global_index": 296,
+          "slot": 21,
+          "row": 5,
+          "column": 1,
+          "name": "polar bear in a santa hat",
+          "rarity": "rare",
+          "season": "winter"
+        },
+        {
+          "global_index": 297,
+          "slot": 22,
+          "row": 5,
+          "column": 2,
+          "name": "whale with aurora-colored stripes",
+          "rarity": "epic",
+          "season": "winter"
+        },
+        {
+          "global_index": 298,
+          "slot": 23,
+          "row": 5,
+          "column": 3,
+          "name": "frost wolf with icy fur",
+          "rarity": "epic",
+          "season": "winter"
+        },
+        {
+          "global_index": 299,
+          "slot": 24,
+          "row": 5,
+          "column": 4,
+          "name": "crystal ice dragon",
+          "rarity": "legendary",
+          "season": "winter"
+        },
+        {
+          "global_index": 300,
+          "slot": 25,
+          "row": 5,
+          "column": 5,
+          "name": "winter spirit stag with snowflake antlers",
+          "rarity": "legendary",
+          "season": "winter"
+        }
+      ]
+    }
+  ]
+}
