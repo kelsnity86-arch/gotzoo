@@ -6,6 +6,8 @@ import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, 
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
 import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
+import { GODS, HEROES, NAMED, godsOfSeason, type GodAbility, type GodDef, type HeroAbility, type HeroDef } from '../data/olympus';
+import { RIVAL_COND, RIVAL_EVENTS, RIVAL_EVENT_CHANCE, rivalScale } from '../data/rivals';
 import { VISITOR, EXPAND_COST, STAGE_NAMES, STAR_NEED, DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
 import { defaultSave, type Card, type MissionKind, type PenCard, type SaveData, type StaffCard } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
@@ -19,7 +21,7 @@ export const upValue = (s: SaveData, id: UpgradeId) => upgradeDef(id).values[s.u
 /** 부지 크기 (블록 칸) */
 export const boardDims = (s: SaveData) => BOARD[Math.min(BOARD.length - 1, s.upgrades.land ?? 0)];
 /** 손님 정원 (분당 최대 입장): 부지 칸 수 × capPerCell × 게이트 × (1 + 화장실) */
-export const gateCapOf = (s: SaveData, land: number = s.upgrades.land ?? 0) => { const [w, h] = BOARD[Math.min(BOARD.length - 1, land)]; return Math.round(w * h * VISITOR.capPerCell * upValue(s, 'gate') * (1 + facSum(s, 'restroom'))); };
+export const gateCapOf = (s: SaveData, land: number = s.upgrades.land ?? 0) => { const [w, h] = BOARD[Math.min(BOARD.length - 1, land)]; return Math.round(w * h * VISITOR.capPerCell * upValue(s, 'gate') * (1 + facSum(s, 'restroom')) * (1 + godVal(s, 'gateCap'))); };
 /** 수요/정원 → 투척액 배율 */
 export const overflowMulOf = (demand: number, cap: number) => (demand <= cap ? 1 : Math.min(VISITOR.overflowMaxMul, 1 + VISITOR.overflowK * Math.log2(demand / cap)));
 /** 놓은 우리 수 */
@@ -54,7 +56,7 @@ export const facCount = (s: SaveData, t: FacilityType) => s.facLv?.[t] ?? 0;
 /** 시설 효과 (단계만큼) */
 export const facSum = (s: SaveData, t: FacilityType) => facLevelValue(t, facCount(s, t));
 /** 다음 단계 증축 값 (최고 단계면 null) */
-export const facPrice = (s: SaveData, t: FacilityType): number | null => { const lv = facCount(s, t); return lv >= FAC_MAX_LV ? null : Math.round(drawPrice(s) * facilityDef(t).price * FAC_LV_PRICE[lv] * (1 - upValue(s, 'buildCut'))); };
+export const facPrice = (s: SaveData, t: FacilityType): number | null => { const lv = facCount(s, t); return lv >= FAC_MAX_LV ? null : Math.round(drawPrice(s) * facilityDef(t).price * FAC_LV_PRICE[lv] * (1 - buildCutOf(s))); };
 /** 시설 한 단계 증축 (코인 모자라거나 최고 단계면 false) */
 export function buyFacility(s: SaveData, t: FacilityType): boolean {
   const cost = facPrice(s, t);
@@ -279,9 +281,11 @@ export const MACHINE_TIERS = [
   { name: '금빛 기계', key: 'gold', chance: 0.025, luck: 0.03, shiny: 1 },
   { name: '무지개 기계', key: 'rainbow', chance: 0.005, luck: 0.06, shiny: 2 },
 ] as const;
-export function rollMachine(rng: Rng, mul = 1, rainbowPlus = 0): number {
+/** luckPlus: 특별 기계 확률을 더한다 (은 50% · 금 30% · 무지개 20%로 나눠서) */
+export function rollMachine(rng: Rng, mul = 1, rainbowPlus = 0, luckPlus = 0): number {
   let r = rng();
-  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { const c = MACHINE_TIERS[i].chance * mul + (i === 3 ? rainbowPlus : 0); if (r < c) return i; r -= c; }
+  const share = [0, 0.5, 0.3, 0.2];
+  for (let i = MACHINE_TIERS.length - 1; i > 0; i--) { const c = MACHINE_TIERS[i].chance * mul + (i === 3 ? rainbowPlus : 0) + luckPlus * share[i]; if (r < c) return i; r -= c; }
   return 0;
 }
 /** 마지막 뽑기의 기계 등급 (연출용) */
@@ -289,7 +293,7 @@ export let lastTier = 0;
 export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
   const cost = drawPrice(s) * n;
   if ((s.tokens ?? 0) < cost) return null;
-  const tier = rollMachine(rng, upValue(s, 'machine'), (s.stars ?? 0) >= 4 ? 0.005 : 0);
+  const tier = rollMachine(rng, upValue(s, 'machine'), (s.stars ?? 0) >= 4 ? 0.005 : 0, godVal(s, 'machineLuck'));
   lastTier = tier;
   s.tokens -= cost;
   s.stats.draws += n;
@@ -341,9 +345,13 @@ function rollCards(s: SaveData, n: number, rng: Rng, tier = 0): Card[] {
   for (let i = 0; i < n; i++) {
     const k = rng();
     if (k >= DRAW_KIND.animal + DRAW_KIND.staff) { out.push(addCard(s, rollPen(rng))); continue; }
-    if (k >= DRAW_KIND.animal) { out.push(addCard(s, rollStaff(rng))); continue; }
+    if (k >= DRAW_KIND.animal) {
+      if (rng() < NAMED.hero * NAMED.machineMul[tier]) { out.push(gainHero(s, Math.floor(rng() * HEROES.length) % HEROES.length, rng() < NAMED.awake)); continue; }
+      out.push(addCard(s, rollStaff(rng))); continue;
+    }
+    if (rng() < NAMED.god * NAMED.machineMul[tier]) { const pool = godsOfSeason(curSeason(s).key); out.push(gainGod(s, pool[Math.min(pool.length - 1, Math.floor(rng() * pool.length))].id, rng() < NAMED.awake)); continue; }
     const g = rollGrade(rng, optSum(s, 'luck') + facSum(s, 'lab') + mt.luck);
-    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < upValue(s, 'shiny') * mt.shiny }));
+    out.push(addCard(s, { kind: 'animal', animal: pickAnimal(s, g, rng), shiny: rng() < upValue(s, 'shiny') * mt.shiny * (1 + godVal(s, 'shinyMul')) }));
   }
   return out;
 }
@@ -629,8 +637,12 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     if (a.habitat === season.weak) bonus += SEASON_FX.weak;
     bonus = Math.max(-0.5, Math.min(SYNERGY_CAP, bonus));
     const ev = (ctx.habitatMul?.[a.habitat] ?? 1) * (ctx.allMul ?? 1);
-    total += GRADES[a.grade].attract * (c.shiny ? SHINY.attractMul : 1) * (1 + bonus) * ev;
+    total += (c.god !== undefined ? GRADES[4].attract * NAMED.attractMul : GRADES[a.grade].attract) * (c.shiny ? SHINY.attractMul : 1) * (1 + bonus) * ev;
   }
+  // 아프로토: 같은 우리 동물 매력 +
+  let love = 0;
+  for (const c of cards) if (c.god !== undefined && GODS[c.god].ability === 'penAttract') love += GODS[c.god].value * (c.shiny ? NAMED.awakeMul : 1);
+  if (love) { total *= 1 + love; syn.push({ kind: 'set', name: '사랑의 신', desc: `이 우리 동물 ${pctTxt(love)}` }); }
   return { total: total * fedMul, syn, near };
 }
 const HAB_KO: Record<Habitat, string> = { grass: '풀밭', sand: '사막', water: '물가', snow: '설원', rock: '바위산', cloud: '구름' };
@@ -680,7 +692,7 @@ export function staffSum(s: SaveData, kind: StaffKind): number {
 /** 일하는 직원의 특수옵션 합 */
 export const optSum = (s: SaveData, id: StaffOptId) => placedStaffCards(s).reduce((t, c) => t + c.opts.filter((o) => o.id === id).reduce((a, o) => a + o.v, 0), 0);
 /** 투척액 배율: 안내원 + '말솜씨' + 도감 등급 보상 */
-export const staffTipMul = (s: SaveData) => 1 + staffSum(s, 'guide') + optSum(s, 'tips') + dexTipBonus(s) + zoneTipBonus(s) + facSum(s, 'snack');
+export const staffTipMul = (s: SaveData) => 1 + godVal(s, 'tipMul') + heroVal(s, 'tipMul') + staffSum(s, 'guide') + optSum(s, 'tips') + dexTipBonus(s) + zoneTipBonus(s) + facSum(s, 'snack');
 /** 관리인: 바닥 동전 수명 + */
 export const coinLifeBonus = (s: SaveData) => staffSum(s, 'janitor') + facSum(s, 'bench');
 /** 폐장 후 바닥 동전 회수율: 관리인 등급별, '야근'이면 100% */
@@ -690,11 +702,11 @@ export function closingShare(s: SaveData): number {
   return js.length ? Math.max(...js.map((c) => JANITOR_SHARE[c.grade])) : 0;
 }
 /** 관람객 수 배율: 홍보 담당 + '인기인' */
-export const visitorMul = (s: SaveData) => starVisitorMul(s) + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0) + facSum(s, 'photo');
+export const visitorMul = (s: SaveData) => starVisitorMul(s) + (templeDone(s) ? NAMED.templeVisitors : 0) + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0) + facSum(s, 'photo');
 /** 먹이 효과 */
-export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'));
+export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder') + godVal(s, 'feed') + heroVal(s, 'vetAll'));
 /** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
-export const eventGapMul = (s: SaveData) => 1 - staffSum(s, 'performer');
+export const eventGapMul = (s: SaveData) => Math.max(0.3, 1 - staffSum(s, 'performer') - heroVal(s, 'stage'));
 export const eventExtraSec = (s: SaveData) => optSum(s, 'party');
 export const vipMul = (s: SaveData) => Math.max(1, placedStaffCards(s).reduce((m, c) => m * (c.opts.find((o) => o.id === 'vip')?.v ?? 1), 1)) * (1 + facSum(s, 'carousel'));
 /** 수거 직원 · 사육사 속도 배율 (그 직원 하나의 등급) */
@@ -711,11 +723,11 @@ export function dailyCosts(s: SaveData) {
     for (const u of p) {
       const c = cardById(s, u);
       if (c?.kind !== 'animal') continue;
-      feed += UPKEEP.feed[ANIMALS[c.animal].grade] * farm * (1 - upValue(s, 'feedCost'));
+      feed += UPKEEP.feed[ANIMALS[c.animal].grade] * farm * (1 - upValue(s, 'feedCost')) * (1 - godVal(s, 'feed') / 2);
       if (season.climate && ANIMALS[c.animal].habitat === season.climate) climateN++;
     }
   });
-  const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver'));
+  const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver') + heroVal(s, 'upkeepCut'));
   const facility = Math.round(FACILITIES.reduce((t, f) => t + f.upkeep * facCount(s, f.type), 0) * unit * (1 - cut));
   const cells = s.board.reduce((t, _, i) => t + penCells(s, i).length, 0);
   const pens = Math.round(UPKEEP.perCell * cells * unit * (1 - cut));
@@ -729,7 +741,7 @@ export function zooScale(s: SaveData): number {
   let v = 0;
   s.pens.forEach((p, i) => {
     const lm = penOpt(s, i, 'landmark') ? 2 : 1;
-    for (const u of p) { const c = cardById(s, u); if (c?.kind === 'animal') v += SCALE.animal[ANIMALS[c.animal].grade] * (c.shiny ? SHINY.scaleMul : 1) * lm; }
+    for (const u of p) { const c = cardById(s, u); if (c?.kind === 'animal') v += (c.god !== undefined ? SCALE.animal[4] * NAMED.scaleMul : SCALE.animal[ANIMALS[c.animal].grade]) * (c.shiny ? SHINY.scaleMul : 1) * lm; }
     const pc = penCardAt(s, i); if (pc) v += PEN_SCALE[pc.grade] * lm;
   });
   for (const c of placedStaffCards(s, false)) v += STAFF_SCALE[c.grade];
@@ -737,6 +749,7 @@ export function zooScale(s: SaveData): number {
   for (const it of placedItems(s)) v += it.type.startsWith('fac:') ? 0 : ITEM_SCALE.decor;
   for (const f of FACILITIES) v += facCount(s, f.type) * ITEM_SCALE.facility;
   if (s.coins < 0) v -= (-s.coins / drawPrice(s)) * SCALE.debtPerDraw;
+  v *= 1 + heroVal(s, 'guardAll');
   return Math.round(v);
 }
 
@@ -801,8 +814,28 @@ export function claimMissionBonus(s: SaveData): boolean {
 
 // ── 폐원 ──
 /** 폐원하고 새 동물원: 동물원·코인·카드는 처음부터, 도감과 기록만 남는다 */
-export function closeZoo(s: SaveData): SaveData {
+/** 폐원 때 데려갈 수 있는 동물 칸: 3 + 지나온 시즌 2번마다 1 (최대 12) */
+export const CARRY = { base: 3, perSeasons: 2, max: 12, grade: [1, 1, 2, 3, 4], named: 3, shiny: 1 } as const;
+export const carrySlots = (s: SaveData) => Math.min(CARRY.max, CARRY.base + Math.floor((s.season.n - 1) / CARRY.perSeasons));
+export const carryCost = (c: Extract<Card, { kind: 'animal' }>) => (c.god !== undefined ? CARRY.named : CARRY.grade[ANIMALS[c.animal].grade]) + (c.shiny ? CARRY.shiny : 0);
+/** 폐원하고 새 동물원: 도감 · 기록 · 신전은 남고, 고른 동물(칸 안)과 직원 1명을 데려간다 */
+export function closeZoo(s: SaveData, keep: { animals?: number[]; staff?: number | null } = {}): SaveData {
   const n = defaultSave();
+  let room = carrySlots(s);
+  for (const uid of keep.animals ?? []) {
+    const c = cardById(s, uid);
+    if (c?.kind !== 'animal') continue;
+    const cost = carryCost(c);
+    if (cost > room) continue;
+    room -= cost;
+    const { uid: _old, ...rest } = c; void _old;
+    n.cards.push({ ...rest, uid: n.nextUid++ });
+  }
+  const st = keep.staff != null ? cardById(s, keep.staff) : undefined;
+  if (st?.kind === 'staff') { const { uid: _o, ...rest } = st; void _o; const nc = { ...rest, uid: n.nextUid++ }; n.cards.push(nc); n.staffSlots[0] = nc.uid; }
+  n.godDex = (s.godDex ?? []).slice(); n.heroDex = (s.heroDex ?? []).slice();
+  n.zooName = s.zooName; n.zooNameAsked = s.zooNameAsked;
+  if (n.cards.some((c) => c.kind === 'animal')) autoPlace(n);
   n.dex = s.dex.slice();
   n.dexClaimed = s.dexClaimed.slice();
   n.records = { bestSeasons: s.records.bestSeasons, bestDay: Math.max(s.records.bestDay, s.day), closures: s.records.closures + 1, bestYears: s.records.bestYears };
@@ -831,7 +864,7 @@ export function upgradeCost(s: SaveData, id: UpgradeId): number | null {
   const u = upgradeDef(id), lv = s.upgrades[id] ?? 0;
   if (id === 'land') return null; // 부지는 규모 확장(promote)으로만
   if (id === 'machine' && lv >= 3 && (s.stars ?? 0) < 2) return null; // 마지막 단계는 별 2개부터
-  return lv < u.costs.length ? Math.round(u.costs[lv] * (1 - (id === 'buildCut' ? 0 : upValue(s, 'buildCut')))) : null;
+  return lv < u.costs.length ? Math.round(u.costs[lv] * (1 - (id === 'buildCut' ? 0 : buildCutOf(s)))) : null;
 }
 export function upgradeLockedBy(s: SaveData, id: UpgradeId): number | null {
   const u = upgradeDef(id), lv = s.upgrades[id];
@@ -853,8 +886,8 @@ export function stageReq(s: SaveData): [number, number] | null {
 }
 /** 다음 확장 공사비 (최고면 null). 8단계 다음은 별 3개 특별 확장(24×6) */
 export function expandCost(s: SaveData): number | null {
-  if (s.stage < MAX_STAGE) return Math.round(EXPAND_COST[s.stage - 1] * (1 - upValue(s, 'buildCut')));
-  if (!s.bigLand && (s.stars ?? 0) >= 3) return Math.round(EXPAND_COST[MAX_STAGE - 1] * (1 - upValue(s, 'buildCut')));
+  if (s.stage < MAX_STAGE) return Math.round(EXPAND_COST[s.stage - 1] * (1 - buildCutOf(s)));
+  if (!s.bigLand && (s.stars ?? 0) >= 3) return Math.round(EXPAND_COST[MAX_STAGE - 1] * (1 - buildCutOf(s)));
   return null;
 }
 /** 조건(전시 · 매력)을 채웠는지 (공사비는 따로) */
@@ -903,3 +936,81 @@ export function evaluateYear(s: SaveData, mine: number, rival: number): YearEval
 export const starVisitorMul = (s: SaveData) => 1 + ((s.stars ?? 0) >= 5 ? 0.15 : (s.stars ?? 0) >= 1 ? 0.05 : 0);
 
 export { UPGRADES };
+
+// ── 라이벌 운: 컨디션 · 소식 ──
+/** 이번 시즌 라이벌 컨디션 뽑기 (1시즌은 부진) */
+export function rollRivalCond(s: SaveData, n: number, rng: Rng = Math.random): number {
+  if (n <= 1) return 0;
+  const ch: number[] = RIVAL_COND.map((c) => c.chance);
+  const cut = Math.min(ch[2], hotCut(s)); ch[2] -= cut; ch[1] += cut;
+  let r = rng();
+  for (let i = 0; i < ch.length; i++) { if (r < ch[i]) return i; r -= ch[i]; }
+  return 1;
+}
+/** 절호조 확률을 줄이는 값 (네임드 능력이 채운다) */
+export const hotCut = (s: SaveData) => godVal(s, 'hotCut');
+/** 새 시즌 시작 */
+export function startSeason(s: SaveData, n: number, start: number, rng: Rng = Math.random) {
+  s.season = { n, start, mine: 0, rival: 0, cond: rollRivalCond(s, n, rng), rmul: 1, rev: null, stand: false, cheer: 0 };
+}
+/** 라이벌 규모: 시즌 k일째 = 기본 표 × 컨디션 × 소식 */
+export const rivalAt = (s: SaveData, k: number) => Math.round(rivalScale(k, s.season.n) * RIVAL_COND[s.season.cond ?? 1].mul * (s.season.rmul ?? 1));
+/** 아침 라이벌 소식 (없으면 null) */
+export function rollRivalEvent(s: SaveData, rng: Rng = Math.random) {
+  if (rng() >= RIVAL_EVENT_CHANCE) return null;
+  const ev = RIVAL_EVENTS[Math.min(RIVAL_EVENTS.length - 1, Math.floor(rng() * RIVAL_EVENTS.length))];
+  s.season.rmul = (s.season.rmul ?? 1) * ev.mul;
+  s.season.rev = ev;
+  return ev;
+}
+
+// ── 올림푸스: 네임드 신 · 영웅 능력 ──
+/** 전시 중인 신 (각성이면 배율 1.5) */
+export function activeGods(s: SaveData): { def: GodDef; mul: number; pen: number }[] {
+  const out: { def: GodDef; mul: number; pen: number }[] = [];
+  s.pens.slice(0, penCount(s)).forEach((p, i) => { for (const u of p) { const c = cardById(s, u); if (c?.kind === 'animal' && c.god !== undefined) out.push({ def: GODS[c.god], mul: c.shiny ? NAMED.awakeMul : 1, pen: i }); } });
+  return out;
+}
+export const godVal = (s: SaveData, ab: GodAbility) => activeGods(s).reduce((t, g) => t + (g.def.ability === ab ? g.def.value * g.mul : 0), 0);
+/** 배치된 영웅 */
+export function activeHeroes(s: SaveData): { def: HeroDef; mul: number }[] {
+  return placedStaffCards(s).filter((c) => c.hero !== undefined).map((c) => ({ def: HEROES[c.hero!], mul: c.awake ? NAMED.awakeMul : 1 }));
+}
+export const heroVal = (s: SaveData, ab: HeroAbility) => activeHeroes(s).reduce((t, h) => t + (h.def.ability === ab ? h.def.value * h.mul : 0), 0);
+export const hasHero = (s: SaveData, ab: HeroAbility) => activeHeroes(s).some((h) => h.def.ability === ab);
+/** 12신을 다 모았는지 (올림푸스 완성) */
+export const templeDone = (s: SaveData) => (s.godDex ?? []).filter((x) => x > 0).length >= GODS.length;
+/** 공사 할인: 업그레이드 + 헤파찍 */
+export const buildCutOf = (s: SaveData) => Math.min(0.5, upValue(s, 'buildCut') + godVal(s, 'buildCut'));
+/** 피버 지속 · 충전 배율 */
+export const feverTimeOf = (s: SaveData) => upValue(s, 'feverTime') + godVal(s, 'feverTime');
+export const feverChargeOf = (s: SaveData) => upValue(s, 'feverCharge') * (1 + godVal(s, 'feverCharge'));
+/** 실망 손님 줄이기 (0~0.8) */
+export const sadCutOf = (s: SaveData) => Math.min(0.8, godVal(s, 'sadCut') + heroVal(s, 'stage'));
+
+/** 뽑기 결과로 들어온 네임드: 중복이면 각성 업그레이드 또는 코인으로 (dup = 받은 코인, 카드는 보관함에 남지 않는다) */
+export type NamedCard = Card & { dup?: number; upgraded?: boolean };
+export function gainGod(s: SaveData, id: number, awake: boolean): NamedCard {
+  s.godDex = s.godDex ?? Array(12).fill(0);
+  s.godDex[id] = Math.max(s.godDex[id], awake ? 2 : 1);
+  const own = s.cards.find((c): c is Extract<Card, { kind: 'animal' }> => c.kind === 'animal' && c.god === id);
+  const card = { kind: 'animal' as const, animal: GODS[id].base, god: id, shiny: awake, uid: -1 };
+  if (own) {
+    if (awake && !own.shiny) { own.shiny = true; return { ...own, upgraded: true }; }
+    const dup = drawPrice(s) * NAMED.dupDraws; s.tokens += dup;
+    return { ...card, uid: own.uid, dup };
+  }
+  return addCard(s, { kind: 'animal', animal: GODS[id].base, god: id, shiny: awake } as NewCard);
+}
+export function gainHero(s: SaveData, id: number, awake: boolean): NamedCard {
+  s.heroDex = s.heroDex ?? Array(6).fill(0);
+  s.heroDex[id] = Math.max(s.heroDex[id], awake ? 2 : 1);
+  const own = s.cards.find((c): c is StaffCard => c.kind === 'staff' && c.hero === id);
+  if (own) {
+    if (awake && !own.awake) { own.awake = true; return { ...own, upgraded: true }; }
+    const dup = drawPrice(s) * NAMED.dupDraws; s.tokens += dup;
+    return { ...own, dup };
+  }
+  const base = rollStaff(() => 0.5, 4, HEROES[id].staff);
+  return addCard(s, { ...base, hero: id, awake, pay: STAFF_PAY[4][1] * 1.2 } as NewCard);
+}

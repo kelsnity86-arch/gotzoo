@@ -10,10 +10,11 @@ import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
   assignStaff, DRAW_KIND, MACHINE_TIERS, staffSum, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
-  penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, expandCost, stageName, gateCapOf, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
+  penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, expandCost, stageName, gateCapOf, templeDone, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
-import { animalFrame, hasPng, shinyOf, staff16, staffFrame } from '../render/sprites';
-import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
+import { animalFrame, godFrame, hasPng, heroFrame, shinyOf, staff16, staffFrame, type Sprite } from '../render/sprites';
+import { GODS, HEROES } from '../data/olympus';
+import { SEASONS, SEASON_FX, yearOf, seasonByKey } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
 import { PEN_THEME_BONUS, penOptDef, pieceDef } from '../data/pieces';
 import { STAGE_NAMES, UPGRADE_GROUPS } from '../data/balance';
@@ -35,7 +36,7 @@ const SUBS: Record<Tab, [string, string][]> = {
   zoo: [['board', '부지'], ['fac', '시설'], ['deco', '꾸미기']],
   cards: [['animal', '동물'], ['staff', '직원'], ['pen', '우리']],
   manage: [['up', '업그레이드'], ['slots', '직원 배치'], ['money', '돈']],
-  log: [['mission', '미션'], ['dex', '도감'], ['syn', '시너지'], ['record', '라이벌']],
+  log: [['mission', '미션'], ['dex', '도감'], ['olympus', '신전'], ['syn', '시너지'], ['record', '라이벌']],
 };
 const UP_ICON: Record<string, string> = { land: 'v2_ui_board', deco: 'v2_ui_pot', quality: 'v2_ui_ticket', gate: 'v2_ui_visitor', staff: 'v2_ui_badge', pickup: 'v2_ui_coins',
   comboTime: 'v2_ui_hourglass', comboBonus: 'v2_ui_money', feverTime: 'v2_ui_party', feverCharge: 'v2_ui_up', coinLife: 'v2_ui_coin',
@@ -113,7 +114,7 @@ export class Panel {
       'zoo:board': () => this.boardView(), 'zoo:fac': () => this.facView(), 'zoo:deco': () => this.decoView(),
       'cards:animal': () => (this.cardMode === 'fuse' ? this.fusion() : this.inventory()), 'cards:staff': () => this.staffCards(), 'cards:pen': () => this.penCards(),
       'manage:up': () => this.upgrades(), 'manage:slots': () => this.staffSlots(), 'manage:money': () => this.money(),
-      'log:mission': () => this.missions(), 'log:dex': () => this.dex(), 'log:syn': () => this.synergyDex(), 'log:record': () => this.records(),
+      'log:mission': () => this.missions(), 'log:dex': () => this.dex(), 'log:olympus': () => this.temple(), 'log:syn': () => this.synergyDex(), 'log:record': () => this.records(),
     };
     const subBar = SUBS[this.tab]?.length ? h('div', { class: 'subtabs' }, ...SUBS[this.tab].map(([k, name]) => h('button', { class: `subtab${sub === k ? ' on' : ''}`, onclick: () => { audio.sfx('click'); this.sub[this.tab] = k; this.render(true); } }, name))) : null;
     this.body.replaceChildren(...[subBar, (views[`${this.tab}:${sub}`] ?? views['gacha:animal'])()].filter((x): x is HTMLElement => !!x));
@@ -677,6 +678,21 @@ export class Panel {
   }
 
   // ── 기록 > 라이벌 ──
+  /** 올림푸스 신전: 12지신 받침대 (실루엣 → 만남 → 각성 금빛) · 영웅 6명 · 완성 보상 */
+  private temple() {
+    const s = this.ctx.save, gd = s.godDex ?? [], hd = s.heroDex ?? [];
+    const got = gd.filter((x) => x > 0).length;
+    const seat = (got: number, art: Sprite, name: string, title: string, desc: string, color: string, season?: string) => h('div', { class: `temple-seat lv${got}`, style: `--mc:${color}` },
+      h('div', { class: 'temple-art' }, pix(got ? art : silhouette(art), 52)),
+      hasPng(`v2_oly_ped${got}`) ? pix(`v2_oly_ped${got}`, 56, 'pix ped') : h('div', { class: 'ped plain' }),
+      h('b', {}, got ? name : '???'), h('small', {}, got ? title : season ?? ''), got ? h('small', { class: 'tdesc' }, desc) : null);
+    return h('div', { class: 'temple' },
+      h('div', { class: 'temple-head' }, h('b', {}, `올림푸스 신전 ${got} / 12`), h('small', {}, templeDone(s) ? '✦ 올림푸스 완성! 손님 +5% · 신전 입구 ✦' : '12신을 모두 모으면 신전 입구와 손님 +5%')),
+      h('div', { class: 'temple-grid' }, ...GODS.map((d) => seat(gd[d.id] ?? 0, godFrame(d.id, gd[d.id] === 2, d.base), d.name, `${d.title} · ${d.zodiac}`, d.desc(d.value * (gd[d.id] === 2 ? 1.5 : 1)), d.color, `${seasonByKey(d.season).icon} ${seasonByKey(d.season).name}`))),
+      h('div', { class: 'section-title' }, `신화 영웅 ${hd.filter((x) => x > 0).length} / 6`),
+      h('div', { class: 'temple-grid heroes' }, ...HEROES.map((d) => seat(hd[d.id] ?? 0, heroFrame(d.id, hd[d.id] === 2, d.staff, 0), d.name, d.title, d.desc(d.value * (hd[d.id] === 2 ? 1.5 : 1)), d.color))),
+      h('div', { class: 'sub' }, '신과 영웅은 뽑기에서 아주 드물게 나와요 (금빛 기계 ×2 · 무지개 기계 ×5). 나올 때 10%는 각성! 신은 그 계절 기계에서만 나와요. 폐원해도 신전 기록은 남아요.'));
+  }
   private records() {
     const s = this.ctx.save, w = this.ctx.world;
     const rc = s.records;
@@ -750,3 +766,10 @@ export function openPenSheet(ctx: PanelCtx, pen: number, onClose: () => void) {
 }
 
 export { upValue };
+
+/** 아직 못 만난 네임드: 검은 실루엣 */
+function silhouette(img: Sprite): HTMLCanvasElement {
+  const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height;
+  const c = cv.getContext('2d')!; c.drawImage(img, 0, 0); c.globalCompositeOperation = 'source-in'; c.fillStyle = '#3e2f5b'; c.fillRect(0, 0, cv.width, cv.height);
+  return cv;
+}

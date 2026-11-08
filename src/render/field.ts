@@ -3,8 +3,10 @@ import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
+import type { AnimalEnt, StaffEnt } from '../game/world';
 import { penAttract } from '../game/rules';
-import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
+import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite , godFrame, heroFrame } from './sprites';
+import { GODS, HEROES } from '../data/olympus';
 import { seasonOf } from '../data/seasons';
 import { itemSprite } from '../data/facilities';
 import { fmt } from '../ui/dom';
@@ -71,6 +73,8 @@ export class FieldRenderer {
   private items: SaveData['items'] = [];
   private decoTier = 0;
   private facLv: Partial<Record<string, number>> = {};
+  /** 올림푸스 완성: 신전 입구 */
+  temple = false;
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -120,7 +124,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${this.zooName}|${this.zooStars}|${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${this.temple}|${this.zooName}|${this.zooStars}|${this.mock}|${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -202,7 +206,7 @@ export class FieldRenderer {
       obj(`gatepart_${tier4}_flag`, gl + gw + 13, gb);
       obj(`gatepart_${tier4}_booth`, gl - 4, gb);
       obj(`gatepart_${tier4}_booth`, gl + gw + 4, gb, true);
-      obj(`gate_${tier4}`, gx, gb);
+      if (this.temple && hasPng('v2_oly_gate')) obj('oly_gate', gx, gb); else obj(`gate_${tier4}`, gx, gb);
       c.save();
       c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
       const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = this.zooName;
@@ -406,7 +410,7 @@ export class FieldRenderer {
   /** 동물원 한 장 (월드 좌표, this.ctx = 2도트 캔버스) */
   private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
-    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {};
+    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {}; this.temple = (save.godDex ?? []).filter((x) => x > 0).length >= 12;
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {
@@ -463,6 +467,7 @@ export class FieldRenderer {
     for (const e of world.staff) {
       const fr = Math.floor(e.anim * 6) % 2;
       list.push({ y: e.y, f: () => {
+        if (e.hero !== undefined) { this.drawHero(e, fr); return; }
         const si = STAFF.findIndex((d) => d.kind === e.kind);
         const ak = `v2_sa_${String(si).padStart(2, '0')}_f${Math.floor(e.anim * 3) % 2}`;
         if ((e.act ?? 0) > 0 && hasPng(ak)) { const im = sprite(ak); this.blitDev(im, e.x, e.y, im.height / FieldRenderer.R, e.face > 0, 0); return; }
@@ -616,6 +621,7 @@ export class FieldRenderer {
         else if (a.act === 'sleep') hop = Math.floor(a.t * 0.8) % 2;
         else if (a.act === 'shiver') x += Math.floor(a.t * 18) % 2 ? 0.34 : -0.34;
       }
+      if (a.god !== undefined) { this.drawGod(a, x, hop, water ? 0.32 : 0); continue; }
       const mul = GRADE_SIZE[ANIMALS[a.animal].grade];
       const img = animalFrame(a.animal, fr);
       // 물가 우리: 몸 아래가 잠기고 물결
@@ -659,6 +665,40 @@ export class FieldRenderer {
   }
 
   /** 반짝이 동물 머리 위 반짝임 (네 방향 별, 깜빡) */
+  /** 신(네임드): 발밑 금빛 원 · 구름 받침, 크게, 머리 위 이름표 · 가끔 후광 */
+  private drawGod(a: AnimalEnt, x: number, hop: number, sink: number) {
+    const c = this.ctx, d = GODS[a.god!];
+    const t = performance.now() / 1000 + a.uid;
+    c.save(); c.globalAlpha = 0.55 + 0.25 * Math.sin(t * 2); c.fillStyle = a.shiny ? '#ff9ad5' : '#f7c948';
+    c.beginPath(); c.ellipse(x, a.y - 0.5, 7, 2.2, 0, 0, Math.PI * 2); c.fill(); c.restore();
+    if (hasPng('v2_oly_cloud')) { const cl = sprite('v2_oly_cloud'); this.blitDev(cl, x, a.y + 1, cl.height / FieldRenderer.R, false, 0); }
+    const art = hasPng(`v2_god_${d.id}${a.shiny ? '_aw' : ''}`);
+    const img = godFrame(d.id, !!a.shiny, d.base);
+    if (art) this.blitDev(img, x, a.y, img.height / FieldRenderer.R, a.face > 0, hop, false, sink);
+    else this.blitAnimal(img, x, a.y, 1.7, a.face > 0, hop, sink);
+    const top = a.y - (art ? img.height / FieldRenderer.R : 16) - 3 - hop;
+    if (hasPng('v2_oly_halo') && Math.floor(t) % 4 === 0) { const hl = sprite('v2_oly_halo'); this.blitDev(hl, x, top + 1, hl.height / FieldRenderer.R, false, 0); }
+    c.save(); c.font = '3.6px Jua, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'bottom';
+    const wd = c.measureText(d.name).width + 4;
+    c.fillStyle = a.shiny ? '#5d275d' : '#5d3a24'; c.fillRect(Math.round(x - wd / 2), Math.round(top - 4.6), Math.ceil(wd), 5);
+    c.fillStyle = a.shiny ? '#ff9ad5' : '#f7c948'; c.fillRect(Math.round(x - wd / 2), Math.round(top - 4.6), Math.ceil(wd), 0.6);
+    c.fillStyle = '#fff3a3'; c.fillText(d.name, x, top);
+    c.restore();
+    if (a.shiny || Math.floor(t * 0.7) % 3 === 0) this.sparkle(x + 3, a.y - 10, t);
+  }
+  /** 신화 영웅 (직원) */
+  private drawHero(e: StaffEnt, fr: number) {
+    const img = heroFrame(e.hero!, !!e.awake, e.kind, fr);
+    const art = hasPng(`v2_hero_${e.hero}${e.awake ? '_aw' : ''}_f${fr}`);
+    if (art) this.blitDev(img, e.x, e.y, img.height / FieldRenderer.R, e.face > 0, 0);
+    else { const s16 = staff16(e.kind, fr); if (s16) this.blitDev(e.awake ? shinyOf(s16) : s16, e.x, e.y, 13.5, e.face > 0, 0); else this.blitDev(img, e.x, e.y, 13.5, e.face > 0, 0); }
+    const c = this.ctx, d = HEROES[e.hero!];
+    c.save(); c.font = '3.2px Jua, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'bottom';
+    const top = e.y - 15, wd = c.measureText(d.name).width + 3;
+    c.fillStyle = '#5d3a24'; c.fillRect(Math.round(e.x - wd / 2), Math.round(top - 4), Math.ceil(wd), 4.4);
+    c.fillStyle = '#fff3a3'; c.fillText(d.name, e.x, top);
+    c.restore();
+  }
   private sparkle(x: number, y: number, t: number) {
     const ph = (t * 2) % 3;
     if (ph > 1) return;

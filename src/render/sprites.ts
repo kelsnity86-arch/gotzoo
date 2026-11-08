@@ -309,3 +309,23 @@ export function avgColor(img: Sprite): string {
   avgCache.set(img, col);
   return col;
 }
+
+// ── 올림푸스 네임드: 전용 그림(v2_god_N · v2_god_N_aw · v2_godp_N, v2_hero_N_f0/f1 · _aw_f0/f1 · v2_herop_N)이 없으면 바탕 종/직원 그림 ──
+export function godFrame(id: number, awake: boolean, base: number): Sprite {
+  const k = `v2_god_${id}${awake ? '_aw' : ''}`;
+  if (hasPng(k)) return sprite(k);
+  const b = animalFrame(base, 0);
+  return awake ? shinyOf(b) : b;
+}
+export function godPortrait(id: number, awake: boolean, base: number): Sprite {
+  return hasPng(`v2_godp_${id}`) ? sprite(`v2_godp_${id}`) : godFrame(id, awake, base);
+}
+export function heroFrame(id: number, awake: boolean, kind: string, frame: number): Sprite {
+  const k = `v2_hero_${id}${awake ? '_aw' : ''}_f${frame}`;
+  if (hasPng(k)) return sprite(k);
+  const b = staffFrame(kind, frame);
+  return awake ? shinyOf(b) : b;
+}
+export function heroPortrait(id: number, awake: boolean, kind: string): Sprite {
+  return hasPng(`v2_herop_${id}`) ? sprite(`v2_herop_${id}`) : heroFrame(id, awake, kind, 0);
+}

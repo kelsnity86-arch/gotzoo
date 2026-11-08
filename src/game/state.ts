@@ -9,7 +9,9 @@ import { HABITATS, pieceDef, type PenOptId } from '../data/pieces';
 import { UPGRADES, type UpgradeId } from '../data/balance';
 
 export type Card =
-  | { uid: number; kind: 'animal'; animal: number; shiny?: boolean }
+  | { uid: number; kind: 'animal'; animal: number; shiny?: boolean;
+    /** 올림푸스 12지신 번호 (네임드). shiny = 각성 */
+    god?: number }
   | StaffCard
   | PenCard;
 /** 우리 조각 카드: 조각 모양 · 등급 · 서식지 · 특수옵션 */
@@ -17,7 +19,9 @@ export interface PenCard { uid: number; kind: 'pen'; piece: string; grade: Grade
 /** 부지에 놓은 우리: 카드 · 블록 좌표 · 회전(0~3). s.pens[i]는 board[i]에 든 동물 */
 export interface Placement { uid: number; x: number; y: number; rot: number }
 /** 직원 카드: 등급 · 월급(직원 뽑기 가격 대비 하루 비율) · 특수옵션 */
-export interface StaffCard { uid: number; kind: 'staff'; staff: StaffKind; grade: Grade; pay: number; opts: { id: StaffOptId; v: number }[] }
+export interface StaffCard { uid: number; kind: 'staff'; staff: StaffKind; grade: Grade; pay: number; opts: { id: StaffOptId; v: number }[];
+  /** 신화 영웅 번호 (네임드 직원) · 각성 */
+  hero?: number; awake?: boolean }
 
 export interface SaveData {
   version: number;
@@ -33,6 +37,8 @@ export interface SaveData {
   bigLand?: boolean;
   /** 동물원 별 등급 0~5 (올라가기만) · 올해 손님 · 실망 손님 */
   stars?: number; yearStats?: { visitors: number; sad: number };
+  /** 올림푸스 신전 (폐원해도 남는다): 신 12 · 영웅 6, 0 없음 · 1 만남 · 2 각성 */
+  godDex?: number[]; heroDex?: number[];
   cards: Card[];
   nextUid: number;
   /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
@@ -76,7 +82,11 @@ export interface SaveData {
   atNight: boolean;
   dayT: number;
   /** 이번 시즌: 몇 번째, 시작한 날, 내 누적 수입, 라이벌 누적 수입 (지난 날까지) */
-  season: { n: number; start: number; mine: number; rival: number; lost?: boolean };
+  season: { n: number; start: number; mine: number; rival: number; lost?: boolean;
+    /** 라이벌 컨디션 (RIVAL_COND 번호) · 라이벌 소식 배율 누적 · 마지막 소식 · 막판 대목 중인지 · 막판 응원 점수 */
+    cond?: number; rmul?: number; rev?: { text: string; mul: number } | null; stand?: boolean; cheer?: number };
+  /** 평판 하트를 잃었는지: 한 번 지면 최후의 기회, 또 지면 폐원 */
+  lastChance?: boolean;
   /** 빚(코인 < 0)으로 끝난 날이 이어진 수 · 오늘 파업 중인지 */
   debtDays: number;
   strike: boolean;
@@ -104,7 +114,7 @@ export function defaultSave(): SaveData {
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
-    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0, bestYears: 0 }, debtDays: 0, strike: false, shinyDex: ANIMALS.map(() => false), synergyFound: [], penTheme: [],
+    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0, cond: 0, rmul: 1, rev: null, stand: false, cheer: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0, bestYears: 0 }, debtDays: 0, strike: false, shinyDex: ANIMALS.map(() => false), synergyFound: [], penTheme: [],
   };
 }
 
@@ -174,6 +184,8 @@ export function normalize(raw: unknown): SaveData {
   out.zooNameAsked = !!rr.zooNameAsked;
   out.stars = Math.max(0, Math.min(5, Math.floor(Number(rr.stars) || 0)));
   out.yearStats = { visitors: 0, sad: 0, ...((rr.yearStats as object) ?? {}) };
+  const dexArr = (v: unknown, n: number) => Array.from({ length: n }, (_, i) => { const x = Array.isArray(v) ? Number(v[i]) : 0; return x >= 2 ? 2 : x >= 1 ? 1 : 0; });
+  out.godDex = dexArr(rr.godDex, 12); out.heroDex = dexArr(rr.heroDex, 6);
   // 부지는 규모 단계를 따른다 (부지 넓히기 업그레이드는 규모 확장으로 합쳐졌다)
   out.upgrades.land = Math.max(0, Math.min(out.stage - 1 + ((out.stars ?? 0) >= 3 && (rr.bigLand as boolean) ? 1 : 0), 8));
   out.bigLand = !!rr.bigLand;
@@ -188,7 +200,8 @@ export function normalize(raw: unknown): SaveData {
   out.dayT = Number.isFinite(out.dayT) ? Math.max(0, out.dayT) : 0;
   const se = (r.season ?? {}) as Partial<SaveData['season']>;
   const num = (v: unknown, def: number) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
-  out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}) };
+  out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}), cond: Math.max(0, Math.min(2, Math.floor(num(se.cond, 0)))), rmul: num(se.rmul, 1), rev: se.rev ?? null, stand: !!se.stand, cheer: Math.max(0, num(se.cheer, 0)) };
+  out.lastChance = !!rr.lastChance;
   if (out.season.start > out.day) out.season.start = out.day;
   const rc = (r.records ?? {}) as Partial<SaveData['records']>;
   out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)), bestYears: Math.max(0, num(rc.bestYears, 0)) };

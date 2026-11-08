@@ -7,9 +7,9 @@ import type { Mission, SaveData, StaffCard } from './state';
 import { isEdge, penMask, type PenShape } from '../data/shapes';
 import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
-import { SEASON, rivalOf, rivalScale } from '../data/rivals';
+import { SEASON, rivalOf, LAST_STAND, rivalScaleTarget } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { gateCapOf, overflowMulOf, evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { feverTimeOf, feverChargeOf, godVal, heroVal, hasHero, sadCutOf, rivalAt, rollRivalEvent, startSeason, gateCapOf, overflowMulOf, evaluateYear, type YearEval, facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -47,7 +47,7 @@ export function computeLayout(s: SaveData): Layout {
 
 /** 동물 행동: 잠 · 먹기 · 물 마시기 · 놀기 · 친구 · 덜덜(추위) · 물장구 */
 export type AnimalAct = 'sleep' | 'eat' | 'drink' | 'play' | 'friend' | 'shiver' | 'splash';
-export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean;
+export interface AnimalEnt { shiny?: boolean; god?: number; uid: number; animal: number; pen: number; x: number; y: number; tx: number; ty: number; wait: number; t: number; face: number; moving: boolean;
   /** 지금 하는 행동 · 남은 시간 · 가는 중인 소품 · 효과 타이머 */
   act?: AnimalAct | null; actT?: number; goal?: PropKind | null; fx?: number }
 export type PropKind = 'den' | 'plant' | 'water' | 'rock' | 'food' | 'toy';
@@ -100,7 +100,9 @@ export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: num
   lucky?: boolean }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number;
   /** 일하는 동작 남은 시간 (> 0이면 멈춰서 동작) */
-  act?: number }
+  act?: number;
+  /** 신화 영웅 · 각성 */
+  hero?: number; awake?: boolean }
 export interface FloatText { x: number; y: number; text: string; t: number; color: string }
 
 export interface Emote { x: number; y: number; t: number; icon: string }
@@ -109,6 +111,8 @@ export type WorldEvent =
   | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff'; combo?: number; lucky?: boolean }
   | { type: 'combo'; n: number; bonus: number }
   | { type: 'fever'; on: boolean }
+  | { type: 'rivalNews'; text: string; mul: number }
+  | { type: 'lastStand' }
   | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
   | { type: 'eventStart'; id: EventId }
   | { type: 'eventEnd'; id: EventId }
@@ -129,7 +133,9 @@ export interface DayReport {
   /** 라이벌: 시즌 며칠째, 내 규모 · 라이벌 규모 */
   rivalName: string; seasonDay: number; mine: number; rival: number;
   /** 시즌 마지막 날이면 결과 */
-  season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number; year: number } | null;
+  season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number; year: number;
+    /** 져도 하트로 버텼는지(최후의 기회 시작) · 최후의 기회에서 이겨 하트를 되찾았는지 · 막판 응원 점수 */
+    survived?: boolean; heartBack?: boolean; cheer?: number } | null;
   /** 해가 바뀌면 동물원 별 등급 평가 */
   yearEval?: YearEval | null;
 }
@@ -328,7 +334,7 @@ export class World {
       if (have.has(uid)) continue;
       const c = cardById(s, uid);
       if (!c || c.kind !== 'animal') continue;
-      const a: AnimalEnt = { shiny: !!c.shiny, uid, animal: c.animal, pen, x: 0, y: 0, tx: 0, ty: 0, wait: this.rng() * 2, t: this.rng() * 10, face: -1, moving: false };
+      const a: AnimalEnt = { shiny: !!c.shiny, god: c.god, uid, animal: c.animal, pen, x: 0, y: 0, tx: 0, ty: 0, wait: this.rng() * 2, t: this.rng() * 10, face: -1, moving: false };
       this.placeIn(a);
       this.animals.push(a);
     }
@@ -338,7 +344,7 @@ export class World {
       if (this.staff.some((e) => e.uid === uid)) continue;
       const c = cardById(s, uid);
       if (!c || c.kind !== 'staff') continue;
-      this.staff.push({ uid, kind: c.staff, x: 20 + this.rng() * (this.layout.w - 40), y: (PATH_Y0 + PATH_Y1) / 2, target: null, t: 0, anim: 0, face: 1 });
+      this.staff.push({ uid, kind: c.staff, hero: c.hero, awake: c.awake, x: 20 + this.rng() * (this.layout.w - 40), y: (PATH_Y0 + PATH_Y1) / 2, target: null, t: 0, anim: 0, face: 1 });
     }
   }
 
@@ -358,7 +364,7 @@ export class World {
   }
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife'); }
-  get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower')); }
+  get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower') + heroVal(this.save, 'lucky')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
   /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */
   get canSweep() { return true; }
@@ -400,14 +406,16 @@ export class World {
   /** 라이벌 규모 (낮 동안 어제 규모에서 오늘 규모로 조금씩 커진다) */
   get rivalNow() {
     const d = this.save.day, k = this.seasonDay;
-    const today = rivalScale(k, this.save.season.n);
+    const today = rivalAt(this.save, k);
     if (this.phase === 'night') return today;
-    const prev = k > 1 ? rivalScale(k - 1, this.save.season.n) : today * 0.9;
+    const prev = k > 1 ? rivalAt(this.save, k - 1) : today * 0.9;
     void d;
     return Math.round(prev + (today - prev) * Math.min(1, this.phaseT / (DAY.dayLen - DAY.duskLen)));
   }
   /** 내 동물원 규모 */
-  get scale() { return zooScale(this.save); }
+  get scale() { return zooScale(this.save) + Math.round(this.save.season.cheer ?? 0); }
+  /** 막판 대목 중 (최후의 기회 · 시즌 마지막 날 · 낮) */
+  get lastStand() { return !!this.save.season.stand && this.phase === 'day'; }
   /** 오늘 파업 중인지 */
   get striking() { return this.save.strike; }
   get isNight() { return this.phase === 'night'; }
@@ -422,6 +430,10 @@ export class World {
     this.sickPen = -1;
     this.scheduleIncident();
     ensureMissions(this.save, this.rng);
+    // 라이벌 소식 (시즌 2일째부터)
+    if (this.seasonDay > 1) { const ev = rollRivalEvent(this.save, this.rng); if (ev) this.events.push({ type: 'rivalNews', text: ev.text, mul: ev.mul }); }
+    // 최후의 기회 마지막 날, 지고 있으면 막판 대목
+    if (this.save.lastChance && this.seasonDay === SEASON.days && zooScale(this.save) < rivalAt(this.save, SEASON.days)) { this.save.season.stand = true; this.events.push({ type: 'lastStand' }); }
     this.events.push({ type: 'morning', day: this.save.day, strike: this.save.strike, seasonStart: this.seasonDay === 1 });
   }
 
@@ -431,7 +443,7 @@ export class World {
   /** 사고: 소매치기(경비원이 막음) · 동물 감기(수의사가 막음) */
   private incident() {
     const kind: 'thief' | 'sick' = this.rng() < 0.5 ? 'thief' : 'sick';
-    const block = kind === 'thief' ? staffSum(this.save, 'guard') : 1 - (1 - staffSum(this.save, 'vet')) * (1 - facSum(this.save, 'clinic'));
+    const block = kind === 'thief' ? (hasHero(this.save, 'guardAll') ? 1 : staffSum(this.save, 'guard')) : hasHero(this.save, 'vetAll') ? 1 : 1 - (1 - staffSum(this.save, 'vet')) * (1 - facSum(this.save, 'clinic'));
     const blocked = this.rng() < block;
     let loss = 0, pen = -1;
     if (!blocked && kind === 'thief') {
@@ -501,7 +513,8 @@ export class World {
     const se = sv.season;
     sv.records.bestDay = Math.max(sv.records.bestDay, sv.day);
     const seasonDay = this.seasonDay;
-    const mine = zooScale(sv), rival = rivalScale(seasonDay, se.n);
+    const cheer = Math.round(se.cheer ?? 0);
+    const mine = zooScale(sv) + cheer, rival = rivalAt(sv, seasonDay);
     let season: DayReport['season'] = null;
     let yearEval: YearEval | null = null;
     if (seasonDay >= SEASON.days) {
@@ -513,11 +526,18 @@ export class World {
         sv.coins += coins; sv.tickets += tickets;
         sv.records.bestSeasons = Math.max(sv.records.bestSeasons, se.n);
         if (year) sv.records.bestYears = Math.max(sv.records.bestYears, year);
-        season = { result: 'win', n: se.n, coins, tickets, year };
+        const heartBack = !!sv.lastChance;
+        sv.lastChance = false;
+        season = { result: 'win', n: se.n, coins, tickets, year, heartBack, cheer };
         if (year) yearEval = evaluateYear(sv, mine, rival);
-        sv.season = { n: se.n + 1, start: sv.day + 1, mine: 0, rival: 0 };
+        startSeason(sv, se.n + 1, sv.day + 1, this.rng);
+      } else if (!sv.lastChance) {
+        // 평판 하트로 한 번 버틴다: 보상 없이 다음 시즌, 최후의 기회
+        sv.lastChance = true;
+        season = { result: 'lose', n: se.n, coins: 0, tickets: 0, year: 0, survived: true, cheer };
+        startSeason(sv, se.n + 1, sv.day + 1, this.rng);
       } else {
-        season = { result: 'lose', n: se.n, coins: 0, tickets: 0, year: 0 };
+        season = { result: 'lose', n: se.n, coins: 0, tickets: 0, year: 0, cheer };
         se.lost = true;
       }
     }
@@ -673,10 +693,11 @@ export class World {
     // 피버 타임: 남은 시간만큼 게이지가 줄고, 하늘에서 동전 비
     if (this.fever.left > 0) {
       this.fever.left -= dt;
-      this.fever.gauge = Math.max(0, this.fever.left / upValue(this.save, 'feverTime'));
+      this.fever.gauge = Math.max(0, this.fever.left / feverTimeOf(this.save));
       this.fever.rainAcc += dt;
-      while (this.fever.rainAcc >= VISITOR.fever.rainEvery) {
-        this.fever.rainAcc -= VISITOR.fever.rainEvery;
+      const rainEvery = VISITOR.fever.rainEvery / (this.lastStand ? LAST_STAND.rain : 1);
+      while (this.fever.rainAcc >= rainEvery) {
+        this.fever.rainAcc -= rainEvery;
         const v = Math.max(1, Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * VISITOR.tokenShare));
         this.coins.push({ id: this.coinId++, x: 12 + this.rng() * (L.w - 24), y: PATH_Y0 + 2 + this.rng() * (ZONE_H - 8 - PATH_Y0), vx: 0, vy: 0, value: v, count: 1, age: 0, z: 50 + this.rng() * 30, picked: false });
       }
@@ -737,7 +758,7 @@ export class World {
     const star = here.some((a) => a.shiny || ANIMALS[a.animal].grade >= 3);
     const playing = here.some((a) => a.act === 'play' || a.act === 'splash');
     const r = this.rng();
-    if ((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) { if (this.save.yearStats) this.save.yearStats.sad++; return 'sad'; }
+    if (((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) && this.rng() >= sadCutOf(this.save)) { if (this.save.yearStats) this.save.yearStats.sad++; return 'sad'; }
     if (v.vip || (star && r < 0.45) || ((evId === 'blossom' || evId === 'maple' || evId === 'firstsnow' || evId === 'xmas' || evId === 'halloween') && r < 0.5)) return 'photo';
     if (((evId === 'festival' || evId === 'kids' || evId === 'bus' || evId === 'chuseok' || evId === 'xmas') && r < 0.7) || (evId === 'splash' && this.geo[pen]?.theme === 'water' && r < 0.8) || (playing && r < 0.6)) return 'cheer';
     if (facSum(this.save, 'snack') > 0 && r < 0.3) return 'snack';
@@ -794,7 +815,7 @@ export class World {
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: 'VIP 손님!', t: 0, color: '#f7c948' }); }
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
     const bonus = Math.max(1, Math.round(tip * VISITOR.tokenShare * (1 + facSum(this.save, 'restaurant')) * (this.feverOn ? VISITOR.fever.coinMul : 1)));
-    const lucky = this.rng() < VISITOR.luckyChance * (1 + facSum(this.save, 'icecream'));
+    const lucky = this.rng() < VISITOR.luckyChance * (1 + facSum(this.save, 'icecream') + heroVal(this.save, 'lucky'));
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 6, Math.max(PATH_Y0 + 2, v.y + 4 + this.rng() * 6));
     // 가까운 동전과 합친다 (오래된 쪽 시간을 그대로 따라서 수명이 늘지 않게)
     const near = this.coins.find((c) => !c.picked && c.z === 0 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
@@ -808,14 +829,15 @@ export class World {
     c.picked = true;
     this.earn(0, c.value);
     if (by === 'hand') bumpMission(this.save, 'pickup', c.count);
+    if (by === 'hand' && this.lastStand) { const add = c.count * LAST_STAND.cheerPerCoin * rivalScaleTarget(this.save.season.n) * (this.feverOn ? 2 : 1) * (1 + godVal(this.save, 'lastStand') * 0.5); this.save.season.cheer = (this.save.season.cheer ?? 0) + add; }
     this.today.coins += c.count;
     if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
       this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = upValue(this.save, 'comboTime');
       // 피버 게이지: 주운 동전 수만큼 (콤보가 길수록 최대 2배 빨리)
       if (!this.feverOn) {
-        this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)) * upValue(this.save, 'feverCharge'));
-        if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = upValue(this.save, 'feverTime'); this.events.push({ type: 'fever', on: true }); }
+        this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)) * feverChargeOf(this.save) * (this.lastStand ? LAST_STAND.feverCharge + godVal(this.save, 'lastStand') : 1));
+        if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = feverTimeOf(this.save); this.events.push({ type: 'fever', on: true }); }
       }
       this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
       if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }

@@ -1,0 +1,75 @@
+You are drawing NEW characters for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The animals, visitors and buildings already exist (chunky cute pixel sprites, soft dark-brown outline, 2-tone flat shading, animals face LEFT). Everything you draw now must look like it belongs in the SAME world: same pixel size, same outline, same light, same colors.
+
+THEME: "Olympus Zodiac". 12 legendary animals, each one an Olympian god fused with one of the 12 Chinese zodiac animals, plus 6 human heroes from Greek myth who work at the zoo. They are the rarest, most special characters in the game, so they must look clearly MORE splendid than normal animals: a white or cream toga/cloth piece, gold accessories, a laurel or divine headpiece, a confident heroic pose, and a small floating golden halo ring or glow detail. Still CUTE and chunky (big head, small body), never realistic, never scary.
+
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. Scale the image up so each art pixel is one solid square block. No anti-aliasing, no gradients, no blur, no soft or transparent shadows, no painterly texture.
+- Light from the TOP-LEFT. Soft 1-pixel dark-brown outline (#2b1d14) around every character and object.
+- Only use colors from this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Lay items out on the requested invisible grid, each item centered in its cell, with clear magenta space between items, never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, watermarks, frames or borders.
+
+THE 12 GODS (in this exact order, used in images 1 and 2):
+1. ARES x TIGER: orange tiger, red-crested bronze Greek helmet, small round shield and short spear, red cape. Brave.
+2. APHRODITE x RABBIT: white-pink rabbit, rose flower crown, pearl scallop-shell ornament on the chest, pink toga. Lovely.
+3. ZEUS x DRAGON: blue-gold eastern dragon (long body coiled up), gold laurel wreath, holding a yellow lightning bolt, sitting on a small white cloud. The king, the most impressive one.
+4. ATHENA x SNAKE: green-teal snake coiled upright, silver Greek helmet with plume, round shield, one small owl feather. Wise.
+5. POSEIDON x HORSE: sea-blue horse with a wavy white-foam mane like waves, golden trident, coral and shell details. Strong.
+6. APOLLO x SHEEP: fluffy golden-fleece sheep, gold sun disc halo behind the head, small golden lyre. Bright and warm.
+7. HERMES x MONKEY: brown monkey, winged petasos hat, small winged sandals, caduceus staff (two little snakes, wings on top). Quick and playful.
+8. HERA x ROOSTER: white rooster with a big PEACOCK-like fan tail with blue-green eyespots, gold queen crown. Elegant.
+9. ARTEMIS x DOG: silver-white dog, crescent-moon headband, small silver bow and quiver. Noble hunter.
+10. DIONYSUS x PIG: pink pig, grape-vine crown with purple grapes, holding a gold cup, purple sash. Jolly.
+11. HEPHAESTUS x RAT: gray rat, leather apron, round brass goggles on the head, small blacksmith hammer, tiny ember sparks. Clever.
+12. DEMETER x OX: cream-brown ox, wheat-ear crown with small flowers, small golden sickle, green sash. Gentle and rich.
+
+THE 6 HEROES (zoo staff, used in images 3 and 4): same body proportions as the attached staff walking sprites (about 16 wide x 26 tall art pixels, chibi human).
+1. HERACLES (guard): lion-pelt hood, muscular tiny chibi, wooden club.
+2. ORPHEUS (performer): green laurel, white toga, golden lyre.
+3. ASCLEPIUS (veterinarian): white robe, staff with one snake coiled around it, kind beard.
+4. ICARUS (coin collector): small white feather wings on the back, sky-blue tunic.
+5. ATALANTA (guide): short green huntress tunic, ponytail, golden apple in hand.
+6. DAEDALUS (janitor): brown work robe, tool belt, small wooden gear on the back.
+
+I attached reference images from the same game (big animals sheet, staff walking sheet, gacha capsules, entrance gate). Match their style exactly.
+Now generate the following 5 images ONE BY ONE, in order. Make each one a separate image. After each image, write only its file name and immediately continue with the next image without asking me. If you have to stop, continue from where you left off when I say "next".
+
+=== IMAGE 1 of 5: gods_field16.png ===
+The 12 gods as field sprites, full body, facing LEFT, standing/sitting like the attached big animals but a bit larger and grander: each about 40 x 40 art pixels (fits inside a 48 x 48 cell).
+Layout: 6 columns x 4 rows. Each god uses TWO side-by-side cells: left cell = NORMAL colors, right cell = AWAKENED version (same pose and size, but the cloth and fur shift to starry night-blue and rainbow tints, gold becomes bright pale gold #fff3a3, add 3-4 tiny white star sparkles touching the body). Gods in order 1-12, three gods per row: row 1 = gods 1,2,3; row 2 = gods 4,5,6; row 3 = gods 7,8,9; row 4 = gods 10,11,12.
+Image size 1536x1024, solid #FF00FF background, no text.
+
+=== IMAGE 2 of 5: gods_portrait16.png ===
+Big portraits of the same 12 gods for the gacha reveal cut-in: head and upper body, 3/4 view facing left, heroic proud expression, each about 88 x 88 art pixels (fits in a 96 x 96 cell). Same design and colors as image 1, just bigger and more detailed (still flat pixel art, 2-3 tone shading).
+Layout: 4 columns x 3 rows, gods 1-12 in order, left to right, top to bottom.
+Image size 1536x1152, solid #FF00FF background, no text.
+
+=== IMAGE 3 of 5: heroes_walk16.png ===
+The 6 heroes as walking staff sprites, facing LEFT, each about 16 x 26 art pixels, same size and style as the attached staff walking sheet.
+Layout: 4 columns x 6 rows. Rows = heroes 1-6 in order. Columns: 1. walk frame A, 2. walk frame B (other leg forward), 3. AWAKENED walk frame A, 4. AWAKENED walk frame B (cloth shifts to starry night-blue and rainbow tints, bright pale gold accents, 2 tiny white star sparkles).
+Image size 1024x1536, solid #FF00FF background, no text.
+
+=== IMAGE 4 of 5: heroes_portrait16.png ===
+Portraits of the 6 heroes for the reveal cut-in: head and upper body, 3/4 view facing left, each about 88 x 88 art pixels (fits in a 96 x 96 cell).
+Layout: 3 columns x 2 rows, heroes 1-6 in order.
+Image size 1152x768, solid #FF00FF background, no text.
+
+=== IMAGE 5 of 5: olympus_extras16.png ===
+Extra Olympus pieces. Layout: 4 columns x 3 rows, each item centered in its cell.
+Row 1:
+ 1. OLYMPUS TEMPLE GATE: a zoo entrance gate shaped like a small Greek temple front: two white marble columns with gold tops, a triangular pediment roof with a gold laurel ornament, an open doorway in the middle, small gold torch on each column; same size and viewpoint as the attached entrance gate (about 108 wide x 100 tall art pixels). Leave a blank flat marble plaque on the pediment (for a name written by the game, no letters).
+ 2. TEMPLE PEDESTAL empty: a round white marble pedestal, about 32 x 20.
+ 3. TEMPLE PEDESTAL filled: same pedestal with a gold laurel ring carved on the front.
+ 4. TEMPLE PEDESTAL golden: same pedestal fully gold with a small star.
+Row 2:
+ 1. DIVINE CAPSULE closed: a gacha capsule (same size as the attached capsules, about 16 x 16) in white marble and gold with a laurel band.
+ 2. DIVINE CAPSULE opening: same capsule cracked open with golden light rays.
+ 3. SMALL CLOUD BASE: a fluffy white cloud platform for a god to stand on, about 36 x 10.
+ 4. GOLDEN HALO RING: a flat golden ring seen slightly from above, about 16 x 6.
+Row 3:
+ 1. MARBLE COLUMN tall: one Greek column with gold capital, about 16 x 64 (used to frame the reveal screen).
+ 2. LAUREL WREATH big: gold laurel wreath, about 40 x 24.
+ 3. MYTHIC CARD FRAME CORNER: a gold Greek key (meander) pattern corner piece, about 16 x 16.
+ 4. RAINBOW STAR BURST: a small 8-point star burst in rainbow pastel bands, about 24 x 24.
+Image size 1536x1152, solid #FF00FF background, no text.

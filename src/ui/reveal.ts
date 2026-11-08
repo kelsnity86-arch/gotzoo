@@ -1,8 +1,10 @@
 // 뽑기 연출: 뽑기 기계가 흔들리고 → 등급 색 캡슐이 열리고 → 카드가 펼쳐진다. 건너뛰기 가능.
 import { GRADES } from '../data/grades';
-import type { Card } from '../game/state';
+import type { Card, StaffCard } from '../game/state';
 import { audio } from './audio';
-import { cardBack, cardEl, cardGrade } from './cardview';
+import { cardBack, cardEl, cardGrade, isNamed } from './cardview';
+import { GODS, HEROES } from '../data/olympus';
+import { godPortrait, heroPortrait } from '../render/sprites';
 import { staffFrame } from '../render/sprites';
 import { pieceArt } from './pieceart';
 import { h, pix } from './dom';
@@ -114,9 +116,32 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   root.append(back);
   audio.sfx('draw');
   // 영웅 · 전설: 화면을 가로지르는 띠(컷인) 위로 큰 그림
-  const star = cards.find((c) => cardGrade(c) === 4) ?? cards.find((c) => cardGrade(c) === 3);
+  const named = cards.find(isNamed);
+  const star = named ?? cards.find((c) => cardGrade(c) === 4) ?? cards.find((c) => cardGrade(c) === 3);
+  /** 신화(올림푸스) 컷인: 어두운 하늘이 갈라지고 신전 기둥 사이로 초상화 · 칭호 · 이름. 각성이면 무지개로 한 번 더 */
+  const showMythic = (c: Card) => {
+    const god = c.kind === 'animal' && c.god !== undefined ? GODS[c.god] : null;
+    const hero = c.kind === 'staff' && c.hero !== undefined ? HEROES[c.hero] : null;
+    const awake = c.kind === 'animal' ? !!c.shiny : c.kind === 'staff' ? !!c.awake : false;
+    const d = god ?? hero!;
+    const art = god ? godPortrait(god.id, awake, god.base) : heroPortrait(hero!.id, awake, (c as StaffCard).staff);
+    const col = () => (hasPng('v2_oly_column') ? pix('v2_oly_column', 260, 'pix myth-col') : h('div', { class: 'myth-col plain' }));
+    const show = h('div', { class: `mythic-cutin${awake ? ' awake' : ''}`, style: `--mc:${d.color}` },
+      h('div', { class: 'myth-sky' }), h('div', { class: 'myth-crack' }),
+      col(), col(),
+      h('div', { class: 'myth-art' }, hasPng('v2_oly_halo') ? pix('v2_oly_halo', 120, 'pix myth-halo') : null, pix(art, 240)),
+      h('div', { class: 'myth-title' }, `${d.title}${god ? ` · ${god.god} × ${god.zodiac}` : ''}`),
+      h('div', { class: 'myth-name' }, d.name),
+      h('div', { class: 'myth-tag' }, awake ? '✦ 각성 ✦' : god ? '신화 등장!' : '신화 영웅 합류!'));
+    back.append(show);
+    audio.sfx('legend');
+    if (awake) window.setTimeout(() => { show.classList.add('burst2'); audio.sfx('legend'); }, 1300);
+    show.addEventListener('click', (e) => { e.stopPropagation(); show.remove(); });
+    window.setTimeout(() => show.remove(), awake ? 4600 : 3600);
+  };
   const showStar = () => {
     if (!star) return;
+    if (isNamed(star)) { showMythic(star); return; }
     const g = cardGrade(star), legend = g === 4;
     const art = star.kind === 'animal' ? pix(`animal_${String(star.animal).padStart(3, '0')}`, 176) : star.kind === 'staff' ? pix(hasPng(`v2_sw_${String(STAFF.findIndex((d) => d.kind === star.staff)).padStart(2, '0')}_f0`) ? `v2_sw_${String(STAFF.findIndex((d) => d.kind === star.staff)).padStart(2, '0')}_f0` : staffFrame(star.staff, 0), 150) : pix(pieceArt(star, 0, 32), 176);
     const banner = hasPng(`v2_cutin_${legend ? 'legend' : 'epic'}`) ? pix(`v2_cutin_${legend ? 'legend' : 'epic'}`, 1200, 'pix cutin-band') : null;

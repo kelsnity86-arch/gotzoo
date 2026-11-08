@@ -6,17 +6,22 @@ import juaKo from '@fontsource/jua/files/jua-korean-400-normal.woff2?url';
 import juaLa from '@fontsource/jua/files/jua-latin-400-normal.woff2?url';
 import gowunKo from '@fontsource/gowun-dodum/files/gowun-dodum-korean-400-normal.woff2?url';
 import gowunLa from '@fontsource/gowun-dodum/files/gowun-dodum-latin-400-normal.woff2?url';
-import { defaultSave, loadSave, writeSave } from './game/state';
+import { defaultSave, loadSave, writeSave, type Card, type StaffCard } from './game/state';
 import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
-import { SEASON, rivalOf } from './data/rivals';
+import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero } from './game/rules';
+import { showReveal } from './ui/reveal';
+import { SEASON, rivalOf, RIVAL_COND } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
-import { hasPng, preloadPngs } from './render/sprites';
+import { animalFrame, godFrame, hasPng, heroFrame, preloadPngs, shinyOf, staffFrame } from './render/sprites';
+import { GODS, HEROES } from './data/olympus';
+import { ANIMALS } from './data/animals';
+import { GRADES } from './data/grades';
+import { staffDef } from './data/staff';
 import { Panel, openPenSheet } from './ui/panel';
 import { motion } from './ui/motion';
 import { STAR_NEED } from './data/balance';
@@ -472,7 +477,7 @@ function showReport(r: import('./game/world').DayReport) {
         h('div', { class: `wide vs${ahead ? ' ahead' : ' behind'}` },
           h('b', {}, `규모 ${fmt(r.mine)} vs ${r.rivalName} ${fmt(r.rival)}`),
           h('span', {}, r.season ? '시즌 마지막 날 결과는…' : `${ahead ? `${fmt(r.mine - r.rival)} 앞서는 중` : `${fmt(r.rival - r.mine)} 뒤지는 중`} · 시즌 ${r.seasonDay}/${SEASON.days}일`))),
-      !r.season && !ahead && left === 1 ? h('div', { class: 'warn' }, '⚠ 내일이 마지막 날! 규모가 작으면 동물원이 문을 닫아요') : null,
+      !r.season && !ahead && left === 1 ? h('div', { class: 'warn' }, save.lastChance ? '⚠ 내일이 마지막 날! 최후의 기회라 지면 폐원해요 · 지고 있으면 막판 대목이 열려요' : '⚠ 내일이 마지막 날! 지면 평판 하트가 깨져요') : null,
       r.coinsAfter < 0 ? h('div', { class: 'warn' }, r.strikeNext ? `⚠ 빚이 ${r.debtDays}일째! 내일 직원들이 파업해요` : `⚠ 빚 ${fmt(-r.coinsAfter)}코인 · 갚기 전엔 뽑기·공사 불가, 3일 이어지면 파업 (${r.debtDays}일째)`) : null,
       missions.length ? h('div', { class: 'mlist' }, h('div', { class: 'section-title' }, `영업 미션 ${r.missionTickets ? `· 뽑기권 +${r.missionTickets}` : ''}`), ...missions) : null,
       h('button', { class: 'btn', onclick: close }, r.season ? '결과 보기' : '밤 정비 시작')));
@@ -506,10 +511,40 @@ function showSeason(r: import('./game/world').DayReport) {
           h('div', { class: 'side' }, archEl(archTier(r.rival), r.rivalName, RIVAL_HUE[rIdx]), h('b', {}, `라이벌 · ${rivalOf(se.n).owner}`), h('div', { class: 'num rival' }, fmt(r.rival)))),
         h('div', { class: 'scalebar' }, h('i', { style: `width:${(r.mine / total) * 100}%;background:#38a35b` }), h('i', { style: `width:${(r.rival / total) * 100}%;background:hsl(${(330 + RIVAL_HUE[rIdx]) % 360},70%,70%)` })),
         h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
+        se.heartBack ? h('div', { class: 'heart-break good' }, '💔 → ❤️ 평판 하트를 되찾았어요!') : null,
+        se.cheer ? h('div', { class: 'sub' }, `막판 응원 점수 +${fmt(se.cheer)}`) : null,
         h('div', { class: 'sub' }, `다음 계절 ${seasonOf(se.n + 1).icon}${seasonOf(se.n + 1).name} · 라이벌 ${next.name} (${next.owner}) · 더 강해졌어요`),
         h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); if (r.yearEval) showYearEval(r.yearEval); } }, r.yearEval ? '올해의 동물원 평가 보기' : '좋아!')));
     ui.append(back);
-  } else showClosure();
+  } else if (se.survived) showSurvive(r);
+  else showClosure();
+}
+/** 처음 진 시즌: 하트가 깨지고 최후의 기회 */
+function showSurvive(r: import('./game/world').DayReport) {
+  audio.sfx('fuseFail');
+  const se = r.season!;
+  const rIdx = (se.n - 1) % RIVAL_HUE.length;
+  const back = h('div', { class: 'overlay' },
+    h('div', { class: 'fuse-result season-vs lose' },
+      h('div', { class: 'reveal-title' }, `${seasonOf(se.n).icon} ${seasonOf(se.n).name} 시즌 패배…`),
+      h('div', { class: 'vs' },
+        h('div', { class: 'side small' }, archEl(save.upgrades.deco ?? 0, zooName(), null, save.stars ?? 0), h('b', {}, '우리 동물원'), h('div', { class: 'num mine' }, fmt(r.mine))),
+        h('div', { class: 'vsx' }, 'VS'),
+        h('div', { class: 'side big' }, archEl(archTier(r.rival), r.rivalName, RIVAL_HUE[rIdx]), h('b', {}, `라이벌 · ${rivalOf(se.n).owner}`), h('div', { class: 'num rival' }, fmt(r.rival)))),
+      h('div', { class: 'heart-break' }, '❤️ → 💔'),
+      h('div', { class: 'offline-amount' }, '평판 하트가 깨졌어요'),
+      h('div', { class: 'sub' }, '이번 시즌 보상은 없어요. 다음 시즌은 최후의 기회! 이기면 하트가 돌아오고, 지면 폐원해요. 마지막 날 지고 있으면 막판 대목이 열려요.'),
+      h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '다시 일어서기')));
+  ui.append(back);
+}
+/** 막판 대목 시작 알림 */
+function showLastStand() {
+  const back = h('div', { class: 'overlay stand' },
+    h('div', { class: 'fuse-result stand-box' },
+      h('div', { class: 'reveal-title' }, '🔥 막판 대목! 🔥'),
+      h('div', { class: 'sub' }, '최후의 기회 마지막 날, 지고 있어요. 오늘은 피버 게이지가 훨씬 빨리 차고, 동전 비가 두 배! 손으로 주운 동전이 응원 점수가 되어 규모에 더해져요.'),
+      h('button', { class: 'btn big gold', onclick: () => back.remove() }, '뒤집어 보자!')));
+  ui.append(back);
 }
 /** 1년 평가: 항목 막대 · 별 (올라가기만) · 다음 별까지 */
 function showYearEval(e: YearEval) {
@@ -558,6 +593,7 @@ function applyZooName() {
 
 function showClosure() {
   audio.sfx('fuseFail');
+  const picked = { animals: new Set<number>(), staff: null as number | null };
   const rc = save.records;
   const back = h('div', { class: 'overlay closure' },
     h('div', { class: 'fuse-result' },
@@ -568,9 +604,42 @@ function showClosure() {
         h('div', {}, h('b', {}, `${save.season.n - 1}번 · ${Math.floor((save.season.n - 1) / 4)}년`), h('span', {}, '이긴 라이벌 · 버틴 해')),
         h('div', {}, h('b', {}, `${Math.max(rc.bestDay, save.day)}일`), h('span', {}, '최고 기록')),
         h('div', {}, h('b', {}, `${save.dex.filter(Boolean).length}종`), h('span', {}, '도감 (그대로 남아요)'))),
-      h('div', { class: 'sub' }, '동물원·돈·코인·카드는 처음부터 다시 시작해요. 도감과 기록은 남아요.'),
-      h('button', { class: 'btn big', onclick: () => replaceSave(closeZoo(save)) }, '새 동물원 열기')));
+      h('div', { class: 'sub' }, '돈·코인·우리·건물은 처음부터 다시 시작해요. 도감 · 기록 · 올림푸스 신전은 남아요.'),
+      carryPicker(picked),
+      h('button', { class: 'btn big', onclick: () => replaceSave(closeZoo(save, { animals: [...picked.animals], staff: picked.staff })) }, '새 동물원 열기')));
   ui.append(back);
+}
+/** 폐원 때 데려갈 동물(칸 안) · 직원 1명 고르기 */
+function carryPicker(picked: { animals: Set<number>; staff: number | null }) {
+  const slots = carrySlots(save);
+  const animals = save.cards.filter((c): c is Extract<Card, { kind: 'animal' }> => c.kind === 'animal')
+    .sort((a, b) => carryCost(b) - carryCost(a) || (b.god ?? -1) - (a.god ?? -1));
+  const staff = save.cards.filter((c): c is StaffCard => c.kind === 'staff').sort((a, b) => (b.hero !== undefined ? 9 : b.grade) - (a.hero !== undefined ? 9 : a.grade));
+  const used = () => animals.filter((c) => picked.animals.has(c.uid)).reduce((t, c) => t + carryCost(c), 0);
+  const head = h('div', { class: 'carry-head' });
+  const grid = h('div', { class: 'carry-grid' });
+  const sgrid = h('div', { class: 'carry-grid staff' });
+  const draw = () => {
+    head.textContent = `데려갈 동물 ${used()} / ${slots}칸 · 직원 ${picked.staff !== null ? 1 : 0} / 1명`;
+    grid.replaceChildren(...animals.slice(0, 60).map((c) => {
+      const on = picked.animals.has(c.uid), cost = carryCost(c), can = on || used() + cost <= slots;
+      const art = c.god !== undefined ? godFrame(c.god, !!c.shiny, GODS[c.god].base) : c.shiny ? shinyOf(animalFrame(c.animal, 0)) : animalFrame(c.animal, 0);
+      return h('button', { class: `carry-item${on ? ' on' : ''}${can ? '' : ' off'}${c.god !== undefined ? ' mythic' : ''}`, title: c.god !== undefined ? GODS[c.god].name : ANIMALS[c.animal].name,
+        onclick: () => { if (on) picked.animals.delete(c.uid); else if (can) picked.animals.add(c.uid); audio.sfx('buy'); draw(); } },
+        pix(art, 30), h('small', {}, `${cost}칸`));
+    }));
+    sgrid.replaceChildren(...staff.slice(0, 20).map((c) => {
+      const on = picked.staff === c.uid;
+      const art = c.hero !== undefined ? heroFrame(c.hero, !!c.awake, c.staff, 0) : staffFrame(c.staff, 0);
+      return h('button', { class: `carry-item${on ? ' on' : ''}${c.hero !== undefined ? ' mythic' : ''}`, title: c.hero !== undefined ? HEROES[c.hero].name : staffDef(c.staff).name,
+        onclick: () => { picked.staff = on ? null : c.uid; audio.sfx('buy'); draw(); } }, pix(art, 30), h('small', {}, c.hero !== undefined ? '신화' : GRADES[c.grade].name));
+    }));
+  };
+  draw();
+  return h('div', { class: 'carry' }, head,
+    h('div', { class: 'sub' }, `칸: 일반·고급 1 · 희귀 2 · 영웅 3 · 전설 4 · 신화 3 · 반짝이 +1 (지나온 시즌 2번마다 1칸 늘어요)`),
+    animals.length ? grid : h('div', { class: 'sub' }, '데려갈 동물이 없어요'),
+    staff.length ? h('div', { class: 'section-title' }, '함께 갈 직원 1명') : null, staff.length ? sgrid : null);
 }
 
 // ── 자리 비움 수익 ──
@@ -605,7 +674,9 @@ function frame(now: number) {
       if (sd === 1) {
         const se = seasonOf(save.season.n);
         toast(`${se.icon} ${yearOf(save.season.n)}년 ${se.name}이 왔어요! ${habitatKo[se.strong]} 동물 +20%${se.weak ? ` · ${habitatKo[se.weak]} −15%` : ''}${se.climate ? ` · ${se.climateName}` : ''}`, 'gold', 3600);
-        window.setTimeout(() => toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! ${SEASON.days}일째 밤에 규모로 겨뤄요`, 'gold', 3200), 1400);
+        const cd = RIVAL_COND[save.season.cond ?? 1];
+        window.setTimeout(() => toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! 컨디션 ${cd.icon} ${cd.name} · ${SEASON.days}일째 밤에 규모로 겨뤄요`, cd.key === 'hot' ? 'bad' : 'gold', 3400), 1400);
+        if (save.lastChance) window.setTimeout(() => toast('💔 최후의 기회! 이번 시즌에 지면 폐원해요', 'bad', 3400), 3000);
       }
       else if (sd === SEASON.days) toast(`${ev.day}일째 아침 · 시즌 마지막 날! 오늘 결판나요`, 'bad', 3000);
       else toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200);
@@ -613,6 +684,8 @@ function frame(now: number) {
       persist(); panel.render(true);
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
+    else if (ev.type === 'rivalNews') { window.setTimeout(() => toast(`📰 ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
+    else if (ev.type === 'lastStand') { audio.sfx('legend'); window.setTimeout(() => showLastStand(), 300); }
     else if (ev.type === 'fever') { if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
     else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
@@ -687,7 +760,8 @@ function updateHud() {
   // 라이벌
   const mine = world.scale, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
   rivalChip.classList.toggle('losing', mine < rv);
-  rivalText.innerHTML = ''; rivalText.append(`🏆 ${fmt(mine)} vs `, h('span', { class: 'rv-name' }, `${rivalOf(save.season.n).name} `), `${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`);
+  const cond = RIVAL_COND[save.season.cond ?? 1];
+  rivalText.innerHTML = ''; rivalText.append(save.lastChance ? h('span', { class: 'last-chance', title: '최후의 기회: 이번에 지면 폐원' }, '💔') : h('span', { title: '평판 하트: 한 번 져도 버텨요' }, '❤️'), `🏆 ${fmt(mine)} vs `, h('span', { class: 'rv-name' }, `${rivalOf(save.season.n).name} `), h('span', { title: `라이벌 컨디션: ${cond.name}` }, cond.icon), ` ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`, world.lastStand ? h('span', { class: 'stand-tag' }, ' 막판 대목!') : '');
   rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;
   const pr = panel.el.getBoundingClientRect();
   // 세로 화면 서랍이 필드를 덮을 때만 서랍 위로
@@ -731,6 +805,6 @@ async function boot() {
   // 부지 모양이 바뀐 예전 저장: 부지 밖으로 나간 우리가 있으면 다시 배치
   { const [bw, bh] = boardDims(save); if (save.board.some((_, i) => penCells(save, i).some(([x, y]) => x >= bw || y >= bh))) { autoArrangePens(save); world.relayout(-1); persist(); toast('동물원 부지가 새 모양으로 바뀌어 우리를 다시 놓았어요', 'info', 3200); } }
   // 개발·검증용 핸들 (?debug)
-  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval };
+  if (new URLSearchParams(location.search).has('debug')) (window as unknown as Record<string, unknown>).__zoo = { get save() { return save; }, set save(v) { save = v; }, world, panel, persist, field, showSeason, showYearEval, showClosure, showSurvive, showLastStand, gainGod, gainHero, showReveal };
 }
 boot();

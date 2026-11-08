@@ -3,11 +3,14 @@ import { ANIMALS, HABITAT_NAMES } from '../data/animals';
 import { GRADES } from '../data/grades';
 import { staffDef, staffOptDef } from '../data/staff';
 import type { Card } from '../game/state';
-import { animalFrame, hasPng, shinyOf, sprite, staffFrame, type Sprite } from '../render/sprites';
+import { animalFrame, godFrame, hasPng, heroFrame, shinyOf, sprite, staffFrame, type Sprite } from '../render/sprites';
+import { GODS, HEROES } from '../data/olympus';
 import { seasonByKey } from '../data/seasons';
 import { h, pix } from './dom';
 
-export function cardGrade(c: Card): number { return c.kind === 'animal' ? ANIMALS[c.animal].grade : c.grade; }
+export function cardGrade(c: Card): number { return c.kind === 'animal' ? (c.god !== undefined ? 4 : ANIMALS[c.animal].grade) : c.grade; }
+/** 네임드(신 · 영웅)인지 */
+export const isNamed = (c: Card) => (c.kind === 'animal' && c.god !== undefined) || (c.kind === 'staff' && c.hero !== undefined);
 import { pieceArt } from './pieceart';
 import { capOfCells } from '../game/rules';
 import { penOptDef, pieceDef, PEN_THEME_BONUS } from '../data/pieces';
@@ -36,10 +39,21 @@ function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
 export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean } = {}): HTMLElement {
   // l = 크게(한두 장), r = 뽑기 결과 여러 장, m = 작게
   const big = opts.size === 'l' || opts.size === 'r';
-  const g = GRADES[c.kind === 'animal' ? ANIMALS[c.animal].grade : c.grade];
+  const g = GRADES[cardGrade(c)];
+  const named = isNamed(c);
   const key = g.key;
   let name: string, gradeLabel: string, sub: string, art: Sprite, shiny = false;
-  if (c.kind === 'staff') {
+  if (c.kind === 'animal' && c.god !== undefined) {
+    const d = GODS[c.god]; shiny = !!c.shiny;
+    name = d.name; gradeLabel = `${shiny ? '✦각성 ' : ''}신화 · ${d.title}`;
+    sub = big ? `${d.god} × ${d.zodiac} · ${d.desc(d.value * (shiny ? 1.5 : 1))}` : d.title;
+    art = godFrame(c.god, shiny, d.base);
+  } else if (c.kind === 'staff' && c.hero !== undefined) {
+    const d = HEROES[c.hero]; shiny = !!c.awake;
+    name = d.name; gradeLabel = `${shiny ? '✦각성 ' : ''}신화 영웅 · ${staffDef(c.staff).name}`;
+    sub = big ? `${d.title} · ${d.desc(d.value * (shiny ? 1.5 : 1))}` : d.title;
+    art = heroFrame(c.hero, shiny, c.staff, 0);
+  } else if (c.kind === 'staff') {
     name = staffDef(c.staff).name; gradeLabel = `${g.name} 직원`;
     // 직원: 효과 + 특수옵션 (큰 카드만 설명까지)
     sub = big ? [staffDef(c.staff).desc(staffDef(c.staff).values[c.grade]), ...c.opts.map((o) => `★ ${staffOptDef(o.id).name}`)].join(' · ') : '';
@@ -58,17 +72,17 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
   }
   if (hasPng('cards_01') || hasPng('v2_card_common')) {
     const v3 = hasPng('v2_card_common');
-    const frame = v3 ? `v2_card_${c.kind === 'staff' ? 'staff' : c.kind === 'pen' ? 'pen' : key}` : `cards_0${g.id + 1}`;
+    const frame = v3 ? `v2_card_${named ? 'legend' : c.kind === 'staff' ? 'staff' : c.kind === 'pen' ? 'pen' : key}` : `cards_0${g.id + 1}`;
     // 여러 장일 때는 화면 폭에 3장이 들어가게
     const rPx = typeof window !== 'undefined' ? Math.min(160, Math.floor((window.innerWidth - 70) / 3.6), Math.floor(window.innerHeight / 4.2)) : 160;
     const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
-    return h('div', { class: `card art${v3 ? ' v3' : ''} g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
+    return h('div', { class: `card art${v3 ? ' v3' : ''} g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}${named ? ' mythic' : ''}` },
       h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
       h('div', { class: 'card-grade' }, gradeLabel),
       sub ? h('div', { class: 'card-sub' }, sub) : null,
       opts.isNew ? h('span', { class: 'card-new' }, 'NEW') : null);
   }
-  return h('div', { class: `card g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}` },
+  return h('div', { class: `card g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}${named ? ' mythic' : ''}` },
     h('div', { class: 'card-grade' }, gradeLabel),
     h('div', { class: 'card-art' }, pix(art, big ? 64 : 40)),
     h('div', { class: 'card-name' }, name),

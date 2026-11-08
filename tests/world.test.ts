@@ -146,10 +146,11 @@ describe('낮과 밤', () => {
 });
 
 describe('라이벌 동물원 (규모 대결)', () => {
-  async function playDays(n: number, big: boolean) {
+  async function playDays(n: number, big: boolean, lastChance = false) {
     const { DAY } = await import('../src/data/balance');
     const { s, w } = setup();
-    if (big) for (let i = 0; i < 6; i++) { s.cards.push({ uid: 700 + i, kind: 'animal', animal: 95 }); s.pens[i % 2].push(700 + i); } // 전설로 규모를 키운다
+    s.lastChance = lastChance;
+    if (big) for (let i = 0; i < 12; i++) { s.cards.push({ uid: 700 + i, kind: 'animal', animal: 95 }); s.pens[i % 4].push(700 + i); } // 전설로 규모를 키운다
     const reports: DayReport[] = [];
     for (let d = 0; d < n; d++) {
       for (let i = 0; i < 30 * (DAY.dayLen + 1); i++) { w.update(1 / 30, null); for (const e of w.events) if (e.type === 'night') reports.push(e.report); w.events.length = 0; }
@@ -167,13 +168,21 @@ describe('라이벌 동물원 (규모 대결)', () => {
     expect(s.season.start).toBe(8);
     expect(s.records.bestSeasons).toBe(1);
   });
-  it('지면 폐원 표시가 남고 더 못 연다', async () => {
+  it('처음 지면 평판 하트로 버티고(최후의 기회) 다음 시즌으로', async () => {
     const { s, reports } = await playDays(7, false);
+    expect(reports[6].season?.result).toBe('lose');
+    expect(reports[6].season?.survived).toBe(true);
+    expect(s.lastChance).toBe(true);
+    expect(s.season.lost).toBeUndefined();
+    expect(s.season.n).toBe(2);
+  });
+  it('최후의 기회에서 또 지면 폐원 표시가 남고 더 못 연다', async () => {
+    const { s, reports } = await playDays(7, false, true);
     expect(reports[6].season?.result).toBe('lose');
     expect(s.season.lost).toBe(true);
   });
   it('폐원 후 새 동물원: 도감 · 기록만 남는다', async () => {
-    const { s } = await playDays(7, false);
+    const { s } = await playDays(7, false, true);
     s.dex[5] = true;
     const n = closeZoo(s);
     expect(n.cards.filter((c) => c.kind !== 'pen')).toHaveLength(0);

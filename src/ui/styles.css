@@ -675,3 +675,60 @@ body.reduce-motion .gacha-gauge.fever { animation: none; }
 .cap-line { font-size: 12px; margin: 2px 0 6px; color: var(--ink, #5d3a24); }
 .cap-line.full { color: #c0392b; font-weight: 700; }
 .cap-line small { color: #8a6a4a; font-weight: 400; }
+
+/* ── 올림푸스: 신화 컷인 · 카드 · 하트 ── */
+.mythic-cutin { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; overflow: hidden; cursor: pointer; }
+.mythic-cutin .myth-sky { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--mc) 55%, #fff6d8) 0%, #2b2140 55%, #120c1e 100%); animation: myth-fade .5s ease-out both; }
+.mythic-cutin .myth-crack { position: absolute; left: 50%; top: 0; width: 6px; height: 100%; background: linear-gradient(#fff3a3, #fff, #fff3a3); box-shadow: 0 0 40px 18px #fff3a3; transform: translateX(-50%) scaleX(0); animation: myth-crack 1s .15s ease-out both; }
+.mythic-cutin .myth-col { position: absolute; bottom: 4%; height: 74%; image-rendering: pixelated; animation: myth-rise .7s .2s ease-out both; }
+.mythic-cutin .myth-col:nth-of-type(3) { left: 14%; } .mythic-cutin .myth-col:nth-of-type(4) { right: 14%; }
+.mythic-cutin .myth-col.plain { width: 46px; background: repeating-linear-gradient(90deg, #f4f4f4 0 8px, #c7cfdd 8px 12px); border-top: 14px solid #f7c948; border-bottom: 14px solid #f7c948; }
+.mythic-cutin .myth-art { position: relative; display: grid; place-items: center; animation: myth-descend .9s .35s cubic-bezier(.2, 1.4, .4, 1) both; filter: drop-shadow(0 0 18px var(--mc)); }
+.mythic-cutin .myth-halo { position: absolute; top: -18px; animation: myth-spin 3s linear infinite; }
+.mythic-cutin .myth-title { position: relative; margin-top: 8px; font: 18px Jua, sans-serif; color: #fff3a3; text-shadow: 0 2px 0 #2b1d14; animation: myth-fade .4s .9s both; }
+.mythic-cutin .myth-name { position: relative; font: 56px Jua, sans-serif; color: #fff; -webkit-text-stroke: 3px var(--mc); text-shadow: 0 4px 0 #2b1d14, 0 0 24px var(--mc); animation: myth-pop .5s 1s cubic-bezier(.2, 1.6, .4, 1) both; }
+.mythic-cutin .myth-tag { position: relative; margin-top: 6px; padding: 4px 16px; border-radius: 99px; background: linear-gradient(90deg, #f7c948, #fff3a3, #f7c948); font: 16px Jua, sans-serif; color: #5d3a24; animation: myth-fade .4s 1.2s both; }
+.mythic-cutin { grid-template-rows: auto auto auto auto; align-content: center; }
+.mythic-cutin.awake .myth-tag { background: linear-gradient(90deg, #ff9ad5, #fff3a3, #73eff7, #b7f58a, #ff9ad5); background-size: 200% 100%; animation: myth-fade .4s 1.2s both, myth-rainbow 1.2s linear infinite; }
+.mythic-cutin.burst2 .myth-sky { animation: myth-rainbow-sky 1.4s ease-out both; }
+@keyframes myth-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes myth-crack { 0% { transform: translateX(-50%) scaleX(0); opacity: 1; } 40% { transform: translateX(-50%) scaleX(1); } 100% { transform: translateX(-50%) scaleX(60); opacity: 0; } }
+@keyframes myth-rise { from { transform: translateY(110%); } to { transform: none; } }
+@keyframes myth-descend { from { transform: translateY(-120%) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes myth-pop { from { transform: scale(2.4); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes myth-spin { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
+@keyframes myth-rainbow { from { background-position: 0 0; } to { background-position: 200% 0; } }
+@keyframes myth-rainbow-sky { 0% { filter: hue-rotate(0) brightness(2.2); } 100% { filter: hue-rotate(360deg) brightness(1); } }
+.card.mythic { box-shadow: 0 0 0 3px #f7c948, 0 0 18px 4px #fff3a3; border-radius: 10px; }
+.card.mythic .card-grade { color: #b8860b; font-weight: 700; }
+.card.mythic.shiny { box-shadow: 0 0 0 3px #f7c948, 0 0 22px 6px #ff9ad5, 0 0 30px 10px #73eff7; }
+.last-chance { animation: lc-blink 1s steps(2) infinite; margin-right: 2px; }
+@keyframes lc-blink { 50% { opacity: .35; } }
+.stand-tag { color: #ffde59; font-weight: 700; animation: lc-blink .6s steps(2) infinite; }
+.heart-break { font-size: 34px; text-align: center; margin: 6px 0; animation: myth-pop .6s both; }
+.heart-break.good { font-size: 18px; color: #38a35b; font-weight: 700; }
+.season-vs.lose .side.big .arch { transform: scale(1.15); }
+.season-vs.lose .side.small { opacity: .75; }
+.stand-box { border: 3px solid #f7c948; background: linear-gradient(#fff6e0, #ffe2b0); }
+.temple-head { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 10px; background: linear-gradient(135deg, #fff6d8, #f2e3a0); border: 2px solid #e0a526; margin-bottom: 8px; }
+.temple-head small { color: #8a5a3b; }
+.temple-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.temple-seat { position: relative; display: flex; flex-direction: column; align-items: center; padding: 6px 4px 8px; border-radius: 10px; background: #f6efe1; border: 2px solid #e8d8b8; text-align: center; min-height: 128px; }
+.temple-seat.lv1 { background: linear-gradient(#fffaf0, #f6e6c8); border-color: var(--mc); }
+.temple-seat.lv2 { background: linear-gradient(#fff3a3, #f7c948); border-color: #e0a526; box-shadow: 0 0 10px #fff3a3; }
+.temple-seat .temple-art { height: 56px; display: grid; place-items: end center; }
+.temple-seat .ped { position: absolute; bottom: 30px; opacity: .9; }
+.temple-seat .ped.plain { width: 46px; height: 8px; border-radius: 50%; background: #c7cfdd; }
+.temple-seat b { font-size: 13px; margin-top: 4px; }
+.temple-seat small { font-size: 10px; color: #8a6a4a; }
+.temple-seat .tdesc { color: #5d3a24; margin-top: 2px; line-height: 1.25; }
+.carry { margin: 8px 0; padding: 8px; border-radius: 10px; background: #f6efe1; max-height: 44vh; overflow: auto; }
+.carry-head { font-weight: 700; margin-bottom: 4px; }
+.carry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 4px; margin: 6px 0; }
+.carry-item { display: flex; flex-direction: column; align-items: center; padding: 3px; border-radius: 8px; border: 2px solid #e8d8b8; background: #fffaf0; cursor: pointer; }
+.carry-item small { font-size: 10px; }
+.carry-item.on { border-color: #38a35b; background: #e6f6dc; box-shadow: 0 0 0 2px #a7d65b; }
+.carry-item.off { opacity: .4; cursor: not-allowed; }
+.carry-item.mythic { border-color: #e0a526; }
+.temple-seat .ped { position: static; margin-top: -3px; margin-bottom: 2px; }
+.temple-seat .ped.plain { width: 46px; height: 6px; }
