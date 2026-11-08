@@ -1,0 +1,32 @@
+Create a production game sprite sheet for BbopZOO. OUTPUT EXACTLY 1024x1024 square. Exactly 25 distinct whole-body animal sprites on a strictly invisible 5 columns x 5 rows grid. Evenly spaced cell centers at about x=102,307,512,717,922 and y=102,307,512,717,922. All 25 sprites visible and separate. No missing rows, no extra animals, no captions.
+TRUE LOW-RES 16x16 PIXEL ART: each animal must fit a 16 by 16 logical-pixel bitmap, enlarged NEAREST NEIGHBOR 8x to approximately 128x128 image pixels; one logical pixel is an 8x8 SOLID SQUARE block. Never draw sub-pixel details. Dark one-logical-pixel outline #1a1c2c. Use chunky stepped contours, one-pixel square eye, big round head, tiny chunky feet, expressive species silhouette, appealing polished handheld-console sprite design. 3/4 view facing LEFT. Whole body with no amputated feet/ears/tail. No smooth vector curves. Only 1-2 tone flat shading, absolutely no gradients, antialiasing, blur, soft shadows, checkerboard, ground or cast shadows, frames, borders, grid lines, typography, numerals, labels, watermarks.
+Background MUST be perfectly uniform solid MAGENTA #FF00FF over all empty space. Do not use magenta/pink-magenta in animals. Ample margins and gaps; artwork within each 160x160 central cell area.
+Only permitted colors: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Common: 3-4 colors, simple friendly. Uncommon: 4-5 colors and distinctive species traits. Rare: 5-6 colors and bright accents. Epic: rich majestic silhouette, 1-2 tiny sparkle logical pixels inside its own sprite footprint. Legendary: mythical, gold and bright flat-color accents but NO smooth glow.
+IMPORTANT: readability through deliberate bold 16x16 pixel clusters, not through adding high-resolution details. All animals share same pixel size and art direction.
+
+SHEET animals16_05.png. EXACT ROW-MAJOR ORDER (never print names/numbers):
+1. camel — uncommon
+2. ostrich — uncommon
+3. crocodile — uncommon
+4. hippo — uncommon
+5. anteater — uncommon
+6. toucan — uncommon
+7. coyote — uncommon
+8. jackal — uncommon
+9. hyena — uncommon
+10. sea lion — uncommon
+11. sea otter floating on back — uncommon
+12. pelican — uncommon
+13. red-crowned crane — uncommon
+14. stork — uncommon
+15. cockatoo — uncommon
+16. heron — uncommon
+17. vulture — uncommon
+18. falcon — uncommon
+19. mandarin duck — uncommon
+20. swan — uncommon
+21. reindeer — uncommon
+22. arctic fox — uncommon
+23. marten — uncommon
+24. coati — uncommon
+25. wombat — uncommon
