@@ -1,0 +1,5220 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 14,
+  "requested_slot_count": 376,
+  "count_note": "Requested cells, including model views, poses and walk frames; not 376 unique people.",
+  "sheets": [
+    {
+      "filename": "people_lineup16.png",
+      "path": "assets/spritesheets16/people-actions/model/people_lineup16.png",
+      "group": "model",
+      "season": null,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        2
+      ],
+      "sha256": "153949cfee2a07e8b2de9fb039defe26286e3936c6bf6a814d31f5a9abbc67f2",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "stand_front",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        }
+      ]
+    },
+    {
+      "filename": "people_walk16_spring.png",
+      "path": "assets/spritesheets16/people-actions/walk/people_walk16_spring.png",
+      "group": "walk",
+      "season": "spring",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        2
+      ],
+      "sha256": "739a17e72ac190a06403e646cd41cc625f137b3b8e497589c42a4f9631e61682",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_spring_a.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_a.png",
+      "group": "poses",
+      "season": "spring",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "09e5a8cd0d80204a6b401dc6ac175f20cd58887e412539e86ebebe176ce44e3f",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_spring_b.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_b.png",
+      "group": "poses",
+      "season": "spring",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "a5389420f3e09e22b920adc37315a9c583e1832460e79cc7040031f4a1528511",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "seasonal_food",
+          "food": "ice_cream_cone",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_walk16_summer.png",
+      "path": "assets/spritesheets16/people-actions/walk/people_walk16_summer.png",
+      "group": "walk",
+      "season": "summer",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        2
+      ],
+      "sha256": "7310be7f0cfae8dafcb85a8162af46d49ea3326e3bdc1dfeb9bdb50fe384d870",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_summer_a.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_a.png",
+      "group": "poses",
+      "season": "summer",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "a94e416d57f4584c7391bde827fbc807d7ccb5058b90d9582891afdd6866a216",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_summer_b.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_b.png",
+      "group": "poses",
+      "season": "summer",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "4f08d51c8499b7b251bf2110b25950400f9471b22bb0408d00aba105da35aa7f",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "seasonal_food",
+          "food": "popsicle",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_walk16_autumn.png",
+      "path": "assets/spritesheets16/people-actions/walk/people_walk16_autumn.png",
+      "group": "walk",
+      "season": "autumn",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        2
+      ],
+      "sha256": "f3f798ffd1d9aec04ed025b2404030223dcbcde0087606cc12228e7bcce7d388",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_autumn_a.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_a.png",
+      "group": "poses",
+      "season": "autumn",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "4e9be27c9392433dd6d42cec713c8782eaba0f537645879dcf0a2088af0bfd9e",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_autumn_b.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_b.png",
+      "group": "poses",
+      "season": "autumn",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "1c04ca5b20b9c5cc63db4c99801e7f34addfa8573e149211d00046ae1c81eb20",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "seasonal_food",
+          "food": "corn_dog",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_walk16_winter.png",
+      "path": "assets/spritesheets16/people-actions/walk/people_walk16_winter.png",
+      "group": "walk",
+      "season": "winter",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "requested_grid": [
+        8,
+        2
+      ],
+      "sha256": "839f4aa714e7197bd295654fa03139cf83dd3797000aa3173fd9775c43474d46",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_winter_a.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_a.png",
+      "group": "poses",
+      "season": "winter",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "2da1dc5f175c18d6e2bb0e9e762f3217f2a12485456d8db8713cba57e127924f",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Minjun: boy, short black hair, blue cap",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Seoa: girl, two pigtails, pink ribbons",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Jiwoo: young woman, long brown ponytail",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Hyun: young man, messy brown hair, backpack",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "people_pose16_winter_b.png",
+      "path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_b.png",
+      "group": "poses",
+      "season": "winter",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        8,
+        4
+      ],
+      "sha256": "4c47fbce8a2db5d54042c4fadbb248bd0976979aa9dd4713ac61168f01fb5aed",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "Dad: adult man, short black hair, round glasses, slightly chubby",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "visitor": "Mom: adult woman, dark bun, shoulder bag",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "visitor": "Grandma: elderly woman, gray curly hair, glasses",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "seasonal_food",
+          "food": "hot_cocoa_cup",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "visitor": "Tourist: adult man, sun hat, neck camera",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    },
+    {
+      "filename": "vip16.png",
+      "path": "assets/spritesheets16/people-actions/vip/vip16.png",
+      "group": "vip",
+      "season": null,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "requested_grid": [
+        10,
+        4
+      ],
+      "sha256": "cc90793b608e2306aa1cb073e0375d725595f64f56c306480aaa13cbf98631b3",
+      "entries_describe_requested_slots": true,
+      "extraction_coordinates": null,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "visitor": "gold_gentleman",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "visitor": "gold_gentleman",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "visitor": "gold_gentleman",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "visitor": "gold_gentleman",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "visitor": "gold_gentleman",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "visitor": "gold_gentleman",
+          "action": "seasonal_food",
+          "food": "lollipop",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "visitor": "gold_gentleman",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "visitor": "gold_gentleman",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 9,
+          "row": 1,
+          "column": 9,
+          "visitor": "gold_gentleman",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 10,
+          "row": 1,
+          "column": 10,
+          "visitor": "gold_gentleman",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 1,
+          "visitor": "movie_star_with_dog",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 2,
+          "visitor": "movie_star_with_dog",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 3,
+          "visitor": "movie_star_with_dog",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 4,
+          "visitor": "movie_star_with_dog",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 5,
+          "visitor": "movie_star_with_dog",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 6,
+          "visitor": "movie_star_with_dog",
+          "action": "seasonal_food",
+          "food": "lollipop",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 17,
+          "row": 2,
+          "column": 7,
+          "visitor": "movie_star_with_dog",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 18,
+          "row": 2,
+          "column": 8,
+          "visitor": "movie_star_with_dog",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 19,
+          "row": 2,
+          "column": 9,
+          "visitor": "movie_star_with_dog",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 20,
+          "row": 2,
+          "column": 10,
+          "visitor": "movie_star_with_dog",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 1,
+          "visitor": "witch_costume_child",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 2,
+          "visitor": "witch_costume_child",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 3,
+          "visitor": "witch_costume_child",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 4,
+          "visitor": "witch_costume_child",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 25,
+          "row": 3,
+          "column": 5,
+          "visitor": "witch_costume_child",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 26,
+          "row": 3,
+          "column": 6,
+          "visitor": "witch_costume_child",
+          "action": "seasonal_food",
+          "food": "lollipop",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 27,
+          "row": 3,
+          "column": 7,
+          "visitor": "witch_costume_child",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 28,
+          "row": 3,
+          "column": 8,
+          "visitor": "witch_costume_child",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 29,
+          "row": 3,
+          "column": 9,
+          "visitor": "witch_costume_child",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 30,
+          "row": 3,
+          "column": 10,
+          "visitor": "witch_costume_child",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 1,
+          "visitor": "ghost_costume_child",
+          "action": "walk_left_a",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 2,
+          "visitor": "ghost_costume_child",
+          "action": "walk_left_b",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "left"
+        },
+        {
+          "slot": 33,
+          "row": 4,
+          "column": 3,
+          "visitor": "ghost_costume_child",
+          "action": "watch",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 34,
+          "row": 4,
+          "column": 4,
+          "visitor": "ghost_costume_child",
+          "action": "cheer",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 35,
+          "row": 4,
+          "column": 5,
+          "visitor": "ghost_costume_child",
+          "action": "photo_phone_back",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 36,
+          "row": 4,
+          "column": 6,
+          "visitor": "ghost_costume_child",
+          "action": "seasonal_food",
+          "food": "lollipop",
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 37,
+          "row": 4,
+          "column": 7,
+          "visitor": "ghost_costume_child",
+          "action": "point_down",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 38,
+          "row": 4,
+          "column": 8,
+          "visitor": "ghost_costume_child",
+          "action": "sit_no_bench",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 39,
+          "row": 4,
+          "column": 9,
+          "visitor": "ghost_costume_child",
+          "action": "toss_coin",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        },
+        {
+          "slot": 40,
+          "row": 4,
+          "column": 10,
+          "visitor": "ghost_costume_child",
+          "action": "disappointed",
+          "food": null,
+          "target_native_size": [
+            16,
+            26
+          ],
+          "facing": "front"
+        }
+      ]
+    }
+  ]
+}

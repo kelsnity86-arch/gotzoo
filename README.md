@@ -88,6 +88,12 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 **세 장 모두 요청 캔버스와 다르며, 네이티브 격자·팔레트·통로 폭/교체 피벗·벽 반복·계절 장식 합성은 미검증**입니다. [검수 기록](reports/GATE16_SOURCE_REVIEW.md)에 구분했습니다.
 
+## 관람객 모델·사계절 행동·VIP 신규 원본 14장
+
+[14장 목록](assets/spritesheets16/people-actions/README.md) · [376칸 요청 순서표](assets/catalog16_people_actions.json) · [14장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-people-actions16-sources.zip).
+
+모델을 참조해 계절 의상과 간식을 바꾸고 정면 8포즈를 제작했습니다. **5장은 요청 캔버스와 다르며, 정확한 16×26 격자·지정 팔레트·프레임 동일성·보행 루프는 미완료**입니다. [검수 기록](reports/PEOPLE_ACTIONS16_SOURCE_REVIEW.md)에 남은 문제를 구분했습니다. 기존 게임용 추출 자산은 교체하지 않았습니다.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|
