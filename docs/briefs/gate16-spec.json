@@ -1,0 +1,191 @@
+{
+  "project": "BbopZOO",
+  "batch": "gate16",
+  "object_outline": "#2b1d14",
+  "background": "#FF00FF",
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ],
+  "sheets": [
+    {
+      "filename": "gate16.png",
+      "group": "gates",
+      "size": [
+        1536,
+        1536
+      ],
+      "row_columns": [
+        2,
+        2
+      ],
+      "native_by_row": [
+        [
+          96,
+          88
+        ],
+        [
+          96,
+          88
+        ]
+      ],
+      "requested_slot_count": 4,
+      "request": "Sheet gate16.png: the MAIN ENTRANCE GATE of a cozy zoo, 4 upgrade tiers. It must clearly read as a real zoo entrance at a glance.\nView: FRONT-FACING, gentle 3/4 top-down (we see the front face of the gate and a little of its top). The gate stands across the visitors' path: two thick pillars left and right, a big arch beam across the top, and a wide OPEN passage in the middle with gate doors swung open inward. A big signboard sits on top of the arch: leave the board BLANK (no letters), decorate its edges with cute animal shapes (ears on top, paw prints). A small ticket window is built into the left pillar. Small soft shadow at the base.\nLayout: 2 columns x 2 rows, one gate per cell, each about 96 art pixels wide and 88 tall, bottom-aligned, lots of magenta around.\n1 (top-left) tier 1: rustic wooden ranch gate, log pillars, wooden arch with rope and two hanging lanterns, signboard of planks with carved bear ears on top, potted ferns at the base.\n2 (top-right) tier 2: stone gate, rounded fieldstone pillars with ivy, stone arch, carved stone plaque with lion ears, two lamp posts on the pillars.\n3 (bottom-left) tier 3: red brick pillars with white stone caps, dark green ornate iron arch with scrollwork, big round blank emblem in the middle, two small flags on top.\n4 (bottom-right) tier 4: grand gate of white marble with golden roof tiles and golden trims, a small lion statue on the left pillar and an elephant statue on the right pillar, colorful banners, warm lights.\nThe four tiers share the same size, proportions and opening width so they can replace each other.\nImage size 1536x1536, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "tier 1 wooden zoo entrance",
+          "tier 2 fieldstone zoo entrance"
+        ],
+        [
+          "tier 3 brick and green iron zoo entrance",
+          "tier 4 marble and gold zoo entrance"
+        ]
+      ]
+    },
+    {
+      "filename": "gate_parts16.png",
+      "group": "parts",
+      "size": [
+        1536,
+        1280
+      ],
+      "row_columns": [
+        5,
+        5,
+        5,
+        5
+      ],
+      "native_by_row": null,
+      "requested_slot_count": 20,
+      "request": "Sheet gate_parts16.png: parts that go next to the entrance gate, matching gate16.png tier by tier (same materials and colors), front-facing 3/4 top-down, soft dark-brown outline, light from top-left, solid darker ground shadow.\nLayout: 5 columns x 4 rows. Rows = tier 1 wooden, 2 stone, 3 brick and iron, 4 marble and gold.\nColumns: 1. straight wall/fence segment exactly 32 art pixels wide, about 28 tall, must repeat seamlessly side by side  2. wall end post (fits 12x32)  3. small ticket booth kiosk with a window and a little awning (about 32x40)  4. turnstile (about 16x20)  5. flag pole with a blank banner (about 12x44).\nImage size 1536x1280, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "wood: repeatable wall segment",
+          "wood: end post",
+          "wood: ticket booth",
+          "wood: turnstile",
+          "wood: blank banner flagpole"
+        ],
+        [
+          "fieldstone: repeatable wall segment",
+          "fieldstone: end post",
+          "fieldstone: ticket booth",
+          "fieldstone: turnstile",
+          "fieldstone: blank banner flagpole"
+        ],
+        [
+          "brick and iron: repeatable wall segment",
+          "brick and iron: end post",
+          "brick and iron: ticket booth",
+          "brick and iron: turnstile",
+          "brick and iron: blank banner flagpole"
+        ],
+        [
+          "marble and gold: repeatable wall segment",
+          "marble and gold: end post",
+          "marble and gold: ticket booth",
+          "marble and gold: turnstile",
+          "marble and gold: blank banner flagpole"
+        ]
+      ],
+      "native_by_column": [
+        [
+          32,
+          28
+        ],
+        [
+          12,
+          32
+        ],
+        [
+          32,
+          40
+        ],
+        [
+          16,
+          20
+        ],
+        [
+          12,
+          44
+        ]
+      ],
+      "reference_sheet_used": "assets/spritesheets16/entrance/gates/gate16.png"
+    },
+    {
+      "filename": "gate_season16.png",
+      "group": "seasonal",
+      "size": [
+        1536,
+        768
+      ],
+      "row_columns": [
+        4,
+        4
+      ],
+      "native_by_row": [
+        [
+          96,
+          20
+        ],
+        [
+          20,
+          20
+        ]
+      ],
+      "requested_slot_count": 8,
+      "request": "Sheet gate_season16.png: seasonal decorations that are drawn ON TOP of the entrance gate (they must fit a gate about 96 art pixels wide), 3/4 front view, soft dark-brown outline, light from top-left.\nLayout: 4 columns x 2 rows. Columns = seasons: 1 spring, 2 summer, 3 autumn, 4 winter.\nRow 1: a garland that hangs along the arch beam, about 96 wide and 20 tall, transparent (magenta) in between: spring cherry blossom garland with little pink flowers, summer colorful bunting flags and a flower lei, autumn maple leaves and small pumpkins, winter string lights, pine branches and a wreath with a red bow, snow on top.\nRow 2: a matching pair of decorations for the two pillar bases, drawn as two objects side by side (about 20x20 each): spring tulip pots, summer beach balls and a float ring, autumn pumpkins and hay, winter small snowmen.\nImage size 1536x768, solid #FF00FF background, no text.",
+      "rows": [
+        [
+          "spring blossom garland",
+          "summer bunting and flower lei",
+          "autumn leaves and pumpkins garland",
+          "winter pine lights and wreath"
+        ],
+        [
+          "pair of tulip pots",
+          "pair of beach ball and float groups",
+          "pair of pumpkin and hay groups",
+          "pair of small snowmen"
+        ]
+      ],
+      "row2_size_is_per_piece": true
+    }
+  ]
+}
