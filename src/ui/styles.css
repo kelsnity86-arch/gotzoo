@@ -602,3 +602,16 @@ body.reduce-motion .machine.v4 .gs-aura.t3 { animation: none; }
 .machine.v4 .gs-asm:not(.parts) > .gs-p { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); }
 .machine.v4 .gs-aura.art { background: none !important; -webkit-mask: none; mask: none; display: grid; place-items: center; }
 .machine.v4 .gs-aura.art .pix { opacity: 0.9; }
+/* 정보 줄: 어떤 폭에서도 한 줄 안에 (설정 버튼도 줄 안으로) */
+body.landscape .hud { padding-right: max(10px, env(safe-area-inset-right)); }
+body.landscape .hud-gear { position: static; margin: 0; flex: none; }
+body.landscape .hud .hud-stats { flex: 1 1 0; min-width: 0; overflow: hidden; }
+body.landscape .hud .hud-stats > * { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+body.landscape .hud .gacha-gauge b:not(.gg-coins) { overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+body.hud-s .hud .stat { display: none; }
+body.hud-s .hud .gacha-gauge b:not(.gg-coins) { max-width: 140px; }
+body.hud-s .hud .rv-name, body.hud-xs .hud .clock .bar, body.hud-xs .hud .rival .bar { display: none; }
+body.hud-xs .hud .logo { display: none; }
+body.hud-xs .hud .gacha-gauge .gg-bar { width: 44px; }
+body.hud-xxs .hud .zoom-btns { display: none; }
+body.hud-xxs .hud .gacha-gauge b:not(.gg-coins) { display: none; }

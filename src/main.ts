@@ -169,6 +169,11 @@ function layout() {
   uiScale = H < 500 ? 0.85 : H <= 800 ? 1 : Math.min(1.45, 1 + (H - 800) / 1300);
   ui.style.setProperty('zoom', String(uiScale));
   document.body.classList.toggle('compact', H < 500);
+  // 정보 줄이 좁으면 덜 중요한 것부터 줄인다 (수입 → 시계 막대 · 라이벌 이름 → 확대 버튼)
+  const hudW = (landscape ? W - (panel.isOpen ? Math.min(400 * uiScale, Math.max(280 * uiScale, W * 0.34)) : 58 * uiScale) : W) / uiScale;
+  document.body.classList.toggle('hud-s', hudW < 1050);
+  document.body.classList.toggle('hud-xs', hudW < 860);
+  document.body.classList.toggle('hud-xxs', hudW < 700);
   const hudH = hud.getBoundingClientRect().height || 44;
   if (landscape) {
     // 오른쪽 패널 (접으면 탭 줄만 세로로)
@@ -576,7 +581,7 @@ function updateHud() {
     gaugeFill.style.width = `${left === null ? 100 : Math.min(100, ((charge - lo) / Math.max(1, hi - lo)) * 100)}%`;
     for (let k = 0; k < 4; k++) gauge.classList.toggle(`t${k}`, k === tier);
     gauge.classList.toggle('ready', coins >= price && coins < ten); gauge.classList.toggle('ready10', coins >= ten);
-    gaugeText.textContent = `${tier ? MACHINE_TIERS[tier].name : coins >= ten ? '10회 가능' : coins >= price ? `${Math.floor(coins / price)}회 가능` : '모으는 중'}${left === null ? ' · 최고!' : ` · 다음 ${MACHINE_TIERS[tier + 1].name.replace(' 기계', '')}까지 ${fmt(left)}`}`;
+    gaugeText.textContent = `${tier ? MACHINE_TIERS[tier].name.replace(' 기계', '') : coins >= ten ? '10회!' : coins >= price ? `${Math.floor(coins / price)}회` : ''}${left === null ? ' 최고' : ` ▸${MACHINE_TIERS[tier + 1].name.replace(' 기계', '').replace('빛', '')} ${fmt(left)}`}`;
     const cb = world.combo;
     if (cb.n >= 2 && cb.t > 0) { comboEl.textContent = `콤보 ×${cb.n}`; comboEl.classList.remove('hidden', 'end'); comboEl.style.left = upx(fieldRect.x + fieldRect.w / 2); comboEl.style.top = upx(fieldRect.y + 40); comboEl.style.setProperty('--s', String(1 + Math.min(0.6, cb.n * 0.02))); }
     else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');
@@ -607,7 +612,7 @@ function updateHud() {
   // 라이벌
   const mine = world.scale, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
   rivalChip.classList.toggle('losing', mine < rv);
-  rivalText.textContent = `🏆 규모 ${fmt(mine)} vs ${rivalOf(save.season.n).name} ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`;
+  rivalText.innerHTML = ''; rivalText.append(`🏆 ${fmt(mine)} vs `, h('span', { class: 'rv-name' }, `${rivalOf(save.season.n).name} `), `${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`);
   rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;
   const pr = panel.el.getBoundingClientRect();
   // 세로 화면 서랍이 필드를 덮을 때만 서랍 위로
