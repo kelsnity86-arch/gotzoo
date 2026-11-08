@@ -1,0 +1,25 @@
+{
+  "postprocessing": "none; byte-for-byte copies",
+  "sources": [
+    {
+      "season": "spring",
+      "generated_source": "exec-9d18984b-8559-46fb-8eeb-64f9e0792c7a.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_spring.png"
+    },
+    {
+      "season": "summer",
+      "generated_source": "exec-f6c6896a-6663-4e98-8320-ee4c977988c0.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_summer.png"
+    },
+    {
+      "season": "autumn",
+      "generated_source": "exec-3ada6738-9c4c-4e65-9bc2-bcf84f998b8d.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_autumn.png"
+    },
+    {
+      "season": "winter",
+      "generated_source": "exec-89229164-5ce1-4d25-b80a-3c61edf8e615.png",
+      "path": "assets/spritesheets16/seasonal-decor/decor16_winter.png"
+    }
+  ]
+}
