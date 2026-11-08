@@ -14,14 +14,18 @@ import { penOptDef, pieceDef, PEN_THEME_BONUS } from '../data/pieces';
 
 /** 프레임 + 창 안 그림을 원본 크기(24×32)로 합친다 */
 function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
+  // 3배로 합친다: 프레임(24×32)은 도트 그대로 키우고, 창(4,4~19,19) 안에 그림을 비율대로 크게
+  const K = 3;
   const cv = document.createElement('canvas');
-  cv.width = 24; cv.height = 32;
+  cv.width = 24 * K; cv.height = 32 * K;
   const c = cv.getContext('2d')!;
   c.imageSmoothingEnabled = false;
-  c.drawImage(sprite(frameKey), 0, 0);
-  // 창(4,4)~(19,19): 8×8은 2배, 8×12(사람)는 세로에 맞춰
-  if (art.height > art.width) c.drawImage(art, 4 + (16 - art.width * 16 / art.height) / 2, 4, art.width * 16 / art.height, 16);
-  else c.drawImage(art, 4, 4, 16, 16);
+  c.drawImage(sprite(frameKey), 0, 0, 24 * K, 32 * K);
+  const box = 16 * K, bx = 4 * K, by = 4 * K;
+  const sc = box / Math.max(art.width, art.height);
+  const k = sc >= 1 ? Math.floor(sc) : sc;
+  const w = art.width * k, h = art.height * k;
+  c.drawImage(art, Math.round(bx + (box - w) / 2), Math.round(by + (box - h) / 2), w, h);
   return cv;
 }
 

@@ -4,12 +4,12 @@
   "count": 25,
   "expected": 25,
   "h_range": [
-   21,
+   20,
    34
   ],
   "w_range": [
    21,
-   33
+   32
   ]
  },
  "animals/permanent/animals16_02.png": {
@@ -35,7 +35,7 @@
   ],
   "w_range": [
    21,
-   30
+   28
   ]
  },
  "animals/permanent/animals16_04.png": {
@@ -43,12 +43,12 @@
   "count": 25,
   "expected": 25,
   "h_range": [
-   21,
+   20,
    36
   ],
   "w_range": [
    23,
-   36
+   34
   ]
  },
  "animals/permanent/animals16_05.png": {
@@ -73,8 +73,8 @@
    32
   ],
   "w_range": [
-   26,
-   35
+   22,
+   33
   ]
  },
  "animals/permanent/animals16_07.png": {
@@ -100,7 +100,7 @@
   ],
   "w_range": [
    23,
-   33
+   31
   ]
  },
  "animals/permanent/animals16_09.png": {
@@ -109,11 +109,11 @@
   "expected": 25,
   "h_range": [
    24,
-   39
+   32
   ],
   "w_range": [
    30,
-   39
+   36
   ]
  },
  "animals/permanent/animals16_10.png": {
@@ -147,7 +147,7 @@
   "count": 25,
   "expected": 25,
   "h_range": [
-   32,
+   30,
    38
   ],
   "w_range": [
@@ -277,12 +277,12 @@
   "count": 48,
   "expected": 48,
   "h_range": [
-   16,
-   16
+   14,
+   29
   ],
   "w_range": [
-   16,
-   16
+   8,
+   30
   ]
  },
  "ui-effects/icons/icons16.png": {
@@ -291,10 +291,10 @@
   "expected": 40,
   "h_range": [
    17,
-   32
+   26
   ],
   "w_range": [
-   20,
+   19,
    27
   ]
  },
@@ -303,12 +303,12 @@
   "count": 30,
   "expected": 30,
   "h_range": [
-   15,
-   35
+   13,
+   33
   ],
   "w_range": [
    8,
-   35
+   29
   ]
  }
 }

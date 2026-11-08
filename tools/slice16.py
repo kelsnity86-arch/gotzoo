@@ -118,11 +118,42 @@ def extract(a: np.ndarray, fg: np.ndarray, box, s: float):
             c = np.median(blk[fm], axis=0).astype(np.float32)
             k = int(((PAL - c) ** 2).sum(axis=1).argmin())
             out[j, i, :3] = PAL[k]; out[j, i, 3] = 255
+    out = keep_main(out)
     # 빈 가장자리 줄 잘라내기
     al = out[..., 3] > 0
     if not al.any(): return out
     ys, xs = np.nonzero(al)
     return out[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+def keep_main(out: np.ndarray) -> np.ndarray:
+    """옆 칸에서 묻어 온 티끌 지우기: 가장 큰 덩어리와, 그 가까이(6px)에 있거나 충분히 큰 조각만 남긴다"""
+    al = out[..., 3] > 0
+    H, W = al.shape
+    lab = -np.ones((H, W), int); comps = []
+    for y in range(H):
+        for x in range(W):
+            if not al[y, x] or lab[y, x] >= 0: continue
+            st = [(y, x)]; lab[y, x] = len(comps); pts = []
+            while st:
+                cy, cx = st.pop(); pts.append((cy, cx))
+                for dy in (-1, 0, 1):
+                    for dx in (-1, 0, 1):
+                        ny, nx = cy + dy, cx + dx
+                        if 0 <= ny < H and 0 <= nx < W and al[ny, nx] and lab[ny, nx] < 0: lab[ny, nx] = len(comps); st.append((ny, nx))
+            comps.append(pts)
+    if len(comps) <= 1: return out
+    main = max(comps, key=len)
+    ys = [p[0] for p in main]; xs = [p[1] for p in main]
+    y0, y1, x0, x1 = min(ys) - 6, max(ys) + 6, min(xs) - 6, max(xs) + 6
+    res = out.copy()
+    for c in comps:
+        if c is main: continue
+        near = any(y0 <= py <= y1 and x0 <= px <= x1 for py, px in c)
+        thin = max(p[0] for p in c) - min(p[0] for p in c) <= 1 or max(p[1] for p in c) - min(p[1] for p in c) <= 1
+        if (near and len(c) >= 3 and not (thin and len(c) < 8)) or len(c) >= 0.15 * len(main): continue
+        for py, px in c: res[py, px] = 0
+    return res
 
 
 def fit(spr: np.ndarray, W: int, H: int, anchor='bottom') -> Image.Image:
@@ -165,6 +196,9 @@ def grid_cells(a, fg, cols, rows, s, mode='sprite', pairs=False):
             if not len(ys) or not len(xs): out.append(None); continue
             box = (x0 + xs.min(), y0 + ys.min(), x0 + xs.max() + 1, y0 + ys.max() + 1)
             if mode == 'tile':
+                # 바닥 타일: 옆 칸 티끌을 빼려고, 30% 넘게 채워진 줄만 범위로
+                ys = np.nonzero(rs > 0.3 * rs.max())[0]; xs = np.nonzero(cs > 0.3 * cs.max())[0]
+                box = (x0 + xs.min(), y0 + ys.min(), x0 + xs.max() + 1, y0 + ys.max() + 1)
                 bw, bh = box[2] - box[0], box[3] - box[1]
                 ts = max(bw, bh) / 16
                 arr = np.zeros((16, 16, 4), np.uint8)
@@ -197,7 +231,7 @@ for se in ('spring', 'summer', 'autumn', 'winter'):
     SHEETS.append((f'world/people/people16_{se}.png', 8, 4, 'sprite', lambda i, se=se: f'people16/{se}_{i // 2:02d}_f{i % 2}.png'))
     SHEETS.append((f'world/tiles/tiles16_{se}.png', 4, 4, 'tilemix', lambda i, se=se: f'tiles16/{se}_{i + 1:02d}.png'))
 SHEETS.append(('world/staff/staff16.png', 4, 5, 'sprite', lambda i: f'staff16/{i // 2:02d}_f{i % 2}.png'))
-SHEETS.append(('world/fences/fences16.png', 12, 4, 'tile', lambda i: f'fences16/t{i // 12}_{i % 12 + 1:02d}.png'))
+SHEETS.append(('world/fences/fences16.png', 12, 4, 'sprite', lambda i: f'fences16/raw_t{i // 12}_{i % 12 + 1:02d}.png'))
 SHEETS.append(('ui-effects/icons/icons16.png', 8, 5, 'sprite', lambda i: f'icons16/{i + 1:02d}.png'))
 SHEETS.append(('ui-effects/effects/fx16.png', 6, 5, 'sprite', lambda i: f'fx16/{i + 1:02d}.png'))
 
@@ -214,6 +248,10 @@ def run():
             tiles = grid_cells(a, fg, cols, rows, s, 'tile')
             objs = grid_cells(a, fg, cols, rows, s, 'sprite')
             cells = [t if i < 10 else objs[i] for i, t in enumerate(tiles)]
+            # 바닥 타일: GPT가 그린 가장자리 테두리를 안쪽 색으로 덮어 이음매를 없앤다
+            for t in cells[:10]:
+                if t is not None and t.shape[:2] == (16, 16):
+                    t[0] = t[1]; t[15] = t[14]; t[:, 0] = t[:, 1]; t[:, 15] = t[:, 14]; t[..., 3] = 255
         else:
             cells = grid_cells(a, fg, cols, rows, s, mode)
         sizes = []
@@ -222,7 +260,32 @@ def run():
             save(arr, OUT / name(i)); sizes.append(arr.shape[:2])
         report[rel] = {'pixel': round(s, 2), 'count': len(sizes), 'expected': cols * rows, 'h_range': [int(min(x[0] for x in sizes)), int(max(x[0] for x in sizes))], 'w_range': [int(min(x[1] for x in sizes)), int(max(x[1] for x in sizes))]}
         print(rel, report[rel], flush=True)
+    fence_tiles()
     (ROOT / 'reports' / 'SLICE16.json').write_text(json.dumps(report, ensure_ascii=False, indent=1))
+
+
+def fence_tiles():
+    """울타리: 가로 · 세로 · 문 · 기둥을 정사각 타일(T×T, T = 가로 조각 폭)로. 세로가 짧으면 위아래로 이어 붙인다"""
+    d = OUT / 'fences16'
+    for t in range(4):
+        ld = lambda n: np.array(Image.open(d / f'raw_t{t}_{n:02d}.png').convert('RGBA'))
+        hz, vt, gt, po = ld(1), ld(2), ld(11), ld(12)
+        T = max(hz.shape[1], 12)
+        def put(src, mode):
+            c = np.zeros((T, T, 4), np.uint8)
+            h, w = src.shape[:2]
+            if mode == 'v':
+                x = (T - w) // 2
+                for y in range(0, T, max(1, h)):
+                    hh = min(h, T - y); c[y:y + hh, max(0, x):max(0, x) + min(w, T)] = src[:hh, :min(w, T)]
+            else:
+                src = src[:T, :T]; h, w = src.shape[:2]
+                y = (T - h) // 2 if mode == 'h' else T - h
+                x = (T - w) // 2
+                c[y:y + h, x:x + w] = src
+            return c
+        for name, src, mode in (('h', hz, 'h'), ('v', vt, 'v'), ('g', gt, 'h'), ('p', po, 'p')):
+            Image.fromarray(put(src, mode), 'RGBA').save(d / f't{t}_{name}.png')
 
 
 if __name__ == '__main__':

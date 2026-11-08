@@ -1,7 +1,7 @@
 // 기획서 8장 '프로토타입 완료 조건' 중 규칙 부분
 import { describe, expect, it } from 'vitest';
 import { defaultSave, normalize } from '../src/game/state';
-import { ANIMALS } from '../src/data/animals';
+import { ANIMALS, sheetIndex } from '../src/data/animals';
 import { GRADES } from '../src/data/grades';
 import { FUSION_CHANCE, GACHA, UPGRADES } from '../src/data/balance';
 import {
@@ -12,10 +12,14 @@ import {
 const seq = (...v: number[]) => { let i = 0; return () => v[i++ % v.length]; };
 
 describe('데이터', () => {
-  it('동물 150종(상시 100 + 계절 한정 50), 등급별 수와 이름 중복 없음', () => {
-    expect(ANIMALS).toHaveLength(150);
-    expect(new Set(ANIMALS.map((a) => a.name)).size).toBe(150);
-    expect([0, 1, 2, 3, 4].map((g) => ANIMALS.filter((a) => a.grade === g && !a.season).length)).toEqual([30, 26, 22, 14, 8]);
+  it('동물 300종(상시 250 + 계절 한정 50), 등급별 수와 이름 중복 없음, 그림 칸 번호가 겹치지 않음', () => {
+    expect(ANIMALS).toHaveLength(300);
+    expect(new Set(ANIMALS.map((a) => a.name)).size).toBe(300);
+    expect([0, 1, 2, 3, 4].map((g) => ANIMALS.filter((a) => a.grade === g && !a.season).length)).toEqual([80, 65, 55, 32, 18]);
+    expect(new Set(ANIMALS.map((a) => sheetIndex(a.id))).size).toBe(300);
+    expect(Math.max(...ANIMALS.map((a) => sheetIndex(a.id)))).toBe(299);
+    expect(sheetIndex(ANIMALS.find((a) => a.name === '메추라기')!.id)).toBe(30);
+    expect(sheetIndex(ANIMALS.find((a) => a.name === '청룡')!.id)).toBe(240);
     expect(['spring', 'summer', 'autumn', 'winter'].map((k) => ANIMALS.filter((a) => a.season === k).length)).toEqual([13, 12, 13, 12]);
     expect(ANIMALS.filter((a) => a.season && a.grade === 0)).toHaveLength(0);
   });

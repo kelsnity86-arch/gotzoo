@@ -1,7 +1,7 @@
 // 스프라이트: assets/ 아래 PNG가 있으면 그걸 쓰고, 없으면 코드로 그린 임시 도트를 쓴다.
 // 이름 규칙 — animal_000 ~ animal_099 (8×8), person_00 ~ person_07 (8×12), staff_collector / staff_keeper (8×12),
 // coin_0~3, 그 밖의 타일·아이콘은 tiles.ts / icons에서 정한 이름. GPT 시트를 tools/slice-sheets.py로 자르면 이 이름으로 나온다.
-import { ANIMALS, type Shape } from '../data/animals';
+import { ANIMALS, sheetIndex, type Shape } from '../data/animals';
 import { STAFF } from '../data/staff';
 
 export type Sprite = HTMLCanvasElement | HTMLImageElement;
@@ -22,6 +22,24 @@ const URLS: Record<string, string> = {};
     if (p.includes('/sprites/people/')) URLS[idx <= 8 ? `person_${String(idx - 1).padStart(2, '0')}` : STAFF_AT[idx]] = url;
     else if (p.includes('/sprites/effects/') && idx <= 4) URLS[`coin_${idx - 1}`] = url;
     if (!p.includes('/sprites/animals/')) URLS[`${group}_${String(idx).padStart(2, '0')}`] = url; // tiles_01, icons_05, cards_07 …
+  }
+}
+
+// 16px 시트에서 잘라 낸 그림 (tools/slice16.py → assets/sprites16, 배경 투명). 있으면 위 8px 그림보다 먼저 쓴다
+const files16 = import.meta.glob('../../assets/sprites16/**/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+{
+  const byName = new Map<string, string>();
+  for (const [p, url] of Object.entries(files16)) byName.set(p.replace(/^.*\/sprites16\//, '').replace(/\.png$/, ''), url);
+  // 동물: 시트 칸 번호 → 동물 번호
+  for (const a of ANIMALS) { const u = byName.get(`a16/src_${String(sheetIndex(a.id)).padStart(3, '0')}`); if (u) URLS[`animal_${String(a.id).padStart(3, '0')}`] = u; }
+  for (const [k, u] of byName) {
+    let m: RegExpExecArray | null;
+    if ((m = /^people16\/(\w+)_(\d+)_f(\d)$/.exec(k))) URLS[`p16_${m[1]}_${Number(m[2])}_f${m[3]}`] = u;
+    else if ((m = /^staff16\/(\d+)_f(\d)$/.exec(k)) && STAFF[Number(m[1])]) URLS[`s16_${STAFF[Number(m[1])].kind}_f${m[2]}`] = u;
+    else if ((m = /^tiles16\/(\w+)_(\d+)$/.exec(k))) URLS[`t16_${m[1]}_${Number(m[2])}`] = u;
+    else if ((m = /^fences16\/t(\d)_([hvgp])$/.exec(k))) URLS[`f16_${m[1]}_${m[2]}`] = u;
+    else if ((m = /^icons16\/(\d+)$/.exec(k))) URLS[`icons_${m[1]}`] = u;
+    else if ((m = /^fx16\/(\d+)$/.exec(k))) { URLS[`fx_${m[1]}`] = u; if (Number(m[1]) <= 4) URLS[`coin_${Number(m[1]) - 1}`] = u; }
   }
 }
 
@@ -171,7 +189,18 @@ export function animalFrame(id: number, frame: number): Sprite {
   if (hasPng(base)) return sprite(base);
   return sprite(`animal_${id}_f${frame}`);
 }
+/** 16px 관람객 (계절 옷). 없으면 null. 그림은 오른쪽을 본다 */
+export function person16(season: string, kind: number, frame: number): Sprite | null {
+  const k = `p16_${season}_${kind}_f${frame}`;
+  return hasPng(k) ? sprite(k) : null;
+}
+/** 16px 직원. 없으면 null. 그림은 오른쪽을 본다 */
+export function staff16(kind: string, frame: number): Sprite | null {
+  const k = `s16_${kind}_f${frame}`;
+  return hasPng(k) ? sprite(k) : null;
+}
 export function personFrame(kind: number, frame: number): Sprite {
+  kind = kind % 8;
   const base = `person_${String(kind).padStart(2, '0')}`;
   return hasPng(base) ? sprite(base) : sprite(`person_${kind}_f${frame}`);
 }

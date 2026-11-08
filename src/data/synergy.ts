@@ -23,6 +23,11 @@ export const SYNERGY_SETS: readonly SynergySet[] = [
   set('chuseok', '추석', ['달토끼', '황금 추수 황소'], 0.3, { season: 'autumn' }),
   set('santa', '산타 썰매', ['루돌프 순록', '산타 북극곰'], 0.3, { season: 'winter' }),
   set('blossom', '꽃놀이', ['벚꽃사슴', '벚꽃 여우', '꽃토끼'], 0.3, { season: 'spring' }),
+  set('fourgods', '사신수', ['청룡', '백호', '주작', '현무'], 0.3, { tip: 0.15 }),
+  set('iceage', '빙하기', ['매머드', '검치호랑이', '털코뿔소'], 0.35, { season: 'winter' }),
+  set('deepsea', '심해', ['대왕오징어', '귀상어', '문어'], 0.25, { season: 'summer' }),
+  set('polarsea', '북극 바다', ['일각고래', '벨루가', '바다코끼리'], 0.3, { season: 'winter' }),
+  set('primates', '영장류', ['침팬지', '오랑우탄', '고릴라', '긴팔원숭이'], 0.3),
   set('splash', '여름 물놀이', ['수박 거북', '튜브 오리', '선글라스 물개'], 0.3, { season: 'summer' }),
 ];
 

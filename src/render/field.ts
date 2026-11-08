@@ -4,7 +4,7 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
-import { animalFrame, personFrame, shinyOf, sprite, staffFrame, hasPng, type Sprite } from './sprites';
+import { animalFrame, person16, personFrame, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
 import { eventDef } from '../data/events';
 
@@ -50,6 +50,7 @@ export class FieldRenderer {
   ghost: { cells: [number, number][]; ok: boolean } | null = null;
 
   private bg: HTMLCanvasElement | null = null;
+  private seasonN = 1;
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -58,14 +59,34 @@ export class FieldRenderer {
     if (!hasPng('tiles_01')) return null;
     const L = world.layout;
     const habs = L.pens.map((_, i) => `${world.geo[i]?.theme ?? '-'}:${world.geo[i]?.shape ?? '-'}`);
-    const key = `${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
+    const season = seasonOf(this.seasonN).key;
+    const key = `${season}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
-    cv.width = L.w; cv.height = L.h;
+    // 16px 타일을 살리려고 월드 1칸 = 2px로 그려 둔다
+    const R = 2;
+    cv.width = L.w * R; cv.height = L.h * R;
     const c = cv.getContext('2d')!;
+    c.setTransform(R, 0, 0, R, 0, 0);
     c.imageSmoothingEnabled = false;
-    const tile = (k: string, x: number, y: number) => c.drawImage(sprite(k), x, y, 8, 8);
+    // 예전 8px 타일 이름 → 계절 16px 타일 (있으면)
+    const T16: Record<string, number> = { tiles_01: 1, tiles_02: 2, tiles_03: 3, tiles_04: 4, tiles_09: 5, tiles_10: 6, tiles_11: 7, tiles_12: 8, tiles_13: 9, tiles_14: 10, tiles_15: 11, tiles_16: 12, tiles_17: 13, tiles_23: 14, tiles_22: 15 };
+    const F16: Record<string, string> = { tiles_05: 'h', tiles_06: 'v', tiles_07: 'p', tiles_08: 'g' };
+    const tile = (k: string, x: number, y: number) => {
+      const n = T16[k];
+      if (n && hasPng(`t16_${season}_${n}`)) {
+        const im = sprite(`t16_${season}_${n}`);
+        if (n <= 10) { c.drawImage(im, x, y, 8, 8); return; }
+        // 나무 · 덤불 같은 물체: 도트 비율 그대로, 칸 바닥에 맞춰 조금 크게
+        const sc = 11 / Math.max(im.width, im.height);
+        c.drawImage(im, Math.round(x + 4 - (im.width * sc) / 2), Math.round(y + 8 - im.height * sc), im.width * sc, im.height * sc);
+        return;
+      }
+      const f = F16[k];
+      if (f && hasPng(`f16_0_${f}`)) { c.drawImage(sprite(`f16_0_${f}`), x, y, 8, 8); return; }
+      c.drawImage(sprite(k), x, y, 8, 8);
+    };
     const fill = (k: string, x0: number, y0: number, w: number, h: number) => {
       c.save(); c.beginPath(); c.rect(x0, y0, w, h); c.clip();
       for (let y = y0; y < y0 + h; y += TILE) for (let x = x0; x < x0 + w; x += TILE) tile(k, x, y);
@@ -89,8 +110,8 @@ export class FieldRenderer {
     for (let y = by0; y < by0 + bh * BL; y += TILE) for (let x = bx0; x < bx0 + bw * BL; x += TILE) {
       if (occ.has(`${x},${y}`)) continue;
       const k = (x * 13 + y * 7) / TILE;
-      if (k % 9 === 0) tile(['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_22'][(k / 9) % 5 | 0], x, y);
-      else if (k % 23 === 5) tile('tiles_17', x, y);
+      if (k % 17 === 0) tile(['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_17'][(k / 17) % 5 | 0], x, y);
+      else if (k % 29 === 5) tile('tiles_17', x, y);
     }
     for (let x = bx0 - TILE / 2; x < bx0 + bw * BL; x += TILE) { tile('tiles_05', x, by0 - TILE); tile('tiles_05', x, by0 + bh * BL); }
     for (let y = by0; y < by0 + bh * BL; y += TILE) { tile('tiles_06', bx0 - TILE, y); tile('tiles_06', bx0 + bw * BL, y); }
@@ -161,8 +182,9 @@ export class FieldRenderer {
     c.setTransform(dpr, 0, 0, dpr, 0, 0); c.beginPath(); c.rect(view.x, view.y, view.w, view.h); c.clip();
     c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
     c.beginPath(); c.rect(0, 0, L.w, L.h); c.clip();
+    this.seasonN = save.season.n;
     const bg = this.background(world);
-    if (bg) { c.drawImage(bg, 0, 0); this.drawDynamic(world, save); }
+    if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {
     // 바닥 잔디
     c.fillStyle = '#4c8a3c'; c.fillRect(0, 0, L.w, L.h);
@@ -199,14 +221,20 @@ export class FieldRenderer {
     for (const v of world.visitors) {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
       list.push({ y: v.y, f: () => {
-        this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
+        const p16 = person16(seasonOf(save.season.n).key, v.kind, fr);
+        if (p16) this.blitDev(p16, v.x, v.y, 13, v.dir < 0, 0);
+        else this.blit(personFrame(v.kind, fr), v.x, v.y, 8, 12, v.dir > 0, v.state !== 'view' && fr && hasPng(`person_${String(v.kind).padStart(2, '0')}`) ? 1 : 0);
         // VIP 손님: 머리 위 별 + 금빛 테두리
         if (v.vip) { c.drawImage(sprite('fx_15'), Math.round(v.x - 4), Math.round(v.y - 21 + Math.sin(t * 6)), 8, 8); c.strokeStyle = '#f7c948'; c.lineWidth = 1; c.strokeRect(Math.round(v.x - 5) + 0.5, Math.round(v.y - 13) + 0.5, 10, 13); }
       } });
     }
     for (const e of world.staff) {
       const fr = Math.floor(e.anim * 6) % 2;
-      list.push({ y: e.y, f: () => { this.blit(staffFrame(e.kind, fr), e.x, e.y, 8, 12, e.face > 0, 0); c.fillStyle = e.kind === 'collector' ? '#ef7d32' : '#38a35b'; c.fillRect(Math.round(e.x) - 1, Math.round(e.y) - 15, 2, 2); } });
+      list.push({ y: e.y, f: () => {
+        const s16 = staff16(e.kind, fr);
+        if (s16) this.blitDev(s16, e.x, e.y, 13.5, e.face < 0, 0);
+        else { this.blit(staffFrame(e.kind, fr), e.x, e.y, 8, 12, e.face > 0, 0); c.fillStyle = e.kind === 'collector' ? '#ef7d32' : '#38a35b'; c.fillRect(Math.round(e.x) - 1, Math.round(e.y) - 15, 2, 2); }
+      } });
     }
     list.sort((a, b) => a.y - b.y);
     for (const d of list) d.f();
@@ -344,6 +372,8 @@ export class FieldRenderer {
 
   /** 동물: 등급 배율만큼 크게, 기기 픽셀 좌표로 (도트가 고르게) */
   private blitAnimal(img: Sprite, x: number, y: number, mul: number, flip: boolean, hop: number) {
+    // 16px 시트 그림(크다)은 큰 쪽이 9칸 × 등급 배율이 되게, 예전 8px 그림은 8칸
+    if (img.width > 8 || img.height > 8) { this.blitDev(img, x, y, 9 * mul, flip, hop, true); return; }
     const c = this.ctx;
     const k = Math.max(1, Math.round(this.dev * mul));
     const size = 8 * k;
@@ -354,6 +384,27 @@ export class FieldRenderer {
     c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(left + k, Math.round(by) - k, size - 2 * k, k);
     if (flip) { c.translate(left + size, top); c.scale(-1, 1); c.drawImage(img, 0, 0, size, size); }
     else c.drawImage(img, left, top, size, size);
+    c.restore();
+  }
+
+  /** 고해상도 그림을 기기 픽셀로: 크기 기준(units, 월드 칸)을 큰 쪽(fit) 또는 높이에 맞춘다.
+   *  1배 이상이면 정수 배로 (도트가 고르게), 작으면 부드럽게 줄인다 */
+  private blitDev(img: Sprite, x: number, y: number, units: number, flip: boolean, hop: number, fitMax = false) {
+    const c = this.ctx;
+    const base = fitMax ? Math.max(img.width, img.height) : img.height;
+    let k = (units * this.dev) / base;
+    const smooth = k < 1;
+    if (!smooth) k = Math.max(1, Math.round(k));
+    const w = img.width * k, h = img.height * k;
+    const cx = this.ox * this.dpr + x * this.dev, by = this.oy * this.dpr + y * this.dev;
+    const left = Math.round(cx - w / 2), top = Math.round(by - h) - Math.round(hop * Math.max(1, k));
+    c.save();
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.imageSmoothingEnabled = smooth;
+    if (smooth) c.imageSmoothingQuality = 'high';
+    c.fillStyle = 'rgba(0,0,0,0.18)'; c.fillRect(Math.round(left + w * 0.15), Math.round(by) - Math.max(1, Math.round(k)), Math.round(w * 0.7), Math.max(1, Math.round(k)));
+    if (flip) { c.translate(left + w, top); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); }
+    else c.drawImage(img, left, top, w, h);
     c.restore();
   }
 

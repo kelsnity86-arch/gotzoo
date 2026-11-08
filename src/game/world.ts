@@ -489,7 +489,7 @@ export class World {
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
-    this.visitors.push({ vip, x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: Math.floor(this.rng() * 8),
+    this.visitors.push({ vip, x: dir > 0 ? -10 : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
       state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng() });
   }
 
