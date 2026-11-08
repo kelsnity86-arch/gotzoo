@@ -33,7 +33,7 @@ export class FieldRenderer {
   /** 화면 좌표 (sx, sy)를 중심으로 확대·축소 */
   zoomAt(sx: number, sy: number, factor: number) {
     const before = this.toWorld(sx, sy);
-    this.userZoom = Math.max(1, Math.min(6, this.userZoom * factor));
+    this.userZoom = Math.max(1, Math.min(4, this.userZoom * factor));
     if (this.userZoom === 1) { this.camX = -1; return; }
     if (this.camX < 0) { this.camX = this.worldW / 2; this.camY = this.worldH / 2; }
     // 커서 아래 지점이 그대로 있도록 카메라를 옮긴다
@@ -201,7 +201,7 @@ export class FieldRenderer {
     if (!this.autoZoomed && L.w > 64) {
       this.autoZoomed = true;
       const uz = FieldRenderer.START_PX / fit;
-      if (uz > 1.15) { this.userZoom = Math.min(6, uz); this.camX = L.w / 2; this.camY = 0; }
+      if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = L.w / 2; this.camY = 0; }
     }
     // 배율: 도트 1개가 기기 픽셀 정수 배가 되게 내림 (28% 넘게 작아지면 소수 배율).
     // 화면 밀도가 높은 기기(dpr ≥ 2)는 소수 배율이어도 고르지 않은 게 안 보여서 꽉 채운다
@@ -250,7 +250,7 @@ export class FieldRenderer {
       c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
       c.fillStyle = color; c.fillText(text, x, y);
     };
-    c.font = '15px Galmuri14, Galmuri11, sans-serif'; c.textAlign = 'center';
+    c.font = '16px Jua, sans-serif'; c.textAlign = 'center';
     for (const f of world.floats) {
       const k = f.t / 1.1;
       const sx = this.ox + f.x * z, sy = this.oy + (f.y - k * 10) * z;
@@ -261,7 +261,7 @@ export class FieldRenderer {
     // 우리 이름표: 매력도
     // 우리 이름표: 매력도 (큰 글씨, 진한 배경)
     // 우리 이름표: 작은 반투명 딱지 (♥ 매력). 빈 우리는 표시 안 함
-    c.font = '11px Galmuri11, sans-serif';
+    c.font = '12px Jua, sans-serif';
     L.pens.forEach((r, i) => {
       const n = save.pens[i]?.length ?? 0;
       if (!n) return;

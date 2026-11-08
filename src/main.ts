@@ -1,7 +1,9 @@
 // 뽑ZOO: 시작 · 화면 배치 · 입력 · 루프 · 자동 저장
 import './ui/styles.css';
-import font11 from 'galmuri/dist/Galmuri11.woff2?url';
-import font14 from 'galmuri/dist/Galmuri14.woff2?url';
+import juaKo from '@fontsource/jua/files/jua-korean-400-normal.woff2?url';
+import juaLa from '@fontsource/jua/files/jua-latin-400-normal.woff2?url';
+import gowunKo from '@fontsource/gowun-dodum/files/gowun-dodum-korean-400-normal.woff2?url';
+import gowunLa from '@fontsource/gowun-dodum/files/gowun-dodum-latin-400-normal.woff2?url';
 import { defaultSave, loadSave, writeSave } from './game/state';
 import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
@@ -53,7 +55,14 @@ const eventBanner = h('div', { class: 'event-banner hidden' });
 const openLeft = h('small', {});
 const openBtn = h('div', { class: 'open-btn hidden' }, h('button', { class: 'btn', onclick: () => { world.openPark(); audio.sfx('event'); } }, '☀ 개장하기'), openLeft);
 openLeft.textContent = '정비를 다 했으면 눌러서 다음 날 영업 시작';
-const zoomReset = h('button', { class: 'zoom-reset hidden', onclick: () => { field.resetZoom(); audio.sfx('click'); } }, '전체 보기');
+// 확대 버튼: ＋ / － / 전체 (화면 오른쪽 아래). 누른 단계로 부드럽게
+let zoomAnim: { sx: number; sy: number; to: number } | null = null;
+const zoomCenter = () => ({ sx: fieldRect.x + fieldRect.w / 2 - canvas.getBoundingClientRect().left, sy: fieldRect.y + fieldRect.h / 2 - canvas.getBoundingClientRect().top });
+const zoomTo = (to: number, at = zoomCenter()) => { zoomAnim = { ...at, to: Math.max(1, Math.min(MAX_ZOOM, to)) }; fling = null; };
+const zoomReset = h('div', { class: 'zoom-btns' },
+  h('button', { type: 'button', 'aria-label': '확대', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom * 1.5); } }, '＋'),
+  h('button', { type: 'button', 'aria-label': '축소', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom / 1.5); } }, '－'),
+  h('button', { type: 'button', class: 'all', onclick: () => { audio.sfx('click'); zoomAnim = null; fling = null; field.resetZoom(); } }, '전체'));
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
 hud.append(settingsBtn);
 
@@ -155,13 +164,21 @@ function layout() {
 window.addEventListener('resize', layout);
 
 // ── 입력 ──
-// 커서(손가락 하나)로 동전 쓸어 담기 · 우리를 짧게 누르면 자세히
-// 확대: 휠 / 두 손가락 벌리기 · 이동: 확대한 상태에서 마우스로 끌기 / 두 손가락으로 끌기
+// 손가락 하나: 관객 길(동전 있는 곳)에서 시작하면 동전 쓸어 담기, 우리 · 잔디에서 시작하면 화면 이동(확대했을 때). 짧게 누르면 우리 자세히
+// 두 번 톡톡 = 그 자리 확대 / 전체 보기, 두 손가락 = 확대 · 이동, 휠 = 확대. 끌다 놓으면 살짝 미끄러진다
+const MAX_ZOOM = 4;
 function toLocal(e: PointerEvent | WheelEvent) { const r = canvas.getBoundingClientRect(); return { sx: e.clientX - r.left, sy: e.clientY - r.top }; }
 let downAt: { sx: number; sy: number; t: number } | null = null;
 const touches = new Map<number, { sx: number; sy: number }>();
 let pinch: { d: number; cx: number; cy: number } | null = null;
 let dragging = false;
+/** 이번 손가락이 화면 이동용인지 (관객 길 밖에서 시작) · 마지막 위치 · 속도(px/ms) */
+let panMode = false;
+let lastMove: { sx: number; sy: number; t: number } | null = null;
+let vel = { x: 0, y: 0 };
+let fling: { vx: number; vy: number } | null = null;
+let lastTap: { sx: number; sy: number; t: number } | null = null;
+let tapTimer = 0;
 canvas.addEventListener('pointermove', (e) => {
   const p = toLocal(e);
   if (touches.has(e.pointerId)) touches.set(e.pointerId, p);
@@ -169,12 +186,23 @@ canvas.addEventListener('pointermove', (e) => {
     const [a, b] = [...touches.values()];
     const d = Math.hypot(a.sx - b.sx, a.sy - b.sy), cx = (a.sx + b.sx) / 2, cy = (a.sy + b.sy) / 2;
     if (pinch) { field.zoomAt(cx, cy, d / pinch.d); field.panBy(cx - pinch.cx, cy - pinch.cy); }
-    pinch = { d, cx, cy }; pointer = null; downAt = null;
+    pinch = { d, cx, cy }; pointer = null; downAt = null; zoomAnim = null;
     return;
   }
-  // 마우스로 끌면 화면 이동 (확대했을 때)
-  if (e.pointerType === 'mouse' && downAt && (e.buttons & 1) && field.userZoom > 1) {
-    if (dragging || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 6) { dragging = true; field.panBy(e.movementX, e.movementY); }
+  const pressed = e.pointerType === 'mouse' ? (e.buttons & 1) === 1 : touches.has(e.pointerId);
+  if (pressed && downAt && panMode && field.userZoom > 1 && !placing) {
+    if (dragging || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 6) {
+      dragging = true;
+      const now = performance.now();
+      if (lastMove) {
+        const dx = p.sx - lastMove.sx, dy = p.sy - lastMove.sy, dtm = Math.max(1, now - lastMove.t);
+        field.panBy(dx, dy);
+        vel = { x: vel.x * 0.6 + (dx / dtm) * 0.4, y: vel.y * 0.6 + (dy / dtm) * 0.4 };
+      }
+      lastMove = { ...p, t: now };
+      pointer = null; // 끄는 중엔 동전을 쓸지 않는다
+      return;
+    }
   }
   pointer = field.toWorld(p.sx, p.sy);
   if (placing) updateGhost();
@@ -186,23 +214,49 @@ canvas.addEventListener('pointerdown', (e) => {
   const p = toLocal(e);
   if (e.pointerType !== 'mouse') touches.set(e.pointerId, p);
   if (touches.size >= 2) { pinch = null; return; }
-  downAt = { ...p, t: performance.now() }; dragging = false;
+  downAt = { ...p, t: performance.now() }; dragging = false; fling = null; zoomAnim = null;
+  lastMove = { ...p, t: performance.now() }; vel = { x: 0, y: 0 };
   pointer = field.toWorld(p.sx, p.sy);
+  panMode = pointer.y > ZONE_H; // 관객존(길) 밖에서 시작하면 화면 이동
   if (placing) { lastPlaceAt = pointer; updateGhost(); return; }
+  if (panMode) return;
   // 누른 자리의 동전 줍기 (주웠으면 우리 창은 열지 않는다)
   if (world.clickAt(pointer.x, pointer.y) > 0) downAt = null;
 });
 const endTouch = (e: PointerEvent) => { touches.delete(e.pointerId); if (touches.size < 2) pinch = null; };
-canvas.addEventListener('pointercancel', endTouch);
+canvas.addEventListener('pointercancel', (e) => { endTouch(e); downAt = null; dragging = false; });
 canvas.addEventListener('pointerup', (e) => {
   const p = toLocal(e);
   const wasMulti = touches.size >= 2;
   endTouch(e);
   if (e.pointerType !== 'mouse') pointer = null;
-  if (wasMulti || dragging || !downAt || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 8 || performance.now() - downAt.t > 400) { downAt = null; dragging = false; return; }
+  if (dragging) {
+    // 놓으면 그 속도로 살짝 미끄러진다 (멈춰서 놓았으면 그대로)
+    if (lastMove && performance.now() - lastMove.t < 80 && Math.hypot(vel.x, vel.y) > 0.15) fling = { vx: vel.x * 1000, vy: vel.y * 1000 };
+    downAt = null; dragging = false; return;
+  }
+  if (wasMulti || !downAt || Math.hypot(p.sx - downAt.sx, p.sy - downAt.sy) > 8 || performance.now() - downAt.t > 400) { downAt = null; return; }
   downAt = null;
   const wp = field.toWorld(p.sx, p.sy);
   if (placing) { tryPlace(wp); return; }
+  // 두 번 톡톡: 그 자리 확대 · 확대 중이면 전체 보기 (손가락만. 첫 번째 톡은 잠깐 기다렸다 처리)
+  if (e.pointerType !== 'mouse') {
+    const now = performance.now();
+    if (lastTap && now - lastTap.t < 300 && Math.hypot(p.sx - lastTap.sx, p.sy - lastTap.sy) < 36) {
+      clearTimeout(tapTimer); lastTap = null;
+      if (field.userZoom > 1.3) { zoomAnim = null; field.resetZoom(); } else zoomTo(2.5, p);
+      return;
+    }
+    lastTap = { ...p, t: now };
+    clearTimeout(tapTimer);
+    tapTimer = window.setTimeout(() => { lastTap = null; tapAt(wp); }, 260);
+    return;
+  }
+  tapAt(wp);
+});
+/** 짧게 누른 곳: 시설 · 소품이면 치우기 창, 우리면 우리 창 */
+function tapAt(wp: { x: number; y: number }) {
+  if (placing) return;
   // 시설 · 소품을 누르면 치우기
   const ibx = Math.floor((wp.x - world.layout.bx0) / BLOCK), iby = Math.floor((wp.y - world.layout.by0) / BLOCK);
   const it = wp.y > world.layout.by0 ? itemAt(save, ibx, iby) : undefined;
@@ -223,7 +277,21 @@ canvas.addEventListener('pointerup', (e) => {
     field.selectedPen = i; penSheetOpen = true;
     openPenSheet({ save, world, persist, overlayRoot: ui }, i, () => { penSheetOpen = false; field.selectedPen = -1; panel.render(true); });
   }
-});
+}
+/** 매 프레임: 미끄러짐 · 버튼/두 번 톡 확대를 부드럽게 */
+function stepCamera(dt: number) {
+  if (fling) {
+    field.panBy(fling.vx * dt, fling.vy * dt);
+    const k = Math.exp(-dt * 5); fling.vx *= k; fling.vy *= k;
+    if (Math.hypot(fling.vx, fling.vy) < 20 || field.userZoom <= 1) fling = null;
+  }
+  if (zoomAnim) {
+    const cur = field.userZoom, to = zoomAnim.to;
+    const next = Math.abs(to - cur) < 0.01 ? to : cur * Math.pow(to / cur, Math.min(1, dt * 12));
+    field.zoomAt(zoomAnim.sx, zoomAnim.sy, next / cur);
+    if (next === to || Math.abs(field.userZoom - to) < 0.01) zoomAnim = null;
+  }
+}
 canvas.addEventListener('wheel', (e) => { e.preventDefault(); const p = toLocal(e); field.zoomAt(p.sx, p.sy, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
 
 // ── 설정: 소리 · 저장 코드 · 초기화 ──
@@ -378,6 +446,7 @@ function frame(now: number) {
   last = now;
   world.relayout(fieldRect.w / fieldRect.h);
   world.sync();
+  stepCamera(dt);
   world.update(dt, pointer);
   for (const ev of world.events) {
     if (ev.type === 'night') { reports.push(ev.report); if (reports.length > 14) reports.shift(); audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
@@ -423,7 +492,7 @@ function updateHud() {
   if (world.event) { const d = eventDef(world.event.id); eventBanner.textContent = `${d.name} · ${Math.ceil(world.event.left)}초`; eventBanner.classList.remove('hidden'); }
   else eventBanner.classList.add('hidden');
   eventBanner.style.top = `${fieldRect.y + 30}px`; eventBanner.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
-  zoomReset.classList.toggle('hidden', field.userZoom <= 1);
+  zoomReset.classList.toggle('zoomed', field.userZoom > 1);
   // 하루 시계 · 개장하기
   const night = world.isNight;
   clock.classList.toggle('night', night);
@@ -446,7 +515,7 @@ function updateHud() {
   const tight = openBottom - fieldRect.y < 150;
   openBtn.classList.toggle('tight', tight);
   openBtn.style.top = `${openBottom - (tight ? 58 : 86)}px`; openBtn.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
-  zoomReset.style.top = `${fieldRect.y + 6}px`; zoomReset.style.left = `${fieldRect.x + fieldRect.w - 6}px`;
+  zoomReset.style.top = `${fieldRect.y + fieldRect.h - 8}px`; zoomReset.style.left = `${fieldRect.x + fieldRect.w - 8}px`;
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
@@ -463,7 +532,9 @@ window.addEventListener('pagehide', persist);
 
 async function boot() {
   try {
-    const faces = [new FontFace('Galmuri11', `url(${font11})`), new FontFace('Galmuri14', `url(${font14})`)];
+    // 글꼴: 제목 · 숫자 · 버튼 = 주아, 본문 = 고운돋움 (둘 다 OFL). 영문 · 숫자는 latin 파일에서
+    const LATIN = 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
+    const faces = [new FontFace('Jua', `url(${juaLa})`, { unicodeRange: LATIN }), new FontFace('Jua', `url(${juaKo})`), new FontFace('Gowun Dodum', `url(${gowunLa})`, { unicodeRange: LATIN }), new FontFace('Gowun Dodum', `url(${gowunKo})`)];
     await Promise.all(faces.map((f) => f.load().then((ff) => document.fonts.add(ff)).catch(() => undefined)));
   } catch { /* 글꼴 없이도 동작 */ }
   await preloadPngs();

@@ -7,7 +7,7 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
-  font: 13px/1.45 'Galmuri11', system-ui, sans-serif; font-synthesis: none; user-select: none; -webkit-user-select: none; touch-action: none; overscroll-behavior: none; }
+  font: 14px/1.45 'Gowun Dodum', system-ui, sans-serif; font-synthesis: none; user-select: none; -webkit-user-select: none; touch-action: none; overscroll-behavior: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
 #app { position: fixed; inset: 0; }
 #world { position: absolute; inset: 0; display: block; }
@@ -25,7 +25,7 @@ body.landscape .hud { right: auto; width: calc(100% - var(--pw, 0px)); }
 .hud-coins b { font-size: 16px; font-weight: 400; color: var(--gold); font-variant-numeric: tabular-nums; }
 .coin-ico { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff3a3, #f7c948 45%, #e0a526 70%, #8a5a3b 72%); }
 .hud-stats { display: flex; gap: 4px 12px; flex-wrap: wrap; font-size: 11px; color: #d8e6c8; }
-.logo { font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: 20px; color: #fff3a3; text-shadow: 2px 2px 0 #121a10; pointer-events: none; }
+.logo { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: 20px; color: #fff3a3; text-shadow: 2px 2px 0 #121a10; pointer-events: none; }
 .logo span { color: #a7d65b; }
 .field-hint { position: absolute; transform: translateX(-50%); max-width: min(90vw, 420px); padding: 4px 12px; border-radius: 999px;
   background: rgba(18, 26, 16, 0.85); color: #fff3a3; font-size: 12px; text-align: center; pointer-events: none; animation: bob 1.6s ease-in-out infinite; }
@@ -65,7 +65,7 @@ body:not(.landscape) .ptabs { padding-top: 6px; }
 
 /* 뽑기 탭 */
 .gacha-hero { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 10px; background: var(--panel-2); border: 2px solid var(--line); margin-bottom: 10px; }
-.gacha-hero .title { font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: 16px; }
+.gacha-hero .title { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: 16px; }
 .mini-machine { position: relative; width: 44px; height: 52px; flex: none; }
 .mini-machine::before { content: ''; position: absolute; left: 4px; top: 0; width: 36px; height: 30px; border-radius: 18px 18px 6px 6px; background: rgba(255,255,255,0.7); border: 2px solid var(--ink); }
 .mini-machine::after { content: ''; position: absolute; left: 2px; top: 28px; width: 40px; height: 22px; border-radius: 4px; background: #d83a3a; border: 2px solid var(--ink); }
@@ -93,7 +93,7 @@ body:not(.landscape) .ptabs { padding-top: 6px; }
 /* 오버레이 */
 .overlay { position: absolute; inset: 0; background: rgba(10, 14, 8, 0.72); display: grid; place-items: center; padding: 16px; z-index: 10; }
 .reveal-box, .fuse-result, .sheet { width: min(560px, 100%); max-height: 92vh; overflow-y: auto; background: var(--panel); border: 3px solid var(--wood); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; touch-action: pan-y; }
-.reveal-title { font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: 18px; }
+.reveal-title { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: 18px; }
 .reveal-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; min-height: 40px; }
 .reveal-cell { animation: flip 0.35s ease-out; }
 .reveal-cell.shine .card { box-shadow: 0 0 0 3px var(--glow), 0 0 18px var(--glow); }
@@ -234,16 +234,20 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 
 /* 이벤트 띠 · 확대 해제 · 설정 */
 .event-banner { position: absolute; transform: translateX(-50%); padding: 4px 14px; border-radius: 999px; background: linear-gradient(90deg, #f7c948, #ef7d32); color: #1a1c2c; border: 2px solid #1a1c2c; font-size: 13px; pointer-events: none; white-space: nowrap; }
-.zoom-reset { position: absolute; transform: translateX(-100%); padding: 4px 10px; border-radius: 8px; border: 2px solid #1a1c2c; background: #f6e6c8; font-size: 12px; }
+.zoom-btns { position: absolute; transform: translate(-100%, -100%); display: flex; flex-direction: column; gap: 6px; z-index: 5; }
+.zoom-btns button { width: 40px; height: 40px; padding: 0; border-radius: 12px; border: 2px solid #1a1c2c; background: rgba(246,230,200,0.92); color: #3b2a1a; font-size: 20px; line-height: 1; box-shadow: 0 2px 0 #1a1c2c; }
+.zoom-btns button.all { font-size: 13px; }
+.zoom-btns:not(.zoomed) button.all, .zoom-btns:not(.zoomed) button:nth-child(2) { opacity: 0.45; }
+.zoom-btns button:active { transform: translateY(2px); box-shadow: none; }
 .hud-gear { margin-left: auto; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; border: 2px solid var(--wood); background: #121a10; color: #f6e6c8; padding: 0; }
 .settings textarea.code { width: 100%; min-height: 64px; font: 11px/1.4 ui-monospace, monospace; border: 2px solid var(--line); border-radius: 6px; padding: 6px; background: #fffaf0; resize: vertical; word-break: break-all; user-select: text; -webkit-user-select: text; }
 .settings input[type=range] { flex: 1; accent-color: var(--green); }
 .btn.danger { background: #d83a3a; border-color: #8b1e2d; }
-.offline-amount { display: flex; align-items: center; gap: 8px; font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: 28px; color: #8a5a3b; }
+.offline-amount { display: flex; align-items: center; gap: 8px; font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: 28px; color: #8a5a3b; }
 /* 타이틀 */
 .overlay.title { background: radial-gradient(circle at 50% 40%, #3f7a33, #1f2a1c 75%); z-index: 20; }
 .title-box { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; width: min(460px, 100%); }
-.title-logo { font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: clamp(56px, 16vw, 96px); color: #fff3a3; text-shadow: 4px 4px 0 #121a10, 0 0 24px rgba(247,201,72,0.4); line-height: 1; }
+.title-logo { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: clamp(56px, 16vw, 96px); color: #fff3a3; text-shadow: 4px 4px 0 #121a10, 0 0 24px rgba(247,201,72,0.4); line-height: 1; }
 .title-logo span { color: #a7d65b; }
 .title-sub { color: #f6efd8; font-size: 14px; }
 .title-box .sub { color: #cfe3bd; }
@@ -258,7 +262,7 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .icon-slot { display: inline-grid; place-items: center; }
 .legend-burst .rays { position: absolute; left: 50%; top: 50%; margin: -100vmax 0 0 -100vmax; width: 200vmax; height: 200vmax; background: repeating-conic-gradient(rgba(255,255,255,0.35) 0 8deg, transparent 8deg 20deg); animation: spin 6s linear infinite; }
 .legend-burst .pix { filter: drop-shadow(0 0 16px #fff3a3); animation: legendPop 0.8s ease-out 0.4s both; }
-.legend-text { align-self: end; margin-bottom: 18vh; font-family: 'Galmuri14', 'Galmuri11', sans-serif; font-size: 34px; color: #fff; text-shadow: 3px 3px 0 #8a5a3b; }
+.legend-text { align-self: end; margin-bottom: 18vh; font-family: 'Jua', 'Gowun Dodum', sans-serif; font-size: 34px; color: #fff; text-shadow: 3px 3px 0 #8a5a3b; }
 @keyframes legendIn { from { opacity: 0; } }
 @keyframes legendPop { from { transform: scale(0.2) rotate(-20deg); opacity: 0; } 70% { transform: scale(1.15); } to { transform: none; opacity: 1; } }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -414,3 +418,6 @@ body[data-season="spring"] .clock:not(.night) { background: rgba(240,140,190,.35
 .deco-cell small { color: #6b5536; }
 .deco-cell .btn, .deco-cell .night-only { width: 100%; }
 .row-art { overflow: hidden; } .row-art canvas, .row-art img { max-width: 36px; max-height: 36px; object-fit: contain; }
+
+/* 글꼴: 제목 · 숫자 · 버튼 · 탭 · 굵은 글씨 = 주아 (둥글고 통통), 본문 = 고운돋움 */
+b, strong, h1, h2, h3, .btn, .ptab, .hud, .hud-coins b, .chip, .badge, .sheet-head, .toast, .zoom-btns button { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-weight: 400; }
