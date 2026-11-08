@@ -55,6 +55,8 @@ export const VISITOR = {
   tokenShare: 0.6,
   /** 행운의 동전 확률 (주우면 뽑기권) */
   luckyChance: 0.025,
+  /** 피버 타임: 손으로 동전 need개를 주우면(콤보면 더 빨리) sec초 동안 손님 동전 ×coinMul, 하늘에서 동전 비 (rainEvery초마다) */
+  fever: { need: 80, sec: 15, coinMul: 2, rainEvery: 0.4 },
   /** 수요가 게이트 한도를 넘으면 넘친 만큼 투척액이 오른다 (최대 배율) */
   overflowMaxMul: 1.6,
   walkSpeed: 16,

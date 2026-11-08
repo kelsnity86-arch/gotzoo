@@ -508,6 +508,13 @@ export class FieldRenderer {
         }
       }
     }
+    // 피버 타임: 관객존이 금빛으로 일렁인다
+    if (world.feverOn) {
+      const a = 0.12 + 0.06 * Math.sin(t * 8);
+      const g = c.createLinearGradient(0, 0, 0, ZONE_H + 10);
+      g.addColorStop(0, `rgba(255,243,163,${a + 0.08})`); g.addColorStop(1, 'rgba(247,201,72,0)');
+      c.fillStyle = g; c.fillRect(0, 0, L.w, ZONE_H + 10);
+    }
     // 계절: 살짝 덧칠 + 날리는 꽃잎 · 낙엽 · 눈 (이벤트가 눈이면 더 많이)
     const sea = seasonOf(save.season.n);
     const ev = world.event ? eventDef(world.event.id) : null;

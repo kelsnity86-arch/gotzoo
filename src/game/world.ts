@@ -108,6 +108,7 @@ export type WorldEvent =
   | { type: 'tip'; amount: number; x: number; y: number }
   | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff'; combo?: number; lucky?: boolean }
   | { type: 'combo'; n: number; bonus: number }
+  | { type: 'fever'; on: boolean }
   | { type: 'feed'; pen: number; by: 'hand' | 'staff' }
   | { type: 'eventStart'; id: EventId }
   | { type: 'eventEnd'; id: EventId }
@@ -146,6 +147,9 @@ export class World {
   /** (시안 ?loop) 돈은 주워야 들어온다 · 콤보 · 행운의 동전 */
   loop = true;
   combo = { n: 0, sum: 0, t: 0 };
+  /** 피버 게이지(0~1) · 남은 피버 시간 */
+  fever = { gauge: 0, left: 0, rainAcc: 0 };
+  get feverOn() { return this.fever.left > 0; }
   /** 주운 동전이 날아가는 연출 (월드 좌표에서 출발, 남은 시간) */
   flying: { x: number; y: number; t: number; lucky?: boolean }[] = [];
   staff: StaffEnt[] = [];
@@ -662,6 +666,18 @@ export class World {
 
     if (this.benchKey !== `${this.layout.w}|${Object.values(this.save.facLv ?? {}).join('')}`) this.placeBenches();
     this.lastPointer = pointer ? { x: pointer.x, y: pointer.y } : null;
+    // 피버 타임: 남은 시간만큼 게이지가 줄고, 하늘에서 동전 비
+    if (this.fever.left > 0) {
+      this.fever.left -= dt;
+      this.fever.gauge = Math.max(0, this.fever.left / VISITOR.fever.sec);
+      this.fever.rainAcc += dt;
+      while (this.fever.rainAcc >= VISITOR.fever.rainEvery) {
+        this.fever.rainAcc -= VISITOR.fever.rainEvery;
+        const v = Math.max(1, Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * VISITOR.tokenShare));
+        this.coins.push({ id: this.coinId++, x: 12 + this.rng() * (L.w - 24), y: PATH_Y0 + 2 + this.rng() * (ZONE_H - 8 - PATH_Y0), vx: 0, vy: 0, value: v, count: 1, age: 0, z: 50 + this.rng() * 30, picked: false });
+      }
+      if (this.fever.left <= 0 || this.phase !== 'day') { this.fever.left = 0; this.fever.gauge = 0; this.events.push({ type: 'fever', on: false }); }
+    }
     if (this.loop) {
       for (let i = this.flying.length - 1; i >= 0; i--) { this.flying[i].t += dt; if (this.flying[i].t > 0.55) this.flying.splice(i, 1); }
       if (this.combo.t > 0) {
@@ -772,7 +788,7 @@ export class World {
     const tip = Math.round(raw * (v.vip ? EVENT_TIMING.vipTipMul : 1));
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: 'VIP 손님!', t: 0, color: '#f7c948' }); }
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
-    const bonus = Math.max(1, Math.round(tip * VISITOR.tokenShare * (1 + facSum(this.save, 'restaurant'))));
+    const bonus = Math.max(1, Math.round(tip * VISITOR.tokenShare * (1 + facSum(this.save, 'restaurant')) * (this.feverOn ? VISITOR.fever.coinMul : 1)));
     const lucky = this.rng() < VISITOR.luckyChance * (1 + facSum(this.save, 'icecream'));
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 6, Math.max(PATH_Y0 + 2, v.y + 4 + this.rng() * 6));
     // 가까운 동전과 합친다 (오래된 쪽 시간을 그대로 따라서 수명이 늘지 않게)
@@ -791,6 +807,11 @@ export class World {
     if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
       this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = 1.2;
+      // 피버 게이지: 주운 동전 수만큼 (콤보가 길수록 최대 2배 빨리)
+      if (!this.feverOn) {
+        this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)));
+        if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = VISITOR.fever.sec; this.events.push({ type: 'fever', on: true }); }
+      }
       this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
       if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }
       this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by, combo: this.combo.n, lucky: c.lucky });

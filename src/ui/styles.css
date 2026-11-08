@@ -615,3 +615,10 @@ body.hud-xs .hud .logo { display: none; }
 body.hud-xs .hud .gacha-gauge .gg-bar { width: 44px; }
 body.hud-xxs .hud .zoom-btns { display: none; }
 body.hud-xxs .hud .gacha-gauge b:not(.gg-coins) { display: none; }
+/* 피버 게이지 */
+.gacha-gauge .gg-bar { width: 96px; }
+.gacha-gauge .gg-bar i { background: linear-gradient(90deg, #ef7d32, #f7c948); }
+.gacha-gauge.full { border-color: #f7c948; box-shadow: 0 0 8px #f7c948; }
+.gacha-gauge.fever { border-color: #fff3a3; box-shadow: 0 0 16px #f7c948, 0 0 4px #ef7d32 inset; animation: ggPulse 0.5s ease-in-out infinite; }
+.gacha-gauge.fever .gg-bar i { background: linear-gradient(90deg, #f08cbe, #f7c948, #fff3a3); }
+body.reduce-motion .gacha-gauge.fever { animation: none; }

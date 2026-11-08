@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { MACHINE_TIERS, drawPrice, machineTier, nextTierLeft, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
+import { drawPrice, penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -140,9 +140,9 @@ function tryPlace(p: { x: number; y: number }) {
 
 const reports: DayReport[] = [];
 // (시안 ?loop) 뽑기 게이지 · 콤보 표시
-const gaugeFill = h('i', {}), gaugeText = h('b', {}), gaugeCoins = h('b', { class: 'gg-coins' });
+const gaugeFill = h('i', {}), gaugeCoins = h('b', { class: 'gg-coins' });
 const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } },
-  hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 16) : null, gaugeCoins, h('span', { class: 'gg-bar' }, gaugeFill), gaugeText);
+  hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 16) : null, gaugeCoins, h('span', { class: 'gg-bar', title: '피버 게이지: 동전을 주울수록 차요' }, gaugeFill));
 const comboEl = h('div', { class: 'combo-pop hidden' });
 /** 폰 세로: 가로로 돌려 달라는 안내 · PC 마우스 말풍선 */
 const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
@@ -547,6 +547,7 @@ function frame(now: number) {
       persist(); panel.render(true);
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
+    else if (ev.type === 'fever') { if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
     else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
@@ -575,13 +576,11 @@ function updateHud() {
     field.hudTarget = { x: (r.left + r.width / 2) * 1 - cr.left, y: r.top + r.height / 2 - cr.top };
     const price = drawPrice(save), ten = price * 10, coins = Math.max(0, save.tokens ?? 0);
     gaugeCoins.textContent = fmt(coins);
-    // 게이지: 지난 뽑기 뒤로 모은 코인 → 기계 등급 (기본 · 은 · 금 · 무지개)
-    const tier = machineTier(save), left = nextTierLeft(save), charge = save.charge ?? 0;
-    const lo = MACHINE_TIERS[tier].need * ten, hi = left === null ? lo : MACHINE_TIERS[tier + 1].need * ten;
-    gaugeFill.style.width = `${left === null ? 100 : Math.min(100, ((charge - lo) / Math.max(1, hi - lo)) * 100)}%`;
-    for (let k = 0; k < 4; k++) gauge.classList.toggle(`t${k}`, k === tier);
+    // 게이지: 피버 게이지 (글자 없이 막대만). 피버 중엔 남은 시간만큼 줄어든다
+    gaugeFill.style.width = `${Math.round(world.fever.gauge * 100)}%`;
+    gauge.classList.toggle('fever', world.feverOn);
+    gauge.classList.toggle('full', !world.feverOn && world.fever.gauge > 0.85);
     gauge.classList.toggle('ready', coins >= price && coins < ten); gauge.classList.toggle('ready10', coins >= ten);
-    gaugeText.textContent = `${tier ? MACHINE_TIERS[tier].name.replace(' 기계', '') : coins >= ten ? '10회!' : coins >= price ? `${Math.floor(coins / price)}회` : ''}${left === null ? ' 최고' : ` ▸${MACHINE_TIERS[tier + 1].name.replace(' 기계', '').replace('빛', '')} ${fmt(left)}`}`;
     const cb = world.combo;
     if (cb.n >= 2 && cb.t > 0) { comboEl.textContent = `콤보 ×${cb.n}`; comboEl.classList.remove('hidden', 'end'); comboEl.style.left = upx(fieldRect.x + fieldRect.w / 2); comboEl.style.top = upx(fieldRect.y + 40); comboEl.style.setProperty('--s', String(1 + Math.min(0.6, cb.n * 0.02))); }
     else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');

@@ -451,7 +451,8 @@ def machines():
         m = np.isin(lab, ids); ys, xs = np.nonzero(m)
         return extract_raw(a, m, (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1), s)
     for r in range(6):
-        band = [c for c in comps if r * H / 6 <= (c[1][0].start + c[1][0].stop) / 2 < (r + 1) * H / 6]
+        # 줄 판정은 덩어리 위쪽으로 (줄 맨 아래 뚜껑이 다음 줄로 넘어가지 않게)
+        band = [c for c in comps if r * H / 6 <= c[1][0].start < (r + 1) * H / 6]
         # 세로열: 가로 범위가 겹치면 같은 열 (장식+몸통, 돔+반짝임)
         band.sort(key=lambda c: c[1][1].start)
         cols = []

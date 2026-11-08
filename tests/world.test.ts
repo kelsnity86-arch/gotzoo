@@ -47,6 +47,22 @@ describe('필드', () => {
     expect(w2.coins.some((x) => ids.includes(x.id))).toBe(false);
     expect(w2.missed).toBeGreaterThan(0);
   });
+  it('피버 타임: 손으로 동전을 모으면 게이지가 차고, 가득 차면 피버 동안 하늘에서 동전이 내리다 끝난다', () => {
+    const { w } = setup();
+    for (let i = 0; i < VISITOR.fever.need && !w.feverOn; i++) w.pick({ id: 9000 + i, x: 50, y: 60, vx: 0, vy: 0, value: 1, count: 1, age: 0, z: 0, picked: false }, 'hand');
+    expect(w.feverOn).toBe(true);
+    const before = w.coins.length;
+    w.update(1, null);
+    expect(w.coins.length).toBeGreaterThan(before); // 동전 비
+    for (let k = 0; k < VISITOR.fever.sec + 2; k++) w.update(1, null);
+    expect(w.feverOn).toBe(false);
+    expect(w.fever.gauge).toBe(0);
+  });
+  it('수거 직원이 주운 동전은 피버 게이지를 채우지 않는다', () => {
+    const { w } = setup();
+    w.pick({ id: 9999, x: 50, y: 60, vx: 0, vy: 0, value: 1, count: 10, age: 0, z: 0, picked: false }, 'staff');
+    expect(w.fever.gauge).toBe(0);
+  });
   it('처음부터 끌어서 줍는다: 범위는 작고(1.5) 업그레이드로 커진다, 빨리 그어도 사이 동전을 줍는다', () => {
     const { s, w } = setup();
     expect(w.pickupRadius).toBe(1.5);

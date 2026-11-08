@@ -9,7 +9,7 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } fro
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, DRAW_KIND, staffSum, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, DRAW_KIND, MACHINE_TIERS, staffSum, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, shinyOf, staff16, staffFrame } from '../render/sprites';
@@ -168,7 +168,7 @@ export class Panel {
         this.costBtn(h('span', {}, '5회', h('small', {}, `${fmt(price * 5)}코인`)), price * 5, () => doDraw(5), '', false, true),
         this.costBtn(h('span', {}, '10회', h('small', {}, `${fmt(price * 10)}코인`)), price * 10, () => doDraw(10), '', false, true)),
       s.tickets > 0 ? h('button', { class: 'btn big ticket', onclick: () => { const before = s.dex.slice(); const out = ticketDraw(s); if (out) this.reveal(out, before); } }, `무료 뽑기권 사용 (${s.tickets}장 남음)`) : null,
-      h('details', { class: 'odds-box' }, h('summary', {}, '확률 보기'), grid),
+      h('details', { class: 'odds-box' }, h('summary', {}, '확률 보기'), grid, h('p', { class: 'sub' }, `기계는 지금 계절 기계가 기본이고, 가끔 특별한 기계가 나와요: ${MACHINE_TIERS.slice(1).map((m) => `${m.name} ${+(m.chance * 100).toFixed(1)}% (영웅 · 전설 +${Math.round(m.luck * 100)}%p${m.shiny > 1 ? ', 반짝이 2배' : ''})`).join(' · ')}`)),
       h('p', { class: 'hint' }, '코인은 관객 길에 떨어진 동전을 주워 모아요. 돈(입장료)은 건물 · 업그레이드에 써요. 같은 등급 카드 2~10장을 합성하면 다음 등급을 노릴 수 있어요.'));
   }
 

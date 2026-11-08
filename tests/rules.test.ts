@@ -60,9 +60,19 @@ describe('뽑기', () => {
   it('확률: 동물 90% · 직원 5% · 우리 5%, 동물 중 전설 약 1%', () => {
     let staff = 0, pen = 0, animal = 0, legend = 0; const N = 40000;
     const t = defaultSave(); t.tokens = 1e15;
-    for (const c of draw(t, N)!) { if (c.kind === 'staff') staff++; else if (c.kind === 'pen') pen++; else { animal++; if (ANIMALS[c.animal].grade === 4) legend++; } }
+    const all = Array.from({ length: N / 10 }, () => draw(t, 10)!).flat(); // 10회씩 (기계는 한 번 뽑을 때마다 랜덤)
+    for (const c of all) { if (c.kind === 'staff') staff++; else if (c.kind === 'pen') pen++; else { animal++; if (ANIMALS[c.animal].grade === 4) legend++; } }
     expect(animal / N).toBeCloseTo(0.9, 1); expect(staff / N).toBeCloseTo(0.05, 1); expect(pen / N).toBeCloseTo(0.05, 1);
-    expect(legend / animal).toBeGreaterThan(0.007); expect(legend / animal).toBeLessThan(0.013);
+    expect(legend / animal).toBeGreaterThan(0.007); expect(legend / animal).toBeLessThan(0.0135); // 특별한 기계로 평균 +0.05%p
+  });
+});
+
+describe('뽑기 기계', () => {
+  it('계절 기계가 기본, 은 8% · 금 2.5% · 무지개 0.5%가 랜덤', async () => {
+    const { rollMachine } = await import('../src/game/rules');
+    const n = [0, 0, 0, 0]; const N = 200000;
+    for (let i = 0; i < N; i++) n[rollMachine(Math.random)]++;
+    expect(n[1] / N).toBeCloseTo(0.08, 2); expect(n[2] / N).toBeCloseTo(0.025, 2); expect(n[3] / N).toBeCloseTo(0.005, 2);
   });
 });
 
