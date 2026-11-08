@@ -4,9 +4,11 @@ import { ANIMALS } from '../data/animals';
 import { COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
+import { SHAPE_OF, isEdge, penMask, type PenShape } from '../data/shapes';
+import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { curSeason, discoverSynergies, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { curSeason, discoverSynergies, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -14,9 +16,11 @@ export const TILE = 8;
 export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
 export const ZONE_H = 48;      // 관객존 높이
 export const PATH_Y0 = 18, PATH_Y1 = 40; // 관람객이 걷는 길 (관객존 안)
-const GAP = 6;                 // 우리 사이 길 (좁게: 동물존을 우리로 꽉 채운다)
+const GAP = 10;                // 우리 사이 산책길
 
 export interface PenRect { x: number; y: number; w: number; h: number }
+/** 우리 모양: 타일 격자 원점 · 칸 수 · 마스크(우리 칸) · 바닥(테두리 아닌 우리 칸) */
+export interface PenGeo { gx: number; gy: number; cols: number; rows: number; shape: PenShape; theme: Habitat | null; mask: boolean[][]; floor: boolean[][]; floorCells: [number, number][] }
 export interface Layout { w: number; h: number; pens: PenRect[]; cols: number }
 
 /** 우리 안쪽 크기: 한 마리당 약 3타일 */
@@ -46,12 +50,18 @@ export function computeLayout(n: number, cap: number, aspect: number): Layout {
   if (w / h < aspect) { const nw = h * aspect; qw = Math.floor((nw - GAP) / cols - GAP); w = cols * (qw + GAP) + GAP; }
   else { const nh = w / aspect; qh = Math.floor((nh - ZONE_H - GAP) / rows - GAP); h = ZONE_H + rows * (qh + GAP) + GAP; }
   const pens: PenRect[] = [];
-  for (let i = 0; i < n; i++) {
-    const r = Math.floor(i / cols);
-    // 마지막 줄이 덜 차면 그 줄 우리를 넓혀서 빈 곳을 없앤다
-    const inRow = r === rows - 1 ? n - r * cols : cols;
-    const rw = Math.floor((w - GAP) / inRow - GAP);
-    pens.push({ x: GAP + (i - r * cols) * (rw + GAP), y: ZONE_H + GAP + r * (qh + GAP), w: rw, h: qh });
+  // 줄마다 우리 폭을 조금씩 다르게 (바둑판 대신 공원처럼). 마지막 줄이 덜 차면 그 줄 우리를 넓힌다
+  const WEIGHT = [1.14, 0.88, 1.04, 0.94, 1.1, 0.9, 1.0];
+  for (let r = 0; r < rows; r++) {
+    const first = r * cols, inRow = Math.min(cols, n - first);
+    const ws = Array.from({ length: inRow }, (_, k) => (inRow > 1 ? WEIGHT[(first + k + r * 3) % WEIGHT.length] : 1));
+    const sum = ws.reduce((a, b) => a + b, 0), avail = w - GAP - inRow * GAP;
+    let x = GAP;
+    for (let k = 0; k < inRow; k++) {
+      const rw = k === inRow - 1 ? w - GAP - x : Math.floor((avail * ws[k]) / sum);
+      pens.push({ x, y: ZONE_H + GAP + r * (qh + GAP), w: rw, h: qh });
+      x += rw + GAP;
+    }
   }
   return { w, h, pens, cols };
 }
@@ -137,24 +147,57 @@ export class World {
     this.layoutKey = key;
     this.layout = computeLayout(n, cap, aspect);
     while (this.fedLeft.length < n) { this.fedLeft.push(0); this.feedCooldown.push(0); }
-    // 동물은 자기 우리 안으로 다시 옮긴다
+    this.geoKey = '';
+    this.updateShapes();
+  }
+
+  /** 우리 모양 (테마 = 지정했거나 가장 많은 서식지). 바뀌면 동물을 모양 안으로 옮긴다 */
+  geo: PenGeo[] = [];
+  private geoKey = '';
+  private updateShapes() {
+    const themes = this.layout.pens.map((_, i) => penTheme(this.save, i));
+    const key = themes.join(',');
+    if (key === this.geoKey && this.geo.length === this.layout.pens.length) return;
+    this.geoKey = key;
+    this.geo = this.layout.pens.map((r, i) => {
+      const cols = Math.floor(r.w / TILE), rows = Math.floor(r.h / TILE);
+      const gx = r.x + Math.floor((r.w - cols * TILE) / 2), gy = r.y + Math.floor((r.h - rows * TILE) / 2);
+      const theme = themes[i];
+      const shape: PenShape = theme ? SHAPE_OF[theme] : 'rect';
+      const mask = penMask(shape, cols, rows);
+      const floor = mask.map((row, y) => row.map((v, x) => v && !isEdge(mask, x, y)));
+      const floorCells: [number, number][] = [];
+      floor.forEach((row, y) => row.forEach((v, x) => { if (v) floorCells.push([x, y]); }));
+      return { gx, gy, cols, rows, shape: penMask(shape, cols, rows).flat().every(Boolean) ? 'rect' as PenShape : shape, theme, mask, floor, floorCells };
+    });
     for (const a of this.animals) this.placeIn(a, true);
+  }
+  /** 이 자리가 우리 바닥 안인지 (몸 크기만큼 여유) */
+  private okAt(pen: number, x: number, y: number, half: number): boolean {
+    const g = this.geo[pen];
+    if (!g) return false;
+    const at = (px: number, py: number) => !!g.floor[Math.floor((py - g.gy) / TILE)]?.[Math.floor((px - g.gx) / TILE)];
+    return at(x, y - 1) && at(x - half * 0.8, y - 1) && at(x + half * 0.8, y - 1) && at(x, y - half * 1.6);
+  }
+  /** 우리 바닥 안 아무 자리 (큰 동물이 들어갈 자리가 없으면 바닥 칸 가운데) */
+  private randomSpot(pen: number, animal: number): [number, number] {
+    const g = this.geo[pen];
+    if (!g || !g.floorCells.length) { const r = this.layout.pens[pen]; return [r.x + r.w / 2, r.y + r.h / 2]; }
+    const half = 4 * GRADE_MUL[ANIMALS[animal].grade];
+    for (let k = 0; k < 16; k++) {
+      const [cx, cy] = g.floorCells[Math.floor(this.rng() * g.floorCells.length)];
+      const x = g.gx + (cx + this.rng()) * TILE, y = g.gy + (cy + 0.3 + this.rng() * 0.7) * TILE;
+      if (this.okAt(pen, x, y, half)) return [x, y];
+    }
+    const [cx, cy] = g.floorCells[Math.floor(this.rng() * g.floorCells.length)];
+    return [g.gx + (cx + 0.5) * TILE, g.gy + (cy + 0.9) * TILE];
   }
 
   private placeIn(a: AnimalEnt, keep = false) {
-    const r = this.layout.pens[a.pen];
-    if (!r) return;
-    const [x0, x1, y0, y1] = this.bounds(r, a.animal);
-    if (!keep || a.x < x0 || a.x > x1 || a.y < y0 || a.y > y1) { a.x = x0 + this.rng() * (x1 - x0); a.y = y0 + this.rng() * (y1 - y0); }
+    if (!this.layout.pens[a.pen]) return;
+    const half = 4 * GRADE_MUL[ANIMALS[a.animal].grade];
+    if (!keep || !this.okAt(a.pen, a.x, a.y, half)) [a.x, a.y] = this.randomSpot(a.pen, a.animal);
     a.tx = a.x; a.ty = a.y;
-  }
-
-  /** 동물이 걸어 다닐 수 있는 우리 안 범위 (큰 동물일수록 울타리에서 더 떨어진다) */
-  private bounds(r: PenRect, animal: number): [number, number, number, number] {
-    const half = 4 * GRADE_MUL[ANIMALS[animal].grade];
-    const x0 = r.x + TILE / 2 + half + 1, x1 = Math.max(x0, r.x + r.w - TILE / 2 - half - 1);
-    const y0 = r.y + TILE / 2 + half * 2 + 1, y1 = Math.max(y0, r.y + r.h - TILE / 2 - 1);
-    return [x0, x1, y0, y1];
   }
 
   /** 저장 데이터의 배치와 필드의 동물·직원을 맞춘다 */
@@ -162,8 +205,9 @@ export class World {
   sync() {
     const s = this.save;
     // 배치가 바뀌면 새로 발동한 조합 시너지를 찾는다
-    const pk = s.pens.map((p) => p.join(',')).join('|');
+    const pk = s.pens.map((p) => p.join(',')).join('|') + '#' + s.penTheme.join(',');
     if (pk !== this.penKey) {
+      this.updateShapes();
       if (this.penKey) for (const st of discoverSynergies(s)) this.events.push({ type: 'synergy', name: st.name, desc: `같은 우리 동물 매력 +${Math.round(st.attract * 100)}%` });
       else discoverSynergies(s);
       this.penKey = pk;
@@ -381,12 +425,14 @@ export class World {
       const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy);
       if (d < 1) {
         a.wait = 0.5 + this.rng() * 2.5;
-        const [x0, x1, y0, y1] = this.bounds(r, a.animal);
-        a.tx = x0 + this.rng() * (x1 - x0); a.ty = y0 + this.rng() * (y1 - y0);
+        [a.tx, a.ty] = this.randomSpot(a.pen, a.animal);
         continue;
       }
       const sp = 10 * dt;
-      a.x += (dx / d) * Math.min(sp, d); a.y += (dy / d) * Math.min(sp, d);
+      const nx = a.x + (dx / d) * Math.min(sp, d), ny = a.y + (dy / d) * Math.min(sp, d);
+      // 모양 밖(ㄱ자 안쪽 모서리 등)으로 나가면 멈추고 다른 곳을 고른다
+      if (!this.okAt(a.pen, nx, ny, 4 * GRADE_MUL[ANIMALS[a.animal].grade]) && this.okAt(a.pen, a.x, a.y, 4 * GRADE_MUL[ANIMALS[a.animal].grade])) { a.tx = a.x; a.ty = a.y; continue; }
+      a.x = nx; a.y = ny;
       if (Math.abs(dx) > 0.3) a.face = dx < 0 ? -1 : 1;
       a.moving = true;
     }

@@ -33,6 +33,8 @@ export interface SaveData {
   tickets: number;
   /** 오늘의 미션 */
   missions: MissionState | null;
+  /** 우리별 서식지 테마 (null = 자동: 가장 많은 서식지) */
+  penTheme: (string | null)[];
   /** 반짝이 도감 · 발견한 조합 시너지 id */
   shinyDex: boolean[];
   synergyFound: string[];
@@ -70,7 +72,7 @@ export function defaultSave(): SaveData {
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
-    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0, bestYears: 0 }, debtDays: 0, strike: false, shinyDex: ANIMALS.map(() => false), synergyFound: [],
+    atNight: false, dayT: 0, season: { n: 1, start: 1, mine: 0, rival: 0 }, records: { bestSeasons: 0, bestDay: 0, closures: 0, bestYears: 0 }, debtDays: 0, strike: false, shinyDex: ANIMALS.map(() => false), synergyFound: [], penTheme: [],
   };
 }
 
@@ -113,6 +115,7 @@ export function normalize(raw: unknown): SaveData {
   out.records = { bestSeasons: Math.max(0, num(rc.bestSeasons, 0)), bestDay: Math.max(0, num(rc.bestDay, 0)), closures: Math.max(0, num(rc.closures, 0)), bestYears: Math.max(0, num(rc.bestYears, 0)) };
   out.shinyDex = ANIMALS.map((_, i) => !!(Array.isArray(r.shinyDex) && r.shinyDex[i]));
   for (const c of out.cards) if (c.kind === 'animal' && c.shiny) out.shinyDex[c.animal] = true;
+  out.penTheme = Array.isArray(r.penTheme) ? r.penTheme.map((t) => (typeof t === 'string' && ['grass', 'sand', 'water', 'snow', 'rock', 'cloud'].includes(t) ? t : null)) : [];
   out.synergyFound = Array.isArray(r.synergyFound) ? r.synergyFound.filter((x) => typeof x === 'string') : [];
   out.debtDays = Number.isFinite(out.debtDays) ? Math.max(0, Math.floor(out.debtDays)) : 0;
   out.strike = !!out.strike;

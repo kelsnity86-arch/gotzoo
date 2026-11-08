@@ -368,3 +368,5 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .syn b { font-weight: 400; color: #5d3a24; } .syn span { color: #6b5536; font-size: 12px; }
 .syn.k-set { background: #fff3c8; } .syn.k-season { background: #e8f4ff; } .syn.k-grade { background: #f3e8ff; } .syn.near { background: transparent; border: 1px dashed #d8c7a6; }
 body[data-season="spring"] .clock:not(.night) { background: rgba(240,140,190,.35); } body[data-season="autumn"] .clock:not(.night) { background: rgba(239,125,50,.35); } body[data-season="winter"] .clock:not(.night) { background: rgba(148,176,194,.4); } body[data-season="summer"] .clock:not(.night) { background: rgba(65,166,246,.35); }
+
+.theme-box { margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }

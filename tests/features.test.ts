@@ -2,13 +2,14 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSave, normalize } from '../src/game/state';
 import { seasonOf, yearOf } from '../src/data/seasons';
+import { isEdge, penMask } from '../src/data/shapes';
 import { STAFF_OPT_COUNT, STAFF_PAY } from '../src/data/staff';
 import { exportCode, importCode } from '../src/game/savecode';
 import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
+  assignStaff, penTheme, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
@@ -47,7 +48,7 @@ describe('도감 보상', () => {
     expect(claimDexSet(s, set.id)).toBe(set.reward);
     expect(habitatDexBonus(s, 'cloud')).toBeCloseTo(0.2, 5);
     s.cards.push({ uid: 1, kind: 'animal', animal: 92 }); s.pens[0].push(1); s.nextUid = 2;
-    expect(penAttract(s, 0)).toBeCloseTo(140 * 1.2, 5);
+    expect(penAttract(s, 0)).toBeCloseTo(140 * (1 + 0.2 + 0.15), 5); // 도감 +20% · 우리 모양(구름 테마) +15%
   });
 });
 
@@ -147,9 +148,9 @@ describe('계절 · 반짝이 · 시너지', () => {
     const b = defaultSave(); b.season.n = 2; put(b, id('토끼'), 0, true);
     expect(penAttract(b, 0) / penAttract(a, 0)).toBeCloseTo(1.5, 5);
     const sp = defaultSave(); sp.season.n = 1; put(sp, id('토끼')); // 봄 풀밭 +20%
-    expect(penAttract(sp, 0)).toBeCloseTo(20 * 1.2, 5);
+    expect(penAttract(sp, 0)).toBeCloseTo(20 * (1 + 0.2 + 0.15), 5); // 제철 +20% · 우리 모양 +15%
     const su = defaultSave(); su.season.n = 2; put(su, id('펭귄')); // 여름 설원 −15%
-    expect(penAttract(su, 0)).toBeCloseTo(32 * 0.85, 5);
+    expect(penAttract(su, 0)).toBeCloseTo(32 * (1 - 0.15 + 0.15), 5); // 약한 서식지 −15% · 우리 모양 +15%
   });
   it('조합 시너지: 사바나 세트가 한 우리에 모이면 +25%, 하나라도 빠지면 없음', () => {
     const s = defaultSave(); s.season.n = 2; s.upgrades.size = 2;
@@ -174,5 +175,38 @@ describe('계절 · 반짝이 · 시너지', () => {
     expect(dailyCosts(s).climate).toBeGreaterThan(0);
     s.season.n = 1;
     expect(dailyCosts(s).climate).toBe(0);
+  });
+});
+
+describe('우리 모양', () => {
+  it('테마 = 지정 또는 가장 많은 서식지, 모양 마스크는 테두리 안쪽에 바닥이 있다', () => {
+    const s = defaultSave();
+    s.cards.push({ uid: 1, kind: 'animal', animal: ANIMALS.find((a) => a.habitat === 'water')!.id }); s.pens[0].push(1); s.nextUid = 2;
+    expect(penTheme(s, 0)).toBe('water');
+    expect(penTheme(s, 1)).toBeNull();
+    s.penTheme = ['rock'];
+    expect(penTheme(s, 0)).toBe('rock');
+    for (const shape of ['L', 'Lflip', 'octagon', 'round', 'strip', 'plus'] as const) {
+      const m = penMask(shape, 10, 8);
+      expect(m.flat().some((v) => !v)).toBe(true); // 사각형이 아니다
+      let floor = 0;
+      for (let y = 0; y < 8; y++) for (let x = 0; x < 10; x++) if (m[y][x] && !isEdge(m, x, y)) floor++;
+      expect(floor).toBeGreaterThanOrEqual(6);
+    }
+    expect(penMask('round', 4, 3).flat().every(Boolean)).toBe(true); // 너무 작으면 사각형
+  });
+  it('동물은 모양 바닥 안에서만 움직인다', () => {
+    const s = defaultSave(); s.coins = 1e9; s.upgrades.size = 4;
+    for (let i = 0; i < 12; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: ANIMALS.find((a) => a.habitat === 'grass')!.id }); s.pens[0].push(s.nextUid++); }
+    const w = new World(s, Math.random); w.relayout(1.6); w.sync();
+    const g = w.geo[0];
+    expect(g.shape).toBe('L');
+    for (let k = 0; k < 600; k++) {
+      w.update(1 / 30, null);
+      for (const a of w.animals) {
+        const cx = Math.floor((a.x - g.gx) / 8), cy = Math.floor((a.y - 1 - g.gy) / 8);
+        expect(g.floor[cy]?.[cx]).toBe(true);
+      }
+    }
   });
 });

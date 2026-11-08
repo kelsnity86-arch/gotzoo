@@ -1,6 +1,7 @@
 // 규칙 계산 (화면 없음): 뽑기, 합성, 배치, 매력도, 업그레이드, 승급. 모두 SaveData를 직접 바꾼다.
 import { ANIMALS, animalsOfGrade, seasonalOfGrade, type Habitat } from '../data/animals';
 import { SEASON_FX, seasonOf, type SeasonDef } from '../data/seasons';
+import { THEME_BONUS, SHAPE_NAME, SHAPE_OF } from '../data/shapes';
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
 import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
@@ -300,6 +301,16 @@ export function penSets(s: SaveData, pen: number): SynergySet[] {
   const ids = new Set(s.pens[pen]?.map((u) => (cardById(s, u) as { animal?: number })?.animal));
   return SYNERGY_SETS.filter((st) => st.members.every((m) => ids.has(m)));
 }
+/** 우리 테마: 지정했으면 그것, 아니면 우리 안 가장 많은 서식지 (빈 우리는 null) */
+export function penTheme(s: SaveData, pen: number): Habitat | null {
+  const t = s.penTheme[pen];
+  if (t) return t as Habitat;
+  const cnt = new Map<Habitat, number>();
+  for (const u of s.pens[pen] ?? []) { const c = cardById(s, u); if (c?.kind === 'animal') cnt.set(ANIMALS[c.animal].habitat, (cnt.get(ANIMALS[c.animal].habitat) ?? 0) + 1); }
+  let best: Habitat | null = null, n = 0;
+  for (const [h, v] of cnt) if (v > n) { n = v; best = h; }
+  return best;
+}
 const pctTxt = (v: number) => `${v > 0 ? '+' : ''}${Math.round(v * 100)}%`;
 /** 우리 하나의 매력도와 발동 중인 시너지 · '1마리 더' 힌트 */
 export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx = {}) {
@@ -328,6 +339,9 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     const next = HABITAT_TIERS.slice().reverse().find(([at]) => n < at);
     if (next && next[0] - n === 1) near.push(`${habitatName(h)} 1마리 더면 ${pctTxt(next[1])}`);
   }
+  // 우리 모양 (테마와 같은 서식지)
+  const theme = penTheme(s, pen);
+  if (theme && habitats.has(theme)) syn.push({ kind: 'habitat', name: SHAPE_NAME[SHAPE_OF[theme]], desc: `${habitatName(theme)} 동물 ${pctTxt(THEME_BONUS)} (우리 모양)` });
   // 등급
   const grades = new Set(ids.map((a) => ANIMALS[a].grade));
   const rainbow = grades.size === 5 ? GRADE_SYN.rainbow : 0;
@@ -352,6 +366,7 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     bonus += SAME_SPECIES_BONUS.find(([at]) => n >= at)?.[1] ?? 0;
     bonus += HABITAT_TIERS.find(([at]) => habitats.get(a.habitat)! >= at)?.[1] ?? 0;
     bonus += habitatDexBonus(s, a.habitat);
+    if (theme === a.habitat) bonus += THEME_BONUS;
     if (kingHabs.has(a.habitat) && a.grade <= 1) bonus += GRADE_SYN.king;
     if (a.season === season.key) bonus += SEASON_FX.limitedSelf; else bonus += aura;
     if (a.habitat === season.strong) bonus += SEASON_FX.strong;

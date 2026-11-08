@@ -75,7 +75,7 @@ describe('배치 · 매력도', () => {
   it('같은 종 3마리 +10%, 같은 서식지 3마리 +10%, 일반 동급 무리 +25% (여름 풀밭)', () => {
     const s = defaultSave(); s.season.n = 2;
     for (let i = 0; i < 3; i++) { s.cards.push({ uid: s.nextUid, kind: 'animal', animal: 0 }); s.pens[0].push(s.nextUid++); }
-    expect(penAttract(s, 0)).toBeCloseTo(3 * 20 * 1.45, 5);
+    expect(penAttract(s, 0)).toBeCloseTo(3 * 20 * 1.6, 5); // + 우리 모양(풀밭 테마) +15%
   });
   it('업그레이드하면 우리 수가 바로 늘어난다', () => {
     const s = defaultSave(); s.coins = 300;

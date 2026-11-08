@@ -51,20 +51,11 @@ export class FieldRenderer {
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
-  /** 우리 바닥: 우리 안 동물의 가장 많은 서식지 */
-  private penHabitat(world: World, i: number): Habitat | null {
-    const cnt = new Map<Habitat, number>();
-    for (const a of world.animals) if (a.pen === i) cnt.set(ANIMALS[a.animal].habitat, (cnt.get(ANIMALS[a.animal].habitat) ?? 0) + 1);
-    let hab: Habitat | null = null, best = 0;
-    for (const [k, v] of cnt) if (v > best) { best = v; hab = k; }
-    return hab;
-  }
-
   /** 움직이지 않는 바탕(잔디·길·나무·울타리·우리 바닥)을 GPT 타일로 한 번 그려 둔다 */
   private background(world: World): HTMLCanvasElement | null {
     if (!hasPng('tiles_01')) return null;
     const L = world.layout;
-    const habs = L.pens.map((_, i) => this.penHabitat(world, i) ?? '-');
+    const habs = L.pens.map((_, i) => `${world.geo[i]?.theme ?? '-'}:${world.geo[i]?.shape ?? '-'}`);
     const key = `${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
@@ -88,16 +79,39 @@ export class FieldRenderer {
     fill('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
     for (let x = 12; x < L.w - 8; x += 56) { tile('tiles_18', x, PATH_Y0 - 9); tile('tiles_21', x + 26, PATH_Y0 - 9); }
     for (let x = 0; x < L.w; x += TILE) tile('tiles_05', x, ZONE_H - 8);
-    // 우리
-    L.pens.forEach((r, i) => {
-      const hab = this.penHabitat(world, i);
-      fill(hab ? FLOOR_TILE[hab] : 'tiles_09', r.x + 4, r.y + 4, r.w - 8, r.h - 8);
-      for (let x = r.x + 8; x < r.x + r.w - 8; x += TILE) { tile('tiles_05', x, r.y); tile('tiles_05', x, r.y + r.h - 8); }
-      for (let y = r.y + 8; y < r.y + r.h - 8; y += TILE) { tile('tiles_06', r.x, y); tile('tiles_06', r.x + r.w - 8, y); }
-      tile('tiles_07', r.x, r.y); tile('tiles_07', r.x + r.w - 8, r.y); tile('tiles_07', r.x, r.y + r.h - 8); tile('tiles_07', r.x + r.w - 8, r.y + r.h - 8);
-      tile('tiles_08', r.x + Math.floor(r.w / 2 / TILE) * TILE - 4, r.y);
-      if (!hab) tile('tiles_19', r.x + r.w / 2 - 4, r.y + r.h / 2 - 4);
-      else tile('tiles_20', r.x + r.w - 18, r.y + r.h - 18);
+    // 산책길: 우리 줄 사이 가로길 + 우리 사이 세로길
+    const rowYs = [...new Set(L.pens.map((r) => r.y))];
+    for (const y of rowYs) fill('tiles_03', 0, y - 9, L.w, 8);
+    fill('tiles_03', 0, L.h - 9, L.w, 8);
+    for (const r of L.pens) fill('tiles_03', r.x - 9, r.y - 9, 8, r.h + 10);
+    fill('tiles_03', L.w - 9, ZONE_H, 8, L.h - ZONE_H);
+    // 우리: 모양(마스크)대로 바닥 · 울타리, 모양 밖 빈 곳은 공원 소품
+    const PROPS = ['tiles_15', 'tiles_16', 'tiles_17', 'tiles_15', 'tiles_18', 'tiles_22', 'tiles_17', 'tiles_23'];
+    L.pens.forEach((_, i) => {
+      const g = world.geo[i];
+      if (!g) return;
+      const hab = g.theme;
+      const floorTile = hab ? FLOOR_TILE[hab] : 'tiles_09';
+      const m = g.mask;
+      let gate = -1;
+      for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) {
+        const px = g.gx + x * TILE, py = g.gy + y * TILE;
+        if (!m[y][x]) { if ((x * 5 + y * 3 + i * 7) % 6 === 0) tile(PROPS[(x + y * 3 + i) % PROPS.length], px, py); continue; }
+        if (g.floor[y][x]) { tile(floorTile, px, py); continue; }
+        // 울타리: 위·아래가 바깥이면 가로, 왼·오른쪽이 바깥이면 세로, 그 밖(모서리)은 기둥
+        tile(floorTile, px, py);
+        const up = m[y - 1]?.[x], dn = m[y + 1]?.[x], lf = m[y]?.[x - 1], rt = m[y]?.[x + 1];
+        const horiz = (!up || !dn) && lf && rt, vert = (!lf || !rt) && up && dn;
+        if (g.shape === 'rect' && !horiz && !vert) tile('tiles_07', px, py);
+        else {
+          // 모양 우리: 위·아래가 트이면 가로, 옆이 트이면 세로, 둘 다면 겹쳐서 이음새
+          if (!up || !dn) tile('tiles_05', px, py);
+          if (!lf || !rt) tile('tiles_06', px, py);
+        }
+        if (gate < 0 && horiz && !up && Math.abs(x - g.cols / 2) < 1.5) { gate = x; tile('tiles_08', px, py); }
+      }
+      if (!hab) tile('tiles_19', g.gx + Math.floor(g.cols / 2) * TILE - 4, g.gy + Math.floor(g.rows / 2) * TILE - 4);
+      else if (g.floorCells.length) { const [fx, fy] = g.floorCells[g.floorCells.length - 1]; tile('tiles_20', g.gx + fx * TILE, g.gy + fy * TILE); }
     });
     this.bg = cv;
     return cv;

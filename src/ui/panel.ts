@@ -8,12 +8,13 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } fro
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, curSeason, penDetail, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, curSeason, penDetail, penTheme, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, shinyOf, staffFrame } from '../render/sprites';
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
+import { SHAPE_NAME, SHAPE_OF, THEME_BONUS } from '../data/shapes';
 import { audio } from './audio';
 import { cardEl } from './cardview';
 import { fmt, h, iconSlot, pix, toast } from './dom';
@@ -400,6 +401,16 @@ export function openPenSheet(ctx: PanelCtx, pen: number, onClose: () => void) {
     feed.disabled = !uids.length || w.feedCooldown[pen] > 0;
     back.replaceChildren(h('div', { class: 'sheet' },
       h('div', { class: 'sheet-head' }, h('b', {}, `우리 ${pen + 1}`), h('span', { class: 'sub' }, `${uids.length} / ${penSize(s)}마리 · ♥${fmt(penDetail(s, pen).total)}`), feed),
+      (() => {
+        // 우리 테마: 바닥 · 모양이 바뀌고, 같은 서식지 동물 매력 +15%
+        const cur = s.penTheme[pen] ?? null, eff = penTheme(s, pen);
+        const pickTheme = (t: string | null) => { while (s.penTheme.length <= pen) s.penTheme.push(null); s.penTheme[pen] = t; ctx.persist(); w.sync(); audio.sfx('click'); render(); };
+        return h('div', { class: 'theme-box' },
+          h('div', { class: 'sub' }, `우리 모양 · ${eff ? SHAPE_NAME[SHAPE_OF[eff]] : '사각형'}${eff ? ` (${HABITAT_NAMES[eff]} 동물 +${Math.round(THEME_BONUS * 100)}%)` : ''}`),
+          h('div', { class: 'chips' },
+            h('button', { class: `chip${cur === null ? ' on' : ''}`, onclick: () => pickTheme(null) }, '자동'),
+            ...(['grass', 'sand', 'water', 'snow', 'rock', 'cloud'] as const).map((t) => h('button', { class: `chip${cur === t ? ' on' : ''}`, onclick: () => pickTheme(t) }, HABITAT_NAMES[t]))));
+      })(),
       (() => {
         const d = penDetail(s, pen);
         return d.syn.length || d.near.length ? h('div', { class: 'syn-box' },
