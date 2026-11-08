@@ -8,13 +8,14 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } fro
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, curSeason, penDetail, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, facCount, facPrice, facSum, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penDraw, penDrawPrice, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, shinyOf, staffFrame } from '../render/sprites';
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
 import { PEN_DRAW_MUL, PEN_THEME_BONUS, penOptDef, pieceDef } from '../data/pieces';
+import { DECO_TIERS, DECOR, DECOR_FX, FACILITIES, itemName, itemSprite } from '../data/facilities';
 import { pieceArt } from './pieceart';
 import type { DayReport } from '../game/world';
 import { audio } from './audio';
@@ -22,14 +23,14 @@ import { cardEl } from './cardview';
 import { fmt, h, iconSlot, pix, toast } from './dom';
 import { showReveal } from './reveal';
 
-export interface PanelCtx { save: SaveData; world: World; persist: () => void; overlayRoot: HTMLElement; startPlace?: (uid: number) => void; reports?: DayReport[] }
+export interface PanelCtx { save: SaveData; world: World; persist: () => void; overlayRoot: HTMLElement; startPlace?: (uid: number) => void; startPlaceItem?: (uid: number) => void; reports?: DayReport[] }
 type Tab = 'gacha' | 'zoo' | 'cards' | 'manage' | 'log';
 const TABS: [Tab, string][] = [['gacha', '뽑기'], ['zoo', '동물원'], ['cards', '카드'], ['manage', '운영'], ['log', '기록']];
 const TAB_ICON: Record<Tab, string> = { gacha: 'icons_12', zoo: 'icons_05', cards: 'icons_10', manage: 'icons_13', log: 'icons_15' };
 /** 큰 탭 안의 작은 탭 */
 const SUBS: Record<Tab, [string, string][]> = {
   gacha: [['animal', '동물'], ['staff', '직원'], ['pen', '우리']],
-  zoo: [],
+  zoo: [['board', '부지'], ['fac', '시설'], ['deco', '꾸미기']],
   cards: [['animal', '동물'], ['staff', '직원'], ['pen', '우리']],
   manage: [['up', '업그레이드'], ['slots', '직원 배치'], ['money', '돈']],
   log: [['mission', '미션'], ['dex', '도감'], ['syn', '시너지'], ['record', '라이벌']],
@@ -41,7 +42,7 @@ export class Panel {
   private body = h('div', { class: 'panel-body' });
   private tabBtns: HTMLButtonElement[];
   tab: Tab = 'gacha';
-  sub: Record<Tab, string> = { gacha: 'animal', zoo: '', cards: 'animal', manage: 'up', log: 'mission' };
+  sub: Record<Tab, string> = { gacha: 'animal', zoo: 'board', cards: 'animal', manage: 'up', log: 'mission' };
   /** 카드 > 동물: 보관함 / 합성 */
   private cardMode: 'list' | 'fuse' = 'list';
   private penFuseGrade: Grade = 0;
@@ -68,7 +69,7 @@ export class Panel {
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {
     const s = this.ctx.save;
-    const key = `${this.tab}:${this.sub[this.tab]}:${this.cardMode}:${this.penSel.length}:${this.penFuseGrade}:${s.board.map((b) => b.uid).join(',')}:${this.fireArm}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${s.season.n}|${s.synergyFound.length}|${s.shinyDex.filter(Boolean).length}|${this.ctx.world.phase}`;
+    const key = `${this.tab}:${this.sub[this.tab]}:${this.cardMode}:${this.penSel.length}:${this.penFuseGrade}:${s.board.map((b) => b.uid).join(',')}:${s.items.map((it) => `${it.uid}${it.x}`).join(',')}:${this.fireArm}|${Math.floor(s.coins)}|${s.cards.length}|${s.pens.flat().length}|${s.staffSlots.join()}|${s.stage}|${Object.values(s.upgrades).join()}|${this.fuseGrade}|${this.fuseSel.length}|${this.invGrade}|${s.lockedSpecies.length}|${s.tickets}|${JSON.stringify(s.missions?.list.map((m) => [m.progress, m.claimed]))}|${s.dexClaimed.length}|${s.dex.filter(Boolean).length}|${s.season.n}|${s.synergyFound.length}|${s.shinyDex.filter(Boolean).length}|${this.ctx.world.phase}`;
     if (!force && key === this.lastKey) return;
     // 코인만 바뀐 경우 버튼 상태만 고친다 (스크롤·입력 유지)
     const onlyCoins = !force && this.lastKey && key.split('|').slice(2).join() === this.lastKey.split('|').slice(2).join() && key.split('|')[0] === this.lastKey.split('|')[0];
@@ -82,7 +83,7 @@ export class Panel {
     const sub = this.sub[this.tab];
     const views: Record<string, () => HTMLElement> = {
       'gacha:animal': () => this.gacha(), 'gacha:staff': () => this.staffGacha(), 'gacha:pen': () => this.penGacha(),
-      'zoo:': () => this.boardView(),
+      'zoo:board': () => this.boardView(), 'zoo:fac': () => this.facView(), 'zoo:deco': () => this.decoView(),
       'cards:animal': () => (this.cardMode === 'fuse' ? this.fusion() : this.inventory()), 'cards:staff': () => this.staffCards(), 'cards:pen': () => this.penCards(),
       'manage:up': () => this.upgrades(), 'manage:slots': () => this.staffSlots(), 'manage:money': () => this.money(),
       'log:mission': () => this.missions(), 'log:dex': () => this.dex(), 'log:syn': () => this.synergyDex(), 'log:record': () => this.records(),
@@ -477,7 +478,7 @@ export class Panel {
       const out = penDraw(s, n);
       if (!out) { audio.sfx('deny'); toast(s.coins < 0 ? '빚이 있으면 우리를 뽑을 수 없어요' : '코인이 모자라요', 'bad'); return; }
       this.ctx.persist();
-      showReveal(this.ctx.overlayRoot, out, new Set(), () => { this.sub.zoo = ''; toast('동물원 탭에서 부지에 놓아요 (자동 배치도 있어요)', 'info', 2400); this.changed(); });
+      showReveal(this.ctx.overlayRoot, out, new Set(), () => { this.sub.zoo = 'board'; toast('동물원 탭에서 부지에 놓아요 (자동 배치도 있어요)', 'info', 2400); this.changed(); });
     };
     return h('div', {},
       h('div', { class: 'hero' }, h('div', { class: 'title' }, '우리 뽑기'), h('div', { class: 'sub' }, `1개 ${fmt(price)}코인 (동물 뽑기 ×${PEN_DRAW_MUL}) · 등급이 높을수록 크고 특이한 모양 · 서식지는 카드에 정해져요`)),
@@ -522,6 +523,61 @@ export class Panel {
       h('div', { class: 'section-title' }, `놓은 우리 ${s.board.length}개`),
       h('div', { class: 'list' }, ...s.board.map((_, i) => penRow(penCardAt(s, i)!, i))),
       h('p', { class: 'hint' }, '놓기를 누르고 부지를 누르면 그 자리에 놓여요 (회전 버튼으로 돌리기). 우리를 눌러도 치울 수 있어요. 부지는 운영 > 업그레이드의 "부지 넓히기"로 커져요.'));
+  }
+
+  /** 보관함에 있는 시설 · 소품 줄 */
+  private storedItems(filter: (t: string) => boolean) {
+    const s = this.ctx.save;
+    const stored = s.items.filter((it) => it.x < 0 && filter(it.type));
+    if (!stored.length) return null;
+    return h('div', {}, h('div', { class: 'section-title' }, `보관함 ${stored.length}개`),
+      h('div', { class: 'list' }, ...stored.map((it) => h('div', { class: 'row' },
+        h('div', { class: 'row-art' }, hasPng(itemSprite(it.type)) ? pix(itemSprite(it.type), 32) : null),
+        h('div', { class: 'row-info' }, h('div', { class: 'row-name' }, itemName(it.type))),
+        h('button', { class: 'btn small', onclick: () => { audio.sfx('click'); this.ctx.startPlaceItem?.(it.uid); } }, '놓기')))));
+  }
+  private nightBuy(cost: number, onBuy: () => void) {
+    return !this.ctx.world.isNight ? h('span', { class: 'night-only' }, '🌙 밤에 공사', h('small', {}, fmt(cost))) : this.costBtn(fmt(cost), cost, onBuy, 'small');
+  }
+  // ── 동물원 > 시설 ──
+  private facView() {
+    const s = this.ctx.save;
+    const rows = FACILITIES.map((f) => {
+      const n = facCount(s, f.type), price = facPrice(s, f.type);
+      return h('div', { class: 'row' },
+        h('div', { class: 'row-art' }, hasPng(`fac_${f.type}`) ? pix(`fac_${f.type}`, 32) : null),
+        h('div', { class: 'row-info' },
+          h('div', { class: 'row-name' }, f.name, n ? h('span', { class: 'gtag' }, `${n}개`) : null),
+          h('div', { class: 'sub' }, f.desc(f.value)),
+          h('div', { class: 'sub pay' }, `유지비 ${fmt(Math.round(f.upkeep * costUnit(s)))}/일 · 지금 효과 ${f.type === 'bench' ? `+${facSum(s, f.type)}초` : `${Math.round(facSum(s, f.type) * 100)}%`} (최대 ${f.type === 'bench' ? `${f.cap}초` : `${Math.round(f.cap * 100)}%`})`)),
+        this.nightBuy(price, () => { const uid = buyItem(s, `fac:${f.type}`); if (uid !== null) { audio.sfx('buy'); this.ctx.persist(); this.ctx.startPlaceItem?.(uid); } }));
+    });
+    return h('div', {},
+      h('div', { class: 'hero' }, h('div', { class: 'title' }, '시설'), h('div', { class: 'sub' }, '부지 빈 칸 1칸에 지어요 · 밤에만 공사 · 매일 유지비가 들어요 · 하나당 규모 +15')),
+      this.ctx.world.isNight ? h('p', { class: 'hint night-on' }, '🌙 밤 정비 시간이에요. 지금 지을 수 있어요.') : null,
+      h('div', { class: 'list' }, ...rows),
+      this.storedItems((t) => t.startsWith('fac:')),
+      h('p', { class: 'hint' }, '분수는 붙어 있는(위·아래·옆) 우리에만 효과가 있어요. 놓인 시설을 누르면 치울 수 있어요.'));
+  }
+  // ── 동물원 > 꾸미기 ──
+  private decoView() {
+    const s = this.ctx.save, se = curSeason(s);
+    const tier = s.upgrades.deco ?? 0, cost = upgradeCost(s, 'deco'), lock = upgradeLockedBy(s, 'deco');
+    const price = decorPrice(s);
+    const owned = (n: number) => s.items.filter((it) => it.type === `deco:${se.key}:${n}`).length;
+    return h('div', {},
+      h('div', { class: 'hero' }, h('div', { class: 'title' }, `울타리 · 입구 꾸미기 · ${DECO_TIERS[tier]}`), h('div', { class: 'sub' }, `모든 동물 매력 +${tier * 3}% · 울타리와 입구 게이트 모양이 바뀌어요`)),
+      h('div', { class: 'row' }, h('div', { class: 'row-art' }, hasPng(`fac_gate${Math.min(3, tier + 1)}`) ? pix(`fac_gate${Math.min(3, tier + 1)}`, 32) : null),
+        h('div', { class: 'row-info' }, h('div', { class: 'row-name' }, cost === null ? '최고 단계 (황금)' : `다음: ${DECO_TIERS[tier + 1]} 울타리`), h('div', { class: 'sub' }, cost === null ? '모든 동물 매력 +9%' : `모든 동물 매력 +${(tier + 1) * 3}%`), lock ? h('div', { class: 'lock' }, `${lock}단계부터`) : null),
+        cost === null ? h('span', { class: 'max' }, '최고') : lock ? h('span', { class: 'max' }, `${lock}단계`) : this.nightBuy(cost, () => { if (buyUpgrade(s, 'deco')) { audio.sfx('buy'); this.changed(); } })),
+      h('div', { class: 'section-title' }, `${se.icon} ${se.name} 소품 (이 계절에만 팔아요)`),
+      h('div', { class: 'deco-grid' }, ...DECOR[se.key].map((name, i) => {
+        const key = `decor_${se.key}_${i + 1}`;
+        const b = this.nightBuy(price, () => { const uid = buyItem(s, `deco:${se.key}:${i + 1}`); if (uid !== null) { audio.sfx('buy'); this.ctx.persist(); this.ctx.startPlaceItem?.(uid); } });
+        return h('div', { class: 'deco-cell' }, hasPng(key) ? pix(key, 40) : null, h('span', {}, name), owned(i + 1) ? h('small', {}, `${owned(i + 1)}개`) : null, b);
+      })),
+      this.storedItems((t) => t.startsWith('deco:')),
+      h('p', { class: 'hint' }, `소품은 붙어 있는 우리 동물 매력 +${Math.round(DECOR_FX.attract * 100)}%, 그 계절이면 2배 · 하나당 규모 +5. 계절이 지나도 남아요.`));
   }
 
   // ── 카드 > 우리 (합성 포함) ──

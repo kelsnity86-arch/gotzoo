@@ -24,6 +24,8 @@ export interface SaveData {
   nextUid: number;
   /** 우리마다 배치된 동물 카드 uid (board와 같은 순서) */
   pens: number[][];
+  /** 시설 · 소품 (x < 0 이면 보관함) */
+  items: { uid: number; type: string; x: number; y: number }[];
   /** 부지에 놓은 우리 조각 */
   board: Placement[];
   /** 예전 저장에서 옮겨 온 우리 (불러온 뒤 rules.finishLegacy가 부지에 놓는다) */
@@ -82,7 +84,7 @@ export function defaultSave(): SaveData {
     version: SAVE_VERSION, coins: 0, nextUid: 1, staffSlots: [null],
     // 처음 우리 두 개: 네모 우리(풀밭) · 네모 우리(물가). uid는 일반 카드와 겹치지 않게 크게
     cards: [{ uid: 900001, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900002, kind: 'pen', piece: 'O', grade: 0, habitat: 'water', opts: [] }],
-    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []],
+    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []], items: [],
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
@@ -138,6 +140,8 @@ export function normalize(raw: unknown): SaveData {
     out.board = ok.map(({ b }) => ({ uid: b.uid, x: Math.floor(b.x) || 0, y: Math.floor(b.y) || 0, rot: ((Math.floor(b.rot) || 0) % 4 + 4) % 4 }));
     out.pens = ok.map(({ i }) => out.pens[i] ?? []);
   }
+  out.items = Array.isArray(rr.items) ? (rr.items as SaveData['items']).filter((it) => it && typeof it.uid === 'number' && typeof it.type === 'string').map((it) => ({ uid: it.uid, type: it.type, x: Number.isFinite(it.x) ? Math.floor(it.x) : -1, y: Number.isFinite(it.y) ? Math.floor(it.y) : -1 })) : [];
+  out.nextUid = Math.max(out.nextUid, ...out.items.map((it) => it.uid + 1));
   delete (out.upgrades as Record<string, number>).pens; delete (out.upgrades as Record<string, number>).size;
   out.staffSlots = Array.isArray(out.staffSlots) ? out.staffSlots.map((u) => (u !== null && keep(u) ? u : null)) : d.staffSlots;
   out.dex = ANIMALS.map((_, i) => !!(Array.isArray(r.dex) && r.dex[i]));

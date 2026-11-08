@@ -1,6 +1,7 @@
 // 규칙 계산 (화면 없음): 뽑기, 합성, 배치, 매력도, 업그레이드, 승급. 모두 SaveData를 직접 바꾼다.
 import { ANIMALS, animalsOfGrade, seasonalOfGrade, type Habitat } from '../data/animals';
 import { SEASON_FX, seasonOf, type SeasonDef } from '../data/seasons';
+import { DECO_ATTRACT, DECOR_FX, ITEM_SCALE, facilityDef, type FacilityType } from '../data/facilities';
 import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, PEN_THEME_BONUS, PIECES, pieceDef, rotateCells, type PieceDef } from '../data/pieces';
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
@@ -38,7 +39,50 @@ export function boardGrid(s: SaveData, skip = -1): number[][] {
   const [w, h] = boardDims(s);
   const g = Array.from({ length: h }, () => Array.from({ length: w }, () => -1));
   s.board.forEach((_, i) => { if (i !== skip) for (const [x, y] of penCells(s, i)) if (g[y]?.[x] !== undefined) g[y][x] = i; });
+  for (const it of s.items) if (it.x >= 0 && g[it.y]?.[it.x] !== undefined) g[it.y][it.x] = -2; // 시설 · 소품
   return g;
+}
+
+// ── 시설 · 꾸미기 ──
+export const placedItems = (s: SaveData) => s.items.filter((it) => it.x >= 0);
+export const facCount = (s: SaveData, t: FacilityType) => placedItems(s).filter((it) => it.type === `fac:${t}`).length;
+/** 시설 효과 합 (겹치면 최대치까지) */
+export const facSum = (s: SaveData, t: FacilityType) => { const d = facilityDef(t); return Math.min(d.cap, facCount(s, t) * d.value); };
+export const facPrice = (s: SaveData, t: FacilityType) => Math.round(drawPrice(s) * facilityDef(t).price);
+export const decorPrice = (s: SaveData) => Math.round(drawPrice(s) * DECOR_FX.price);
+/** 사서 보관함에 넣는다. 코인이 모자라면(빚 포함) null */
+export function buyItem(s: SaveData, type: string): number | null {
+  const cost = type.startsWith('fac:') ? facPrice(s, type.slice(4) as FacilityType) : decorPrice(s);
+  if (s.coins < cost) return null;
+  s.coins -= cost;
+  const uid = s.nextUid++;
+  s.items.push({ uid, type, x: -1, y: -1 });
+  return uid;
+}
+export function canPlaceItem(s: SaveData, uid: number, x: number, y: number): boolean {
+  const it = s.items.find((i) => i.uid === uid);
+  return !!it && it.x < 0 && boardGrid(s)[y]?.[x] === -1;
+}
+export function placeItem(s: SaveData, uid: number, x: number, y: number): boolean {
+  if (!canPlaceItem(s, uid, x, y)) return false;
+  const it = s.items.find((i) => i.uid === uid)!; it.x = x; it.y = y;
+  return true;
+}
+/** 치우면 보관함으로 */
+export function removeItem(s: SaveData, uid: number) { const it = s.items.find((i) => i.uid === uid); if (it) { it.x = -1; it.y = -1; } }
+export const itemAt = (s: SaveData, x: number, y: number) => s.items.find((it) => it.x === x && it.y === y);
+/** 우리 i에 붙어 있는 분수 · 소품 보너스 (계절 소품은 그 계절이면 2배) */
+export function penItemBonus(s: SaveData, i: number): { fountain: number; decor: number } {
+  const cells = new Set(penCells(s, i).map(([x, y]) => `${x},${y}`));
+  const season = curSeason(s).key;
+  let fountain = 0, decor = 0;
+  for (const it of placedItems(s)) {
+    const near = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => cells.has(`${it.x + dx},${it.y + dy}`));
+    if (!near) continue;
+    if (it.type === 'fac:fountain') fountain += facilityDef('fountain').value;
+    else if (it.type.startsWith('deco:')) decor += DECOR_FX.attract * (it.type.split(':')[1] === season ? 2 : 1);
+  }
+  return { fountain: Math.min(facilityDef('fountain').cap, fountain), decor };
 }
 function fits(grid: number[][], cells: [number, number][], ox: number, oy: number): boolean {
   return cells.every(([x, y]) => grid[y + oy]?.[x + ox] === -1);
@@ -69,6 +113,7 @@ export function autoArrangePens(s: SaveData, rng: Rng = Math.random): number {
   const all = s.cards.filter((c): c is PenCard => c.kind === 'pen');
   const tryOrder = (order: PenCard[]) => {
     const grid = Array.from({ length: h }, () => Array.from({ length: w }, () => -1));
+    for (const it of s.items) if (it.x >= 0 && grid[it.y]?.[it.x] !== undefined) grid[it.y][it.x] = -2; // 시설 · 소품은 그대로
     const out: { uid: number; x: number; y: number; rot: number }[] = [];
     let value = 0;
     for (const c of order) {
@@ -506,6 +551,10 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
   const star = penOpt(s, pen, 'star'), seasonMul = penOpt(s, pen, 'season') ? 2 : 1;
   if (theme && habitats.has(theme) && themeBonus) syn.push({ kind: 'habitat', name: `${habitatName(theme)} 우리`, desc: `${habitatName(theme)} 동물 ${pctTxt(themeBonus)} (${GRADES[pc!.grade].name} 우리)` });
   if (star) syn.push({ kind: 'set', name: '인기 우리', desc: `이 우리 동물 ${pctTxt(star)}` });
+  const ib = penItemBonus(s, pen), decoTier = (s.upgrades.deco ?? 0) * DECO_ATTRACT;
+  if (ib.fountain) syn.push({ kind: 'set', name: '분수 옆', desc: `이 우리 동물 ${pctTxt(ib.fountain)}` });
+  if (ib.decor) syn.push({ kind: 'season', name: '꾸미기 소품', desc: `붙어 있는 소품 ${pctTxt(ib.decor)} (제철 소품 2배)` });
+  if (decoTier) syn.push({ kind: 'set', name: '울타리 꾸미기', desc: `모든 동물 ${pctTxt(decoTier)}` });
   // 등급
   const grades = new Set(ids.map((a) => ANIMALS[a].grade));
   const rainbow = grades.size === 5 ? GRADE_SYN.rainbow : 0;
@@ -531,7 +580,7 @@ export function penDetail(s: SaveData, pen: number, fedMul = 1, ctx: AttractCtx 
     bonus += HABITAT_TIERS.find(([at]) => habitats.get(a.habitat)! >= at)?.[1] ?? 0;
     bonus += habitatDexBonus(s, a.habitat);
     if (theme === a.habitat) bonus += themeBonus;
-    bonus += star;
+    bonus += star + ib.fountain + ib.decor + decoTier;
     if (kingHabs.has(a.habitat) && a.grade <= 1) bonus += GRADE_SYN.king;
     if (a.season === season.key) bonus += SEASON_FX.limitedSelf * seasonMul; else bonus += aura * seasonMul;
     if (a.habitat === season.strong) bonus += SEASON_FX.strong * seasonMul;
@@ -589,9 +638,9 @@ export function staffSum(s: SaveData, kind: StaffKind): number {
 /** 일하는 직원의 특수옵션 합 */
 export const optSum = (s: SaveData, id: StaffOptId) => placedStaffCards(s).reduce((t, c) => t + c.opts.filter((o) => o.id === id).reduce((a, o) => a + o.v, 0), 0);
 /** 투척액 배율: 안내원 + '말솜씨' + 도감 등급 보상 */
-export const staffTipMul = (s: SaveData) => 1 + staffSum(s, 'guide') + optSum(s, 'tips') + dexTipBonus(s) + zoneTipBonus(s);
+export const staffTipMul = (s: SaveData) => 1 + staffSum(s, 'guide') + optSum(s, 'tips') + dexTipBonus(s) + zoneTipBonus(s) + facSum(s, 'snack');
 /** 관리인: 바닥 동전 수명 + */
-export const coinLifeBonus = (s: SaveData) => staffSum(s, 'janitor');
+export const coinLifeBonus = (s: SaveData) => staffSum(s, 'janitor') + facSum(s, 'bench');
 /** 폐장 후 바닥 동전 회수율: 관리인 등급별, '야근'이면 100% */
 export function closingShare(s: SaveData): number {
   if (optSum(s, 'overtime') > 0) return 1;
@@ -599,7 +648,7 @@ export function closingShare(s: SaveData): number {
   return js.length ? Math.max(...js.map((c) => JANITOR_SHARE[c.grade])) : 0;
 }
 /** 관람객 수 배율: 홍보 담당 + '인기인' */
-export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0);
+export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd') + s.board.reduce((t, _, i) => t + penOpt(s, i, 'crowd'), 0) + facSum(s, 'photo');
 /** 먹이 효과 */
 export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'));
 /** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
@@ -625,11 +674,12 @@ export function dailyCosts(s: SaveData) {
     }
   });
   const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver'));
+  const facility = Math.round(placedItems(s).reduce((t, it) => t + (it.type.startsWith('fac:') ? facilityDef(it.type.slice(4) as FacilityType).upkeep : 0), 0) * unit * (1 - cut));
   const cells = s.board.reduce((t, _, i) => t + penCells(s, i).length, 0);
   const pens = Math.round(UPKEEP.perCell * cells * unit * (1 - cut));
   const food = Math.round(feed * unit * (1 - cut));
   const climate = Math.round(climateN * SEASON_FX.climatePerAnimal * unit * (1 - cut));
-  return { salary, pens, food, climate, climateName: season.climateName, cut, total: salary + pens + food + climate };
+  return { salary, pens, food, climate, climateName: season.climateName, facility, cut, total: salary + pens + food + climate + facility };
 }
 
 // ── 동물원 규모 (라이벌 대결) ──
@@ -642,6 +692,7 @@ export function zooScale(s: SaveData): number {
   });
   for (const c of placedStaffCards(s, false)) v += STAFF_SCALE[c.grade];
   for (const lv of Object.values(s.upgrades)) v += lv * SCALE.upgradeLv;
+  for (const it of placedItems(s)) v += it.type.startsWith('fac:') ? ITEM_SCALE.facility : ITEM_SCALE.decor;
   if (s.coins < 0) v -= (-s.coins / drawPrice(s)) * SCALE.debtPerDraw;
   return Math.round(v);
 }

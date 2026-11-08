@@ -7,7 +7,8 @@ import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
 import { BLOCK, World, ZONE_H, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
-import { syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, ensureMissions, missionText, closeZoo } from './game/rules';
+import { itemName } from './data/facilities';
+import { syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -57,7 +58,7 @@ const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: (
 hud.append(settingsBtn);
 
 // ── 우리 놓기: 조각을 고르면 부지 위에 미리 보기, 누른 자리에 놓는다 ──
-let placing: { uid: number; rot: number } | null = null;
+let placing: { uid: number; rot: number; item?: boolean } | null = null;
 const placeInfo = h('span', {});
 const placeBar = h('div', { class: 'place-bar hidden' }, placeInfo,
   h('button', { class: 'btn small', onclick: () => { if (placing) { placing.rot = (placing.rot + 1) % 4; audio.sfx('click'); updateGhost(); } } }, '⟳ 돌리기'),
@@ -67,6 +68,15 @@ function startPlace(uid: number) {
   if (!document.body.classList.contains('landscape')) panel.setOpen(false);
   const c = cardById(save, uid);
   placeInfo.textContent = c?.kind === 'pen' ? `${penPiece(c).name} 놓기 · 부지를 눌러요` : '';
+  placeBar.classList.remove('hidden');
+  updateGhost();
+}
+/** 시설 · 소품 놓기 (1칸) */
+function startPlaceItem(uid: number) {
+  placing = { uid, rot: 0, item: true };
+  if (!document.body.classList.contains('landscape')) panel.setOpen(false);
+  const it = save.items.find((i) => i.uid === uid);
+  placeInfo.textContent = it ? `${itemName(it.type)} 놓기 · 빈 칸을 눌러요` : '';
   placeBar.classList.remove('hidden');
   updateGhost();
 }
@@ -80,6 +90,12 @@ function blockAt(p: { x: number; y: number }, cells: [number, number][]) {
 }
 function updateGhost() {
   if (!placing) return;
+  if (placing.item) {
+    const p = pointer ?? lastPlaceAt ?? { x: world.layout.bx0 + world.layout.bw * BLOCK / 2, y: world.layout.by0 + world.layout.bh * BLOCK / 2 };
+    const bx = Math.floor((p.x - world.layout.bx0) / BLOCK), by = Math.floor((p.y - world.layout.by0) / BLOCK);
+    field.ghost = { cells: [[bx, by]], ok: canPlaceItem(save, placing.uid, bx, by) };
+    return;
+  }
   const c = cardById(save, placing.uid);
   if (c?.kind !== 'pen') { endPlace(); return; }
   const cells = rotateCells(penPiece(c).cells, placing.rot);
@@ -90,6 +106,12 @@ function updateGhost() {
 function tryPlace(p: { x: number; y: number }) {
   if (!placing) return;
   lastPlaceAt = p;
+  if (placing.item) {
+    const bx = Math.floor((p.x - world.layout.bx0) / BLOCK), by = Math.floor((p.y - world.layout.by0) / BLOCK);
+    if (placeItem(save, placing.uid, bx, by)) { audio.sfx('buy'); world.sync(); persist(); toast('놓았어요', 'good'); endPlace(); }
+    else { audio.sfx('deny'); updateGhost(); toast('빈 칸에만 놓을 수 있어요', 'bad', 1600); }
+    return;
+  }
   const c = cardById(save, placing.uid);
   if (c?.kind !== 'pen') { endPlace(); return; }
   const cells = rotateCells(penPiece(c).cells, placing.rot);
@@ -103,7 +125,7 @@ function tryPlace(p: { x: number; y: number }) {
 }
 
 const reports: DayReport[] = [];
-const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, reports });
+const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, startPlaceItem, reports });
 ui.append(hud, hint, eventBanner, zoomReset, openBtn, placeBar, panel.el);
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
@@ -181,6 +203,20 @@ canvas.addEventListener('pointerup', (e) => {
   downAt = null;
   const wp = field.toWorld(p.sx, p.sy);
   if (placing) { tryPlace(wp); return; }
+  // 시설 · 소품을 누르면 치우기
+  const ibx = Math.floor((wp.x - world.layout.bx0) / BLOCK), iby = Math.floor((wp.y - world.layout.by0) / BLOCK);
+  const it = wp.y > world.layout.by0 ? itemAt(save, ibx, iby) : undefined;
+  if (it && !penSheetOpen) {
+    audio.sfx('click');
+    const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+      h('div', { class: 'sheet' }, h('div', { class: 'sheet-head' }, h('b', {}, itemName(it.type))),
+        h('p', { class: 'hint' }, '치우면 보관함으로 가요. 동물원 > 시설 · 꾸미기에서 다시 놓을 수 있어요.'),
+        h('div', { class: 'row-btns' },
+          h('button', { class: 'btn small danger', onclick: () => { removeItem(save, it.uid); world.sync(); persist(); panel.render(true); back.remove(); toast('보관함으로 옮겼어요', 'info'); } }, '치우기'),
+          h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기'))));
+    ui.append(back);
+    return;
+  }
   const i = world.layout.pens.findIndex((r) => wp.x >= r.x && wp.x <= r.x + r.w && wp.y >= r.y && wp.y <= r.y + r.h);
   if (i >= 0 && !penSheetOpen) {
     audio.sfx('click');
@@ -266,6 +302,7 @@ function showReport(r: import('./game/world').DayReport) {
           h('div', {}, h('span', {}, '직원 월급'), h('b', { class: 'minus' }, `-${fmt(r.costs.salary)}`)),
           h('div', {}, h('span', {}, '우리 유지비 · 사료비'), h('b', { class: 'minus' }, `-${fmt(r.costs.pens + r.costs.food)}`)),
           r.costs.climate ? h('div', {}, h('span', {}, r.costs.climateName), h('b', { class: 'minus' }, `-${fmt(r.costs.climate)}`)) : null,
+          r.costs.facility ? h('div', {}, h('span', {}, '시설 유지비'), h('b', { class: 'minus' }, `-${fmt(r.costs.facility)}`)) : null,
           h('div', { class: 'net' }, h('span', {}, '오늘 순이익'), h('b', { class: r.net >= 0 ? 'plus' : 'minus' }, `${r.net >= 0 ? '+' : ''}${fmt(r.net)}`)),
           h('div', { class: 'after' }, h('span', {}, '남은 코인'), h('b', { class: r.coinsAfter >= 0 ? '' : 'minus' }, fmt(r.coinsAfter)))),
         h('div', {}, h('b', {}, fmt(r.visitors)), h('span', {}, '다녀간 관람객')),

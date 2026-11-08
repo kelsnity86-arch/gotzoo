@@ -1,0 +1,49 @@
+// 시설 · 꾸미기: 부지 블록 1칸을 차지한다. 짓는 건 밤에만 (시설 공사 규칙).
+// 시설 = 효과 + 매일 유지비, 계절 소품 = 붙어 있는 우리 매력 + (그 계절이면 2배), 울타리·입구 꾸미기 = 업그레이드 4단계.
+import type { SeasonKey } from './seasons';
+
+export type FacilityType = 'snack' | 'restroom' | 'bench' | 'fountain' | 'photo' | 'clinic';
+export interface FacilityDef {
+  type: FacilityType; name: string;
+  /** 하나당 효과 수치 · 겹칠 때 최대 */
+  value: number; cap: number;
+  desc: (v: number) => string;
+  /** 짓는 값 = 동물 뽑기 가격 × price, 하루 유지비 = 비용 단위 × upkeep */
+  price: number; upkeep: number;
+}
+const pct = (v: number) => `${Math.round(v * 100)}%`;
+export const FACILITIES: readonly FacilityDef[] = [
+  { type: 'snack', name: '매점', value: 0.08, cap: 0.4, desc: (v) => `관람객이 간식을 사요 · 투척액 +${pct(v)}`, price: 3, upkeep: 0.2 },
+  { type: 'restroom', name: '화장실', value: 0.1, cap: 0.5, desc: (v) => `오래 머물러요 · 분당 최대 관람객 +${pct(v)}`, price: 3, upkeep: 0.15 },
+  { type: 'bench', name: '벤치', value: 15, cap: 60, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
+  { type: 'fountain', name: '분수', value: 0.1, cap: 0.3, desc: (v) => `붙어 있는 우리 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'photo', name: '포토존', value: 0.08, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'clinic', name: '동물병원', value: 0.5, cap: 0.9, desc: (v) => `동물 감기를 ${pct(v)} 확률로 막아요 (수의사와 따로)`, price: 5, upkeep: 0.2 },
+];
+export const facilityDef = (t: FacilityType) => FACILITIES.find((f) => f.type === t)!;
+
+/** 계절 소품: 계절마다 12종 (그 계절에만 팔고, 산 건 계속 남는다) */
+export const DECOR: Record<SeasonKey, string[]> = {
+  spring: ['벚꽃나무', '튤립 화단', '꽃 아치', '피크닉 매트', '연', '분홍 등', '화분대', '새집', '물뿌리개', '잉어 깃발', '그네', '나비 덤불'],
+  summer: ['파라솔', '미니 수영장', '모래성', '수박 가판', '풍경', '히비스커스', '비치체어', '서핑보드', '스프링클러', '아이스크림 카트', '구명튜브', '야자수'],
+  autumn: ['단풍나무', '은행나무', '허수아비', '호박 더미', '건초', '감나무', '수확 바구니', '호박등', '낙엽 더미', '수레', '코스모스', '보름달 등'],
+  winter: ['눈사람', '크리스마스 트리', '눈 덮인 소나무', '이글루', '썰매', '얼음 조각', '선물 더미', '지팡이 사탕', '눈덩이', '모닥불', '전구 아치', '코코아 가판'],
+};
+/** 소품: 붙어 있는 우리 매력 + (그 계절이면 2배), 값 = 뽑기 가격 × */
+export const DECOR_FX = { attract: 0.04, price: 1 } as const;
+/** 규모 점수 */
+export const ITEM_SCALE = { facility: 15, decor: 5 } as const;
+/** 치우면 보관함으로 (팔지 않는다) */
+
+/** 울타리 · 입구 단계 이름 (업그레이드 'deco' 레벨 0~3) */
+export const DECO_TIERS = ['나무', '돌', '철', '황금'] as const;
+/** 울타리 · 입구 꾸미기: 단계마다 모든 동물 매력 + */
+export const DECO_ATTRACT = 0.03;
+
+export type ItemType = `fac:${FacilityType}` | `deco:${SeasonKey}:${number}`;
+export function itemName(type: string): string {
+  if (type.startsWith('fac:')) return facilityDef(type.slice(4) as FacilityType).name;
+  const [, se, n] = type.split(':');
+  return DECOR[se as SeasonKey]?.[Number(n) - 1] ?? '소품';
+}
+export const itemSprite = (type: string) => (type.startsWith('fac:') ? `fac_${type.slice(4)}` : `decor_${type.split(':')[1]}_${type.split(':')[2]}`);

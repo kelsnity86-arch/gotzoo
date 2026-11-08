@@ -25,11 +25,13 @@ export interface UpgradeDef {
   values: readonly number[]; costs: readonly number[]; need: readonly number[];
   describe: (v: number) => string;
 }
-export type UpgradeId = 'land' | 'quality' | 'gate' | 'staff' | 'pickup';
+export type UpgradeId = 'land' | 'deco' | 'quality' | 'gate' | 'staff' | 'pickup';
 
 export const UPGRADES: readonly UpgradeDef[] = [
   { id: 'land', name: '부지 넓히기', icon: 'icon_cage', values: [0, 1, 2, 3, 4, 5, 6, 7, 8],
     costs: [300, 900, 2200, 5000, 11000, 25000, 55000, 120000], need: [1, 2, 2, 3, 4, 5, 6, 7], describe: (v) => `부지 ${BOARD[v][0]}×${BOARD[v][1]}칸` },
+  { id: 'deco', name: '울타리·입구 꾸미기', icon: 'icon_cage', values: [0, 1, 2, 3],
+    costs: [3000, 15000, 70000], need: [2, 4, 6], describe: (v) => `${['나무', '돌', '철', '황금'][v]} 울타리 · 모든 동물 매력 +${v * 3}%` },
   { id: 'quality', name: '관객의 질', icon: 'icon_ticket', values: [1, 1.25, 1.6, 2.1, 2.7, 3.5, 4.5, 6],
     costs: [250, 700, 2000, 5000, 12000, 30000, 75000], need: [1, 2, 3, 4, 5, 6, 7], describe: (v) => `투척액 ×${v}` },
   { id: 'gate', name: '입장 게이트', icon: 'icon_visitor', values: [30, 45, 60, 80, 110, 150, 200],

@@ -6,6 +6,7 @@ import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world
 import { penAttract } from '../game/rules';
 import { animalFrame, person16, personFrame, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
+import { itemSprite } from '../data/facilities';
 import { eventDef } from '../data/events';
 
 export interface View { x: number; y: number; w: number; h: number }
@@ -51,6 +52,8 @@ export class FieldRenderer {
 
   private bg: HTMLCanvasElement | null = null;
   private seasonN = 1;
+  private items: SaveData['items'] = [];
+  private decoTier = 0;
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -60,7 +63,8 @@ export class FieldRenderer {
     const L = world.layout;
     const habs = L.pens.map((_, i) => `${world.geo[i]?.theme ?? '-'}:${world.geo[i]?.shape ?? '-'}`);
     const season = seasonOf(this.seasonN).key;
-    const key = `${season}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
+    const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
+    const key = `${season}|${this.decoTier}|${items}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -84,7 +88,7 @@ export class FieldRenderer {
         return;
       }
       const f = F16[k];
-      if (f && hasPng(`f16_0_${f}`)) { c.drawImage(sprite(`f16_0_${f}`), x, y, 8, 8); return; }
+      if (f && hasPng(`f16_${this.decoTier}_${f}`)) { c.drawImage(sprite(`f16_${this.decoTier}_${f}`), x, y, 8, 8); return; }
       c.drawImage(sprite(k), x, y, 8, 8);
     };
     const fill = (k: string, x0: number, y0: number, w: number, h: number) => {
@@ -143,6 +147,21 @@ export class FieldRenderer {
       if (!hab) tile('tiles_19', g.gx + Math.floor(g.cols / 2) * TILE - 4, g.gy + Math.floor(g.rows / 2) * TILE - 4);
       else if (g.floorCells.length) { const [fx, fy] = g.floorCells[g.floorCells.length - 1]; tile('tiles_20', g.gx + fx * TILE, g.gy + fy * TILE); }
     });
+    // 시설 · 소품: 블록 1칸 안에 바닥에 맞춰 (도트 비율 그대로)
+    for (const it of this.items) {
+      if (it.x < 0) continue;
+      const key2 = itemSprite(it.type);
+      if (!hasPng(key2)) continue;
+      const im = sprite(key2);
+      const sc = (BLOCK - 4) / Math.max(im.width, im.height);
+      const w = im.width * sc, hh = im.height * sc;
+      const bx = L.bx0 + it.x * BLOCK, by = L.by0 + it.y * BLOCK;
+      c.fillStyle = 'rgba(0,0,0,0.15)'; c.fillRect(bx + 4, by + BLOCK - 4, BLOCK - 8, 2);
+      c.drawImage(im, Math.round(bx + (BLOCK - w) / 2), Math.round(by + BLOCK - 2 - hh), w, hh);
+    }
+    // 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
+    const gk = `fac_gate${this.decoTier}`;
+    if (hasPng(gk)) { const im = sprite(gk); const gh = ZONE_H - 10, gw = im.width * (gh / im.height); c.drawImage(im, 2, ZONE_H - 6 - gh, gw, gh); }
     this.bg = cv;
     return cv;
   }
@@ -182,7 +201,7 @@ export class FieldRenderer {
     c.setTransform(dpr, 0, 0, dpr, 0, 0); c.beginPath(); c.rect(view.x, view.y, view.w, view.h); c.clip();
     c.setTransform(z * dpr, 0, 0, z * dpr, this.ox * dpr, this.oy * dpr);
     c.beginPath(); c.rect(0, 0, L.w, L.h); c.clip();
-    this.seasonN = save.season.n;
+    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0;
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {

@@ -9,7 +9,7 @@ import { BLOCK_TILES } from '../data/pieces';
 import type { Habitat } from '../data/animals';
 import { SEASON, rivalOf, rivalScale } from '../data/rivals';
 import { SEASON_FX, yearOf } from '../data/seasons';
-import { boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
+import { facSum, boardDims, curSeason, discoverSynergies, penCardAt, penCells, penOpt, penPiece, penTheme, type AttractCtx, bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -64,7 +64,7 @@ export interface DayReport {
   day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number;
   missions: Mission[]; missionTickets: number;
   /** 돈: 오늘 수입(관리인 회수 포함) − 소매치기 − 비용 = 순이익, 정산 후 코인 */
-  income: number; stolen: number; costs: { salary: number; pens: number; food: number; climate: number; climateName: string; total: number }; net: number; coinsAfter: number;
+  income: number; stolen: number; costs: { salary: number; pens: number; food: number; climate: number; climateName: string; facility: number; total: number }; net: number; coinsAfter: number;
   /** 빚으로 끝난 날 연속 수 · 내일 파업하는지 */
   debtDays: number; strikeNext: boolean;
   /** 라이벌: 시즌 며칠째, 내 규모 · 라이벌 규모 */
@@ -218,7 +218,7 @@ export class World {
     return { allMul: e?.allMul, habitatMul: e?.habitat ? { [e.habitat]: e.habitatMul ?? 1 } : undefined };
   }
   get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb * (penOpt(this.save, i, 'feeder') ? 2 : 1) : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1), this.attractCtx); }
-  get gateCap() { return upValue(this.save, 'gate'); }
+  get gateCap() { return upValue(this.save, 'gate') * (1 + facSum(this.save, 'restroom')); }
   /** 분당 관람객 수요와 실제 입장 수 */
   get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }
   get visitorRate() { return Math.min(this.gateCap, this.visitorDemand) * (this.event ? eventDef(this.event.id).rateMul : 1); }
@@ -297,7 +297,8 @@ export class World {
   /** 사고: 소매치기(경비원이 막음) · 동물 감기(수의사가 막음) */
   private incident() {
     const kind: 'thief' | 'sick' = this.rng() < 0.5 ? 'thief' : 'sick';
-    const blocked = this.rng() < staffSum(this.save, kind === 'thief' ? 'guard' : 'vet');
+    const block = kind === 'thief' ? staffSum(this.save, 'guard') : 1 - (1 - staffSum(this.save, 'vet')) * (1 - facSum(this.save, 'clinic'));
+    const blocked = this.rng() < block;
     let loss = 0, pen = -1;
     if (!blocked && kind === 'thief') {
       loss = Math.round((this.today.base + this.today.bonus) * INCIDENT.thiefShare);
@@ -379,7 +380,7 @@ export class World {
     const { stolen, ...today } = this.today;
     const report: DayReport = {
       day: sv.day, ...today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets,
-      income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, climate: c.climate, climateName: c.climateName, total: c.total }, net, coinsAfter: Math.round(sv.coins),
+      income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, climate: c.climate, climateName: c.climateName, facility: c.facility, total: c.total }, net, coinsAfter: Math.round(sv.coins),
       debtDays: sv.debtDays, strikeNext: sv.strike,
       rivalName: rivalOf(se.n).name, seasonDay, mine, rival, season,
     };

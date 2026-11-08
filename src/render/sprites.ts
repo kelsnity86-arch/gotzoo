@@ -39,6 +39,8 @@ const files16 = import.meta.glob('../../assets/sprites16/**/*.png', { eager: tru
     else if ((m = /^tiles16\/(\w+)_(\d+)$/.exec(k))) URLS[`t16_${m[1]}_${Number(m[2])}`] = u;
     else if ((m = /^fences16\/t(\d)_([hvgp])$/.exec(k))) URLS[`f16_${m[1]}_${m[2]}`] = u;
     else if ((m = /^icons16\/(\d+)$/.exec(k))) URLS[`icons_${m[1]}`] = u;
+    else if ((m = /^fac16\/(\w+)$/.exec(k))) URLS[`fac_${m[1]}`] = u;
+    else if ((m = /^decor16\/(\w+)_(\d+)$/.exec(k))) URLS[`decor_${m[1]}_${Number(m[2])}`] = u;
     else if ((m = /^fx16\/(\d+)$/.exec(k))) { URLS[`fx_${m[1]}`] = u; if (Number(m[1]) <= 4) URLS[`coin_${Number(m[1]) - 1}`] = u; }
   }
 }

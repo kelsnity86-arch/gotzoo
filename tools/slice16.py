@@ -290,3 +290,20 @@ def fence_tiles():
 
 if __name__ == '__main__':
     run()
+
+
+def slice_facilities_decor():
+    """시설(위 6개 · 아래 입구 4개)과 계절 소품(6×4 × 2장)"""
+    p = SRC / 'world/facilities/facilities16.png'
+    a = np.array(Image.open(p).convert('RGB')); fg = ~bg_mask(a); s = pixel_size(a, fg)
+    H = a.shape[0] // 2
+    top = grid_cells(a[:H], fg[:H], 6, 1, s); bot = grid_cells(a[H:], fg[H:], 4, 1, s)
+    names = ['snack', 'restroom', 'bench', 'fountain', 'photo', 'clinic']
+    for n, arr in zip(names, top): save(keep_main(arr) if arr is not None else arr, OUT / f'fac16/{n}.png')
+    for i, arr in enumerate(bot): save(arr, OUT / f'fac16/gate{i}.png')
+    for sheet, seasons in (('decor16_1', ('spring', 'summer')), ('decor16_2', ('autumn', 'winter'))):
+        p = SRC / f'world/decor/{sheet}.png'
+        a = np.array(Image.open(p).convert('RGB')); fg = ~bg_mask(a); s = pixel_size(a, fg)
+        cells = grid_cells(a, fg, 6, 4, s)
+        for i, arr in enumerate(cells):
+            if arr is not None: save(arr, OUT / f'decor16/{seasons[i // 12]}_{i % 12 + 1:02d}.png')

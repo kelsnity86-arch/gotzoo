@@ -10,7 +10,7 @@ import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, penTheme, penDraw, canPlacePen, placePen, removePen, autoArrangePens, boardGrid, penCells, fusePens, finishLegacy, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
+  assignStaff, buyItem, canPlaceItem, placeItem, removeItem, facSum, penTheme, penDraw, canPlacePen, placePen, removePen, autoArrangePens, boardGrid, penCells, fusePens, finishLegacy, dailyCosts, discoverSynergies, penDetail, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
@@ -256,5 +256,38 @@ describe('우리 조각 · 부지', () => {
     expect(s.board).toHaveLength(4);
     expect(s.pens.flat().sort()).toEqual([1, 2]);
     expect(s.cards.filter((c) => c.kind === 'pen')).toHaveLength(4);
+  });
+});
+
+describe('시설 · 꾸미기', () => {
+  it('사서 빈 칸에 놓고, 우리와 겹치면 못 놓고, 치우면 보관함으로', () => {
+    const s = defaultSave(); s.coins = 1e6;
+    const uid = buyItem(s, 'fac:snack')!;
+    expect(s.coins).toBe(1e6 - 300);
+    expect(canPlaceItem(s, uid, 1, 1)).toBe(false); // 처음 우리 자리
+    expect(placeItem(s, uid, 0, 0)).toBe(true);
+    expect(facSum(s, 'snack')).toBeCloseTo(0.08, 5);
+    expect(staffTipMul(s)).toBeCloseTo(1.08, 5);
+    expect(dailyCosts(s).facility).toBeGreaterThan(0);
+    removeItem(s, uid);
+    expect(facSum(s, 'snack')).toBe(0);
+  });
+  it('분수 · 소품은 붙어 있는 우리만, 제철 소품 2배 · 우리 자동 배치가 시설 칸을 피한다', () => {
+    const s = defaultSave(); s.coins = 1e6; s.season.n = 1; // 봄
+    s.cards.push({ uid: 1, kind: 'animal', animal: 0 }); s.pens[0].push(1); s.nextUid = 2;
+    const base = penAttract(s, 0);
+    const f = buyItem(s, 'fac:fountain')!; placeItem(s, f, 0, 1); // 우리 0(1,1~2,2) 왼쪽
+    const d = buyItem(s, 'deco:spring:1')!; placeItem(s, d, 1, 0); // 위
+    expect(penAttract(s, 0) / base).toBeCloseTo((1 + 0.2 + 0.1 + 0.1 + 0.08) / (1 + 0.2 + 0.1), 3); // 제철 · 우리 서식지 + 분수 10% · 봄 소품 4%×2
+    autoArrangePens(s, () => 0.4);
+    const g = boardGrid(s);
+    expect(g[1][0]).toBe(-2); expect(g[0][1]).toBe(-2);
+  });
+  it('울타리 꾸미기: 단계마다 모든 동물 +3%', () => {
+    const s = defaultSave(); s.season.n = 2;
+    s.cards.push({ uid: 1, kind: 'animal', animal: 0 }); s.pens[0].push(1); s.nextUid = 2;
+    const a = penAttract(s, 0);
+    s.upgrades.deco = 2;
+    expect(penAttract(s, 0) / a).toBeCloseTo((1 + 0.1 + 0.06) / 1.1, 3);
   });
 });
