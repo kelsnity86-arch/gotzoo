@@ -1,0 +1,110 @@
+{
+  "project": "BbopZOO",
+  "collection": "Olympus Zodiac",
+  "date": "2026-11-09",
+  "status": "generated_sources",
+  "engine_ready": false,
+  "source_brief": "docs/briefs/olympus16-original-request.txt",
+  "notes": [
+    "Image-generation source PNGs preserved without pixel edits.",
+    "Exact native pixel grids, palette, outlines and animation alignment are not validated.",
+    "Requested grid positions describe intended layout, not verified extraction coordinates."
+  ],
+  "sheets": [
+    {
+      "file": "assets/spritesheets16/olympus/gods/gods_field16.png",
+      "description": "십이지신 12종 · 일반/각성",
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_grid_columns_rows": [
+        6,
+        4
+      ],
+      "dimensions_match": true,
+      "bytes": 2278229,
+      "sha256": "7509f10bb3e628233cd30b42d9810d23287a25b0133a01b0a8ea4ba514a328b5"
+    },
+    {
+      "file": "assets/spritesheets16/olympus/gods/gods_portrait16.png",
+      "description": "십이지신 초상 12종",
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_grid_columns_rows": [
+        4,
+        3
+      ],
+      "dimensions_match": false,
+      "bytes": 2127345,
+      "sha256": "549fcb53310fff2fd788ad66162670f944963d622c641a1f094e12a5d2209b6c"
+    },
+    {
+      "file": "assets/spritesheets16/olympus/heroes/heroes_walk16.png",
+      "description": "영웅 6명 · 일반/각성 보행 A/B",
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_grid_columns_rows": [
+        4,
+        6
+      ],
+      "dimensions_match": true,
+      "bytes": 1997702,
+      "sha256": "97093060d93d0b9348ae76924e229eca3271c66cb60eb2ed4f4bd52e6f67eea8"
+    },
+    {
+      "file": "assets/spritesheets16/olympus/heroes/heroes_portrait16.png",
+      "description": "영웅 초상 6명",
+      "requested_size": [
+        1152,
+        768
+      ],
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_grid_columns_rows": [
+        3,
+        2
+      ],
+      "dimensions_match": false,
+      "bytes": 1690668,
+      "sha256": "82bdb890da5f0216dc4db941cc8c4ec16c51f4f88ab8b62fc3e7a7b9d401a10d"
+    },
+    {
+      "file": "assets/spritesheets16/olympus/extras/olympus_extras16.png",
+      "description": "신전 입구·좌대·캡슐·장식 12칸",
+      "requested_size": [
+        1536,
+        1152
+      ],
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_grid_columns_rows": [
+        4,
+        3
+      ],
+      "dimensions_match": false,
+      "bytes": 1503242,
+      "sha256": "80eb537646d5e96fc1fda28393c30709d7791393b946c5ad0a15bccdff96047c"
+    }
+  ]
+}
