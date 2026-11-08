@@ -4,7 +4,7 @@ import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, type World } from '../game/world';
 import { penAttract } from '../game/rules';
-import { animalFrame, avgColor, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
+import { animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
 import { itemSprite } from '../data/facilities';
 import { fmt } from '../ui/dom';
@@ -12,7 +12,6 @@ import { eventDef } from '../data/events';
 
 export interface View { x: number; y: number; w: number; h: number }
 /** GPT 타일 (assets/sprites/tiles): 서식지별 바닥 */
-const FLOOR_TILE: Record<Habitat, string> = { grass: 'tiles_09', sand: 'tiles_10', water: 'tiles_11', snow: 'tiles_12', rock: 'tiles_13', cloud: 'tiles_14' };
 const FLOOR: Record<Habitat, [string, string]> = {
   grass: ['#38a35b', '#2f8f4f'], sand: ['#e8c39e', '#d9ae84'], water: ['#41a6f6', '#3b8fe0'],
   snow: ['#f4f4f4', '#dfe6ee'], rock: ['#94b0c2', '#7f99ab'], cloud: ['#ffc8dd', '#f4b3cf'],
@@ -51,7 +50,7 @@ export class FieldRenderer {
   /** 우리 놓기 미리 보기 (부지 블록 좌표) */
   ghost: { cells: [number, number][]; ok: boolean } | null = null;
 
-  static readonly R = 2;
+  static readonly R = 3;
   /** 처음 화면의 확대: 월드 1칸 = 화면 몇 px */
   static readonly START_PX = 3;
   private autoZoomed = false;
@@ -64,116 +63,153 @@ export class FieldRenderer {
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
-  /** 움직이지 않는 바탕(잔디·길·나무·울타리·우리 바닥)을 GPT 타일로 한 번 그려 둔다 */
+  /** 움직이지 않는 바탕을 v2 월드 그림으로 한 번 그려 둔다 (월드 1칸 = R도트, 타일 8칸 = 24도트라 1:1)
+   *  잔디(계절) → 관객 길(이어 붙는 돌길) → 우리 바닥 · 울타리(이어 붙는 울타리) → 우리 소품 → 빈 땅 공원 소품 → 시설 · 꾸미기 → 입구 */
   private background(world: World): HTMLCanvasElement | null {
-    if (!hasPng('tiles_01')) return null;
+    if (!hasPng('v2_ground_spring_1')) return null;
     const L = world.layout;
-    const habs = L.pens.map((_, i) => `${world.geo[i]?.theme ?? '-'}:${world.geo[i]?.shape ?? '-'}`);
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${season}|${this.decoTier}|${items}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${habs.join(',')}|${world.geo.map((g) => g.mask.flat().filter(Boolean).length).join(',')}`;
+    const key = `${season}|${this.decoTier}|${items}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
-    // 16px 타일을 살리려고 월드 1칸 = 2px로 그려 둔다
-    const R = 2;
+    const R = FieldRenderer.R;
     cv.width = L.w * R; cv.height = L.h * R;
     const c = cv.getContext('2d')!;
     c.setTransform(R, 0, 0, R, 0, 0);
     c.imageSmoothingEnabled = false;
-    // 예전 8px 타일 이름 → 계절 16px 타일 (있으면)
-    const T16: Record<string, number> = { tiles_01: 1, tiles_02: 2, tiles_03: 3, tiles_04: 4, tiles_09: 5, tiles_10: 6, tiles_11: 7, tiles_12: 8, tiles_13: 9, tiles_14: 10, tiles_15: 11, tiles_16: 12, tiles_17: 13, tiles_23: 14, tiles_22: 15 };
-    const F16: Record<string, string> = { tiles_05: 'h', tiles_06: 'v', tiles_07: 'p', tiles_08: 'g' };
-    const tile = (k: string, x: number, y: number) => {
-      const n = T16[k];
-      if (n && hasPng(`t16_${season}_${n}`)) {
-        const im = sprite(`t16_${season}_${n}`);
-        if (n <= 10) { c.drawImage(im, x, y, 8, 8); return; }
-        // 나무 · 덤불 같은 물체: 도트 비율 그대로, 칸 바닥에 맞춰 조금 크게
-        const sc = 11 / Math.max(im.width, im.height);
-        c.drawImage(im, Math.round(x + 4 - (im.width * sc) / 2), Math.round(y + 8 - im.height * sc), im.width * sc, im.height * sc);
-        return;
+    c.clearRect(0, 0, L.w, L.h);
+    const hash = (x: number, y: number) => { let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+    const v = (k: string) => sprite(`v2_${k}`);
+    /** 바닥 타일 고르기: 대부분 1 · 2번, 가끔 무늬 있는 3 · 4번 */
+    const pick = (x: number, y: number) => { const r = hash(x, y); return r < 0.06 ? 3 : r < 0.12 ? 4 : r < 0.56 ? 1 : 2; };
+    /** 물체: 도트 그대로(1:1), 가운데 아래 기준 */
+    const obj = (k: string, cx: number, by: number, flip = false) => {
+      if (!hasPng(`v2_${k}`)) return;
+      const im = v(k), w = im.width / R, h = im.height / R;
+      const x = Math.round((cx - w / 2) * R) / R, y = Math.round((by - h) * R) / R;
+      if (flip) { c.save(); c.translate(x + w, y); c.scale(-1, 1); c.drawImage(im, 0, 0, w, h); c.restore(); }
+      else c.drawImage(im, x, y, w, h);
+    };
+    /** 이어 붙이기: 모양 그림(3×3타일)을 4칸 = 반 타일 조각으로 나눠, 칸마다 이웃에 맞는 조각 4개를 붙인다
+     *  sq = 네모 모양(바깥 모서리 · 변 · 안), inner = 안쪽 모서리 조각이 있는 그림과 그 자리 */
+    const Q = TILE / 2, QP = Q * R;
+    const autotile = (inSet: (tx: number, ty: number) => boolean, tx: number, ty: number, sq: Sprite, inner: Sprite, innerAt: (dx: number) => number, fill: boolean) => {
+      for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+        const sx = dx ? 1 : -1, sy = dy ? 1 : -1;
+        const h = inSet(tx + sx, ty), vv = inSet(tx, ty + sy), d = inSet(tx + sx, ty + sy);
+        let src: Sprite = sq, px: number, py: number;
+        if (h && vv && d) { if (!fill) continue; px = 2 * QP + dx * QP; py = 2 * QP + dy * QP; }
+        else if (h && vv) { src = inner; px = innerAt(dx); py = innerAt(dy); }
+        else if (h) { px = 2 * QP + dx * QP; py = dy * 5 * QP; }
+        else if (vv) { px = dx * 5 * QP; py = 2 * QP + dy * QP; }
+        else { px = dx * 5 * QP; py = dy * 5 * QP; }
+        c.drawImage(src, px, py, QP, QP, tx * TILE + dx * Q, ty * TILE + dy * Q, Q, Q);
       }
-      const f = F16[k];
-      if (f && hasPng(`f16_${this.decoTier}_${f}`)) { c.drawImage(sprite(`f16_${this.decoTier}_${f}`), x, y, 8, 8); return; }
-      c.drawImage(sprite(k), x, y, 8, 8);
     };
-    const fill = (k: string, x0: number, y0: number, w: number, h: number) => {
-      c.save(); c.beginPath(); c.rect(x0, y0, w, h); c.clip();
-      for (let y = y0; y < y0 + h; y += TILE) for (let x = x0; x < x0 + w; x += TILE) tile(k, x, y);
-      c.restore();
-    };
-    // 무늬를 죽여 잔잔하게: 타일 위에 그 타일 평균색을 반투명으로 덮는다
-    const flat = (k: string, x0: number, y0: number, w: number, h: number, a: number) => {
-      const n = T16[k], key = `t16_${season}_${n}`;
-      c.globalAlpha = a; c.fillStyle = avgColor(hasPng(key) ? sprite(key) : sprite(k)); c.fillRect(x0, y0, w, h); c.globalAlpha = 1;
-    };
-    /** 물체(나무 · 소품): 도트 그림용으로 줄여서 칸 바닥 가운데에 */
-    const obj = (im: Sprite, cx: number, by: number, maxUnits: number) => {
-      const k = (maxUnits * R) / Math.max(im.width, im.height);
-      const d = k < 1 ? pixelDown(im, im.width * k, im.height * k) : im;
-      const s2 = k < 1 ? 1 / R : Math.max(1, Math.floor(k)) / R;
-      c.drawImage(d, Math.round((cx - (d.width * s2) / 2) * R) / R, Math.round((by - d.height * s2) * R) / R, d.width * s2, d.height * s2);
-    };
-    const objTile = (k: string, cx: number, by: number, maxUnits: number) => { const n = T16[k]; const key = `t16_${season}_${n}`; if (hasPng(key)) obj(sprite(key), cx, by, maxUnits); };
-    // 바닥: 잔디 한 가지 + 잔잔하게
-    for (let y = 0; y < L.h; y += TILE) for (let x = 0; x < L.w; x += TILE) tile('tiles_01', x, y);
-    flat('tiles_01', 0, 0, L.w, L.h, 0.55);
-    // 관객존: 위 줄에 나무를 띄엄띄엄, 길, 아래 울타리 한 줄
-    for (let x = 10, k = 0; x < L.w - 10; x += 26, k++) objTile(k % 3 === 1 ? 'tiles_16' : 'tiles_15', x, 15, k % 3 === 1 ? 9 : 13);
-    fill('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
-    flat('tiles_03', 0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8, 0.45);
-    for (let x = 0; x < L.w; x += TILE) tile('tiles_05', x, ZONE_H - 8);
-    // 우리가 차지한 타일 → 우리 번호 (붙은 우리 사이 울타리를 한 줄만 그리려고)
-    const owner = new Map<string, number>();
-    L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((v, x) => { if (v) owner.set(`${g.gx + x * TILE},${g.gy + y * TILE}`, i); })); });
-    const { bx0, by0, bw, bh } = L;
-    // 부지 가장자리의 빈 블록에만 나무 몇 그루
-    const itemAtBlock = new Set(this.items.filter((it) => it.x >= 0).map((it) => `${it.x},${it.y}`));
-    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
-      if (!(bx === 0 || bx === bw - 1 || by === bh - 1) || itemAtBlock.has(`${bx},${by}`)) continue;
-      let empty = true;
-      for (let ty = 0; ty < 4 && empty; ty++) for (let tx = 0; tx < 4; tx++) if (owner.has(`${bx0 + bx * BLOCK + tx * TILE},${by0 + by * BLOCK + ty * TILE}`)) { empty = false; break; }
-      if (!empty || (bx * 7 + by * 13) % 3 !== 0) continue;
-      objTile((bx + by) % 4 === 0 ? 'tiles_16' : 'tiles_15', bx0 + bx * BLOCK + BLOCK / 2, by0 + by * BLOCK + BLOCK - 4, (bx + by) % 4 === 0 ? 12 : 22);
+    // 도넛 길: 가운데 구멍 둘레가 안쪽 모서리 (dx=0 → 오른쪽 아래 타일의 왼쪽 위 조각)
+    const ringAt = (d: number) => (d ? 0 : 4) * QP + d * QP;
+    // 십자 울타리: 가운데 타일의 네 조각이 안쪽 모서리
+    const crossAt = (d: number) => 2 * QP + d * QP;
+
+    // 1. 잔디
+    const TW = Math.ceil(L.w / TILE), TH = Math.ceil(L.h / TILE);
+    for (let ty = 0; ty < TH; ty++) for (let tx = 0; tx < TW; tx++) c.drawImage(v(`ground_${season}_${pick(tx, ty)}`), tx * TILE, ty * TILE, TILE, TILE);
+
+    // 2. 관객 길: 맵 양 끝 밖으로 이어진다
+    const p0 = Math.floor(PATH_Y0 / TILE), p1 = Math.ceil(PATH_Y1 / TILE) - 1;
+    const onPath = (_tx: number, ty: number) => ty >= p0 && ty <= p1;
+    const w = season === 'winter' ? '_w' : '';
+    for (let ty = p0; ty <= p1; ty++) for (let tx = 0; tx < TW; tx++) autotile(onPath, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true);
+
+    // 3. 관객존 꾸미기: 길 위쪽 잔디에 나무 · 벤치 · 가로등 · 화단을 번갈아, 길 아래엔 낮은 생울타리
+    const topRow = ['tree', 'lamp', 'flowerbed', 'bench', 'lamp', 'blossom', 'bush', 'lamp', 'bench', 'pine', 'flowerbush', 'lamp'];
+    const gateW = 44;
+    for (let x = gateW + 14, k = 0; x < L.w - 10; x += 30, k++) {
+      const n = topRow[k % topRow.length];
+      obj(`park_${n === 'blossom' && season === 'winter' ? 'pine' : n}`, x, p0 * TILE - (n === 'lamp' ? 0 : 1));
     }
-    // 우리: 모양대로 바닥(잔잔하게) · 울타리. 다른 우리와 맞닿은 쪽은 번호가 작은 우리만 울타리를 그린다
+    for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
+
+    // 4. 우리: 바닥 → 울타리. 다른 우리와 맞닿은 쪽은 번호가 작은 우리만 울타리를 친다
+    const owner = new Map<string, number>();
+    L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) owner.set(`${g.gx / TILE + x},${g.gy / TILE + y}`, i); })); });
+    const tier = Math.max(0, Math.min(3, this.decoTier));
     L.pens.forEach((_, i) => {
       const g = world.geo[i];
       if (!g) return;
-      const hab = g.theme;
-      const floorTile = hab ? FLOOR_TILE[hab] : 'tiles_09';
-      const m = g.mask;
-      const inside = (x: number, y: number) => !!m[y]?.[x] || (owner.get(`${g.gx + x * TILE},${g.gy + y * TILE}`) ?? 99) < i;
-      let gate = -1;
-      for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) {
-        if (!m[y][x]) continue;
-        const px = g.gx + x * TILE, py = g.gy + y * TILE;
-        tile(floorTile, px, py);
-        flat(floorTile, px, py, TILE, TILE, 0.35);
-        if (g.floor[y][x]) continue;
-        const up = inside(x, y - 1), dn = inside(x, y + 1), lf = inside(x - 1, y), rt = inside(x + 1, y);
-        if (up && dn && lf && rt) continue;
-        const horiz = (!up || !dn) && lf && rt, vert = (!lf || !rt) && up && dn;
-        if (g.shape === 'rect' && !horiz && !vert) tile('tiles_07', px, py);
-        else { if (!up || !dn) tile('tiles_05', px, py); if (!lf || !rt) tile('tiles_06', px, py); }
-        if (gate < 0 && horiz && !m[y - 1]?.[x] && Math.abs(x - g.cols / 2) < 1.5) { gate = x; tile('tiles_08', px, py); }
-      }
+      const hab = g.theme ?? 'grass';
+      const ox = g.gx / TILE, oy = g.gy / TILE;
+      g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) c.drawImage(v(`floor_${hab}_${pick(ox + x + 50, oy + y)}`), (ox + x) * TILE, (oy + y) * TILE, TILE, TILE); }));
     });
-    // 시설 · 소품: 블록 1칸 안에 바닥에 맞춰 (도트 그림용 축소)
+    L.pens.forEach((_, i) => {
+      const g = world.geo[i];
+      if (!g) return;
+      const ox = g.gx / TILE, oy = g.gy / TILE;
+      const inside = (tx: number, ty: number) => { const o = owner.get(`${tx},${ty}`); return o === i || (o !== undefined && o < i); };
+      g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) autotile(inside, ox + x, oy + y, v(`fence${tier}_sq`), v(`fence${tier}_x`), crossAt, false); }));
+    });
+
+    // 5. 우리 소품: 잠자리 · 물 · 먹이 · 식물 · 바위 · 장난감 (우리가 클수록 많이). 서로 멀리, 가장자리 쪽에
+    L.pens.forEach((_, i) => {
+      const g = world.geo[i];
+      if (!g || !g.floorCells.length) return;
+      const hab = g.theme ?? 'grass';
+      const n = g.floorCells.length;
+      const kinds = ['den', 'plant', 'water', 'rock', 'food', 'toy', 'plant', 'rock'].slice(0, n >= 40 ? 8 : n >= 28 ? 6 : n >= 18 ? 4 : n >= 10 ? 3 : 2);
+      const spots: [number, number][] = [];
+      // 첫 자리(잠자리): 맨 윗줄 왼쪽. 다음부터 이미 고른 자리에서 가장 먼 바닥 칸
+      const cells = g.floorCells.filter(([x, y]) => g.floor[y - 1]?.[x] !== undefined || y === 0);
+      const first = [...cells].sort((a, b) => a[1] - b[1] || a[0] - b[0])[0];
+      spots.push(first);
+      while (spots.length < kinds.length) {
+        let best = cells[0], bd = -1;
+        for (const cl of cells) { const d = Math.min(...spots.map((s) => Math.hypot(s[0] - cl[0], (s[1] - cl[1]) * 1.3))) + hash(cl[0] + i, cl[1]) * 0.6; if (d > bd) { bd = d; best = cl; } }
+        spots.push(best);
+      }
+      kinds.forEach((kd, k) => {
+        const [x, y] = spots[k];
+        obj(`prop_${hab}_${kd}`, g.gx + (x + 0.5) * TILE, g.gy + (y + 1) * TILE - 1, hash(x, y + i) < 0.5 && kd !== 'den');
+      });
+    });
+
+    // 6. 우리 없는 빈 블록: 풀밭 공원 (나무 · 덤불 · 꽃 · 바위 · 연못)
+    const { bx0, by0, bw, bh } = L;
+    const itemAt = new Set(this.items.filter((it) => it.x >= 0).map((it) => `${it.x},${it.y}`));
+    const tree = season === 'winter' ? 'park_pine' : season === 'spring' ? 'park_blossom' : 'park_tree';
+    const looks = [[tree, 'park_bush'], ['park_flowerbed'], ['park_pond'], ['park_tree', 'park_flowerbush'], ['park_boulder', 'park_bush'], ['park_pine', 'park_bush'], ['park_bench', 'park_lamp']];
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      if (itemAt.has(`${bx},${by}`)) continue;
+      let empty = true;
+      for (let ty = 0; ty < 4 && empty; ty++) for (let tx = 0; tx < 4; tx++) if (owner.has(`${(bx0 + bx * BLOCK) / TILE + tx},${(by0 + by * BLOCK) / TILE + ty}`)) { empty = false; break; }
+      if (!empty) continue;
+      const look = looks[Math.floor(hash(bx, by + 7) * looks.length)];
+      const X = bx0 + bx * BLOCK, Y = by0 + by * BLOCK;
+      if (look.length === 1) obj(look[0], X + BLOCK / 2, Y + BLOCK * 0.75);
+      else { obj(look[0], X + BLOCK * 0.4, Y + BLOCK * 0.62); obj(look[1], X + BLOCK * 0.72, Y + BLOCK * 0.92, hash(bx, by) < 0.5); }
+    }
+
+    // 7. 시설 · 꾸미기: 블록 1칸 안 바닥에 맞춰
     for (const it of this.items) {
       if (it.x < 0) continue;
-      const key2 = itemSprite(it.type);
-      if (!hasPng(key2)) continue;
-      const bx = L.bx0 + it.x * BLOCK, by = L.by0 + it.y * BLOCK;
-      c.fillStyle = 'rgba(0,0,0,0.12)'; c.fillRect(bx + 6, by + BLOCK - 4, BLOCK - 12, 2);
-      obj(sprite(key2), bx + BLOCK / 2, by + BLOCK - 3, BLOCK - 6);
+      const X = bx0 + it.x * BLOCK, Y = by0 + it.y * BLOCK;
+      if (it.type.startsWith('fac:')) { const k = `bld_${it.type.slice(4)}_2`; if (hasPng(`v2_${k}`)) { obj(k, X + BLOCK / 2, Y + BLOCK - 2); continue; } }
+      const k2 = itemSprite(it.type);
+      if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
     }
-    // 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
+    // 8. 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
     const gk = `fac_gate${this.decoTier}`;
-    if (hasPng(gk)) { const im = sprite(gk); obj(im, 4 + (im.width / im.height) * (ZONE_H - 12) / 2, ZONE_H - 6, Math.max(ZONE_H - 12, (im.width / im.height) * (ZONE_H - 12))); }
+    if (hasPng(gk)) { const im = sprite(gk); const k = Math.min(2, Math.max(1, Math.floor(((ZONE_H - 20) * R) / im.height))); this.obj(c, im, 4 + (im.width * k) / R / 2, p1 * TILE + TILE - 1, (Math.max(im.width, im.height) * k) / R); }
     this.bg = cv;
     return cv;
+  }
+  /** 다른 크기의 그림을 도트 그림용으로 줄여 바닥 가운데에 */
+  private obj(c: CanvasRenderingContext2D, im: Sprite, cx: number, by: number, maxUnits: number) {
+    const R = FieldRenderer.R, k = (maxUnits * R) / Math.max(im.width, im.height);
+    const d = k < 1 ? pixelDown(im, im.width * k, im.height * k) : im;
+    const s2 = k < 1 ? 1 / R : Math.max(1, Math.floor(k)) / R;
+    c.drawImage(d, Math.round((cx - (d.width * s2) / 2) * R) / R, Math.round((by - d.height * s2) * R) / R, d.width * s2, d.height * s2);
   }
 
   /** 화면(CSS px) → 월드 좌표 */
