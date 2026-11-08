@@ -1,0 +1,19 @@
+You are drawing a NEW zoo entrance for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The player unlocks it after collecting all 12 Olympus gods. It REPLACES the normal wooden/brick entrance gates shown in the attached gate16.png, so it must have the SAME size, viewpoint and footprint as those gates, and match the attached olympus_extras16.png style (white marble, gold trim, laurel).
+
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. Scale the image up so each art pixel is one solid square block. Use the SAME pixel size as the attached gate16.png (the gates there are about 107 art pixels wide). No anti-aliasing, no gradients, no blur, no soft or transparent shadows, no painterly texture.
+- View: gentle 3/4 front view like the attached gates (we see the front face and a little of the top). Light from the TOP-LEFT. Soft 1-pixel dark-brown outline (#2b1d14) around everything.
+- Only use colors from this palette: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Each item centered in its cell with clear magenta space around it, items never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, watermarks, frames or borders.
+
+I attached gate16.png (the 4 normal entrance gates to match in size) and olympus_extras16.png (the Olympus style to match). Generate ONE image now.
+
+=== IMAGE 1 of 1: olympus_gate16.png ===
+Layout: 2 columns x 2 rows, one item per cell.
+1. OLYMPUS TEMPLE GATE (top-left): the main entrance, about 107 wide x 99 tall art pixels, exactly like the size of one attached gate. A small Greek temple front: two (or four) fluted white marble columns with gold Ionic tops standing on a 2-step marble base, a triangular pediment roof with gold edges and a gold laurel wreath ornament in the middle, a gold sun or star finial on the roof peak. In the middle of the pediment, a BLANK flat cream marble plaque about 40 x 10 art pixels (the game writes the zoo name there, so leave it completely empty). Under it a WIDE open doorway in the center (at least 36 art pixels wide, dark warm shadow inside, two open gold-trimmed doors swung inward), so visitors can walk through. Small gold torches with orange flames on the two outer columns. Short laurel garlands hanging between the columns. Grand, festive and cute, not scary.
+2. MARBLE TICKET BOOTH (top-right): about 41 x 45 art pixels, same size as the ticket booths in the attached gate sheet: a tiny white marble kiosk with gold roof edge, a small round window, a laurel garland, a little gold coin sign shape (no letters).
+3. LAUREL BANNER FLAG (bottom-left): about 21 x 46 art pixels: a gold pole with a white and gold banner hanging down, a laurel wreath emblem on the banner, a small gold star on top.
+4. MARBLE POST (bottom-right): about 20 x 38 art pixels: a short white marble pillar with a gold top and a small potted olive tree on it.
+Image size 1536x1536, solid #FF00FF background, no text.
