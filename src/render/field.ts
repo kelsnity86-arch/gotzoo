@@ -13,20 +13,22 @@ import { eventDef } from '../data/events';
 export interface View { x: number; y: number; w: number; h: number }
 /** GPT 타일 (assets/sprites/tiles): 서식지별 바닥 */
 /** 깔끔한 스타일 팔레트: 계절마다 땅 · 벽돌 한 톤 */
-const CLEAN_PAL: Record<string, { grass: string; grassDot: string; brick: string; mortar: string; edge: string }> = {
-  spring: { grass: '#9ccf6e', grassDot: '#b6dd86', brick: '#e2a77a', mortar: '#c98a62', edge: '#b97752' },
-  summer: { grass: '#7fbe58', grassDot: '#95cc6a', brick: '#dca068', mortar: '#c08350', edge: '#a96d40' },
-  autumn: { grass: '#b8a35a', grassDot: '#c9b46a', brick: '#cf8f5a', mortar: '#b07246', edge: '#985f38' },
-  winter: { grass: '#e6eef3', grassDot: '#f6fafc', brick: '#c9b4a6', mortar: '#ad978a', edge: '#957f72' },
+type CleanPal = { grass: string; grassDot: string; brick: string; mortar: string; edge: string; curb: string; curbHi: string; bed: string; pot: string; potLo: string; leaf: string; flowers: string[]; flags: string[] };
+const BASE_P = { curb: '#a87a5a', curbHi: '#d4ad8c', bed: '#7a5236', pot: '#c97a4a', potLo: '#a65d36', leaf: '#4f9a3c' };
+const CLEAN_PAL: Record<string, CleanPal> = {
+  spring: { ...BASE_P, grass: '#9ccf6e', grassDot: '#b6dd86', brick: '#e2a77a', mortar: '#c98a62', edge: '#b97752', flowers: ['#ffb7d0', '#fff3a3', '#f4f4f4', '#f08cbe'], flags: ['#f08cbe', '#fff3a3', '#a7d65b', '#73eff7', '#ffb7d0'] },
+  summer: { ...BASE_P, grass: '#7fbe58', grassDot: '#95cc6a', brick: '#dca068', mortar: '#c08350', edge: '#a96d40', flowers: ['#d83a3a', '#f7c948', '#41a6f6', '#f4f4f4'], flags: ['#d83a3a', '#f7c948', '#41a6f6', '#38a35b', '#f4f4f4'] },
+  autumn: { ...BASE_P, grass: '#b8a35a', grassDot: '#c9b46a', brick: '#cf8f5a', mortar: '#b07246', edge: '#985f38', flowers: ['#ef7d32', '#f7c948', '#b8452e', '#f4f4f4'], flags: ['#ef7d32', '#b8452e', '#f7c948', '#8a5a3b', '#e0a526'] },
+  winter: { ...BASE_P, grass: '#e6eef3', grassDot: '#f6fafc', brick: '#c9b4a6', mortar: '#ad978a', edge: '#957f72', leaf: '#3f7a52', flowers: ['#d83a3a', '#f4f4f4', '#73eff7', '#f7c948'], flags: ['#d83a3a', '#38a35b', '#f4f4f4', '#f7c948', '#41a6f6'] },
 };
 /** 서식지 바닥 · 턱 색 */
-const HAB_PAL: Record<Habitat, { floor: string; dot: string; rim: string; rimHi: string; rimLo: string }> = {
-  grass: { floor: '#8fca63', dot: '#a6d878', rim: '#5d9a44', rimHi: '#7dbb57', rimLo: '#4a7f36' },
-  sand: { floor: '#f0d197', dot: '#f6dfb0', rim: '#d98f4e', rimHi: '#eaa865', rimLo: '#b8723c' },
-  water: { floor: '#5bb7e0', dot: '#82cdec', rim: '#9aa6b1', rimHi: '#c3ccd4', rimLo: '#77838e' },
-  snow: { floor: '#eef4f8', dot: '#ffffff', rim: '#a9bccb', rimHi: '#cbd8e2', rimLo: '#8a9dac' },
-  rock: { floor: '#a8b1b7', dot: '#bcc4c9', rim: '#737d85', rimHi: '#8d969d', rimLo: '#5c656c' },
-  cloud: { floor: '#f6dceb', dot: '#fdeef6', rim: '#d4a2c2', rimHi: '#e6bdd7', rimLo: '#b886a6' },
+const HAB_PAL: Record<Habitat, { floor: string; dot: string; dot2: string; rim: string; rimHi: string; rimLo: string; tuft: string }> = {
+  grass: { floor: '#8fca63', dot: '#a6d878', dot2: '#79b552', rim: '#5d9a44', rimHi: '#7dbb57', rimLo: '#4a7f36', tuft: '#3f8a34' },
+  sand: { floor: '#f0d197', dot: '#f6dfb0', dot2: '#ddb877', rim: '#d98f4e', rimHi: '#eaa865', rimLo: '#b8723c', tuft: '#6b9a3c' },
+  water: { floor: '#5bb7e0', dot: '#82cdec', dot2: '#4aa2cc', rim: '#9aa6b1', rimHi: '#c3ccd4', rimLo: '#77838e', tuft: '#4f9a5a' },
+  snow: { floor: '#eef4f8', dot: '#ffffff', dot2: '#d7e4ee', rim: '#a9bccb', rimHi: '#cbd8e2', rimLo: '#8a9dac', tuft: '#5d8a6a' },
+  rock: { floor: '#a8b1b7', dot: '#bcc4c9', dot2: '#929ba1', rim: '#737d85', rimHi: '#8d969d', rimLo: '#5c656c', tuft: '#5d8a4a' },
+  cloud: { floor: '#f6dceb', dot: '#fdeef6', dot2: '#ebc6dc', rim: '#d4a2c2', rimHi: '#e6bdd7', rimLo: '#b886a6', tuft: '#a7d65b' },
 };
 const FLOOR_TILE: Record<Habitat, string> = { grass: 'tiles_09', sand: 'tiles_10', water: 'tiles_11', snow: 'tiles_12', rock: 'tiles_13', cloud: 'tiles_14' };
 const FLOOR: Record<Habitat, [string, string]> = {
@@ -113,11 +115,45 @@ export class FieldRenderer {
     // 관객존: 위 = 관객 건물 줄 (잔디 띠), 아래 = 벽돌 길
     bricks(0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
     c.fillStyle = P.edge; c.fillRect(0, PATH_Y0 - 2, L.w, px); c.fillRect(0, PATH_Y1 + 6 - px, L.w, px);
+    // 길 위아래 경계석
+    c.fillStyle = P.curb; c.fillRect(0, PATH_Y0 - 3, L.w, 1.5); c.fillRect(0, PATH_Y1 + 5.5, L.w, 1.5);
+    c.fillStyle = P.curbHi; c.fillRect(0, PATH_Y0 - 3, L.w, px); c.fillRect(0, PATH_Y1 + 5.5, L.w, px);
+    // 건물 줄: 입구 게이트 → 건물 사이사이 나무 · 가로등, 건물 앞 꽃 화단
+    const gate = `fac_gate${this.decoTier}`;
+    const gateW = 34;
+    if (hasPng(gate)) this.cleanObj(c, sprite(gate), 4 + gateW / 2, PATH_Y1 + 6, 30);
     const bld = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic'];
-    const slot = Math.max(40, (L.w - 16) / bld.length);
-    bld.forEach((b, i) => { const k = `fac_${b}`; if (hasPng(k)) this.cleanObj(c, sprite(k), 8 + slot * (i + 0.5), PATH_Y0 - 3, 30); });
-    // 건물 사이 나무
-    for (let i = 0; i <= bld.length; i++) { const k = `t16_${season}_11`; if (hasPng(k)) this.cleanObj(c, sprite(k), 8 + slot * i, PATH_Y0 - 6, 18); }
+    const x0 = gateW + 10, slot = Math.max(40, (L.w - x0 - 6) / bld.length);
+    bld.forEach((b, i) => {
+      const cx = x0 + slot * (i + 0.5);
+      // 건물 앞 화단 (흙 + 꽃 점)
+      c.fillStyle = P.bed; c.fillRect(cx - 9, PATH_Y0 - 7, 18, 3);
+      for (let k = 0; k < 7; k++) { c.fillStyle = P.flowers[k % P.flowers.length]; c.fillRect(cx - 8 + k * 2.5, PATH_Y0 - 7 + (k % 2) * 1, 1, 1); }
+      const key = `fac_${b}`; if (hasPng(key)) this.cleanObj(c, sprite(key), cx, PATH_Y0 - 7, 30);
+    });
+    for (let i = 0; i <= bld.length; i++) {
+      const cx = x0 + slot * i;
+      const k = i % 2 ? `t16_${season}_14` : `t16_${season}_11`;
+      if (hasPng(k)) this.cleanObj(c, sprite(k), cx, PATH_Y0 - 5, i % 2 ? 14 : 20);
+    }
+    // 계절 소품: 건물 줄 양쪽 끝과 길 아래 화분 사이
+    const deco = (n: number, cx: number, by: number, sz: number) => { const k = `decor_${season}_${n}`; if (hasPng(k)) this.cleanObj(c, sprite(k), cx, by, sz); };
+    // 길 아래쪽: 화분 · 계절 소품을 번갈아
+    for (let x = gateW + 30, k = 0; x < L.w - 10; x += 46, k++) {
+      if (k % 3 === 1) deco([1, 6, 12, 5][k % 4], x, PATH_Y1 + 12, 12);
+      else { c.fillStyle = P.potLo; c.fillRect(x - 2.5, PATH_Y1 + 8.5, 5, 3); c.fillStyle = P.pot; c.fillRect(x - 2.5, PATH_Y1 + 8.5, 5, 1); c.fillStyle = P.leaf; c.fillRect(x - 2, PATH_Y1 + 6.5, 4, 2); c.fillStyle = P.flowers[k % P.flowers.length]; c.fillRect(x - 0.5, PATH_Y1 + 6, 1, 1); }
+    }
+    // 만국기: 관객존 위를 가로지르는 깃발 줄 (계절 색)
+    for (let seg = 0; seg < 2; seg++) {
+      const sx = seg * L.w / 2, ex = sx + L.w / 2;
+      c.fillStyle = 'rgba(70,40,20,0.6)';
+      for (let x = sx; x < ex; x += px) { const t2 = (x - sx) / (ex - sx); c.fillRect(x, 3 + Math.sin(t2 * Math.PI) * 6, px, px); }
+      for (let x = sx + 4, k = 0; x < ex - 3; x += 6, k++) {
+        const t2 = (x - sx) / (ex - sx), y = 3 + Math.sin(t2 * Math.PI) * 6;
+        c.fillStyle = P.flags[k % P.flags.length];
+        for (let r = 0; r < 4; r++) c.fillRect(x - 1.5 + r * 0.38, y + r, 3 - r * 0.75, 1);
+      }
+    }
     // 부지: 벽돌 광장
     bricks(bx0 - 4, by0 - 4, bw * BLOCK + 8, bh * BLOCK + 8);
     // 우리: 단색 바닥(옅은 점) + 바깥쪽 턱 + 아래 그림자
@@ -151,6 +187,45 @@ export class FieldRenderer {
         if (!at(x, y + 1) && !at(x - 1, y)) { c.fillStyle = P.brick; c.fillRect(X, Y + TILE - 1, 3, 1); c.fillRect(X, Y + TILE - 2, 2, 1); c.fillRect(X, Y + TILE - 3, 1, 1); }
         if (!at(x, y + 1) && !at(x + 1, y)) { c.fillStyle = P.brick; c.fillRect(X + TILE - 3, Y + TILE - 1, 3, 1); c.fillRect(X + TILE - 2, Y + TILE - 2, 2, 1); c.fillRect(X + TILE - 1, Y + TILE - 3, 1, 1); }
       }
+    });
+    // 우리 꾸미기: 턱 위 풀 · 꽃, 서식지 바닥 장식, 굴 · 물통
+    const blob = (cx: number, cy: number, rx: number, ry: number, col: string) => {
+      c.fillStyle = col;
+      for (let y = -ry; y <= ry; y += px) { const w = rx * Math.sqrt(Math.max(0, 1 - (y / ry) ** 2)); c.fillRect(Math.round((cx - w) * R) / R, Math.round((cy + y) * R) / R, Math.round(w * 2 * R) / R, px); }
+    };
+    L.pens.forEach((_, i) => {
+      const g = world.geo[i];
+      if (!g) return;
+      const hb = (g.theme ?? 'grass') as Habitat;
+      const F = HAB_PAL[hb];
+      const m = g.mask, at = (x: number, y: number) => !!m[y]?.[x];
+      // 턱 위 풀 · 꽃 (가장자리 칸 몇 군데)
+      for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) {
+        if (!at(x, y) || g.floor[y][x] || (x * 7 + y * 11 + i) % 4) continue;
+        const X = g.gx + x * TILE, Y = g.gy + y * TILE;
+        const top = !at(x, y - 1);
+        c.fillStyle = F.tuft; c.fillRect(X + 1.5, Y + (top ? 0 : 2), 3, 2); c.fillRect(X + 2.5, Y + (top ? -1 : 1), 1, 1);
+        if ((x + y) % 2 === 0) { c.fillStyle = P.flowers[(x + i) % P.flowers.length]; c.fillRect(X + 3.5, Y + (top ? -1 : 1), 1, 1); c.fillRect(X + 1, Y + (top ? 0 : 2), 1, 1); }
+      }
+      // 바닥 안쪽 칸 중 자리 고르기
+      const cells = g.floorCells.filter(([x, y]) => g.floor[y - 1]?.[x] && g.floor[y + 1]?.[x] && g.floor[y]?.[x - 1] && g.floor[y]?.[x + 1]);
+      if (!cells.length) return;
+      const pickCell = (k: number) => cells[Math.floor(cells.length * k) % cells.length];
+      const wx = (cell: [number, number]) => g.gx + (cell[0] + 0.5) * TILE, wy = (cell: [number, number]) => g.gy + (cell[1] + 0.5) * TILE;
+      // 굴 (윗줄 오른쪽 근처): 둥근 언덕 + 어두운 입구
+      const den = cells.reduce((b, cc) => (cc[1] * 3 - cc[0] < b[1] * 3 - b[0] ? cc : b));
+      blob(wx(den), wy(den), 9, 6, F.rimLo); blob(wx(den), wy(den) - 0.8, 8.3, 5.2, F.rim); blob(wx(den) - 2, wy(den) - 3, 3, 1.5, F.rimHi); blob(wx(den), wy(den) + 2.5, 3.5, 2.8, '#3a2a22');
+      // 물통 (아랫줄)
+      const tr = cells.reduce((b, cc) => (cc[1] * 3 + cc[0] > b[1] * 3 + b[0] ? cc : b));
+      if (tr !== den) { c.fillStyle = 'rgba(60,30,10,0.2)'; c.fillRect(wx(tr) - 7, wy(tr) + 4, 14, 1); c.fillStyle = '#7a5236'; c.fillRect(wx(tr) - 7, wy(tr), 14, 4.5); c.fillStyle = '#a0704a'; c.fillRect(wx(tr) - 7, wy(tr), 14, 0.5); c.fillStyle = '#6cc7ec'; c.fillRect(wx(tr) - 6, wy(tr) + 1, 12, 2); c.fillStyle = '#b6e7f7'; c.fillRect(wx(tr) - 4.5, wy(tr) + 1, 3, 0.5); }
+      // 서식지 장식
+      const a1 = pickCell(0.35), a2 = pickCell(0.62), a3 = pickCell(0.82);
+      if (hb === 'grass') { if (cells.length > 18) { blob(wx(a1), wy(a1), 10, 6, '#4a9fd0'); blob(wx(a1), wy(a1) - 0.6, 9, 5, '#6ec3ea'); c.fillStyle = '#cdeefb'; c.fillRect(wx(a1) - 2, wy(a1) - 1.5, 2, 0.5); } const bk = `t16_${season}_12`; if (hasPng(bk)) this.cleanObj(c, sprite(bk), wx(a2), wy(a2) + 5, 13); }
+      if (hb === 'sand') { for (const cc of [a1, a2, a3]) { c.fillStyle = F.dot2; for (let k = 0; k < 3; k++) c.fillRect(wx(cc) - 4 + k * 3, wy(cc) + (k % 2) * 0.5, 2, 0.5); } blob(wx(a2) + 4, wy(a2) - 2, 4, 2.8, '#b8946a'); blob(wx(a2) + 4, wy(a2) - 2.6, 3.2, 2, '#d8bb92'); }
+      if (hb === 'water') { for (const cc of [a1, a3]) { c.fillStyle = '#a9e1f5'; c.fillRect(wx(cc) - 2, wy(cc), 3, 0.5); c.fillRect(wx(cc) + 2, wy(cc) + 2, 2, 0.5); } blob(wx(a2), wy(a2), 7, 4, '#7c8892'); blob(wx(a2), wy(a2) - 1.2, 6, 2.6, '#9aa6b0'); blob(wx(a2) - 1, wy(a2) - 2.5, 3.5, 1.5, '#78b85a'); }
+      if (hb === 'snow') { for (const cc of [a1, a2]) { blob(wx(cc), wy(cc) + 0.8, 8, 4, '#c3d6e5'); blob(wx(cc), wy(cc), 7.2, 3.3, '#ffffff'); } }
+      if (hb === 'rock') { for (const cc of [a1, a2, a3]) { blob(wx(cc), wy(cc), 5, 3.3, '#6f7980'); blob(wx(cc) - 0.6, wy(cc) - 0.8, 3.8, 2.3, '#9aa3a9'); } }
+      if (hb === 'cloud') { for (const cc of [a1, a2]) { blob(wx(cc), wy(cc), 6, 3.8, '#ffffff'); blob(wx(cc) - 4.5, wy(cc) + 0.8, 3.8, 3, '#ffffff'); blob(wx(cc) + 4.5, wy(cc) + 0.8, 3.8, 3, '#fff6fb'); } c.fillStyle = '#f7c948'; c.fillRect(wx(a3), wy(a3) - 1, 0.5, 2); c.fillRect(wx(a3) - 0.75, wy(a3) - 0.25, 2, 0.5); }
     });
     // 광장 화분 · 나무: 부지 가장자리 빈 블록에 몇 개
     const itemAt = new Set(this.items.filter((it) => it.x >= 0).map((it) => `${it.x},${it.y}`));
