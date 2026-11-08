@@ -58,6 +58,14 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 [관람객·직원·환경 13장 ZIP 다운로드](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-world16-sources.zip) — 생성 원본·순서표·기본 제작 문구·검수 기록, 약 19.4MB.
 
+## 가챠·카드·UI·효과 및 전체 31장 원본
+
+[UI·효과 6장](assets/spritesheets16/ui-effects/README.md)과 [요청 순서표](assets/catalog16_ui.json)를 추가했습니다. **아이콘·소형 효과는 요청 캔버스 크기와 다르며, 모든 시트의 정확한 픽셀 격자·38색 규격과 애니메이션 검수는 미완료**입니다. [검수 기록](reports/UIFX16_SOURCE_REVIEW.md)에 구분했습니다.
+
+- [이번 UI·효과 6장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-uifx16-sources.zip)
+- [동물 12장 + 환경 13장 + UI·효과 6장 = 전체 31장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-all31-sources.zip)
+- [전체 시트 목록](assets/spritesheets16/README.md) · [31장 통합 인덱스](assets/catalog16_all.json)
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|

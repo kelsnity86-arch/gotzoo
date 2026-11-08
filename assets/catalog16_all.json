@@ -1,0 +1,439 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "sheet_count": 31,
+  "requested_slot_count": 749,
+  "requested_filled_slot_count": 748,
+  "intentionally_empty_slot_count": 1,
+  "note": "Counts describe requested slots, including animation frames and props, not distinct character counts. Per-collection reports document unfulfilled native pixel specifications.",
+  "collections": [
+    {
+      "name": "animals",
+      "catalog": "assets/catalog16.json",
+      "sheet_count": 12,
+      "requested_slot_count": 300,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "name": "world",
+      "catalog": "assets/catalog16_world.json",
+      "sheet_count": 13,
+      "requested_slot_count": 318,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "name": "ui-effects",
+      "catalog": "assets/catalog16_ui.json",
+      "sheet_count": 6,
+      "requested_slot_count": 131,
+      "intentionally_empty_slot_count": 1
+    }
+  ],
+  "sheets": [
+    {
+      "collection": "animals",
+      "filename": "animals16_01.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_01.png",
+      "sha256": "41baa7fe4addee5b78e15f3c843d4537fe632ddd2e7247b270c23abe7b158176",
+      "bytes": 1548338,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_02.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_02.png",
+      "sha256": "a7f0717eba1504eb1edd1f566dd86c9f0d8b4c9d8e1995b2ebb0cfbc9e8ca996",
+      "bytes": 1572157,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_03.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_03.png",
+      "sha256": "89cec3927f20b0967d2a8e36cf4a1dd8ed0c9c3eca485f352cfabe66d7697b72",
+      "bytes": 1535920,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_04.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_04.png",
+      "sha256": "b5085d448e303222871ce4cea323cd6eca90ea83e5811cd260e032a393bf3eef",
+      "bytes": 1562930,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_05.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_05.png",
+      "sha256": "d8c693c085f00e8f13fa5cdbd8c0c492723b34f6cf82657e29cd752ddedb51ad",
+      "bytes": 1571231,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_06.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_06.png",
+      "sha256": "e83c187febc74f63655a08ae10dc085d0094578d511d991121b0e165c5456a8b",
+      "bytes": 1672450,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_07.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_07.png",
+      "sha256": "0de5f077feebbe5520a9030301768421be1ef7b75c4279bf5d1f6f25dcfecc66",
+      "bytes": 1683852,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_08.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_08.png",
+      "sha256": "a98c33f26ec92c4b4014713c65c7071d8750ff11695de2b4d20cb89b0805c8f3",
+      "bytes": 1639578,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_09.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_09.png",
+      "sha256": "adeb7aa8b6842a56f9fea7f464d4f1ac50fe6ea1001e59989128a8ea2876cdbb",
+      "bytes": 1738519,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_10.png",
+      "path": "assets/spritesheets16/animals/permanent/animals16_10.png",
+      "sha256": "c0463db74609481a45fe5159aa955a6dd757e66bcf7c106f0351b9e195c1a61c",
+      "bytes": 1913122,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_11.png",
+      "path": "assets/spritesheets16/animals/seasonal/animals16_11.png",
+      "sha256": "b301f63818b5c5780f93a5683e0d2aa312e5c63a196d66d7939c9108bf853cf5",
+      "bytes": 1882030,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "animals",
+      "filename": "animals16_12.png",
+      "path": "assets/spritesheets16/animals/seasonal/animals16_12.png",
+      "sha256": "ee32a69db529d7ac8a665035954b2e7ee6925c74b842d8a8f4882c7feacaa201",
+      "bytes": 1853206,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 25,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "people16_spring.png",
+      "path": "assets/spritesheets16/world/people/people16_spring.png",
+      "sha256": "926e3a34881ff28362c9de329c0a0275323be33a1d5336dd008860f3a66a90b6",
+      "bytes": 1774938,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 32,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "people16_summer.png",
+      "path": "assets/spritesheets16/world/people/people16_summer.png",
+      "sha256": "69060761ad34ccb3ef614da82706c8cbb3c017aff0a9e4873258f2d16f5439ee",
+      "bytes": 1843698,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 32,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "people16_autumn.png",
+      "path": "assets/spritesheets16/world/people/people16_autumn.png",
+      "sha256": "e6e23b50f28da5e32d958371a912b8f0c6dac9ae9338484ef564c727b5567818",
+      "bytes": 1848950,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 32,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "people16_winter.png",
+      "path": "assets/spritesheets16/world/people/people16_winter.png",
+      "sha256": "3dd7b958511ab251d6467675944ad740bd8e866f524520bb76869406c99a7034",
+      "bytes": 1845026,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 32,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "staff16.png",
+      "path": "assets/spritesheets16/world/staff/staff16.png",
+      "sha256": "0001c06e0ee1b3c136995385d49298f5892bbd4680b5a6def32948d3f340b555",
+      "bytes": 1716214,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_slot_count": 20,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "tiles16_spring.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_spring.png",
+      "sha256": "8dced97965396773f61ad8174f9a4788953a5a9e00014076c6c3642462c5372c",
+      "bytes": 1348630,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 16,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "tiles16_summer.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_summer.png",
+      "sha256": "342084cfd4c3407aca3e5f863c0ae23f5ee2c6c100ad18b945fea611d56b5a7a",
+      "bytes": 1351514,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 16,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "tiles16_autumn.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_autumn.png",
+      "sha256": "3a48074c55eac43154ac77d4f4fd3507bac75da861aeb4aac4b962a4ca8a5a19",
+      "bytes": 1371132,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 16,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "tiles16_winter.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_winter.png",
+      "sha256": "b16b1f9a76ccdd02a2b8ad9db48d2315523eb0b79b77b3da2420655396d0df39",
+      "bytes": 1422198,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_slot_count": 16,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "fences16.png",
+      "path": "assets/spritesheets16/world/fences/fences16.png",
+      "sha256": "7c6f4dc95aa18cb56c5755201e6f6594b7c08daaaf1bca7130d7c7123c7010b2",
+      "bytes": 1554350,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_slot_count": 48,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "decor16_1.png",
+      "path": "assets/spritesheets16/world/decor/decor16_1.png",
+      "sha256": "d1af65249a4eb6af96f67dffbd8a0cf5cb9c1373039f2cda8a880ab3a64728f8",
+      "bytes": 1846139,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 24,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "decor16_2.png",
+      "path": "assets/spritesheets16/world/decor/decor16_2.png",
+      "sha256": "0723573d6307c3ffd2b908b67aba6476dcfc33b06ff6d57a7023199cdb7b51de",
+      "bytes": 1871814,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 24,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "world",
+      "filename": "facilities16.png",
+      "path": "assets/spritesheets16/world/facilities/facilities16.png",
+      "sha256": "5e75bf1fe4dc01a707f1855a765d6bce1d97ad1a29363f75a08cc2da8680cea0",
+      "bytes": 1525880,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 10,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "gacha16.png",
+      "path": "assets/spritesheets16/ui-effects/gacha/gacha16.png",
+      "sha256": "309d99a8bfe263fbd409a086d091090bd4d797ded20ffd6500c9c8df7ba35035",
+      "bytes": 1672213,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 20,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "staffgacha16.png",
+      "path": "assets/spritesheets16/ui-effects/hiring/staffgacha16.png",
+      "sha256": "46236862b13ca8b6107c6726868c662beab6e2d96c3a3fc129bc50f5a028ac3f",
+      "bytes": 1449426,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 15,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "cards16.png",
+      "path": "assets/spritesheets16/ui-effects/cards/cards16.png",
+      "sha256": "d325f3fa2db0a5fae75f34a9f28a9052fdcfd7af46e355a865d48f76b7817c65",
+      "bytes": 1394591,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 14,
+      "intentionally_empty_slot_count": 1
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "icons16.png",
+      "path": "assets/spritesheets16/ui-effects/icons/icons16.png",
+      "sha256": "f5f64662d42bc4fd8791c04ce6ad93af9f1830892458bede42a62d8e678cf897",
+      "bytes": 1580070,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_slot_count": 40,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "fx16.png",
+      "path": "assets/spritesheets16/ui-effects/effects/fx16.png",
+      "sha256": "3e187d35acede34c44fae5ba59c4159be6655b296f5e87edce91caa4c84ced05",
+      "bytes": 1462082,
+      "actual_size": [
+        1374,
+        1145
+      ],
+      "requested_slot_count": 30,
+      "intentionally_empty_slot_count": 0
+    },
+    {
+      "collection": "ui-effects",
+      "filename": "fxbig16.png",
+      "path": "assets/spritesheets16/ui-effects/effects/fxbig16.png",
+      "sha256": "a4f044fdf76e432d4ca5b91909e218bd53131c2853aad9cc20fdee49d90bc8ea",
+      "bytes": 1392089,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_slot_count": 12,
+      "intentionally_empty_slot_count": 0
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+Create a production pixel-art game sprite sheet for BbopZOO, matching cute, clean, chunky handheld-console zoo assets. Each requested object has its EXACT native pixel grid described below, enlarged with NEAREST NEIGHBOR so every pixel is a solid square. ONE native pixel outline in #1a1c2c, simple 1–2 tone FLAT shading. Allowed palette ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely NO antialiasing, blur, gradients, soft shadows, dither/noise or tiny high-resolution painted details. Background everywhere outside the sprites is ONE SOLID #FF00FF magenta. No magenta or pink-magenta inside objects; pastel cherry pink must be #ffb7d0 or #ffc8dd, clearly distinct from magenta. Clean invisible row/cell layout with generous gutters, no overlap, everything wholly inside canvas. NO printed text, numbers, letters, labels, watermarks, visible grid lines or sheet border. Requested object frames, cards and banners are part of the art; do not add a frame around the sheet.
+FILE icons16.png — never print filename. OUTPUT EXACTLY 1024x768.
+40 bold readable 16x16 icons, exact 8 columns x 5 rows. Symbols such as X/check/arrows are graphic shapes. Calendar, protest sign, badge and ticket have no text/numbers.
+ROW 1: EXACTLY 8 columns. Default native size 16x16.
+1. gold coin
+2. heart
+3. person (visitors)
+4. star (stage)
+5. small cage (capacity)
+6. ticket
+7. name badge (staff slot)
+8. horseshoe magnet
+ROW 2: EXACTLY 8 columns. Default native size 16x16.
+1. three cards merging into one (fusion)
+2. backpack
+3. padlock
+4. gacha capsule
+5. green up arrow
+6. gear
+7. green check mark
+8. red X
+ROW 3: EXACTLY 8 columns. Default native size 16x16.
+1. job application envelope
+2. money bag with coin (salary)
+3. wrench with coin (upkeep)
+4. cracked red coin (debt)
+5. small castle (zoo scale)
+6. building (facility)
+7. paint brush (decoration)
+8. cherry blossom (spring)
+ROW 4: EXACTLY 8 columns. Default native size 16x16.
+1. sun (summer)
+2. maple leaf (autumn)
+3. snowflake (winter)
+4. two linked hearts (synergy)
+5. rainbow sparkle (shiny)
+6. blank protest sign (strike)
+7. exit door with arrow (fire staff)
+8. gold trophy
+ROW 5: EXACTLY 8 columns. Default native size 16x16.
+1. two crossed flags (rival)
+2. calendar (no numbers)
+3. rain cloud
+4. star badge (special option)
+5. birthday cake (anniversary)
+6. hourglass (limited)
+7. megaphone
+8. stethoscope

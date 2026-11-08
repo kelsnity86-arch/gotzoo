@@ -1,0 +1,27 @@
+Create a production pixel-art game sprite sheet for BbopZOO, matching cute, clean, chunky handheld-console zoo assets. Each requested object has its EXACT native pixel grid described below, enlarged with NEAREST NEIGHBOR so every pixel is a solid square. ONE native pixel outline in #1a1c2c, simple 1–2 tone FLAT shading. Allowed palette ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely NO antialiasing, blur, gradients, soft shadows, dither/noise or tiny high-resolution painted details. Background everywhere outside the sprites is ONE SOLID #FF00FF magenta. No magenta or pink-magenta inside objects; pastel cherry pink must be #ffb7d0 or #ffc8dd, clearly distinct from magenta. Clean invisible row/cell layout with generous gutters, no overlap, everything wholly inside canvas. NO printed text, numbers, letters, labels, watermarks, visible grid lines or sheet border. Requested object frames, cards and banners are part of the art; do not add a frame around the sheet.
+FILE gacha16.png — never print filename. OUTPUT EXACTLY 1536x1024.
+Four seasonal machines in idle row and the same four in shaking row. Glass dome full of colorful capsules, coin slot, large crank, paw print on front. Shaking: slight tilt, turned crank, small motion marks. Capsules have their colored top halves and light lower halves; opened top halves pop up with light shining out.
+ROW 1: EXACTLY 4 columns. Default native size 48x48.
+1. spring idle machine: pink body, cherry blossoms on top
+2. summer idle machine: watermelon-striped body, sun on top
+3. autumn idle machine: orange body, maple leaves on top
+4. winter idle machine: white-blue body, snow cap and icicles
+ROW 2: EXACTLY 4 columns. Default native size 48x48.
+1. spring shaking machine
+2. summer shaking machine
+3. autumn shaking machine
+4. winter shaking machine
+ROW 3: EXACTLY 6 columns. Default native size 16x16.
+1. closed gray capsule
+2. closed green capsule
+3. closed blue capsule
+4. closed purple capsule
+5. closed gold capsule
+6. closed rainbow shiny capsule
+ROW 4: EXACTLY 6 columns. Default native size 16x16.
+1. opened gray capsule
+2. opened green capsule
+3. opened blue capsule
+4. opened purple capsule
+5. opened gold capsule
+6. opened rainbow shiny capsule

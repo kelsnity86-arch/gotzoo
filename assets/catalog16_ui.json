@@ -1,0 +1,1588 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 6,
+  "requested_slot_count": 131,
+  "requested_filled_slot_count": 130,
+  "intentionally_empty_slot_count": 1,
+  "sheets": [
+    {
+      "filename": "gacha16.png",
+      "path": "assets/spritesheets16/ui-effects/gacha/gacha16.png",
+      "group": "gacha",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        4,
+        4,
+        6,
+        6
+      ],
+      "sha256": "309d99a8bfe263fbd409a086d091090bd4d797ded20ffd6500c9c8df7ba35035",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "spring idle machine: pink body, cherry blossoms on top",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "summer idle machine: watermelon-striped body, sun on top",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "autumn idle machine: orange body, maple leaves on top",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "winter idle machine: white-blue body, snow cap and icicles",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "name": "spring shaking machine",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "name": "summer shaking machine",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "name": "autumn shaking machine",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "name": "winter shaking machine",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "closed gray capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "closed green capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "closed blue capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "closed purple capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 5,
+          "name": "closed gold capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 6,
+          "name": "closed rainbow shiny capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 4,
+          "column": 1,
+          "name": "opened gray capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 4,
+          "column": 2,
+          "name": "opened green capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 4,
+          "column": 3,
+          "name": "opened blue capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 4,
+          "column": 4,
+          "name": "opened purple capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 5,
+          "name": "opened gold capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 6,
+          "name": "opened rainbow shiny capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "staffgacha16.png",
+      "path": "assets/spritesheets16/ui-effects/hiring/staffgacha16.png",
+      "group": "hiring",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        5,
+        5
+      ],
+      "sha256": "46236862b13ca8b6107c6726868c662beab6e2d96c3a3fc129bc50f5a028ac3f",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "closed job application envelope",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "envelope opening with paper sliding out",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "blank application paper with photo box; no writing",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "interview desk with small bell",
+          "intentionally_empty": false,
+          "target_native_size": [
+            48,
+            48
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "coin money bag",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "gray round stamp impression with paw-and-star emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            24
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "green round stamp impression with paw-and-star emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            24
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "blue round stamp impression with paw-and-star emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            24
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 4,
+          "name": "purple round stamp impression with paw-and-star emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            24
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 5,
+          "name": "gold round stamp impression with paw-and-star emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            24
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 1,
+          "name": "gray approved stamp handle tool",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 2,
+          "name": "green approved stamp handle tool",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 3,
+          "name": "blue approved stamp handle tool",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 4,
+          "name": "purple approved stamp handle tool",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 5,
+          "name": "gold approved stamp handle tool",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "cards16.png",
+      "path": "assets/spritesheets16/ui-effects/cards/cards16.png",
+      "group": "cards",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        7,
+        7
+      ],
+      "sha256": "d325f3fa2db0a5fae75f34a9f28a9052fdcfd7af46e355a865d48f76b7817c65",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "common animal card: gray border",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "uncommon animal card: green border",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "rare animal card: blue border and corner gems",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "epic animal card: purple ornate corners",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "legendary animal card: gold, sparkles, small crown",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "shiny overlay frame: rainbow border and star sparkles",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "name": "animal card back: dark green with paw print",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 1,
+          "name": "common staff card: gray",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 2,
+          "name": "uncommon staff card: green",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 3,
+          "name": "rare staff card: blue",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 4,
+          "name": "epic staff card: purple",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 5,
+          "name": "legendary staff card: gold",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 6,
+          "name": null,
+          "intentionally_empty": true,
+          "target_native_size": [
+            32,
+            44
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 7,
+          "name": "staff card back: navy with badge emblem",
+          "intentionally_empty": false,
+          "target_native_size": [
+            32,
+            44
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "icons16.png",
+      "path": "assets/spritesheets16/ui-effects/icons/icons16.png",
+      "group": "icons",
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "target_size": [
+        1024,
+        768
+      ],
+      "row_columns": [
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "sha256": "f5f64662d42bc4fd8791c04ce6ad93af9f1830892458bede42a62d8e678cf897",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "gold coin",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "heart",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "person (visitors)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "star (stage)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "small cage (capacity)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "ticket",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "name": "name badge (staff slot)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "name": "horseshoe magnet",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "name": "three cards merging into one (fusion)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "name": "backpack",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "name": "padlock",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "name": "gacha capsule",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "name": "green up arrow",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "name": "gear",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "name": "green check mark",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "name": "red X",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "name": "job application envelope",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "name": "money bag with coin (salary)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "name": "wrench with coin (upkeep)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "name": "cracked red coin (debt)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "name": "small castle (zoo scale)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "name": "building (facility)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "name": "paint brush (decoration)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "name": "cherry blossom (spring)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "name": "sun (summer)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "name": "maple leaf (autumn)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "name": "snowflake (winter)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "name": "two linked hearts (synergy)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "name": "rainbow sparkle (shiny)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "name": "blank protest sign (strike)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "name": "exit door with arrow (fire staff)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "name": "gold trophy",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 33,
+          "row": 5,
+          "column": 1,
+          "name": "two crossed flags (rival)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 34,
+          "row": 5,
+          "column": 2,
+          "name": "calendar (no numbers)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 35,
+          "row": 5,
+          "column": 3,
+          "name": "rain cloud",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 36,
+          "row": 5,
+          "column": 4,
+          "name": "star badge (special option)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 37,
+          "row": 5,
+          "column": 5,
+          "name": "birthday cake (anniversary)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 38,
+          "row": 5,
+          "column": 6,
+          "name": "hourglass (limited)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 39,
+          "row": 5,
+          "column": 7,
+          "name": "megaphone",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 40,
+          "row": 5,
+          "column": 8,
+          "name": "stethoscope",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "fx16.png",
+      "path": "assets/spritesheets16/ui-effects/effects/fx16.png",
+      "group": "effects",
+      "actual_size": [
+        1374,
+        1145
+      ],
+      "target_size": [
+        1536,
+        1280
+      ],
+      "row_columns": [
+        6,
+        6,
+        6,
+        6,
+        6
+      ],
+      "sha256": "3e187d35acede34c44fae5ba59c4159be6655b296f5e87edce91caa4c84ced05",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "gold coin spin frame 1 (front)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "gold coin spin frame 2 (turning)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "gold coin spin frame 3 (edge)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "gold coin spin frame 4 (turning back)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "big gold coin",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "name": "pile of coins",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "name": "white-yellow sparkle burst frame 1 (small)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "name": "white-yellow sparkle burst frame 2 (big)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "name": "white-yellow sparkle burst frame 3 (fading)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "name": "pink heart",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "name": "meat on bone",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "name": "fish",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "name": "carrot",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "name": "leaf bundle",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "name": "yellow star",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "name": "red exclamation shape (symbol only)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "name": "music note",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "name": "dust puff",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "name": "sleeping bubble with two small zigzag shapes, not letters",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "name": "cherry petal",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "name": "raindrop",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "name": "falling maple leaf",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "name": "snowflake",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "name": "rainbow sparkle frame 1",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 25,
+          "row": 5,
+          "column": 1,
+          "name": "rainbow sparkle frame 2",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 26,
+          "row": 5,
+          "column": 2,
+          "name": "coin with ribbon (gift)",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 27,
+          "row": 5,
+          "column": 3,
+          "name": "cracked broken coin",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 28,
+          "row": 5,
+          "column": 4,
+          "name": "firework burst frame 1",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 29,
+          "row": 5,
+          "column": 5,
+          "name": "firework burst frame 2",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "slot": 30,
+          "row": 5,
+          "column": 6,
+          "name": "confetti pieces",
+          "intentionally_empty": false,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "fxbig16.png",
+      "path": "assets/spritesheets16/ui-effects/effects/fxbig16.png",
+      "group": "effects",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        5,
+        3,
+        4
+      ],
+      "sha256": "a4f044fdf76e432d4ca5b91909e218bd53131c2853aad9cc20fdee49d90bc8ea",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "name": "green vertical light pillar",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "name": "blue vertical light pillar",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "name": "purple vertical light pillar",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "name": "gold vertical light pillar",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "name": "rainbow vertical light pillar",
+          "intentionally_empty": false,
+          "target_native_size": [
+            24,
+            96
+          ]
+        },
+        {
+          "slot": 6,
+          "row": 2,
+          "column": 1,
+          "name": "legendary burst: radiating gold rays and sparkles",
+          "intentionally_empty": false,
+          "target_native_size": [
+            96,
+            96
+          ]
+        },
+        {
+          "slot": 7,
+          "row": 2,
+          "column": 2,
+          "name": "cut-in background banner: diagonal gold speed lines on deep purple",
+          "intentionally_empty": false,
+          "target_native_size": [
+            128,
+            48
+          ]
+        },
+        {
+          "slot": 8,
+          "row": 2,
+          "column": 3,
+          "name": "silhouette spotlight circle on floor",
+          "intentionally_empty": false,
+          "target_native_size": [
+            64,
+            32
+          ]
+        },
+        {
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "name": "blank pink season ribbon with cherry blossoms",
+          "intentionally_empty": false,
+          "target_native_size": [
+            96,
+            24
+          ]
+        },
+        {
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "name": "blank sky-blue season ribbon with suns and waves",
+          "intentionally_empty": false,
+          "target_native_size": [
+            96,
+            24
+          ]
+        },
+        {
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "name": "blank orange season ribbon with maple leaves",
+          "intentionally_empty": false,
+          "target_native_size": [
+            96,
+            24
+          ]
+        },
+        {
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "name": "blank white-blue season ribbon with snowflakes",
+          "intentionally_empty": false,
+          "target_native_size": [
+            96,
+            24
+          ]
+        }
+      ]
+    }
+  ]
+}

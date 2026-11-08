@@ -1,0 +1,3 @@
+Image-generation edit applied to fxbig16.png after the first generation:
+Preserve canvas 1536x1024, all five top light pillars, center purple cut-in banner, right floor spotlight, all four bottom blank season ribbons, their positions and magenta background.
+Correct only the middle-left legendary burst: remove the square black border and opaque gold square backdrop. Draw an isolated radial burst with white/yellow center, jagged gold rays, tiny gold/cream sparkles, and pure #FF00FF gaps. No enclosing rectangle or panel. Hard square pixel blocks, flat #f7c948 #e0a526 #fff3a3 #f4f4f4, #1a1c2c outline where appropriate; no added text or smooth glow.

@@ -1,0 +1,150 @@
+{
+  "source_delivery": "PASS_6_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "gacha16.png",
+      "readable_png": true,
+      "requested_slots": 20,
+      "intentionally_empty_slots": 0,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 274693,
+      "off_palette_pixels": 1572857,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "staffgacha16.png",
+      "readable_png": true,
+      "requested_slots": 15,
+      "intentionally_empty_slots": 0,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 166740,
+      "off_palette_pixels": 1572846,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "cards16.png",
+      "readable_png": true,
+      "requested_slots": 14,
+      "intentionally_empty_slots": 1,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 178117,
+      "off_palette_pixels": 1572789,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "icons16.png",
+      "readable_png": true,
+      "requested_slots": 40,
+      "intentionally_empty_slots": 0,
+      "actual_size": [
+        1448,
+        1086
+      ],
+      "requested_size": [
+        1024,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 218370,
+      "off_palette_pixels": 1572505,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "fx16.png",
+      "readable_png": true,
+      "requested_slots": 30,
+      "intentionally_empty_slots": 0,
+      "actual_size": [
+        1374,
+        1145
+      ],
+      "requested_size": [
+        1536,
+        1280
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 165160,
+      "off_palette_pixels": 1573212,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "fxbig16.png",
+      "readable_png": true,
+      "requested_slots": 12,
+      "intentionally_empty_slots": 0,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 143300,
+      "off_palette_pixels": 1572864,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "outline_width_and_color_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_APPLICABLE"
+    }
+  ],
+  "canvas_matches": 4,
+  "canvas_mismatches": 2,
+  "manual_review": "See UIFX16_SOURCE_REVIEW.md; automated counts describe the specification, not object recognition.",
+  "corrections": [
+    "Removed unwanted square backdrop from large legendary burst using image-generation editing."
+  ],
+  "remaining": [
+    "Exact native grids, 38-color palette, uniform #FF00FF background and one-pixel dark outlines.",
+    "Export requested canvas dimensions for icons16.png and fx16.png.",
+    "Export frame rectangles and verify gacha shaking, capsule opening, coin, sparkle and firework playback.",
+    "Verify 20x20 card window and 2px card border after native reconstruction; rainbow overlay needs runtime masking."
+  ]
+}

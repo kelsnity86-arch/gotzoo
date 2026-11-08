@@ -1,0 +1,38 @@
+Create a production pixel-art game sprite sheet for BbopZOO, matching cute, clean, chunky handheld-console zoo assets. Each requested object has its EXACT native pixel grid described below, enlarged with NEAREST NEIGHBOR so every pixel is a solid square. ONE native pixel outline in #1a1c2c, simple 1–2 tone FLAT shading. Allowed palette ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely NO antialiasing, blur, gradients, soft shadows, dither/noise or tiny high-resolution painted details. Background everywhere outside the sprites is ONE SOLID #FF00FF magenta. No magenta or pink-magenta inside objects; pastel cherry pink must be #ffb7d0 or #ffc8dd, clearly distinct from magenta. Clean invisible row/cell layout with generous gutters, no overlap, everything wholly inside canvas. NO printed text, numbers, letters, labels, watermarks, visible grid lines or sheet border. Requested object frames, cards and banners are part of the art; do not add a frame around the sheet.
+FILE fx16.png — never print filename. OUTPUT EXACTLY 1536x1280.
+30 effects, 6 columns x 5 rows. Distinct readable animation frames. Sleep marks are two small zigzag shapes, never typed letters. Light is flat colors, no glow blur.
+ROW 1: EXACTLY 6 columns. Default native size 16x16.
+1. gold coin spin frame 1 (front)
+2. gold coin spin frame 2 (turning)
+3. gold coin spin frame 3 (edge)
+4. gold coin spin frame 4 (turning back)
+5. big gold coin
+6. pile of coins
+ROW 2: EXACTLY 6 columns. Default native size 16x16.
+1. white-yellow sparkle burst frame 1 (small)
+2. white-yellow sparkle burst frame 2 (big)
+3. white-yellow sparkle burst frame 3 (fading)
+4. pink heart
+5. meat on bone
+6. fish
+ROW 3: EXACTLY 6 columns. Default native size 16x16.
+1. carrot
+2. leaf bundle
+3. yellow star
+4. red exclamation shape (symbol only)
+5. music note
+6. dust puff
+ROW 4: EXACTLY 6 columns. Default native size 16x16.
+1. sleeping bubble with two small zigzag shapes, not letters
+2. cherry petal
+3. raindrop
+4. falling maple leaf
+5. snowflake
+6. rainbow sparkle frame 1
+ROW 5: EXACTLY 6 columns. Default native size 16x16.
+1. rainbow sparkle frame 2
+2. coin with ribbon (gift)
+3. cracked broken coin
+4. firework burst frame 1
+5. firework burst frame 2
+6. confetti pieces

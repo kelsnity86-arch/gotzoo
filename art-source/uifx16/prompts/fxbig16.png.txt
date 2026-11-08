@@ -1,0 +1,18 @@
+Create a production pixel-art game sprite sheet for BbopZOO, matching cute, clean, chunky handheld-console zoo assets. Each requested object has its EXACT native pixel grid described below, enlarged with NEAREST NEIGHBOR so every pixel is a solid square. ONE native pixel outline in #1a1c2c, simple 1–2 tone FLAT shading. Allowed palette ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. Absolutely NO antialiasing, blur, gradients, soft shadows, dither/noise or tiny high-resolution painted details. Background everywhere outside the sprites is ONE SOLID #FF00FF magenta. No magenta or pink-magenta inside objects; pastel cherry pink must be #ffb7d0 or #ffc8dd, clearly distinct from magenta. Clean invisible row/cell layout with generous gutters, no overlap, everything wholly inside canvas. NO printed text, numbers, letters, labels, watermarks, visible grid lines or sheet border. Requested object frames, cards and banners are part of the art; do not add a frame around the sheet.
+FILE fxbig16.png — never print filename. OUTPUT EXACTLY 1536x1024.
+12 large gacha effects on three rows with 5/3/4 items. Pillars 24x96 have bright core with blocky stepped edge bands (no smooth gradients). Burst 96x96, diagonal banner 128x48, floor spotlight 64x32. Bottom ribbons 96x24, empty centers and no titles.
+ROW 1: EXACTLY 5 columns. Default native size 24x96.
+1. green vertical light pillar
+2. blue vertical light pillar
+3. purple vertical light pillar
+4. gold vertical light pillar
+5. rainbow vertical light pillar
+ROW 2: EXACTLY 3 columns. Default native size 96x96.
+1. legendary burst: radiating gold rays and sparkles
+2. cut-in background banner: diagonal gold speed lines on deep purple (native 128x48)
+3. silhouette spotlight circle on floor (native 64x32)
+ROW 3: EXACTLY 4 columns. Default native size 96x24.
+1. blank pink season ribbon with cherry blossoms
+2. blank sky-blue season ribbon with suns and waves
+3. blank orange season ribbon with maple leaves
+4. blank white-blue season ribbon with snowflakes
