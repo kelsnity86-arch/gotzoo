@@ -3,15 +3,15 @@ import { ANIMALS, HABITAT_NAMES } from '../data/animals';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_REWARD } from '../data/missions';
 import { GRADES, type Grade } from '../data/grades';
-import { staffDef, staffOptDef, STAFF_DRAW_MUL } from '../data/staff';
+import { STAFF, staffDef, staffOptDef, STAFF_DRAW_MUL } from '../data/staff';
 import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } from '../data/balance';
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, staffSum, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penDraw, penDrawPrice, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
-import { animalFrame, hasPng, shinyOf, staffFrame } from '../render/sprites';
+import { animalFrame, hasPng, shinyOf, staff16, staffFrame } from '../render/sprites';
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
 import { PEN_DRAW_MUL, PEN_THEME_BONUS, penOptDef, pieceDef } from '../data/pieces';
@@ -36,6 +36,24 @@ const SUBS: Record<Tab, [string, string][]> = {
   log: [['mission', '미션'], ['dex', '도감'], ['syn', '시너지'], ['record', '라이벌']],
 };
 const UP_ICON: Record<string, string> = { land: 'icons_05', quality: 'icons_06', gate: 'icons_03', staff: 'icons_07', pickup: 'icons_08' };
+
+/** 직원 효과 한 줄 (카드에 크게) */
+function staffShort(kind: string, v: number): string {
+  const p = (x: number) => `${Math.round(x * 100)}%`;
+  switch (kind) {
+    case 'collector': return `동전 줍기 ×${v}`;
+    case 'keeper': return `먹이 주기 ×${v}`;
+    case 'guide': return `투척액 +${p(v)}`;
+    case 'janitor': return `바닥 동전 +${v}초`;
+    case 'ticket': return `입장료 ${p(v)}`;
+    case 'cleaner': return `유지비 −${p(v)}`;
+    case 'guard': return `소매치기 ${p(v)} 막기`;
+    case 'vet': return `감기 ${p(v)} 막기`;
+    case 'promoter': return `관람객 +${p(v)}`;
+    case 'performer': return `이벤트 간격 −${p(v)}`;
+    default: return '';
+  }
+}
 
 export class Panel {
   readonly el: HTMLElement;
@@ -393,24 +411,50 @@ export class Panel {
       all.length ? h('div', { class: 'list' }, ...all.map((c) => this.staffRow(c, placed.has(c.uid)))) : h('p', { class: 'hint' }, '직원이 없어요. 뽑기 > 직원에서 뽑아요.'),
       h('p', { class: 'hint' }, '해고하면 직원 뽑기 가격의 10~25%(등급이 높을수록 많이)를 돌려받아요.'));
   }
-  // ── 운영 > 직원 배치 ──
+  // ── 운영 > 직원 배치 (카드) ──
+  /** 직원 카드 한 장: 등급 색 테두리 · 큰 그림 · 이름 · 핵심 효과 한 줄 · 옵션 별 · 월급 */
+  private staffCard(c: Extract<Card, { kind: 'staff' }>, inSlot: boolean) {
+    const s = this.ctx.save;
+    const d = staffDef(c.staff), g = GRADES[c.grade];
+    const art = staff16(c.staff, 0) ?? staffFrame(c.staff, 0);
+    const strike = inSlot && s.strike && !c.opts.some((o) => o.id === 'loyal');
+    const act = inSlot
+      ? h('button', { class: 'btn small ghost', onclick: () => { audio.sfx('click'); unplace(s, c.uid); this.changed(); } }, '빼기')
+      : h('button', { class: 'btn small', onclick: () => { if (assignStaff(s, c.uid)) { audio.sfx('click'); this.changed(); } else toast('빈 슬롯이 없어요. 먼저 한 명을 빼거나 운영 > 업그레이드에서 슬롯을 늘려요', 'info'); } }, '배치');
+    return h('div', { class: `staff-card g-${g.key}${strike ? ' striking' : ''}` },
+      h('div', { class: 'sc-top' }, h('span', { class: `gtag g-${g.key}` }, g.name), strike ? h('span', { class: 'gtag strike' }, '파업') : null),
+      h('div', { class: 'sc-art' }, pix(art, 44)),
+      h('div', { class: 'sc-name' }, d.name),
+      h('div', { class: 'sc-fx' }, staffShort(c.staff, d.values[c.grade])),
+      c.opts.length ? h('div', { class: 'sc-opts' }, ...c.opts.map((o) => h('span', { class: 'opt', title: staffOptDef(o.id).desc(o.v) }, `★ ${staffOptDef(o.id).name}`))) : null,
+      h('div', { class: 'sc-pay' }, `월급 ${fmt(staffPay(s, c))}`),
+      act);
+  }
   private staffSlots() {
     const s = this.ctx.save;
     const costs = dailyCosts(s);
-    const slots = Array.from({ length: staffSlotCount(s) }, (_, i) => {
+    const n = staffSlotCount(s);
+    const placed = placedSet(s);
+    const slotCards = Array.from({ length: n }, (_, i) => {
       const u = s.staffSlots[i];
       const c = u !== null && u !== undefined ? s.cards.find((x) => x.uid === u) : undefined;
-      if (!c || c.kind !== 'staff') return h('div', { class: 'row empty' }, h('span', { class: 'sub' }, `슬롯 ${i + 1} · 비어 있음 (카드 > 직원에서 배치)`));
-      return this.staffRow(c, true);
+      if (!c || c.kind !== 'staff') return h('div', { class: 'staff-card empty' }, h('div', { class: 'sc-plus' }, '+'), h('div', { class: 'sc-name' }, `빈 슬롯 ${i + 1}`), h('div', { class: 'sc-pay' }, '아래 대기 직원을 배치해요'));
+      return this.staffCard(c, true);
     });
+    const waiting = s.cards.filter((c): c is Extract<Card, { kind: 'staff' }> => c.kind === 'staff' && !placed.has(c.uid)).sort((a, b) => b.grade - a.grade || a.pay - b.pay);
+    // 팀 효과 요약: 배치된 직원 종류별 합
+    const team = STAFF.filter((d) => d.kind !== 'collector' && d.kind !== 'keeper').map((d) => ({ d, v: staffSum(s, d.kind) })).filter((x) => x.v > 0);
     return h('div', {}, this.debtNote(),
-      h('div', { class: 'cost-box' },
+      h('div', { class: 'staff-sum' },
+        h('div', {}, h('span', {}, '배치'), h('b', {}, `${s.staffSlots.filter((u, i) => u !== null && i < n).length} / ${n}`)),
         h('div', {}, h('span', {}, '하루 월급'), h('b', {}, fmt(costs.salary))),
-        h('div', {}, h('span', {}, '우리 유지비'), h('b', {}, fmt(costs.pens))),
-        h('div', {}, h('span', {}, '사료비'), h('b', {}, fmt(costs.food))),
-        h('div', { class: 'total' }, h('span', {}, '영업 끝나면 나가는 돈'), h('b', {}, fmt(costs.total)))),
-      h('div', { class: 'section-title' }, `직원 슬롯 ${s.staffSlots.filter((u, i) => u !== null && i < staffSlotCount(s)).length} / ${staffSlotCount(s)}`),
-      h('div', { class: 'list' }, ...slots));
+        h('div', {}, h('span', {}, '하루 총비용'), h('b', {}, fmt(costs.total)))),
+      team.length ? h('div', { class: 'team-fx' }, ...team.map(({ d, v }) => h('span', { class: 'chip-fx' }, `${d.name} ${staffShort(d.kind, v)}`))) : null,
+      h('div', { class: 'section-title' }, '일하는 직원'),
+      h('div', { class: 'staff-grid' }, ...slotCards),
+      h('div', { class: 'section-title' }, `대기 중 ${waiting.length}명 (월급 안 나가요)`),
+      waiting.length ? h('div', { class: 'staff-grid' }, ...waiting.map((c) => this.staffCard(c, false))) : h('p', { class: 'hint' }, '대기 중인 직원이 없어요. 뽑기 > 직원에서 뽑아요.'),
+      h('p', { class: 'hint' }, '해고는 카드 > 직원에서 할 수 있어요.'));
   }
   // ── 운영 > 돈 ──
   private money() {
@@ -551,7 +595,8 @@ export class Panel {
         h('div', { class: 'row-info' },
           h('div', { class: 'row-name' }, f.name, h('span', { class: 'gtag' }, lv ? `${lv}단계` : '없음'), h('span', { class: 'lv-dots' }, ...Array.from({ length: FAC_MAX_LV }, (_, k) => h('i', { class: k < lv ? 'on' : '' })))),
           h('div', { class: 'sub' }, f.desc(facLevelValue(f.type, Math.max(1, lv)))),
-          h('div', { class: 'sub pay' }, lv ? `지금 ${val(f.type, lv)}` : '아직 없어요', price !== null ? ` → 다음 ${val(f.type, lv + 1)}` : ' · 최고 단계', ` · 유지비 ${fmt(Math.round(f.upkeep * Math.max(1, lv + (price !== null ? 1 : 0)) * costUnit(s)))}/일${lv ? '' : ' (지으면)'}`)),
+          h('div', { class: 'sub pay' }, lv ? `지금 ${val(f.type, lv)}` : '아직 없어요', price !== null ? ` → 다음 ${val(f.type, lv + 1)}` : ' · 최고 단계'),
+          h('div', { class: 'sub' }, `하루 유지비 ${fmt(Math.round(f.upkeep * Math.max(1, lv) * costUnit(s)))}${price !== null ? ` → ${fmt(Math.round(f.upkeep * (lv + 1) * costUnit(s)))}` : ''}`)),
         price === null ? h('span', { class: 'max' }, '최고') : this.nightBuy(price, () => { if (buyFacility(s, f.type)) { audio.sfx('buy'); toast(`${f.name} ${facCount(s, f.type)}단계 완공!`, 'good'); this.changed(); } }));
     });
     return h('div', {},

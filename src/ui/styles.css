@@ -204,7 +204,7 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .gauge span, .pbar span { font-size: 12px; font-weight: 400; }
 .ptab { font-size: 13px; }
 .toast { font-size: 13px; }
-.field-hint { font-size: 13px; }
+.field-hint { font-size: 13px; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 380px) { .hud-stats { font-size: 12px; } .ptab { font-size: 12px; } }
 
 /* GPT 카드 프레임 */
@@ -431,3 +431,29 @@ b, strong, h1, h2, h3, .btn, .ptab, .hud, .hud-coins b, .chip, .badge, .sheet-he
 .lv-dots { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
 .lv-dots i { width: 8px; height: 8px; border-radius: 50%; background: #d9cdb4; border: 1px solid #a8916b; }
 .lv-dots i.on { background: #f7c948; border-color: #b8862a; }
+
+/* 직원 배치: 카드 */
+.staff-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 4px 0 8px; }
+.staff-sum div { background: #fffaf0; border: 2px solid #e2d3b5; border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+.staff-sum span { font-size: 12px; color: #7a6a55; }
+.staff-sum b { font-size: 17px; color: #3b2a1a; font-variant-numeric: tabular-nums; }
+.team-fx { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.chip-fx { font: 13px 'Jua', sans-serif; background: #e8f3dc; color: #2f5a2a; border-radius: 999px; padding: 2px 9px; }
+.staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px; }
+.staff-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 6px 8px; background: #fffaf0; border: 3px solid var(--g, #94b0c2); border-radius: 12px; box-shadow: 0 3px 0 rgba(0,0,0,0.12); text-align: center; min-width: 0; }
+.staff-card.g-common { --g: var(--g-common); } .staff-card.g-uncommon { --g: var(--g-uncommon); } .staff-card.g-rare { --g: var(--g-rare); } .staff-card.g-epic { --g: var(--g-epic); } .staff-card.g-legend { --g: var(--g-legend); background: linear-gradient(#fff6d0, #fffaf0); }
+.staff-card.striking { filter: grayscale(0.5); }
+.staff-card .sc-top { align-self: stretch; display: flex; justify-content: space-between; gap: 4px; }
+.staff-card .sc-art { height: 48px; display: grid; place-items: end center; }
+.staff-card .sc-name { font: 16px 'Jua', sans-serif; color: #3b2a1a; }
+.staff-card .sc-fx { font: 15px 'Jua', sans-serif; color: #2f7a4b; line-height: 1.2; }
+.staff-card .sc-opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; }
+.staff-card .sc-opts .opt { font-size: 11px; background: #f3e6ff; color: #6b2f8e; border-radius: 6px; padding: 0 5px; }
+.staff-card .sc-pay { font-size: 12px; color: #7a6a55; }
+.staff-card .btn { margin-top: 2px; align-self: stretch; }
+.staff-card.empty { border-style: dashed; border-color: #c9b896; background: rgba(255,250,240,0.6); justify-content: center; min-height: 170px; box-shadow: none; }
+.staff-card .sc-plus { font: 34px 'Jua', sans-serif; color: #c9b896; line-height: 1; }
+
+/* 가독성: 아래 탭 글씨 · 시설 줄 숫자 줄바꿈 */
+.ptab { font-size: 14px; }
+.sub.pay { word-break: keep-all; }

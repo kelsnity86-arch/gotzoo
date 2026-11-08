@@ -514,6 +514,9 @@ function updateHud() {
   else eventBanner.classList.add('hidden');
   eventBanner.style.top = `${fieldRect.y + 30}px`; eventBanner.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   zoomReset.classList.toggle('zoomed', field.userZoom > 1);
+  // 폰 세로: 패널이 열려 있으면 확대 버튼 · 안내를 숨긴다 (패널 위에 겹치지 않게)
+  const panelOver = panel.isOpen && !document.body.classList.contains('landscape');
+  zoomReset.classList.toggle('hidden', panelOver);
   // 하루 시계 · 개장하기
   const night = world.isNight;
   clock.classList.toggle('night', night);
@@ -543,7 +546,7 @@ function updateHud() {
     : save.stats.coinsPicked === 0 ? '바닥 동전을 눌러서 주우면 보너스!'
     : '';
   hint.textContent = msg;
-  hint.classList.toggle('hidden', !msg || night || !!placing);
+  hint.classList.toggle('hidden', !msg || night || !!placing || (panel.isOpen && !document.body.classList.contains('landscape')));
   hint.style.top = `${fieldRect.y + 4}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
   void ZONE_H; void totalAttract;
 }
