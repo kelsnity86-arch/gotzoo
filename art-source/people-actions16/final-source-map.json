@@ -1,0 +1,62 @@
+{
+  "image_edits_by": "image_gen",
+  "postprocessing": "none; byte-for-byte copies",
+  "files": [
+    {
+      "generated_source": "exec-b1863e83-d87e-409b-8464-cceb517ae5e4.png",
+      "saved_path": "assets/spritesheets16/people-actions/model/people_lineup16.png"
+    },
+    {
+      "generated_source": "exec-686210e1-a8ae-4638-80c7-32387b6fe062.png",
+      "saved_path": "assets/spritesheets16/people-actions/walk/people_walk16_spring.png"
+    },
+    {
+      "generated_source": "exec-e43402f8-9972-427f-86d4-05f1e435b707.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_a.png"
+    },
+    {
+      "generated_source": "exec-aba7c294-7db1-4d01-af17-c66ea9decfc1.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_spring_b.png"
+    },
+    {
+      "generated_source": "exec-24bdeafb-052f-4f05-b69c-7b3309c6887a.png",
+      "saved_path": "assets/spritesheets16/people-actions/walk/people_walk16_summer.png"
+    },
+    {
+      "generated_source": "exec-3e0ae12d-43db-44bd-8590-4ea008f6fc9f.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_a.png"
+    },
+    {
+      "generated_source": "exec-e56ad72e-0324-4d6a-9c73-9a4764d2c5fa.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_summer_b.png"
+    },
+    {
+      "generated_source": "exec-40579c8a-ebf6-4733-81af-ee363dbb83a4.png",
+      "saved_path": "assets/spritesheets16/people-actions/walk/people_walk16_autumn.png"
+    },
+    {
+      "generated_source": "exec-00bc1a72-f838-45ec-ab62-9d63c9f44ad3.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_a.png"
+    },
+    {
+      "generated_source": "exec-4610fa82-4137-4e33-a56c-8b329ec75ab2.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_autumn_b.png"
+    },
+    {
+      "generated_source": "exec-ed6aaf75-fdc1-44d0-97c8-ad842f4bc256.png",
+      "saved_path": "assets/spritesheets16/people-actions/walk/people_walk16_winter.png"
+    },
+    {
+      "generated_source": "exec-a5c37790-1ae8-47d9-b800-25b39b27f887.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_a.png"
+    },
+    {
+      "generated_source": "exec-021d4d18-8aab-4d24-a0de-206e1f51aefb.png",
+      "saved_path": "assets/spritesheets16/people-actions/poses/people_pose16_winter_b.png"
+    },
+    {
+      "generated_source": "exec-bec8a07e-de8e-456b-8ffb-0e2c61e46432.png",
+      "saved_path": "assets/spritesheets16/people-actions/vip/vip16.png"
+    }
+  ]
+}

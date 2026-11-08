@@ -1,5 +1,9 @@
 # BbopZOO 16px 명령서 — 전체 31장 생성 원본
 
+직원 보행 추가: [기존 직원 10명 보행 A/B 시트](staff-walk/README.md) · [직원 보행 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-staff-walk16-source.zip). 실제 크기·픽셀/팔레트·루프 검증은 HOLD인 생성 원본입니다.
+
+관람객 추가 묶음: [8명 모델·사계절 보행/행동·VIP 14장](people-actions/README.md) · [14장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-people-actions16-sources.zip). 정확한 네이티브 격자·색상·프레임 정렬은 미완료입니다.
+
 입구 추가 묶음: [게이트·부속품·계절 장식 3장](entrance/README.md) · [게이트 3장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-gate16-sources.zip).
 
 추가 제작: [확장 아이콘·우리 뽑기·대각 울타리·사건 4장](expansion/README.md) · [추가 4장 ZIP](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-expansion16-sources.zip). 아래 기본 31장 ZIP과는 별도입니다.

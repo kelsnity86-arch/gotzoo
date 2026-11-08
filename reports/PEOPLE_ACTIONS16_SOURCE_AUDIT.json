@@ -1,0 +1,309 @@
+{
+  "source_delivery": "PASS_14_READABLE_DISTINCT_PNGS",
+  "strict_pixel_identity_and_animation_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "people_lineup16.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 183037,
+      "off_palette_pixels": 1573536,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_walk16_spring.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 187404,
+      "off_palette_pixels": 1573537,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_spring_a.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 200315,
+      "off_palette_pixels": 1572831,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_spring_b.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 210382,
+      "off_palette_pixels": 1572859,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_walk16_summer.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 195619,
+      "off_palette_pixels": 1573531,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_summer_a.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 183540,
+      "off_palette_pixels": 1572855,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_summer_b.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 215976,
+      "off_palette_pixels": 1572857,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_walk16_autumn.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 180617,
+      "off_palette_pixels": 1573535,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_autumn_a.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 201960,
+      "off_palette_pixels": 1572861,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_autumn_b.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 216654,
+      "off_palette_pixels": 1572862,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_walk16_winter.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 204945,
+      "off_palette_pixels": 1573527,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_winter_a.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 208897,
+      "off_palette_pixels": 1572854,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "people_pose16_winter_b.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 234197,
+      "off_palette_pixels": 1572854,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    },
+    {
+      "filename": "vip16.png",
+      "readable_png": true,
+      "mode": "RGB",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 279394,
+      "off_palette_pixels": 1572838,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_grid_and_outline_status": "NOT_CERTIFIED",
+      "exact_identity_and_pivot_status": "NOT_CERTIFIED",
+      "animation_playback_status": "NOT_TESTED"
+    }
+  ],
+  "canvas_matches": 9,
+  "canvas_mismatches": 5,
+  "remaining": [
+    "Exact 16x26 art grid, 38-color palette, flat magenta and 1px outline.",
+    "Frame registration, common baseline and A/B leg identity at playback speed.",
+    "VIP witch walk B changes eye expression; VIP walk leg phases remain weak.",
+    "Seated head scale, shoe soles and some coat details vary between poses.",
+    "Camera, handbag, hair and winter mittens need per-cell native-size review."
+  ]
+}
