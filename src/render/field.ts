@@ -128,7 +128,7 @@ export class FieldRenderer {
     for (const z of zoneRow(L.w)) obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1));
     for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
 
-    // 4. 우리: 바닥 → 울타리. 다른 우리와 맞닿은 쪽은 번호가 작은 우리만 울타리를 친다
+    // 4. 우리: 바닥 → 울타리. 우리마다 자기 둘레를 다 친다 (맞닿은 쪽은 두 줄이 나란히 붙어 끊김이 없다)
     const owner = new Map<string, number>();
     L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) owner.set(`${g.gx / TILE + x},${g.gy / TILE + y}`, i); })); });
     const tier = Math.max(0, Math.min(3, this.decoTier));
@@ -143,7 +143,7 @@ export class FieldRenderer {
       const g = world.geo[i];
       if (!g) return;
       const ox = g.gx / TILE, oy = g.gy / TILE;
-      const inside = (tx: number, ty: number) => { const o = owner.get(`${tx},${ty}`); return o === i || (o !== undefined && o < i); };
+      const inside = (tx: number, ty: number) => owner.get(`${tx},${ty}`) === i;
       g.mask.forEach((row, y) => row.forEach((on, x) => { if (on) autotile(inside, ox + x, oy + y, v(`fence${tier}_sq`), v(`fence${tier}_x`), crossAt, false); }));
     });
 
@@ -438,7 +438,7 @@ export class FieldRenderer {
       // 물가 우리: 몸 아래가 잠기고 물결
       const sink = water ? 0.32 : 0;
       if (water && hasPng('v2_fx_ripple1')) { const rp = sprite(Math.floor(a.t * 1.5) % 2 ? 'v2_fx_ripple2' : 'v2_fx_ripple1'); this.ctx.globalAlpha = 0.7; this.icon(rp, x, a.y + 1.5, (rp.width / FieldRenderer.R) * Math.min(1, mul)); this.ctx.globalAlpha = 1; }
-      this.blitAnimal(a.shiny ? shinyOf(img) : img, x, a.y, mul, a.face > 0, hop, sink, a.act === 'sleep');
+      this.blitAnimal(a.shiny ? shinyOf(img) : img, x, a.y, mul, a.face > 0, hop, sink);
       if (a.shiny) this.sparkle(x, a.y - 4 * mul, a.t + a.uid);
     }
   }
@@ -479,9 +479,9 @@ export class FieldRenderer {
   }
 
   /** 동물: 등급 배율만큼 크게, 기기 픽셀 좌표로 (도트가 고르게) */
-  private blitAnimal(img: Sprite, x: number, y: number, mul: number, flip: boolean, hop: number, sink = 0, dim = false) {
+  private blitAnimal(img: Sprite, x: number, y: number, mul: number, flip: boolean, hop: number, sink = 0) {
     // 16px 시트 그림(크다)은 큰 쪽이 9칸 × 등급 배율이 되게, 예전 8px 그림은 8칸
-    if (img.width > 8 || img.height > 8) { this.blitDev(img, x, y, 9 * mul, flip, hop, true, sink, dim); return; }
+    if (img.width > 8 || img.height > 8) { this.blitDev(img, x, y, 9 * mul, flip, hop, true, sink); return; }
     const c = this.ctx;
     const k = Math.max(1, Math.round(this.dev * mul));
     const size = 8 * k;
@@ -506,7 +506,7 @@ export class FieldRenderer {
 
   /** 고해상도 그림을 기기 픽셀로: 크기 기준(units, 월드 칸)을 큰 쪽(fit) 또는 높이에 맞춘다.
    *  1배 이상이면 정수 배로 (도트가 고르게), 작으면 부드럽게 줄인다 */
-  private blitDev(img: Sprite, x: number, y: number, units: number, flip: boolean, hop: number, fitMax = false, sink = 0, dim = false) {
+  private blitDev(img: Sprite, x: number, y: number, units: number, flip: boolean, hop: number, fitMax = false, sink = 0) {
     const c = this.ctx;
     const base = fitMax ? Math.max(img.width, img.height) : img.height;
     let k = (units * this.dev) / base;
@@ -523,7 +523,6 @@ export class FieldRenderer {
     if (smooth) c.imageSmoothingQuality = 'high';
     if (!sink) this.shadow(c, cx, by, w * 0.62, Math.max(1, Math.round(k)));
     if (sink > 0) { c.beginPath(); c.rect(left - 2, top - 20, w + 4, h * (1 - sink) + 20); c.clip(); c.translate(0, Math.round(h * sink * 0.6)); }
-    if (dim) c.filter = 'brightness(0.85)';
     if (flip) { c.translate(left + w, top); c.scale(-1, 1); c.drawImage(img, 0, 0, w, h); }
     else c.drawImage(img, left, top, w, h);
     c.restore();

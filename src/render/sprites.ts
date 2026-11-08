@@ -227,11 +227,12 @@ export function shinyOf(img: Sprite): Sprite {
     if (p[i + 3] === 0) continue;
     let r = p[i] / 255, g = p[i + 1] / 255, b = p[i + 2] / 255;
     const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
-    if (max - min < 0.08 && (l < 0.2 || l > 0.85)) continue; // 외곽선·흰색은 그대로
+    // 외곽선(진한 색) · 흰색 · 회색은 그대로: 바꾸면 도트가 튀어 보인다
+    if (l < 0.28 || (max - min < 0.12 && l > 0.8) || max - min < 0.06) continue;
     let hh = 0, ss = 0;
     const dd = max - min;
     if (dd) { ss = l > 0.5 ? dd / (2 - max - min) : dd / (max + min); hh = max === r ? (g - b) / dd + (g < b ? 6 : 0) : max === g ? (b - r) / dd + 2 : (r - g) / dd + 4; hh /= 6; }
-    hh = (hh + 0.42) % 1; ss = Math.min(1, ss * 1.3 + 0.15);
+    hh = (hh + 0.42) % 1; ss = Math.min(1, ss * 1.15 + (ss > 0.25 ? 0.1 : 0));
     const q = l < 0.5 ? l * (1 + ss) : l + ss - l * ss, pp = 2 * l - q;
     const f = (t: number) => { t = (t + 1) % 1; return t < 1 / 6 ? pp + (q - pp) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? pp + (q - pp) * (2 / 3 - t) * 6 : pp; };
     r = f(hh + 1 / 3); g = f(hh); b = f(hh - 1 / 3);
