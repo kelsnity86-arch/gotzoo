@@ -6,7 +6,7 @@ import { World } from '../../src/game/world';
 import { UPGRADES } from '../../src/data/balance';
 import {
   assignStaff, autoFusionPick, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, optimizePlacement, placedAnimals,
-  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade,
+  promote, totalAttract, upgradeCost, upgradeLockedBy, buyUpgrade, staffDraw, staffDrawPrice, staffSlotCount,
 } from '../../src/game/rules';
 import type { Grade } from '../../src/data/grades';
 
@@ -27,7 +27,7 @@ it('경제 곡선', () => {
     t += dt;
     w.relayout(1.6); w.sync();
     w.update(dt, null);
-    for (const e of w.events) if (e.type === 'night') { const r = e.report; dayLog.push(`${r.day}일 ${(t/60).toFixed(1)}분 단계${s.stage}: 수입 ${r.base + r.bonus + r.janitor} · 관람객 ${r.visitors} · 동전 ${r.coins} · 시즌 ${r.mine} vs ${r.rival}${r.season ? ` → ${r.season.result}` : ''}`); if (r.season?.result === 'lose') t = MIN * 60; }
+    for (const e of w.events) if (e.type === 'night') { const r = e.report; dayLog.push(`${r.day}일 ${(t/60).toFixed(1)}분 단계${s.stage}: 수입 ${r.income} · 비용 ${r.costs.total}(월급 ${r.costs.salary} 우리 ${r.costs.pens} 사료 ${r.costs.food}) · 순 ${r.net} · 코인 ${r.coinsAfter} · 규모 ${r.mine} vs ${r.rival}${r.season ? ` → ${r.season.result}` : ''}`); if (r.season?.result === 'lose') t = MIN * 60; }
     w.events.length = 0;
     // 손으로 줍기: 초당 바닥 동전의 PICK 비율
     pickAcc += dt;
@@ -47,6 +47,9 @@ it('경제 곡선', () => {
       for (let k = 0; k < 10 && ups[0] && ups[0].cost <= s.coins && ups[0].cost <= price * 8; k++) {
         buyUpgrade(s, ups[0].id); ups.shift(); ups.sort((a, b) => a.cost - b.cost);
       }
+      // 빈 직원 슬롯: 여유가 있으면 직원 뽑기
+      const free = s.staffSlots.filter((u, i) => u === null && i < staffSlotCount(s)).length;
+      if (free > 0 && s.coins >= staffDrawPrice(s) + price * 5) staffDraw(s, 1);
       w.openPark();
     } else if (s.coins >= price * 10 && !(ups[0] && ups[0].cost <= price * 8 && s.coins < ups[0].cost + price * 10)) { draw(s, 10); draws += 10; }
     else if (s.coins >= price && placedAnimals(s) < 6) { draw(s, 1); draws++; if (secondDraw < 0) secondDraw = t; }

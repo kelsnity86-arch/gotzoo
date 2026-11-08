@@ -48,7 +48,7 @@ describe('뽑기', () => {
     expect(s.coins).toBe(99); expect(s.cards).toHaveLength(0);
   });
   it('단계가 오르면 가격이 오른다', () => { const s = defaultSave(); s.stage = 3; expect(drawPrice(s)).toBe(GACHA.price[2]); });
-  it('확률: 직원 약 8%, 전설 약 1%', () => {
+  it('확률: 동물만, 전설 약 1%', () => {
     const s = defaultSave(); s.coins = 1e12;
     const out = draw(s, 10, Math.random)!; void out;
     const big = defaultSave(); big.coins = 1e12;
@@ -56,8 +56,8 @@ describe('뽑기', () => {
     let staff = 0, legend = 0; const N = 40000;
     const t = defaultSave(); t.coins = 1e15;
     for (const c of draw(t, N)!) { if (c.kind === 'staff') staff++; else if (ANIMALS[c.animal].grade === 4) legend++; }
-    expect(staff / N).toBeGreaterThan(0.07); expect(staff / N).toBeLessThan(0.09);
-    expect(legend / N).toBeGreaterThan(0.006); expect(legend / N).toBeLessThan(0.014);
+    expect(staff).toBe(0);
+    expect(legend / N).toBeGreaterThan(0.007); expect(legend / N).toBeLessThan(0.013);
   });
 });
 

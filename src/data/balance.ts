@@ -2,8 +2,6 @@
 // 숫자는 플레이 테스트(tools/sim)로 다시 맞춘다.
 
 export const GACHA = {
-  /** 뽑기에서 직원 카드가 나올 확률 (나머지는 동물) */
-  staffChance: 0.08,
   /** 진행 단계(1~8)별 1장 가격. 5·10회는 장수만큼 (할인 없음) */
   price: [100, 200, 450, 1000, 2200, 5000, 11000, 24000],
 } as const;
@@ -74,3 +72,16 @@ export const STAFF_AI = { collectorSpeed: 42, collectorReach: 9, collectorSearch
 /** 하루: 낮 dayLen초 (마지막 duskLen초는 해 질 녘: 새 관람객 없음), 밤은 시간 제한 없이 '개장하기'를 누르면 아침.
  * nightAvg: 자리 비움 수익 계산용 평균 밤 길이 */
 export const DAY = { dayLen: 180, duskLen: 20, nightAvg: 30, janitorShare: 0.5 } as const;
+
+/** 유지비 (매일 영업이 끝날 때). unit = 단계별 비용 단위(코인): 1~2단계는 작게, 뒤로는 수입이 느는 만큼만 (뽑기 가격보다 완만).
+ * 우리 하나당 고정비 + 전시 동물 사료비(등급별). 직원 월급도 이 단위 × 3 × 카드의 월급 비율 */
+export const UPKEEP = { perPen: 0.25, feed: [0.012, 0.025, 0.05, 0.09, 0.16], unit: [30, 120, 450, 1000, 1500, 2000, 2700, 3600] } as const;
+
+/** 동물원 규모 점수: 전시 동물(등급별) + 배치 직원(staff.ts STAFF_SCALE) + 업그레이드 레벨 − 빚 감점 */
+export const SCALE = { animal: [1, 3, 8, 20, 50], upgradeLv: 10, debtPerDraw: 5 } as const;
+
+/** 빚: 빚으로 끝난 날이 strikeAfter일 이어지면 다음 날 직원 파업 */
+export const DEBT = { strikeAfter: 3 } as const;
+
+/** 사고: 하루에 chance 확률로 낮 at[0]~at[1]초 사이에 한 번. 소매치기 = 오늘 수입의 thiefShare를 잃음, 감기 = 우리 하나 매력 ×sickMul (그날 끝까지) */
+export const INCIDENT = { chance: 0.6, at: [30, 140], thiefShare: 0.08, sickMul: 0.6 } as const;

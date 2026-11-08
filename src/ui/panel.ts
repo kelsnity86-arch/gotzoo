@@ -3,12 +3,12 @@ import { ANIMALS, HABITAT_NAMES } from '../data/animals';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_REWARD } from '../data/missions';
 import { GRADES, type Grade } from '../data/grades';
-import { STAFF, staffDef } from '../data/staff';
+import { staffDef, staffOptDef, STAFF_DRAW_MUL } from '../data/staff';
 import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } from '../data/balance';
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, dailyCosts, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCount, penSize, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, staffFrame } from '../render/sprites';
@@ -72,6 +72,7 @@ export class Panel {
     b.disabled = this.ctx.save.coins < cost || locked;
     return b;
   }
+  private fireArm = '';
   private changed() { this.ctx.persist(); this.ctx.world.sync(); this.render(true); }
 
   // ── 뽑기 ──
@@ -85,12 +86,12 @@ export class Panel {
       this.reveal(out, beforeDex);
     };
     const free = !s.freeDrawUsed ? h('button', { class: 'btn big pulse', onclick: () => { const before = s.dex.slice(); const c = freeDraw(s); if (c) this.reveal([c], before); } }, '무료 뽑기! (일반 동물 확정)') : null;
-    const grid = h('div', { class: 'odds' }, ...GRADES.map((g) => h('div', { class: `odd g-${g.key}` }, h('b', {}, g.name), `${(g.chance * (1 - GACHA.staffChance) * 100).toFixed(1)}%`)),
-      h('div', { class: 'odd g-staff' }, h('b', {}, '직원'), `${(GACHA.staffChance * 100).toFixed(0)}%`));
+    const grid = h('div', { class: 'odds' }, ...GRADES.map((g) => h('div', { class: `odd g-${g.key}` }, h('b', {}, g.name), `${(g.chance * 100).toFixed(0)}%`)));
     return h('div', { class: 'tab-gacha' },
       h('div', { class: 'gacha-hero' }, h('div', { class: 'mini-machine' }, h('i', {}), h('i', {}), h('i', {})),
         h('div', {}, h('div', { class: 'title' }, '동물 카드 뽑기'), h('div', { class: 'sub' }, `진행 ${s.stage}단계 · 1장 ${fmt(price)}코인`))),
       free,
+      s.coins < 0 ? h('div', { class: 'debt-note' }, `빚 ${fmt(-s.coins)}코인 · 갚기 전엔 뽑기·공사를 못 해요`) : null,
       h('div', { class: 'draw-btns' },
         this.costBtn(h('span', {}, '1회', h('small', {}, `${fmt(price)}`)), price, () => doDraw(1)),
         this.costBtn(h('span', {}, '5회', h('small', {}, `${fmt(price * 5)}`)), price * 5, () => doDraw(5)),
@@ -98,7 +99,7 @@ export class Panel {
       s.tickets > 0 ? h('button', { class: 'btn big ticket', onclick: () => { const before = s.dex.slice(); const out = ticketDraw(s); if (out) this.reveal(out, before); } }, `무료 뽑기권 사용 (${s.tickets}장 남음)`) : null,
       this.missions(),
       h('div', { class: 'section-title' }, '나오는 확률'), grid,
-      h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요.'));
+      h('p', { class: 'hint' }, '같은 등급 카드를 2~10장 모아 합성하면 다음 등급을 노릴 수 있어요. 많이 넣을수록 성공 확률이 올라가요. 직원은 직원 탭에서 따로 뽑아요.'));
   }
 
   /** 오늘 영업 미션: 하나 = 뽑기권 1장, 셋 다 = 보너스 2장 (영업이 끝나면 자동 정산) */
@@ -130,10 +131,10 @@ export class Panel {
       // 빈 칸이 있으면 바로 채우기를 권한다
       const free = penCount(s) * penSize(s) - placedAnimals(s);
       if (free > 0 && cards.some((c) => c.kind === 'animal')) { const n = autoPlace(s); if (n) toast(`빈 우리에 ${n}마리 배치했어요`, 'good'); }
-      if (cards.some((c) => c.kind === 'staff') && s.staffSlots.some((u, i) => u === null && i < staffSlotCount(s))) {
-        const st = cards.find((c) => c.kind === 'staff')!;
-        if (assignStaff(s, st.uid)) toast(`${staffDef((st as { staff: 'collector' }).staff).name} 배치!`, 'gold');
-      }
+      // 새 직원: 빈 슬롯에 등급 높은 순으로 배치
+      const newStaff = cards.filter((c): c is Extract<Card, { kind: 'staff' }> => c.kind === 'staff').sort((a, b) => b.grade - a.grade);
+      const hired = newStaff.filter((c) => s.staffSlots.some((u, i) => u === null && i < staffSlotCount(s)) && assignStaff(s, c.uid));
+      if (hired.length) toast(`${hired.map((c) => staffDef(c.staff).name).join(', ')} 배치!`, 'gold');
       this.changed();
     });
   }
@@ -280,26 +281,57 @@ export class Panel {
   private staffTab() {
     const s = this.ctx.save;
     const placed = placedSet(s);
+    const price = staffDrawPrice(s);
+    const doDraw = (n: number) => {
+      const out = staffDraw(s, n);
+      if (!out) { audio.sfx('deny'); toast(s.coins < 0 ? '빚이 있으면 직원을 뽑을 수 없어요' : '코인이 모자라요', 'bad'); return; }
+      this.reveal(out, s.dex.slice());
+    };
+    const costs = dailyCosts(s);
+    // 직원 한 명 줄: 그림 · 이름 · 등급 · 효과 · 옵션 · 월급 · 버튼들
+    const row = (c: Extract<Card, { kind: 'staff' }>, inSlot: boolean) => {
+      const d = staffDef(c.staff), g = GRADES[c.grade];
+      const fireKey = `fire-${c.uid}`;
+      const arming = this.fireArm === fireKey;
+      const fire = h('button', { class: `btn small ${arming ? 'danger' : 'ghost'}`, onclick: () => {
+        if (!arming) { this.fireArm = fireKey; this.render(true); return; }
+        const r = fireStaff(s, c.uid); this.fireArm = '';
+        if (r >= 0) { audio.sfx('click'); toast(`${d.name} 해고 · +${fmt(r)}코인`, 'info'); this.changed(); }
+      } }, arming ? `정말 해고? +${fmt(fireRefund(s, c))}` : '해고');
+      const act = inSlot
+        ? h('button', { class: 'btn small ghost', onclick: () => { unplace(s, c.uid); this.changed(); } }, '빼기')
+        : (() => { const b = h('button', { class: 'btn small', onclick: () => { if (assignStaff(s, c.uid)) { audio.sfx('click'); this.changed(); } else toast('빈 직원 슬롯이 없어요 (업그레이드에서 늘려요)', 'info'); } }, '배치') as HTMLButtonElement; return b; })();
+      return h('div', { class: `staff-slot g-${g.key}` }, pix(staffFrame(c.staff, 0), 28),
+        h('div', { class: 'up-info' },
+          h('div', {}, h('b', {}, d.name), ' ', h('span', { class: `gtag g-${g.key}` }, g.name), inSlot && s.strike && !c.opts.some((o) => o.id === 'loyal') ? h('span', { class: 'gtag strike' }, '파업') : null),
+          h('div', { class: 'sub' }, d.desc(d.values[c.grade])),
+          c.opts.length ? h('div', { class: 'opts' }, ...c.opts.map((o) => h('span', { class: 'opt' }, `★ ${staffOptDef(o.id).name} · ${staffOptDef(o.id).desc(o.v)}`))) : null,
+          h('div', { class: 'sub pay' }, `월급 ${fmt(staffPay(s, c))}/일${inSlot ? '' : ' (배치해야 줘요)'}`)),
+        h('div', { class: 'col-btns' }, act, fire));
+    };
     const slots = Array.from({ length: staffSlotCount(s) }, (_, i) => {
       const u = s.staffSlots[i];
       const c = u !== null && u !== undefined ? s.cards.find((x) => x.uid === u) : undefined;
       if (!c || c.kind !== 'staff') return h('div', { class: 'staff-slot empty' }, h('span', { class: 'sub' }, `슬롯 ${i + 1} · 비어 있음`));
-      const d = staffDef(c.staff);
-      return h('div', { class: 'staff-slot' }, pix(staffFrame(c.staff, 0), 28), h('div', { class: 'up-info' }, h('b', {}, d.name), h('div', { class: 'sub' }, d.desc)),
-        h('button', { class: 'btn small ghost', onclick: () => { unplace(s, c.uid); this.changed(); } }, '빼기'));
+      return row(c, true);
     });
-    const free = s.cards.filter((c): c is Extract<Card, { kind: 'staff' }> => c.kind === 'staff' && !placed.has(c.uid));
-    const freeRows = STAFF.map((d) => {
-      const list = free.filter((c) => c.staff === d.kind);
-      if (!list.length) return null;
-      const b = h('button', { class: 'btn small', onclick: () => { if (assignStaff(s, list[0].uid)) { audio.sfx('click'); this.changed(); } else toast('빈 직원 슬롯이 없어요 (업그레이드에서 늘려요)', 'info'); } }, '배치') as HTMLButtonElement;
-      return h('div', { class: 'staff-slot' }, pix(staffFrame(d.kind, 0), 28), h('div', { class: 'up-info' }, h('b', {}, `${d.name} ×${list.length}`), h('div', { class: 'sub' }, d.desc)), b);
-    }).filter(Boolean) as HTMLElement[];
+    const free = s.cards.filter((c): c is Extract<Card, { kind: 'staff' }> => c.kind === 'staff' && !placed.has(c.uid)).sort((a, b) => b.grade - a.grade || a.pay - b.pay);
     return h('div', {},
+      h('div', { class: 'gacha-hero staff-hero' },
+        h('div', {}, h('div', { class: 'title' }, '직원 뽑기'), h('div', { class: 'sub' }, `1명 ${fmt(price)}코인 (동물 뽑기 ×${STAFF_DRAW_MUL}) · 영웅은 특수옵션 1개, 전설은 2개`))),
+      s.coins < 0 ? h('div', { class: 'debt-note' }, `빚 ${fmt(-s.coins)}코인 · ${s.strike ? '오늘 직원 파업 중!' : `빚인 날이 3일 이어지면 파업해요 (지금 ${s.debtDays}일)`}`) : null,
+      h('div', { class: 'draw-btns two' },
+        this.costBtn(h('span', {}, '1명', h('small', {}, fmt(price))), price, () => doDraw(1)),
+        this.costBtn(h('span', {}, '5명', h('small', {}, fmt(price * 5))), price * 5, () => doDraw(5))),
+      h('div', { class: 'cost-box' },
+        h('div', {}, h('span', {}, '하루 월급'), h('b', {}, fmt(costs.salary))),
+        h('div', {}, h('span', {}, '우리 유지비'), h('b', {}, fmt(costs.pens))),
+        h('div', {}, h('span', {}, '사료비'), h('b', {}, fmt(costs.food))),
+        h('div', { class: 'total' }, h('span', {}, '영업 끝나면 나가는 돈'), h('b', {}, fmt(costs.total)))),
       h('div', { class: 'section-title' }, `직원 슬롯 ${s.staffSlots.filter((u, i) => u !== null && i < staffSlotCount(s)).length} / ${staffSlotCount(s)}`), ...slots,
-      h('div', { class: 'section-title' }, '보유한 직원 카드'),
-      freeRows.length ? h('div', {}, ...freeRows) : h('p', { class: 'hint' }, '직원 카드는 뽑기에서 8% 확률로 나와요. 직원이 없어도 관람객 수입은 계속 들어와요.'),
-      h('p', { class: 'hint' }, '먹이는 우리를 눌러 직접 줄 수도 있어요 (20초마다).'));
+      h('div', { class: 'section-title' }, `대기 중인 직원 ${free.length}명`),
+      free.length ? h('div', {}, ...free.map((c) => row(c, false))) : h('p', { class: 'hint' }, '대기 중인 직원이 없어요. 대기 중인 직원은 월급을 받지 않아요.'),
+      h('p', { class: 'hint' }, '해고하면 직원 뽑기 가격의 10~25%(등급이 높을수록 많이)를 돌려받아요. 먹이는 우리를 눌러 직접 줄 수도 있어요.'));
   }
 
   // ── 도감 ──

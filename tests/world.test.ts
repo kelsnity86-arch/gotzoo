@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSave } from '../src/game/state';
 import { World, computeLayout, type DayReport } from '../src/game/world';
-import { freeDraw, placeAnimal, assignStaff, closeZoo } from '../src/game/rules';
+import { freeDraw, placeAnimal, assignStaff, closeZoo, draw, placedStaffCards, staffDraw, staffTipMul, ticketDraw } from '../src/game/rules';
 import { COIN, VISITOR } from '../src/data/balance';
 
 function setup() {
@@ -59,7 +59,7 @@ describe('필드', () => {
   });
   it('수거 직원은 동전을 자동으로 줍는다, 직원이 없어도 수입은 생긴다', () => {
     const { s, w } = setup();
-    s.cards.push({ uid: 999, kind: 'staff', staff: 'collector' }); s.nextUid = 1000;
+    s.cards.push({ uid: 999, kind: 'staff', staff: 'collector', grade: 1, pay: 0.3, opts: [] }); s.nextUid = 1000;
     assignStaff(s, 999); w.sync();
     run(w, 90);
     expect(s.stats.coinsPicked).toBeGreaterThan(0);
@@ -67,7 +67,7 @@ describe('필드', () => {
   it('사육사는 먹이로 매력도를 올린다', () => {
     const { s, w } = setup();
     const a0 = w.attract;
-    s.cards.push({ uid: 998, kind: 'staff', staff: 'keeper' }); s.nextUid = 1000;
+    s.cards.push({ uid: 998, kind: 'staff', staff: 'keeper', grade: 1, pay: 0.3, opts: [] }); s.nextUid = 1000;
     assignStaff(s, 998); w.sync();
     run(w, 20);
     expect(w.fedLeft[0]).toBeGreaterThan(0);
@@ -126,20 +126,21 @@ describe('낮과 밤', () => {
   });
 });
 
-describe('라이벌 동물원', () => {
-  async function playDays(n: number, boost: number) {
+describe('라이벌 동물원 (규모 대결)', () => {
+  async function playDays(n: number, big: boolean) {
     const { DAY } = await import('../src/data/balance');
     const { s, w } = setup();
+    if (big) s.upgrades.pens = 50; // 규모를 크게 부풀린다 (업그레이드 레벨 × 10)
     const reports: DayReport[] = [];
     for (let d = 0; d < n; d++) {
       for (let i = 0; i < 30 * (DAY.dayLen + 1); i++) { w.update(1 / 30, null); for (const e of w.events) if (e.type === 'night') reports.push(e.report); w.events.length = 0; }
-      s.season.mine += boost; // 수입을 부풀리거나 그대로
+      s.coins = Math.max(s.coins, 0);
       w.openPark();
     }
     return { s, w, reports };
   }
-  it('7일째에 라이벌보다 많이 벌면 승리하고 다음 시즌', async () => {
-    const { s, reports } = await playDays(7, 1e6);
+  it('7일째에 라이벌보다 규모가 크면 승리하고 다음 시즌', async () => {
+    const { s, reports } = await playDays(7, true);
     const last = reports[reports.length - 1];
     expect(last.seasonDay).toBe(7);
     expect(last.season?.result).toBe('win');
@@ -147,13 +148,13 @@ describe('라이벌 동물원', () => {
     expect(s.season.start).toBe(8);
     expect(s.records.bestSeasons).toBe(1);
   });
-  it('지면 폐원 표시가 남고 시간이 멈춘다', async () => {
-    const { s, reports } = await playDays(7, 0);
+  it('지면 폐원 표시가 남고 더 못 연다', async () => {
+    const { s, reports } = await playDays(7, false);
     expect(reports[6].season?.result).toBe('lose');
     expect(s.season.lost).toBe(true);
   });
   it('폐원 후 새 동물원: 도감 · 기록만 남는다', async () => {
-    const { s } = await playDays(7, 0);
+    const { s } = await playDays(7, false);
     s.dex[5] = true;
     const n = closeZoo(s);
     expect(n.cards).toHaveLength(0);
@@ -162,5 +163,42 @@ describe('라이벌 동물원', () => {
     expect(n.records.closures).toBe(1);
     expect(n.records.bestDay).toBe(7);
     expect(n.season.lost).toBeUndefined();
+  });
+});
+
+describe('정산: 월급 · 유지비 · 빚 · 파업', () => {
+  async function oneDay(_s: ReturnType<typeof setup>['s'], w: World) {
+    const { DAY } = await import('../src/data/balance');
+    let rep: DayReport | null = null;
+    for (let i = 0; i < 30 * (DAY.dayLen + 1) && !rep; i++) { w.update(1 / 30, null); for (const e of w.events) if (e.type === 'night') rep = e.report; w.events.length = 0; }
+    return rep!;
+  }
+  it('영업이 끝나면 비용을 빼고, 순이익 = 수입 − 소매치기 − 비용', async () => {
+    const { s, w } = setup();
+    s.cards.push({ uid: 900, kind: 'staff', staff: 'guide', grade: 0, pay: 0.3, opts: [] }); s.nextUid = 901;
+    assignStaff(s, 900); w.sync();
+    const r = await oneDay(s, w);
+    expect(r.costs.salary).toBeGreaterThan(0);
+    expect(r.costs.pens).toBeGreaterThan(0);
+    expect(r.net).toBe(r.income - r.stolen - r.costs.total);
+    expect(r.coinsAfter).toBe(Math.round(s.coins));
+  });
+  it('빚으로 3일이 이어지면 다음 날 파업 (충성 직원은 예외), 갚으면 풀린다', async () => {
+    const { s, w } = setup();
+    s.cards.push({ uid: 901, kind: 'staff', staff: 'guide', grade: 2, pay: 0.4, opts: [] }, { uid: 902, kind: 'staff', staff: 'janitor', grade: 2, pay: 0.4, opts: [{ id: 'loyal', v: 1 }] });
+    s.nextUid = 903; s.upgrades.staff = 1; s.staffSlots = [null, null];
+    assignStaff(s, 901); assignStaff(s, 902); w.sync();
+    for (let d = 0; d < 3; d++) { s.coins = -1e6; await oneDay(s, w); w.openPark(); }
+    expect(s.strike).toBe(true);
+    expect(staffTipMul(s)).toBeCloseTo(1, 5); // 안내원 파업
+    expect(placedStaffCards(s).map((c) => c.uid)).toEqual([902]); // 충성 관리인은 일한다
+    s.coins = 1e9; await oneDay(s, w);
+    expect(s.strike).toBe(false);
+  });
+  it('빚이 있으면 동물 · 직원 뽑기 · 뽑기권 모두 막힌다', () => {
+    const s = defaultSave(); s.coins = -10; s.tickets = 3;
+    expect(draw(s, 1)).toBeNull();
+    expect(staffDraw(s, 1)).toBeNull();
+    expect(ticketDraw(s)).toBeNull();
   });
 });

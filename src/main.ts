@@ -37,7 +37,7 @@ const ticketChip = stat('icons_12', hudTickets, '무료 뽑기권');
 const clockText = h('b', {}), clockFill = h('i', {});
 const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
 const rivalText = h('b', {}), rivalFill = h('i', {});
-const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: ${SEASON.days}일 동안 번 코인이 더 많아야 버틸 수 있어요` }, rivalText, h('span', { class: 'bar' }, rivalFill));
+const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
   h('div', { class: 'hud-coins' }, hasPng('icons_01') ? iconSlot('icons_01', 16) : h('i', { class: 'coin-ico' }), hudCoins),
@@ -205,17 +205,24 @@ function showReport(r: import('./game/world').DayReport) {
     h('div', { class: 'fuse-result' },
       h('div', { class: 'reveal-title' }, `${r.day}일째 영업 끝!`),
       h('div', { class: 'report' },
-        h('div', {}, h('b', {}, fmt(r.base + r.bonus + r.janitor)), h('span', {}, '오늘 번 코인')),
+        h('div', { class: 'wide money' },
+          h('div', {}, h('span', {}, '수입'), h('b', { class: 'plus' }, `+${fmt(r.income)}`)),
+          r.stolen ? h('div', {}, h('span', {}, '소매치기'), h('b', { class: 'minus' }, `-${fmt(r.stolen)}`)) : null,
+          h('div', {}, h('span', {}, '직원 월급'), h('b', { class: 'minus' }, `-${fmt(r.costs.salary)}`)),
+          h('div', {}, h('span', {}, '우리 유지비 · 사료비'), h('b', { class: 'minus' }, `-${fmt(r.costs.pens + r.costs.food)}`)),
+          h('div', { class: 'net' }, h('span', {}, '오늘 순이익'), h('b', { class: r.net >= 0 ? 'plus' : 'minus' }, `${r.net >= 0 ? '+' : ''}${fmt(r.net)}`)),
+          h('div', { class: 'after' }, h('span', {}, '남은 코인'), h('b', { class: r.coinsAfter >= 0 ? '' : 'minus' }, fmt(r.coinsAfter)))),
         h('div', {}, h('b', {}, fmt(r.visitors)), h('span', {}, '다녀간 관람객')),
         h('div', {}, h('b', {}, fmt(r.coins)), h('span', {}, '주운 동전')),
         h('div', {}, h('b', {}, fmt(r.bonus + r.janitor)), h('span', {}, '줍기 보너스')),
         h('div', { class: 'wide' }, h('b', {}, `우리 ${r.topPen + 1} · ♥${fmt(r.topAttract)}`), h('span', {}, '오늘의 인기 우리')),
-        r.janitor ? h('div', { class: 'wide' }, h('b', {}, `+${fmt(r.janitor)}`), h('span', {}, '관리인이 폐장 후 주운 동전')) : null,
-        r.lost ? h('div', { class: 'wide' }, h('b', {}, `-${fmt(r.lost)}`), h('span', {}, '못 주워서 사라진 동전 (관리인이 있으면 절반을 주워요)')) : null,
+        r.janitor ? h('div', { class: 'wide' }, h('b', {}, `+${fmt(r.janitor)}`), h('span', {}, '관리인이 폐장 후 주운 동전 (수입에 포함)')) : null,
+        r.lost ? h('div', { class: 'wide' }, h('b', {}, `-${fmt(r.lost)}`), h('span', {}, '못 주워서 사라진 동전 (관리인이 있으면 일부를 주워요)')) : null,
         h('div', { class: `wide vs${ahead ? ' ahead' : ' behind'}` },
-          h('b', {}, `나 ${fmt(r.mine)} vs ${r.rivalName} ${fmt(r.rival)}`),
+          h('b', {}, `규모 ${fmt(r.mine)} vs ${r.rivalName} ${fmt(r.rival)}`),
           h('span', {}, r.season ? '시즌 마지막 날 결과는…' : `${ahead ? `${fmt(r.mine - r.rival)} 앞서는 중` : `${fmt(r.rival - r.mine)} 뒤지는 중`} · 시즌 ${r.seasonDay}/${SEASON.days}일`))),
-      !r.season && !ahead && left === 1 ? h('div', { class: 'warn' }, '⚠ 내일이 마지막 날! 지면 동물원이 문을 닫아요') : null,
+      !r.season && !ahead && left === 1 ? h('div', { class: 'warn' }, '⚠ 내일이 마지막 날! 규모가 작으면 동물원이 문을 닫아요') : null,
+      r.coinsAfter < 0 ? h('div', { class: 'warn' }, r.strikeNext ? `⚠ 빚이 ${r.debtDays}일째! 내일 직원들이 파업해요` : `⚠ 빚 ${fmt(-r.coinsAfter)}코인 · 갚기 전엔 뽑기·공사 불가, 3일 이어지면 파업 (${r.debtDays}일째)`) : null,
       missions.length ? h('div', { class: 'mlist' }, h('div', { class: 'section-title' }, `영업 미션 ${r.missionTickets ? `· 뽑기권 +${r.missionTickets}` : ''}`), ...missions) : null,
       h('button', { class: 'btn', onclick: close }, r.season ? '결과 보기' : '밤 정비 시작')));
   ui.append(back);
@@ -230,7 +237,7 @@ function showSeason(r: import('./game/world').DayReport) {
     const back = h('div', { class: 'overlay' },
       h('div', { class: 'fuse-result win' },
         h('div', { class: 'reveal-title' }, `시즌 ${se.n} 승리!`),
-        h('div', { class: 'sub' }, `${r.rivalName}을(를) ${fmt(r.mine - r.rival)}코인 차이로 이겼어요`),
+        h('div', { class: 'sub' }, `${r.rivalName}을(를) 규모 ${fmt(r.mine - r.rival)} 차이로 이겼어요`),
         h('div', { class: 'offline-amount' }, `+${fmt(se.coins)} · 뽑기권 +${se.tickets}`),
         h('div', { class: 'sub' }, `다음 라이벌: ${next.name} (${next.owner}) · 더 강해졌어요`),
         h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
@@ -244,7 +251,7 @@ function showClosure() {
   const back = h('div', { class: 'overlay closure' },
     h('div', { class: 'fuse-result' },
       h('div', { class: 'reveal-title' }, '동물원 폐원…'),
-      h('div', { class: 'sub' }, `${rivalOf(save.season.n).name}에게 손님을 빼앗겼어요 (나 ${fmt(save.season.mine)} vs ${fmt(save.season.rival)})`),
+      h('div', { class: 'sub' }, `${rivalOf(save.season.n).name}에게 손님을 빼앗겼어요 (규모 ${fmt(save.season.mine)} vs ${fmt(save.season.rival)})`),
       h('div', { class: 'report' },
         h('div', {}, h('b', {}, `${save.day}일`), h('span', {}, '버틴 날')),
         h('div', {}, h('b', {}, `${save.season.n - 1}번`), h('span', {}, '이긴 라이벌')),
@@ -286,11 +293,17 @@ function frame(now: number) {
       if (sd === 1) toast(`새 라이벌 '${rivalOf(save.season.n).name}' 등장! ${SEASON.days}일 안에 더 많이 벌어야 해요`, 'gold', 3200);
       else if (sd === SEASON.days) toast(`${ev.day}일째 아침 · 시즌 마지막 날! 오늘 결판나요`, 'bad', 3000);
       else toast(`${ev.day}일째 아침! 동물원 문을 열었어요`, 'gold', 2200);
+      if (ev.strike) window.setTimeout(() => toast('빚이 3일 넘게 밀려서 오늘은 직원들이 파업해요!', 'bad', 3200), 800);
       persist(); panel.render(true);
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') audio.sfx('coin');
     else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
+    else if (ev.type === 'incident') {
+      if (ev.kind === 'thief') toast(ev.blocked ? '경비원이 소매치기를 잡았어요!' : `소매치기! 오늘 수입 중 ${fmt(ev.loss)}코인을 잃었어요 (경비원이 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
+      else toast(ev.blocked ? '수의사가 동물 감기를 미리 막았어요!' : `우리 ${ev.pen + 1} 동물들이 감기에 걸렸어요. 오늘 매력 −40% (수의사가 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
+      audio.sfx(ev.blocked ? 'buy' : 'deny');
+    }
     else if (ev.type === 'vip') { audio.sfx('rare'); toast(`VIP 손님이 ${fmt(ev.amount)}코인을 던졌어요!`, 'gold', 2200); }
   }
   world.events.length = 0;
@@ -304,6 +317,7 @@ function frame(now: number) {
 function updateHud() {
   const inc = world.incomePerMin();
   hudCoins.textContent = fmt(save.coins);
+  hudCoins.parentElement!.classList.toggle('debt', save.coins < 0);
   hudIncome.textContent = `${fmt(inc.base)}/분 · 줍기 +${fmt(inc.bonus)}`;
   hudAttract.textContent = fmt(world.attract);
   hudAnimals.textContent = `${placedAnimals(save)}/${penCount(save) * penSize(save)}`;
@@ -322,9 +336,9 @@ function updateHud() {
   clockFill.style.width = `${(world.phaseT / 180) * 100}%`;
   openBtn.classList.toggle('hidden', !night || !!save.season.lost);
   // 라이벌
-  const mine = save.season.mine, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
+  const mine = world.scale, rv = world.rivalNow, dleft = SEASON.days - world.seasonDay;
   rivalChip.classList.toggle('losing', mine < rv);
-  rivalText.textContent = `🏆 나 ${fmt(mine)} vs ${rivalOf(save.season.n).name} ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`;
+  rivalText.textContent = `🏆 규모 ${fmt(mine)} vs ${rivalOf(save.season.n).name} ${fmt(rv)} · ${dleft <= 0 ? '마지막 날' : `D-${dleft}`}`;
   rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;
   const pr = panel.el.getBoundingClientRect();
   // 세로 화면 서랍이 필드를 덮을 때만 서랍 위로

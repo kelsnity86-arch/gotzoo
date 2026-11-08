@@ -1,12 +1,11 @@
 // 규칙 계산 (화면 없음): 뽑기, 합성, 배치, 매력도, 업그레이드, 승급. 모두 SaveData를 직접 바꾼다.
 import { ANIMALS, animalsOfGrade } from '../data/animals';
 import { GRADES, type Grade } from '../data/grades';
-import { STAFF, type StaffKind } from '../data/staff';
-import { DAY, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
-import { defaultSave, type Card, type MissionKind, type SaveData } from './state';
+import { JANITOR_SHARE, STAFF, STAFF_CAP, STAFF_DRAW_MUL, STAFF_OPTS, STAFF_OPT_COUNT, STAFF_PAY, STAFF_REFUND, STAFF_SCALE, staffDef, type StaffKind, type StaffOptId } from '../data/staff';
+import { DAY, FEED, SCALE, UPKEEP, FUSION_CHANCE, FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, SAME_HABITAT_BONUS, SAME_SPECIES_BONUS, STAGE_REQ, STAGE_TIP_MUL, UPGRADES, upgradeDef, type UpgradeId } from '../data/balance';
+import { defaultSave, type Card, type MissionKind, type SaveData, type StaffCard } from './state';
 import { DEX_SETS, dexSetMembers } from '../data/dex';
 import { MISSION_BONUS, MISSION_K, MISSION_POOL, MISSION_REWARD } from '../data/missions';
-import { STAFF_FX } from '../data/staff';
 
 export type Rng = () => number;
 
@@ -29,14 +28,17 @@ export const placedAnimals = (s: SaveData) => s.pens.flat().length;
 // ── 뽑기 ──
 export const drawPrice = (s: SaveData) => GACHA.price[Math.min(s.stage, MAX_STAGE) - 1];
 
-function rollGrade(rng: Rng): Grade {
+/** 등급 뽑기. luck = 영웅 이상 확률 추가 (일반에서 떼어 영웅 3/4 · 전설 1/4로) */
+function rollGrade(rng: Rng, luck = 0): Grade {
   let r = rng();
-  for (const g of GRADES) { if (r < g.chance) return g.id; r -= g.chance; }
+  const ch = GRADES.map((g) => g.chance);
+  ch[0] -= luck; ch[3] += luck * 0.75; ch[4] += luck * 0.25;
+  for (let i = 0; i < ch.length; i++) { if (r < ch[i]) return i as Grade; r -= ch[i]; }
   return 0;
 }
 const pick = <T>(list: readonly T[], rng: Rng) => list[Math.min(list.length - 1, Math.floor(rng() * list.length))];
 
-type NewCard = { kind: 'animal'; animal: number } | { kind: 'staff'; staff: StaffKind };
+type NewCard = { kind: 'animal'; animal: number } | Omit<StaffCard, 'uid'>;
 function addCard(s: SaveData, card: NewCard): Card {
   const c = { ...card, uid: s.nextUid++ } as Card;
   s.cards.push(c);
@@ -61,18 +63,56 @@ export function draw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | n
   return rollCards(s, n, rng);
 }
 
+// ── 직원 뽑기 (코인) ──
+export const staffDrawPrice = (s: SaveData) => drawPrice(s) * STAFF_DRAW_MUL;
+const round3 = (v: number) => Math.round(v * 1000) / 1000;
+/** 직원 카드 하나 만들기: 종류 · 등급 · 월급 · 특수옵션 랜덤 */
+export function rollStaff(rng: Rng, grade: Grade = rollGrade(rng), kind: StaffKind = pick(STAFF, rng).kind): Omit<StaffCard, 'uid'> {
+  const [a, b] = STAFF_PAY[grade];
+  const pool = STAFF_OPTS.filter((o) => !o.legendOnly || grade === 4).slice();
+  const opts: StaffCard['opts'] = [];
+  for (let i = 0; i < STAFF_OPT_COUNT[grade] && pool.length; i++) {
+    const o = pool.splice(Math.floor(rng() * pool.length), 1)[0];
+    const step = o.step ?? 0.01;
+    opts.push({ id: o.id, v: round3(Math.round((o.range[0] + rng() * (o.range[1] - o.range[0])) / step) * step) });
+  }
+  return { kind: 'staff', staff: kind, grade, pay: round3(a + rng() * (b - a)), opts };
+}
+/** 직원 n명 뽑기. 코인이 모자라면(빚 포함) null */
+export function staffDraw(s: SaveData, n: number, rng: Rng = Math.random): Card[] | null {
+  const cost = staffDrawPrice(s) * n;
+  if (s.coins < cost) return null;
+  s.coins -= cost;
+  const out: Card[] = [];
+  for (let i = 0; i < n; i++) out.push(addCard(s, rollStaff(rng)));
+  return out;
+}
+/** 해고: 직원 뽑기 가격의 일부를 돌려받는다. 돌려받은 코인 (실패하면 -1) */
+export function fireStaff(s: SaveData, uid: number): number {
+  const c = cardById(s, uid);
+  if (!c || c.kind !== 'staff') return -1;
+  const refund = Math.round(staffDrawPrice(s) * STAFF_REFUND[c.grade]);
+  unplace(s, uid);
+  s.cards = s.cards.filter((x) => x.uid !== uid);
+  s.coins += refund;
+  return refund;
+}
+export const fireRefund = (s: SaveData, c: StaffCard) => Math.round(staffDrawPrice(s) * STAFF_REFUND[c.grade]);
+/** 이 직원의 하루 월급 (코인) */
+export const costUnit = (s: SaveData) => UPKEEP.unit[Math.min(s.stage, UPKEEP.unit.length) - 1];
+export const staffPay = (s: SaveData, c: StaffCard) => Math.round(costUnit(s) * STAFF_DRAW_MUL * c.pay * (1 - (c.opts.find((o) => o.id === 'thrifty')?.v ?? 0)));
+
 function rollCards(s: SaveData, n: number, rng: Rng): Card[] {
   const out: Card[] = [];
   for (let i = 0; i < n; i++) {
-    if (rng() < GACHA.staffChance) out.push(addCard(s, { kind: 'staff', staff: pick(STAFF, rng).kind as StaffKind }));
-    else out.push(addCard(s, { kind: 'animal', animal: pick(animalsOfGrade(rollGrade(rng)), rng).id }));
+    out.push(addCard(s, { kind: 'animal', animal: pick(animalsOfGrade(rollGrade(rng, optSum(s, 'luck'))), rng).id }));
   }
   return out;
 }
 
 /** 무료 뽑기권 1장으로 1회 뽑기 */
 export function ticketDraw(s: SaveData, rng: Rng = Math.random): Card[] | null {
-  if (s.tickets <= 0) return null;
+  if (s.tickets <= 0 || s.coins < 0) return null; // 빚이 있으면 못 뽑는다
   s.tickets--;
   s.stats.draws++;
   return rollCards(s, 1, rng);
@@ -253,11 +293,68 @@ export function totalAttract(s: SaveData, fed: (pen: number) => number = () => 1
 export const stageTipMul = (s: SaveData) => Math.pow(STAGE_TIP_MUL, s.stage - 1);
 
 // ── 직원 효과 ──
-const placedStaff = (s: SaveData, kind: string) => s.staffSlots.filter((u, i) => u !== null && i < staffSlotCount(s) && (cardById(s, u) as { staff?: string } | undefined)?.staff === kind).length;
-/** 안내원 수만큼 투척액 + · 도감 등급 보상 */
-export const staffTipMul = (s: SaveData) => 1 + STAFF_FX.guideTip * placedStaff(s, 'guide') + dexTipBonus(s);
-/** 관리인 수만큼 바닥 동전 수명 + */
-export const coinLifeBonus = (s: SaveData) => STAFF_FX.janitorLife * placedStaff(s, 'janitor');
+/** 배치된 직원 카드 (슬롯 수 안). working = 파업 중이면 '충성' 직원만 */
+export function placedStaffCards(s: SaveData, working = true): StaffCard[] {
+  const out: StaffCard[] = [];
+  s.staffSlots.forEach((u, i) => {
+    if (u === null || i >= staffSlotCount(s)) return;
+    const c = cardById(s, u);
+    if (c?.kind !== 'staff') return;
+    if (working && s.strike && !c.opts.some((o) => o.id === 'loyal')) return;
+    out.push(c);
+  });
+  return out;
+}
+/** 일하는 직원 중 이 종류 효과 합 (겹치면 최대치까지) */
+export function staffSum(s: SaveData, kind: StaffKind): number {
+  const v = placedStaffCards(s).filter((c) => c.staff === kind).reduce((t, c) => t + staffDef(kind).values[c.grade], 0);
+  const cap = (STAFF_CAP as Record<string, number>)[kind];
+  return cap !== undefined ? Math.min(cap, v) : v;
+}
+/** 일하는 직원의 특수옵션 합 */
+export const optSum = (s: SaveData, id: StaffOptId) => placedStaffCards(s).reduce((t, c) => t + c.opts.filter((o) => o.id === id).reduce((a, o) => a + o.v, 0), 0);
+/** 투척액 배율: 안내원 + '말솜씨' + 도감 등급 보상 */
+export const staffTipMul = (s: SaveData) => 1 + staffSum(s, 'guide') + optSum(s, 'tips') + dexTipBonus(s);
+/** 관리인: 바닥 동전 수명 + */
+export const coinLifeBonus = (s: SaveData) => staffSum(s, 'janitor');
+/** 폐장 후 바닥 동전 회수율: 관리인 등급별, '야근'이면 100% */
+export function closingShare(s: SaveData): number {
+  if (optSum(s, 'overtime') > 0) return 1;
+  const js = placedStaffCards(s).filter((c) => c.staff === 'janitor');
+  return js.length ? Math.max(...js.map((c) => JANITOR_SHARE[c.grade])) : 0;
+}
+/** 관람객 수 배율: 홍보 담당 + '인기인' */
+export const visitorMul = (s: SaveData) => 1 + staffSum(s, 'promoter') + optSum(s, 'crowd');
+/** 먹이 효과 */
+export const feedBonus = (s: SaveData) => FEED.bonus * (1 + optSum(s, 'feeder'));
+/** 이벤트 간격 배율 · 추가 지속 시간 · VIP 배율 */
+export const eventGapMul = (s: SaveData) => 1 - staffSum(s, 'performer');
+export const eventExtraSec = (s: SaveData) => optSum(s, 'party');
+export const vipMul = (s: SaveData) => Math.max(1, placedStaffCards(s).reduce((m, c) => m * (c.opts.find((o) => o.id === 'vip')?.v ?? 1), 1));
+/** 수거 직원 · 사육사 속도 배율 (그 직원 하나의 등급) */
+export const staffSpeed = (c: StaffCard) => staffDef(c.staff).values[c.grade];
+
+// ── 하루 비용: 월급 + 유지비 ──
+export function dailyCosts(s: SaveData) {
+  const unit = costUnit(s);
+  const salary = placedStaffCards(s, false).reduce((t, c) => t + staffPay(s, c), 0);
+  let feed = 0;
+  for (const u of s.pens.flat()) { const c = cardById(s, u); if (c?.kind === 'animal') feed += UPKEEP.feed[ANIMALS[c.animal].grade]; }
+  const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver'));
+  const pens = Math.round(UPKEEP.perPen * penCount(s) * unit * (1 - cut));
+  const food = Math.round(feed * unit * (1 - cut));
+  return { salary, pens, food, cut, total: salary + pens + food };
+}
+
+// ── 동물원 규모 (라이벌 대결) ──
+export function zooScale(s: SaveData): number {
+  let v = 0;
+  for (const u of s.pens.flat()) { const c = cardById(s, u); if (c?.kind === 'animal') v += SCALE.animal[ANIMALS[c.animal].grade]; }
+  for (const c of placedStaffCards(s, false)) v += STAFF_SCALE[c.grade];
+  for (const lv of Object.values(s.upgrades)) v += lv * SCALE.upgradeLv;
+  if (s.coins < 0) v -= (-s.coins / drawPrice(s)) * SCALE.debtPerDraw;
+  return Math.round(v);
+}
 
 // ── 도감 보상 ──
 export const dexSetDone = (s: SaveData, id: string) => { const set = DEX_SETS.find((x) => x.id === id)!; return dexSetMembers(set).every((a) => s.dex[a.id]); };

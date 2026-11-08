@@ -317,3 +317,27 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .mrow { display: flex; justify-content: space-between; gap: 8px; padding: 4px 8px; border-radius: 6px; background: #f3e6cf; color: #8b7a62; font-size: 13px; }
 .mrow.ok { background: #e7f6dc; color: #3d6b2a; }
 .mrow small { font-size: 12px; }
+
+/* 직원 · 돈 */
+.hud-coins.debt { border-color: #c94c4c; background: #4a1c1c; } .hud-coins.debt b { color: #ff9a9a; }
+.debt-note { padding: 6px 10px; border-radius: 8px; background: #fbe1df; color: #8b1e2d; font-size: 13px; margin: 6px 0; }
+.draw-btns.two { grid-template-columns: repeat(2, 1fr); }
+.staff-hero { padding: 10px 12px; }
+.cost-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 8px 0; }
+.cost-box > div { display: flex; flex-direction: column; align-items: center; padding: 6px; border-radius: 8px; background: #fffaf0; font-size: 12px; color: #6b5536; }
+.cost-box b { font-weight: 400; font-size: 15px; color: #8b1e2d; }
+.cost-box .total { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; background: #f3e1c4; }
+.staff-slot .opts { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 2px; }
+.staff-slot .opt { font-size: 11px; padding: 0 6px; border-radius: 6px; background: #efe0ff; color: #5d275d; }
+.staff-slot .pay { color: #8b1e2d; }
+.staff-slot .col-btns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; }
+.staff-slot.g-epic { box-shadow: inset 3px 0 0 #8e44ad; } .staff-slot.g-legend { box-shadow: inset 3px 0 0 #e0a526; } .staff-slot.g-rare { box-shadow: inset 3px 0 0 #3b5dc9; } .staff-slot.g-uncommon { box-shadow: inset 3px 0 0 #38a35b; }
+.gtag { font-size: 11px; padding: 0 6px; border-radius: 6px; color: #fff; background: #8b8f94; }
+.gtag.g-uncommon { background: #38a35b; } .gtag.g-rare { background: #3b5dc9; } .gtag.g-epic { background: #8e44ad; } .gtag.g-legend { background: #e0a526; } .gtag.strike { background: #c94c4c; margin-left: 3px; }
+.btn.danger { background: #c94c4c; }
+.report .money { display: grid; grid-template-columns: 1fr; gap: 2px; align-items: stretch; }
+.report .money > div { display: flex; justify-content: space-between; width: 100%; }
+.report .money span { font-size: 13px; }
+.report .money b { font-size: 15px; }
+.report .money .net { border-top: 1px dashed #d8c7a6; padding-top: 3px; } .report .money .net b { font-size: 18px; }
+.report b.plus { color: #2e7d32; } .report b.minus { color: #c0392b; }

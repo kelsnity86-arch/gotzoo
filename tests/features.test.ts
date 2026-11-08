@@ -1,12 +1,13 @@
 // 추가 기능: 미션·뽑기권, 도감 보상, 자리 비움 수익, 이벤트, 새 직원, 저장 코드
 import { describe, expect, it } from 'vitest';
-import { defaultSave } from '../src/game/state';
+import { defaultSave, normalize } from '../src/game/state';
+import { STAFF_OPT_COUNT, STAFF_PAY } from '../src/data/staff';
 import { exportCode, importCode } from '../src/game/savecode';
 import { ANIMALS } from '../src/data/animals';
 import { DEX_SETS } from '../src/data/dex';
 import { World } from '../src/game/world';
 import {
-  assignStaff, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
+  assignStaff, draw, fireStaff, staffDraw, claimDexSet, claimMission, claimMissionBonus, coinLifeBonus, ensureMissions, settleMissions, freeDraw, habitatDexBonus,
   offlineEarnings, penAttract, placeAnimal, staffTipMul, ticketDraw,
 } from '../src/game/rules';
 
@@ -71,12 +72,45 @@ describe('이벤트 · 새 직원', () => {
     for (let i = 0; i < 30 * 21; i++) w.update(1 / 30, null);
     expect(w.event).toBeNull();
   });
-  it('안내원은 투척액 +12%, 관리인은 동전 수명 +30초', () => {
+  it('직원 효과는 등급을 따른다: 고급 안내원 +12%, 고급 관리인 +30초', () => {
     const s = defaultSave(); s.upgrades.staff = 1; s.staffSlots = [null, null];
-    s.cards.push({ uid: 1, kind: 'staff', staff: 'guide' }, { uid: 2, kind: 'staff', staff: 'janitor' }); s.nextUid = 3;
+    s.cards.push({ uid: 1, kind: 'staff', staff: 'guide', grade: 1, pay: 0.3, opts: [] }, { uid: 2, kind: 'staff', staff: 'janitor', grade: 1, pay: 0.3, opts: [] }); s.nextUid = 3;
     assignStaff(s, 1); assignStaff(s, 2);
     expect(staffTipMul(s)).toBeCloseTo(1.12, 5);
     expect(coinLifeBonus(s)).toBe(30);
+  });
+});
+
+describe('직원 뽑기 · 해고', () => {
+  it('직원 뽑기는 동물 뽑기의 3배, 등급 · 월급 범위 · 옵션 수가 맞다', () => {
+    const s = defaultSave(); s.coins = 1e7;
+    const out = staffDraw(s, 200)!;
+    expect(s.coins).toBe(1e7 - 300 * 200);
+    for (const c of out) {
+      if (c.kind !== 'staff') throw new Error('직원만 나와야 해요');
+      const [a, b] = STAFF_PAY[c.grade];
+      expect(c.pay).toBeGreaterThanOrEqual(a - 1e-9); expect(c.pay).toBeLessThanOrEqual(b + 1e-9);
+      expect(c.opts).toHaveLength(STAFF_OPT_COUNT[c.grade]);
+      if (c.grade < 4) expect(c.opts.some((o) => o.id === 'luck')).toBe(false);
+    }
+  });
+  it('동물 뽑기에서는 직원이 나오지 않는다', () => {
+    const s = defaultSave(); s.coins = 1e7;
+    expect(draw(s, 300)!.every((c) => c.kind === 'animal')).toBe(true);
+  });
+  it('해고하면 등급별로 돌려받고 슬롯에서 빠진다', () => {
+    const s = defaultSave();
+    s.cards.push({ uid: 1, kind: 'staff', staff: 'guide', grade: 4, pay: 0.8, opts: [] }); s.nextUid = 2;
+    assignStaff(s, 1);
+    expect(fireStaff(s, 1)).toBe(Math.round(300 * 0.25));
+    expect(s.cards).toHaveLength(0);
+    expect(s.staffSlots[0]).toBeNull();
+  });
+  it('예전 저장의 직원 카드는 등급 · 월급이 채워진다', () => {
+    const n = normalize({ cards: [{ uid: 4, kind: 'staff', staff: 'keeper' }], nextUid: 5 });
+    const c = n.cards[0];
+    expect(c.kind === 'staff' && c.grade).toBe(1);
+    expect(c.kind === 'staff' && c.pay).toBeGreaterThan(0);
   });
 });
 

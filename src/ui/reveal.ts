@@ -3,6 +3,7 @@ import { GRADES } from '../data/grades';
 import type { Card } from '../game/state';
 import { audio } from './audio';
 import { cardEl, cardGrade } from './cardview';
+import { staffFrame } from '../render/sprites';
 import { h, pix } from './dom';
 import { hasPng } from '../render/sprites';
 
@@ -25,9 +26,10 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   root.append(back);
   audio.sfx('draw');
   // 전설: 화면 가득 금빛 연출을 먼저
-  const legend = cards.find((c) => c.kind === 'animal' && cardGrade(c) === 4);
-  if (legend && legend.kind === 'animal' && !reduce) {
-    const show = h('div', { class: 'legend-burst' }, h('div', { class: 'rays' }), pix(`animal_${String(legend.animal).padStart(3, '0')}`, 176), h('div', { class: 'legend-text' }, '전설 등장!'));
+  const legend = cards.find((c) => cardGrade(c) === 4);
+  if (legend && !reduce) {
+    const art = legend.kind === 'animal' ? pix(`animal_${String(legend.animal).padStart(3, '0')}`, 176) : pix(staffFrame(legend.staff, 0), 132);
+    const show = h('div', { class: 'legend-burst' }, h('div', { class: 'rays' }), art, h('div', { class: 'legend-text' }, legend.kind === 'animal' ? '전설 등장!' : '전설 직원 합류!'));
     back.append(show);
     window.setTimeout(() => audio.sfx('legend'), 600);
     show.addEventListener('click', () => show.remove());

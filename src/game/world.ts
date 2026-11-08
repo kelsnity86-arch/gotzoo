@@ -1,11 +1,11 @@
 // 동물원 필드 시뮬레이션 (화면 없음). 위쪽 관객존: 관람객이 걷다 멈춰 동전을 던진다. 아래쪽 동물존: 우리 안을 동물이 돌아다닌다.
 // 좌표 단위 = 도트 1칸. 타일 8칸.
 import { ANIMALS } from '../data/animals';
-import { COIN, DAY, FEED, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
+import { COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
-import type { Mission, SaveData } from './state';
-import { SEASON, rivalDaily, rivalOf } from '../data/rivals';
-import { bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, coinLifeBonus, penCount, penSize, stageTipMul, staffTipMul, totalAttract, upValue } from './rules';
+import type { Mission, SaveData, StaffCard } from './state';
+import { SEASON, rivalOf, rivalScale } from '../data/rivals';
+import { bumpMission, ensureMissions, settleMissions, penAttract as totalAttractPen, cardById, closingShare, coinLifeBonus, dailyCosts, eventExtraSec, eventGapMul, feedBonus, penCount, penSize, placedStaffCards, stageTipMul, staffSpeed, staffSum, staffTipMul, totalAttract, upValue, vipMul, visitorMul, zooScale } from './rules';
 import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 
 export const TILE = 8;
@@ -70,13 +70,18 @@ export type WorldEvent =
   | { type: 'eventEnd'; id: EventId }
   | { type: 'vip'; amount: number }
   | { type: 'night'; report: DayReport }
-  | { type: 'morning'; day: number };
+  | { type: 'morning'; day: number; strike: boolean }
+  | { type: 'incident'; kind: 'thief' | 'sick'; blocked: boolean; loss: number; pen: number };
 
 /** 하루 정산 */
 export interface DayReport {
   day: number; base: number; bonus: number; visitors: number; coins: number; janitor: number; lost: number; topPen: number; topAttract: number;
   missions: Mission[]; missionTickets: number;
-  /** 라이벌: 시즌 며칠째, 내 누적 · 라이벌 누적 (오늘까지) */
+  /** 돈: 오늘 수입(관리인 회수 포함) − 소매치기 − 비용 = 순이익, 정산 후 코인 */
+  income: number; stolen: number; costs: { salary: number; pens: number; food: number; total: number }; net: number; coinsAfter: number;
+  /** 빚으로 끝난 날 연속 수 · 내일 파업하는지 */
+  debtDays: number; strikeNext: boolean;
+  /** 라이벌: 시즌 며칠째, 내 규모 · 라이벌 규모 */
   rivalName: string; seasonDay: number; mine: number; rival: number;
   /** 시즌 마지막 날이면 결과 */
   season: { result: 'win' | 'lose'; n: number; coins: number; tickets: number } | null;
@@ -93,7 +98,10 @@ export class World {
   /** 하루: 낮(day) → 해 질 녘(dusk) → 밤(night) */
   phase: 'day' | 'dusk' | 'night' = 'day';
   phaseT = 0;
-  private today = { base: 0, bonus: 0, visitors: 0, coins: 0 };
+  private today = { base: 0, bonus: 0, visitors: 0, coins: 0, stolen: 0 };
+  /** 오늘 사고 시각(-1 = 없음) · 감기 걸린 우리(-1 = 없음) */
+  private incidentAt = -1;
+  sickPen = -1;
   /** 진행 중인 이벤트 */
   event: { id: EventId; left: number } | null = null;
   private eventTimer: number = EVENT_TIMING.firstAt;
@@ -114,6 +122,7 @@ export class World {
 
   constructor(private save: SaveData, private rng: () => number = Math.random) {
     // 다시 열어도 하루를 이어서
+    this.scheduleIncident();
     if (save.atNight) this.phase = 'night';
     else { this.phaseT = Math.min(save.dayT, DAY.dayLen - 1); if (this.phaseT >= DAY.dayLen - DAY.duskLen) this.phase = 'dusk'; }
   }
@@ -171,10 +180,10 @@ export class World {
     }
   }
 
-  get attract() { return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + FEED.bonus : 1)); }
+  get attract() { const fb = feedBonus(this.save); return totalAttract(this.save, (i) => (this.fedLeft[i] > 0 ? 1 + fb : 1) * (i === this.sickPen ? INCIDENT.sickMul : 1)); }
   get gateCap() { return upValue(this.save, 'gate'); }
   /** 분당 관람객 수요와 실제 입장 수 */
-  get visitorDemand() { return VISITOR.basePerMin + VISITOR.perAttract * this.attract; }
+  get visitorDemand() { return (VISITOR.basePerMin + VISITOR.perAttract * this.attract) * visitorMul(this.save); }
   get visitorRate() { return Math.min(this.gateCap, this.visitorDemand) * (this.event ? eventDef(this.event.id).rateMul : 1); }
   /** 수요가 한도를 넘친 만큼 투척액이 오른다 */
   get overflowMul() {
@@ -204,7 +213,7 @@ export class World {
 
   private earn(base: number, bonus: number) {
     this.today.base += base; this.today.bonus += bonus;
-    if (this.phase !== 'night') { this.save.season.mine += base + bonus; bumpMission(this.save, 'earn', base + bonus); }
+    if (this.phase !== 'night') bumpMission(this.save, 'earn', base + bonus);
     this.save.coins += base + bonus;
     this.save.stats.coinsEarned += base + bonus;
     if (bonus) this.save.stats.coinsPicked += bonus;
@@ -217,12 +226,19 @@ export class World {
   get phaseLeft() { return this.phase === 'night' ? Infinity : DAY.dayLen - this.phaseT; }
   /** 시즌 며칠째 (1 ~ SEASON.days) */
   get seasonDay() { return this.save.day - this.save.season.start + 1; }
-  /** 라이벌 누적 수입 (낮 동안 조금씩 오른다) */
+  /** 라이벌 규모 (낮 동안 어제 규모에서 오늘 규모로 조금씩 커진다) */
   get rivalNow() {
-    const s = this.save.season;
-    if (this.phase === 'night') return s.rival;
-    return s.rival + rivalDaily(this.save.day) * Math.min(1, this.phaseT / (DAY.dayLen - DAY.duskLen));
+    const d = this.save.day, k = this.seasonDay;
+    const today = rivalScale(k, this.save.season.n);
+    if (this.phase === 'night') return today;
+    const prev = k > 1 ? rivalScale(k - 1, this.save.season.n) : today * 0.9;
+    void d;
+    return Math.round(prev + (today - prev) * Math.min(1, this.phaseT / (DAY.dayLen - DAY.duskLen)));
   }
+  /** 내 동물원 규모 */
+  get scale() { return zooScale(this.save); }
+  /** 오늘 파업 중인지 */
+  get striking() { return this.save.strike; }
   get isNight() { return this.phase === 'night'; }
 
   /** 밤 → 아침 (개장하기) */
@@ -231,16 +247,41 @@ export class World {
     this.phase = 'day'; this.phaseT = 0;
     this.save.day = (this.save.day ?? 1) + 1;
     this.save.atNight = false; this.save.dayT = 0;
-    this.today = { base: 0, bonus: 0, visitors: 0, coins: 0 };
+    this.today = { base: 0, bonus: 0, visitors: 0, coins: 0, stolen: 0 };
+    this.sickPen = -1;
+    this.scheduleIncident();
     ensureMissions(this.save, this.rng);
-    this.events.push({ type: 'morning', day: this.save.day });
+    this.events.push({ type: 'morning', day: this.save.day, strike: this.save.strike });
+  }
+
+  private scheduleIncident() {
+    this.incidentAt = this.rng() < INCIDENT.chance ? INCIDENT.at[0] + this.rng() * (INCIDENT.at[1] - INCIDENT.at[0]) : -1;
+  }
+  /** 사고: 소매치기(경비원이 막음) · 동물 감기(수의사가 막음) */
+  private incident() {
+    const kind: 'thief' | 'sick' = this.rng() < 0.5 ? 'thief' : 'sick';
+    const blocked = this.rng() < staffSum(this.save, kind === 'thief' ? 'guard' : 'vet');
+    let loss = 0, pen = -1;
+    if (!blocked && kind === 'thief') {
+      loss = Math.round((this.today.base + this.today.bonus) * INCIDENT.thiefShare);
+      this.save.coins -= loss; this.today.stolen += loss;
+    }
+    if (!blocked && kind === 'sick') {
+      const filled = this.layout.pens.map((_, i) => i).filter((i) => this.save.pens[i]?.length);
+      if (!filled.length) return;
+      pen = filled[Math.floor(this.rng() * filled.length)];
+      this.sickPen = pen;
+    }
+    this.events.push({ type: 'incident', kind, blocked, loss, pen });
   }
 
   private updateDay(dt: number) {
     if (!this.animals.length && this.phase === 'day') return; // 동물이 없으면 시간이 흐르지 않는다
     if (this.phase === 'night' || this.save.season.lost) return; // 밤은 '개장하기'를 누를 때까지
+    const before = this.phaseT;
     this.phaseT += dt;
     this.save.dayT = this.phaseT;
+    if (this.incidentAt >= 0 && before < this.incidentAt && this.phaseT >= this.incidentAt) { this.incidentAt = -1; this.incident(); }
     if (this.phase === 'day' && this.phaseT >= DAY.dayLen - DAY.duskLen) {
       this.phase = 'dusk';
       for (const v of this.visitors) if (v.state === 'walk') v.state = 'leave';
@@ -250,15 +291,16 @@ export class World {
   /** 폐장: 바닥 동전 정리, 정산 */
   private closePark() {
     if (this.event) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; }
-    const janitors = this.staff.filter((e) => e.kind === 'janitor').length;
+    const sv = this.save;
+    // 바닥 동전: 관리인 등급만큼 회수 ('야근'이면 전부), 나머지는 사라진다
+    const share = closingShare(sv);
     let janitor = 0, lost = 0;
     for (const c of this.coins) {
       if (c.picked) continue;
-      if (janitors) { const v = Math.round(c.value * DAY.janitorShare); janitor += v; } else lost += c.value;
+      const v = Math.round(c.value * share); janitor += v; lost += c.value - v;
     }
     if (janitor) this.earn(0, janitor);
     this.phase = 'night'; this.phaseT = 0;
-    const sv = this.save;
     sv.atNight = true; sv.dayT = 0;
     this.coins = [];
     this.visitors = [];
@@ -267,16 +309,22 @@ export class World {
     // 미션 정산
     const missions = (sv.missions?.day === sv.day ? sv.missions.list : []).map((m) => ({ ...m }));
     const missionTickets = settleMissions(sv);
-    // 라이벌 정산
+    // 돈 정산: 월급 + 유지비
+    const c = dailyCosts(sv);
+    sv.coins -= c.total;
+    const income = this.today.base + this.today.bonus;
+    const net = income - this.today.stolen - c.total;
+    sv.debtDays = sv.coins < 0 ? sv.debtDays + 1 : 0;
+    sv.strike = sv.debtDays >= DEBT.strikeAfter;
+    // 라이벌: 규모 비교
     const se = sv.season;
-    se.rival += rivalDaily(sv.day);
     sv.records.bestDay = Math.max(sv.records.bestDay, sv.day);
     const seasonDay = this.seasonDay;
-    const base = { rivalName: rivalOf(se.n).name, seasonDay, mine: Math.round(se.mine), rival: Math.round(se.rival) };
+    const mine = zooScale(sv), rival = rivalScale(seasonDay, se.n);
     let season: DayReport['season'] = null;
     if (seasonDay >= SEASON.days) {
-      if (se.mine >= se.rival) {
-        const coins = Math.round(se.mine * SEASON.winCoinShare), tickets = SEASON.winTickets;
+      if (mine >= rival) {
+        const coins = Math.round(Math.max(0, income) * SEASON.winDays), tickets = SEASON.winTickets;
         sv.coins += coins; sv.tickets += tickets;
         sv.records.bestSeasons = Math.max(sv.records.bestSeasons, se.n);
         season = { result: 'win', n: se.n, coins, tickets };
@@ -286,7 +334,14 @@ export class World {
         se.lost = true;
       }
     }
-    const report: DayReport = { day: sv.day, ...this.today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets, ...base, season };
+    se.mine = mine; se.rival = rival;
+    const { stolen, ...today } = this.today;
+    const report: DayReport = {
+      day: sv.day, ...today, janitor, lost, topPen, topAttract: Math.round(topAttract), missions, missionTickets,
+      income, stolen, costs: { salary: c.salary, pens: c.pens, food: c.food, total: c.total }, net, coinsAfter: Math.round(sv.coins),
+      debtDays: sv.debtDays, strikeNext: sv.strike,
+      rivalName: rivalOf(se.n).name, seasonDay, mine, rival, season,
+    };
     this.events.push({ type: 'night', report });
   }
 
@@ -367,15 +422,17 @@ export class World {
     if (!this.animals.length || this.phase !== 'day') return;
     if (this.event) {
       this.event.left -= dt;
-      if (this.event.left <= 0) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; this.eventTimer = EVENT_TIMING.gapMin + this.rng() * (EVENT_TIMING.gapMax - EVENT_TIMING.gapMin); }
+      if (this.event.left <= 0) { this.events.push({ type: 'eventEnd', id: this.event.id }); this.event = null; this.eventTimer = (EVENT_TIMING.gapMin + this.rng() * (EVENT_TIMING.gapMax - EVENT_TIMING.gapMin)) * eventGapMul(this.save); }
       return;
     }
     this.eventTimer -= dt;
     if (this.eventTimer > 0) return;
-    const total = EVENTS.reduce((a, e) => a + e.weight, 0);
+    const vm = vipMul(this.save);
+    const w = (e: (typeof EVENTS)[number]) => e.weight * (e.id === 'vip' ? vm : 1);
+    const total = EVENTS.reduce((a, e) => a + w(e), 0);
     let r = this.rng() * total;
-    const ev = EVENTS.find((e) => (r -= e.weight) <= 0) ?? EVENTS[0];
-    this.event = { id: ev.id, left: EVENT_TIMING.durationSec };
+    const ev = EVENTS.find((e) => (r -= w(e)) <= 0) ?? EVENTS[0];
+    this.event = { id: ev.id, left: EVENT_TIMING.durationSec + eventExtraSec(this.save) };
     this.events.push({ type: 'eventStart', id: ev.id });
     if (ev.id === 'vip') this.spawnVisitor(true);
   }
@@ -396,7 +453,11 @@ export class World {
   private throwCoin(v: VisitorEnt) {
     this.today.visitors++;
     bumpMission(this.save, 'visitors', 1);
-    const tip = Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * (v.vip ? EVENT_TIMING.vipTipMul : 1));
+    const raw = (VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul;
+    const tip = Math.round(raw * (v.vip ? EVENT_TIMING.vipTipMul : 1));
+    // 매표원: 관람객마다 입장료 (투척액 기준, VIP 배율 제외)
+    const fee = Math.round(raw * staffSum(this.save, 'ticket'));
+    if (fee > 0) this.earn(fee, 0);
     if (v.vip) { this.save.stats.vips++; this.events.push({ type: 'vip', amount: tip }); this.floats.push({ x: v.x, y: v.y - 16, text: `VIP +${tip}`, t: 0, color: '#f7c948' }); }
     this.earn(tip, 0); // 기본 수입은 던지는 순간 바로
     this.events.push({ type: 'tip', amount: tip, x: v.x, y: v.y - 12 });
@@ -427,12 +488,16 @@ export class World {
     if (by === 'hand') { this.feedCooldown[pen] = FEED.manualCooldown; bumpMission(this.save, 'feed', 1); }
     this.events.push({ type: 'feed', pen, by });
     const r = this.layout.pens[pen];
-    if (r) this.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: '냠냠! 매력 +10%', t: 0, color: '#ffc8dd' });
+    if (r) this.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: `냠냠! 매력 +${Math.round(feedBonus(this.save) * 100)}%`, t: 0, color: '#ffc8dd' });
     return true;
   }
 
   private updateStaff(dt: number) {
+    const working = new Map<number, StaffCard>(placedStaffCards(this.save).map((c) => [c.uid, c]));
     for (const e of this.staff) {
+      const card = working.get(e.uid);
+      if (!card) continue; // 파업 중: 제자리에 서 있다
+      const sp = staffSpeed(card) > 1.01 && (e.kind === 'collector' || e.kind === 'keeper') ? staffSpeed(card) : 1;
       e.t += dt; e.anim += dt;
       if (e.kind === 'collector') {
         // 탐색 범위 안 가장 가까운 동전으로
@@ -442,10 +507,10 @@ export class World {
           for (const c of this.coins) { if (c.picked || c.z > 0) continue; const d = Math.hypot(c.x - e.x, c.y - e.y); if (d < bd) { bd = d; best = c; } }
           e.target = best ? { x: best.x, y: best.y } : { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
         }
-        this.moveTo(e, STAFF_AI.collectorSpeed, dt);
+        this.moveTo(e, STAFF_AI.collectorSpeed * sp, dt);
         for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) this.pick(c, 'staff');
-      } else if (e.kind === 'guide' || e.kind === 'janitor') {
-        // 안내원·관리인: 길을 천천히 오가며 일한다 (효과는 상시 적용)
+      } else if (e.kind !== 'keeper') {
+        // 그 밖의 직원: 길을 천천히 오가며 일한다 (효과는 상시 적용)
         if (!e.target || this.moveTo(e, 14, dt)) e.target = { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
         this.moveTo(e, 14, dt);
       } else {
@@ -459,7 +524,7 @@ export class World {
           e.target = { x: r.x + r.w / 2, y: r.y - 4 };
           (e as StaffEnt & { pen?: number }).pen = i;
         }
-        if (this.moveTo(e, STAFF_AI.keeperSpeed, dt) && e.t > STAFF_AI.keeperFeedEvery) {
+        if (this.moveTo(e, STAFF_AI.keeperSpeed * sp, dt) && e.t > STAFF_AI.keeperFeedEvery / sp) {
           e.t = 0;
           this.feed((e as StaffEnt & { pen?: number }).pen ?? 0, 'staff');
           e.target = null;
