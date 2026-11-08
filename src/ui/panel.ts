@@ -74,7 +74,7 @@ export class Panel {
     this.tabBtns = TABS.map(([t, name]) => h('button', { class: 'ptab', onclick: () => {
       audio.sfx('click');
       // 세로 화면: 탭을 누르면 서랍이 열리고, 같은 탭을 다시 누르면 닫힌다
-      if (this.tab === t && this.isOpen && !document.body.classList.contains('landscape')) { this.setOpen(false); return; }
+      if (this.tab === t && this.isOpen) { this.setOpen(false); this.render(true); return; }
       this.tab = t; this.setOpen(true); this.render(true);
     } }, hasPng(TAB_ICON[t]) ? iconSlot(TAB_ICON[t], 14) : null, h('span', {}, name), h('i', { class: 'dot' })));
     const handle = h('button', { class: 'drawer-close', title: '닫기', onclick: () => this.setOpen(false) }, '▼');
@@ -82,7 +82,11 @@ export class Panel {
   }
 
   isOpen = false;
-  setOpen(v: boolean) { this.isOpen = v; this.el.classList.toggle('closed', !v); }
+  /** 단축키: n번째 탭을 연다 (이미 열려 있으면 그대로) */
+  openTab(n: number) { const t = TABS[n]?.[0]; if (!t) return; this.tab = t; this.setOpen(true); this.render(true); }
+  /** 열고 닫을 때 (화면 배치를 다시 잡으라고 main에 알린다) */
+  onOpenChange: (() => void) | null = null;
+  setOpen(v: boolean) { const ch = this.isOpen !== v; this.isOpen = v; this.el.classList.toggle('closed', !v); if (ch) this.onOpenChange?.(); }
 
   /** 코인 등이 바뀌면 다시 그린다 (같은 내용이면 건너뜀) */
   render(force = false) {

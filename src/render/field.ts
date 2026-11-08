@@ -65,6 +65,45 @@ export class FieldRenderer {
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
+  /** 지도 바깥 숲: 잔디 위에 나무 · 덤불을 빽빽하게 (지도 둘레 MX · MY칸). 계절 · 지도 크기가 바뀔 때만 다시 그린다 */
+  private sur: { cv: HTMLCanvasElement; mx: number; my: number; key: string } | null = null;
+  private surround(world: World) {
+    if (!hasPng('v2_ground_spring_1')) return null;
+    const L = world.layout, season = seasonOf(this.seasonN).key;
+    const key = `${season}|${L.w}x${L.h}`;
+    if (this.sur && this.sur.key === key) return this.sur;
+    const R = FieldRenderer.R, MX = 240, MY = 120;
+    const W = L.w + MX * 2, H = L.h + MY * 2;
+    const cv = this.sur?.cv ?? document.createElement('canvas');
+    cv.width = W * R; cv.height = H * R;
+    const c = cv.getContext('2d')!;
+    c.setTransform(R, 0, 0, R, 0, 0); c.imageSmoothingEnabled = false; c.clearRect(0, 0, W, H);
+    const hash = (x: number, y: number) => { let h = (x * 374761393 + y * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+    // 잔디: 지도 안 타일과 이음매가 맞게 같은 격자 (MX · MY는 TILE의 배수)
+    for (let ty = 0; ty < H / TILE; ty++) for (let tx = 0; tx < W / TILE; tx++) {
+      const r = hash(tx - MX / TILE, ty - MY / TILE), n = r < 0.06 ? 3 : r < 0.12 ? 4 : r < 0.56 ? 1 : 2;
+      c.drawImage(sprite(`v2_ground_${season}_${n}`), tx * TILE, ty * TILE, TILE, TILE);
+    }
+    // 나무 · 덤불: 지도 둘레 바깥에만, 아래쪽일수록 앞에 (y 순서)
+    const trees = season === 'winter' ? ['pine', 'pine', 'tree'] : season === 'spring' ? ['tree', 'blossom', 'pine'] : ['tree', 'pine', 'fruit'];
+    const objs: { k: string; x: number; y: number }[] = [];
+    for (let gy = 0; gy < H; gy += 16) for (let gx = 0; gx < W; gx += 18) {
+      const x = gx + (hash(gx, gy) - 0.5) * 12, y = gy + (hash(gy, gx) - 0.5) * 10;
+      const inMap = x > MX - 10 && x < MX + L.w + 10 && y > MY - 2 && y - 20 < MY + L.h;
+      if (inMap) continue;
+      const r = hash(gx + 7, gy + 3);
+      objs.push({ k: r < 0.7 ? `park_${trees[Math.floor(r * 10) % 3]}` : r < 0.85 ? 'park_bush' : r < 0.93 ? 'park_flowerbush' : 'park_boulder', x, y });
+    }
+    objs.sort((a, b) => a.y - b.y);
+    for (const o of objs) {
+      if (!hasPng(`v2_${o.k}`)) continue;
+      const im = sprite(`v2_${o.k}`), w = im.width / R, h = im.height / R;
+      c.drawImage(im, Math.round((o.x - w / 2) * R) / R, Math.round((o.y - h) * R) / R, w, h);
+    }
+    this.sur = { cv, mx: MX, my: MY, key };
+    return this.sur;
+  }
+
   /** 움직이지 않는 바탕을 v2 월드 그림으로 한 번 그려 둔다 (월드 1칸 = R도트, 타일 8칸 = 24도트라 1:1)
    *  잔디(계절) → 관객 길(이어 붙는 돌길) → 우리 바닥 · 울타리(이어 붙는 울타리) → 우리 소품 → 빈 땅 공원 소품 → 시설 · 꾸미기 → 입구 */
   private background(world: World): HTMLCanvasElement | null {
@@ -275,6 +314,9 @@ export class FieldRenderer {
     c.save();
     c.setTransform(dpr, 0, 0, dpr, 0, 0); c.beginPath(); c.rect(view.x, view.y, view.w, view.h); c.clip();
     c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = false;
+    // 지도 바깥(화면 남는 곳): 숲으로 이어서 빈 공간이 없게
+    const sur = this.surround(world);
+    if (sur) c.drawImage(sur.cv, Math.round((this.ox - sur.mx * z) * dpr), Math.round((this.oy - sur.my * z) * dpr), Math.round((sur.cv.width / FieldRenderer.R) * z * dpr), Math.round((sur.cv.height / FieldRenderer.R) * z * dpr));
     c.drawImage(this.wc, Math.round(this.ox * dpr), Math.round(this.oy * dpr), Math.round(L.w * z * dpr), Math.round(L.h * z * dpr));
 
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)

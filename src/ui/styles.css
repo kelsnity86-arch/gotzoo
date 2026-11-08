@@ -457,3 +457,36 @@ b, strong, h1, h2, h3, .btn, .ptab, .hud, .hud-coins b, .chip, .badge, .sheet-he
 /* 가독성: 아래 탭 글씨 · 시설 줄 숫자 줄바꿈 */
 .ptab { font-size: 14px; }
 .sub.pay { word-break: keep-all; }
+
+/* ── 가로 화면(PC · 가로 폰) ── */
+body.landscape .hud { flex-wrap: nowrap; overflow: hidden; }
+body.landscape .hud-stats { flex-wrap: nowrap; white-space: nowrap; min-width: 0; overflow: hidden; }
+body.landscape .hud-gear { margin-left: 0; }
+.hud .zoom-btns { position: static; transform: none; flex-direction: row; gap: 4px; margin-left: auto; z-index: auto; }
+.hud .zoom-btns button { width: 32px; height: 32px; border-radius: 9px; font-size: 18px; box-shadow: 0 2px 0 #121a10; }
+.hud .zoom-btns button.all { width: auto; padding: 0 8px; font-size: 13px; }
+body.compact .logo { display: none; }
+body.compact .hud { gap: 6px; padding-top: 4px; padding-bottom: 4px; }
+body.compact .hud-stats { font-size: 11px; }
+/* 오른쪽 패널: 접으면 탭만 세로로 */
+body.landscape .drawer-close { display: grid; place-items: center; flex: none; width: 30px; border: none; border-radius: 6px 6px 0 0; background: #6e4a2f; color: #f6e6c8; font-size: 11px; }
+body.landscape .drawer-close::first-letter { display: inline-block; }
+body.landscape .panel.closed .panel-body { display: none; }
+body.landscape .panel.closed .ptabs { flex-direction: column; height: 100%; padding: 8px 4px; gap: 4px; }
+body.landscape .panel.closed .ptab { flex: none; border-radius: 8px; padding: 8px 0; font-size: 11px; }
+body.landscape .panel.closed .drawer-close { display: none; }
+/* 폰 세로: 돌려 달라는 안내 */
+.rotate-note { position: absolute; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #1f2a1c; color: #f6e6c8; text-align: center; padding: 24px; }
+.rotate-note .rot-ico { font-size: 54px; animation: rot 1.8s ease-in-out infinite; }
+.rotate-note b { font: 24px 'Jua', sans-serif; color: #fff3a3; }
+@keyframes rot { 50% { transform: rotate(-90deg); } }
+@media (prefers-reduced-motion: reduce) { .rotate-note .rot-ico { animation: none; } }
+/* 마우스 말풍선 */
+.hover-tip { position: absolute; z-index: 40; pointer-events: none !important; max-width: 320px; padding: 4px 10px; border-radius: 8px; background: rgba(18, 26, 16, 0.92); color: #fff3a3; font: 13px 'Jua', sans-serif; white-space: nowrap; }
+
+/* 가로 폰(낮은 화면): 정보 줄 한 줄로, 꼭 필요한 것만 */
+body.landscape .hud > * { flex: none; white-space: nowrap; }
+body.landscape .hud .hud-stats { flex: 0 1 auto; }
+body.compact .hud .stat, body.compact .hud .zoom-btns { display: none; }
+body.compact .hud .rival .bar, body.compact .hud .clock .bar { display: none; }
+body.compact .hud-coins b { font-size: 15px; }

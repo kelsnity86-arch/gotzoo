@@ -9,10 +9,10 @@ import gowunLa from '@fontsource/gowun-dodum/files/gowun-dodum-latin-400-normal.
 import { defaultSave, loadSave, writeSave } from './game/state';
 import { exportCode, importCode } from './game/savecode';
 import { eventDef } from './data/events';
-import { BLOCK, World, ZONE_H, type DayReport } from './game/world';
+import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
-import { itemName } from './data/facilities';
-import { syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
+import { facLevelValue, facilityDef, itemName } from './data/facilities';
+import { penAttract, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo } from './game/rules';
 import { SEASON, rivalOf } from './data/rivals';
 import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
@@ -66,7 +66,7 @@ const zoomReset = h('div', { class: 'zoom-btns' },
   h('button', { type: 'button', 'aria-label': '축소', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom / 1.5); } }, '－'),
   h('button', { type: 'button', class: 'all', onclick: () => { audio.sfx('click'); zoomAnim = null; fling = null; field.resetZoom(); } }, '전체'));
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('icons_14') ? iconSlot('icons_14', 18) : '⚙');
-hud.append(settingsBtn);
+hud.append(zoomReset, settingsBtn);
 
 // ── 우리 놓기: 조각을 고르면 부지 위에 미리 보기, 누른 자리에 놓는다 ──
 let placing: { uid: number; rot: number; item?: boolean } | null = null;
@@ -136,31 +136,45 @@ function tryPlace(p: { x: number; y: number }) {
 }
 
 const reports: DayReport[] = [];
+/** 폰 세로: 가로로 돌려 달라는 안내 · PC 마우스 말풍선 */
+const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
+const tip = h('div', { class: 'hover-tip hidden' });
 const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, startPlaceItem, reports });
-ui.append(hud, hint, eventBanner, zoomReset, openBtn, placeBar, panel.el);
+ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip);
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
+panel.onOpenChange = () => layout();
 
+/** 화면 크기에 맞춘 UI 배율 (1280×720 기준: 1080p ≈ 1.2배, 1440p ≈ 1.45배, 가로 폰 0.85배) */
+let uiScale = 1;
+const upx = (v: number) => `${v / uiScale}px`;
 function layout() {
   dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   W = window.innerWidth; H = window.innerHeight;
   canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   canvas.style.width = `${W}px`; canvas.style.height = `${H}px`;
-  const landscape = W >= 760 && W > H * 1.05;
+  // 가로 화면이 기본. 좁은 세로 화면(폰 세로)은 돌려 달라는 안내
+  const landscape = W > H * 1.05 || W >= 900;
   document.body.classList.toggle('landscape', landscape);
-  const hudH = hud.offsetHeight || 44;
+  rotateNote.classList.toggle('hidden', landscape);
+  uiScale = H < 500 ? 0.85 : H <= 800 ? 1 : Math.min(1.45, 1 + (H - 800) / 1300);
+  ui.style.setProperty('zoom', String(uiScale));
+  document.body.classList.toggle('compact', H < 500);
+  const hudH = hud.getBoundingClientRect().height || 44;
   if (landscape) {
-    const pw = Math.min(400, Math.max(320, W * 0.34));
+    // 오른쪽 패널 (접으면 탭 줄만 세로로)
+    const open = panel.isOpen;
+    const pw = open ? Math.min(400 * uiScale, Math.max(280 * uiScale, W * 0.34)) : 58 * uiScale;
     fieldRect = { x: 8, y: hudH + 8, w: W - pw - 16, h: H - hudH - 16 };
-    panel.el.style.cssText = `width:${pw}px`;
-    document.body.style.setProperty('--pw', `${pw}px`);
+    panel.el.style.cssText = `width:${pw / uiScale}px`;
+    document.body.style.setProperty('--pw', `${pw / uiScale}px`);
   } else {
-    // 세로 화면: 동물원이 아래 화면 전체를 쓰고, 패널은 아래 탭에서 여는 서랍
-    const tabsH = (panel.el.querySelector('.ptabs') as HTMLElement | null)?.offsetHeight || 40;
+    const tabsH = (panel.el.querySelector('.ptabs') as HTMLElement | null)?.getBoundingClientRect().height || 40;
     fieldRect = { x: 4, y: hudH + 4, w: W - 8, h: H - hudH - tabsH - 8 };
     panel.el.style.cssText = '';
     document.body.style.setProperty('--pw', '0px');
   }
+  const handle = panel.el.querySelector('.drawer-close'); if (handle) handle.textContent = landscape ? '▶' : '▼';
   world.relayout(fieldRect.w / fieldRect.h);
 }
 window.addEventListener('resize', layout);
@@ -295,6 +309,38 @@ function stepCamera(dt: number) {
   }
 }
 canvas.addEventListener('wheel', (e) => { e.preventDefault(); const p = toLocal(e); field.zoomAt(p.sx, p.sy, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
+
+// ── PC: 단축키 · 마우스 말풍선 ──
+// 1~5 탭 · Tab 패널 열고 닫기 · + / − 확대 · 0 전체 보기 · Esc 창 닫기
+window.addEventListener('keydown', (e) => {
+  const tag = (e.target as HTMLElement | null)?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.ctrlKey || e.metaKey || e.altKey) return;
+  const overlays = ui.querySelectorAll('.overlay');
+  if (e.key === 'Escape') { if (overlays.length) { overlays[overlays.length - 1].remove(); e.preventDefault(); } else if (placing) { endPlace(); } return; }
+  if (overlays.length) return;
+  if (e.key >= '1' && e.key <= '5') { panel.openTab(Number(e.key) - 1); layout(); e.preventDefault(); return; }
+  if (e.key === 'Tab') { panel.setOpen(!panel.isOpen); panel.render(true); layout(); e.preventDefault(); return; }
+  if (e.key === '+' || e.key === '=') { zoomTo(field.userZoom * 1.5); e.preventDefault(); return; }
+  if (e.key === '-' || e.key === '_') { zoomTo(field.userZoom / 1.5); e.preventDefault(); return; }
+  if (e.key === '0') { zoomAnim = null; fling = null; field.resetZoom(); e.preventDefault(); }
+});
+/** 마우스를 올린 우리 · 관객 건물 이름과 핵심 수치 (마우스일 때만) */
+canvas.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse' || e.buttons || placing) { tip.classList.add('hidden'); return; }
+  const p = toLocal(e), wp = field.toWorld(p.sx, p.sy);
+  let text = '';
+  const i = world.layout.pens.findIndex((r) => wp.x >= r.x && wp.x <= r.x + r.w && wp.y >= r.y && wp.y <= r.y + r.h);
+  if (i >= 0 && world.geo[i]?.mask[Math.floor((wp.y - world.geo[i].gy) / TILE)]?.[Math.floor((wp.x - world.geo[i].gx) / TILE)]) {
+    const pc = penCardAt(save, i);
+    text = `${pc ? penPiece(pc).name : '우리'} · ♥${fmt(Math.round(penAttract(save, i)))} · ${save.pens[i]?.length ?? 0}마리`;
+  } else if (wp.y < PATH_Y0 && wp.y > PATH_Y0 - 24) {
+    const z = zoneRow(world.layout.w).find((z) => z.kind === 'bld' && Math.abs(z.x - wp.x) < 9);
+    if (z && z.kind === 'bld') { const d = facilityDef(z.type), lv = save.facLv[z.type] ?? 0; text = lv ? `${d.name} ${lv}단계 · ${d.desc(facLevelValue(z.type, lv))}` : `${d.name} · 아직 없어요 (밤에 동물원 > 시설에서 지어요)`; }
+  }
+  tip.classList.toggle('hidden', !text);
+  if (text) { tip.textContent = text; tip.style.left = upx(e.clientX + 14); tip.style.top = upx(e.clientY + 16); }
+});
+canvas.addEventListener('pointerleave', () => tip.classList.add('hidden'));
 
 // ── 설정: 소리 · 저장 코드 · 초기화 ──
 /** 크레딧 · 라이선스: 글꼴(OFL)은 저작권 표시와 라이선스 전문을 함께 보여 준다 */
@@ -508,15 +554,15 @@ function updateHud() {
   hudCoins.parentElement!.classList.toggle('debt', save.coins < 0);
   hudIncome.textContent = `+${fmt(inc.base + inc.bonus)}/분`;
   strikeTag.classList.toggle('hidden', !save.strike);
-  placeBar.style.top = `${fieldRect.y + 6}px`; placeBar.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
+  placeBar.style.top = upx(fieldRect.y + 6); placeBar.style.left = upx(fieldRect.x + fieldRect.w / 2);
   // 이벤트 띠 · 확대 해제 버튼
   if (world.event) { const d = eventDef(world.event.id); eventBanner.textContent = `${d.name} · ${Math.ceil(world.event.left)}초`; eventBanner.classList.remove('hidden'); }
   else eventBanner.classList.add('hidden');
-  eventBanner.style.top = `${fieldRect.y + 30}px`; eventBanner.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
+  eventBanner.style.top = upx(fieldRect.y + 30); eventBanner.style.left = upx(fieldRect.x + fieldRect.w / 2);
   zoomReset.classList.toggle('zoomed', field.userZoom > 1);
   // 폰 세로: 패널이 열려 있으면 확대 버튼 · 안내를 숨긴다 (패널 위에 겹치지 않게)
   const panelOver = panel.isOpen && !document.body.classList.contains('landscape');
-  zoomReset.classList.toggle('hidden', panelOver);
+  zoomReset.classList.toggle('hidden', panelOver || !document.body.classList.contains('landscape'));
   // 하루 시계 · 개장하기
   const night = world.isNight;
   clock.classList.toggle('night', night);
@@ -538,8 +584,7 @@ function updateHud() {
   const openBottom = pr.left < fieldRect.x + fieldRect.w && pr.top > fieldRect.y ? Math.min(fieldRect.y + fieldRect.h, pr.top) : fieldRect.y + fieldRect.h;
   const tight = openBottom - fieldRect.y < 150;
   openBtn.classList.toggle('tight', tight);
-  openBtn.style.top = `${openBottom - (tight ? 58 : 86)}px`; openBtn.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
-  zoomReset.style.top = `${fieldRect.y + fieldRect.h - 8}px`; zoomReset.style.left = `${fieldRect.x + fieldRect.w - 8}px`;
+  openBtn.style.top = upx(openBottom - (tight ? 58 : 86) * uiScale); openBtn.style.left = upx(fieldRect.x + fieldRect.w / 2);
   // 안내: 처음 몇 단계
   const msg = !save.freeDrawUsed ? '뽑기 탭에서 무료 뽑기를 눌러 보세요'
     : placedAnimals(save) === 0 ? '보관함에서 동물을 우리에 배치해요'
@@ -547,7 +592,7 @@ function updateHud() {
     : '';
   hint.textContent = msg;
   hint.classList.toggle('hidden', !msg || night || !!placing || (panel.isOpen && !document.body.classList.contains('landscape')));
-  hint.style.top = `${fieldRect.y + 4}px`; hint.style.left = `${fieldRect.x + fieldRect.w / 2}px`;
+  hint.style.top = upx(fieldRect.y + 4); hint.style.left = upx(fieldRect.x + fieldRect.w / 2);
   void ZONE_H; void totalAttract;
 }
 
@@ -565,7 +610,8 @@ async function boot() {
   fillIcons();
   layout();
   world.sync();
-  if (!save.freeDrawUsed || document.body.classList.contains('landscape')) panel.setOpen(true);
+  if (!save.freeDrawUsed || (document.body.classList.contains('landscape') && W >= 1100)) panel.setOpen(true);
+  layout();
   ensureMissions(save);
   panel.render(true);
   updateHud();
