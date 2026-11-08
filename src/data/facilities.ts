@@ -1,26 +1,31 @@
-// 시설 · 꾸미기: 부지 블록 1칸을 차지한다. 짓는 건 밤에만 (시설 공사 규칙).
-// 시설 = 효과 + 매일 유지비, 계절 소품 = 붙어 있는 우리 매력 + (그 계절이면 2배), 울타리·입구 꾸미기 = 업그레이드 4단계.
+// 시설 = 관객존 위 건물 줄에 서는 관객 건물 6종, 1~3단계로 증축 (밤에만 공사). 효과 · 유지비 · 규모는 단계만큼.
+// 계절 소품 = 부지 블록 1칸에 놓고 붙어 있는 우리 매력 + (그 계절이면 2배), 울타리·입구 꾸미기 = 업그레이드 4단계.
 import type { SeasonKey } from './seasons';
 
 export type FacilityType = 'snack' | 'restroom' | 'bench' | 'fountain' | 'photo' | 'clinic';
 export interface FacilityDef {
   type: FacilityType; name: string;
-  /** 하나당 효과 수치 · 겹칠 때 최대 */
+  /** 1단계 효과 · 3단계(최대) 효과. 단계 효과 = cap × 단계 / 3 */
   value: number; cap: number;
   desc: (v: number) => string;
-  /** 짓는 값 = 동물 뽑기 가격 × price, 하루 유지비 = 비용 단위 × upkeep */
+  /** 짓는 값 = 동물 뽑기 가격 × price × FAC_LV_PRICE[단계], 하루 유지비 = 비용 단위 × upkeep × 단계 */
   price: number; upkeep: number;
 }
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 export const FACILITIES: readonly FacilityDef[] = [
-  { type: 'snack', name: '매점', value: 0.08, cap: 0.4, desc: (v) => `관람객이 간식을 사요 · 투척액 +${pct(v)}`, price: 3, upkeep: 0.2 },
-  { type: 'restroom', name: '화장실', value: 0.1, cap: 0.5, desc: (v) => `오래 머물러요 · 분당 최대 관람객 +${pct(v)}`, price: 3, upkeep: 0.15 },
-  { type: 'bench', name: '벤치', value: 15, cap: 60, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
-  { type: 'fountain', name: '분수', value: 0.1, cap: 0.3, desc: (v) => `붙어 있는 우리 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
-  { type: 'photo', name: '포토존', value: 0.08, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
-  { type: 'clinic', name: '동물병원', value: 0.5, cap: 0.9, desc: (v) => `동물 감기를 ${pct(v)} 확률로 막아요 (수의사와 따로)`, price: 5, upkeep: 0.2 },
+  { type: 'snack', name: '매점', value: 0.13, cap: 0.4, desc: (v) => `관람객이 간식을 사요 · 투척액 +${pct(v)}`, price: 3, upkeep: 0.2 },
+  { type: 'restroom', name: '화장실', value: 0.17, cap: 0.5, desc: (v) => `오래 머물러요 · 분당 최대 관람객 +${pct(v)}`, price: 3, upkeep: 0.15 },
+  { type: 'bench', name: '쉼터', value: 20, cap: 60, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
+  { type: 'fountain', name: '분수 광장', value: 0.05, cap: 0.15, desc: (v) => `모든 동물 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'photo', name: '포토존', value: 0.13, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'clinic', name: '동물병원', value: 0.3, cap: 0.9, desc: (v) => `동물 감기를 ${pct(v)} 확률로 막아요 (수의사와 따로)`, price: 5, upkeep: 0.2 },
 ];
 export const facilityDef = (t: FacilityType) => FACILITIES.find((f) => f.type === t)!;
+/** 시설 최대 단계 · 단계별 증축 값 배율 (0→1, 1→2, 2→3) */
+export const FAC_MAX_LV = 3;
+export const FAC_LV_PRICE = [1, 2.5, 5] as const;
+/** 단계 효과 (bench는 초, 나머지는 비율) */
+export const facLevelValue = (t: FacilityType, lv: number) => { const d = facilityDef(t); const v = (d.cap * Math.max(0, Math.min(FAC_MAX_LV, lv))) / FAC_MAX_LV; return t === 'bench' ? Math.round(v) : v; };
 
 /** 계절 소품: 계절마다 12종 (그 계절에만 팔고, 산 건 계속 남는다) */
 export const DECOR: Record<SeasonKey, string[]> = {
@@ -31,7 +36,7 @@ export const DECOR: Record<SeasonKey, string[]> = {
 };
 /** 소품: 붙어 있는 우리 매력 + (그 계절이면 2배), 값 = 뽑기 가격 × */
 export const DECOR_FX = { attract: 0.04, price: 1 } as const;
-/** 규모 점수 */
+/** 규모 점수 (시설은 단계마다) */
 export const ITEM_SCALE = { facility: 15, decor: 5 } as const;
 /** 치우면 보관함으로 (팔지 않는다) */
 

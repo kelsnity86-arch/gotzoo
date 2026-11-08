@@ -1,4 +1,5 @@
 // 저장 데이터. 저장 시점: 뽑기·합성·배치·업그레이드·승급 직후, 그리고 30초마다(코인).
+import { FACILITIES, FAC_MAX_LV, type FacilityType } from '../data/facilities';
 import { ANIMALS } from '../data/animals';
 import { STAFF_PAY, isStaffKind, type StaffKind, type StaffOptId } from '../data/staff';
 import type { Grade } from '../data/grades';
@@ -26,6 +27,8 @@ export interface SaveData {
   pens: number[][];
   /** 시설 · 소품 (x < 0 이면 보관함) */
   items: { uid: number; type: string; x: number; y: number }[];
+  /** 관객 건물(시설) 단계 0~3 */
+  facLv: Record<FacilityType, number>;
   /** 부지에 놓은 우리 조각 */
   board: Placement[];
   /** 예전 저장에서 옮겨 온 우리 (불러온 뒤 rules.finishLegacy가 부지에 놓는다) */
@@ -84,7 +87,7 @@ export function defaultSave(): SaveData {
     version: SAVE_VERSION, coins: 0, nextUid: 1, staffSlots: [null],
     // 처음 우리 두 개: 네모 우리(풀밭) · 네모 우리(물가). uid는 일반 카드와 겹치지 않게 크게
     cards: [{ uid: 900001, kind: 'pen', piece: 'O', grade: 0, habitat: 'grass', opts: [] }, { uid: 900002, kind: 'pen', piece: 'O', grade: 0, habitat: 'water', opts: [] }],
-    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []], items: [],
+    board: [{ uid: 900001, x: 1, y: 1, rot: 0 }, { uid: 900002, x: 5, y: 1, rot: 0 }], pens: [[], []], items: [], facLv: { snack: 0, restroom: 0, bench: 0, fountain: 0, photo: 0, clinic: 0 },
     upgrades, stage: 1, freeDrawUsed: false, lockedSpecies: [], dex: ANIMALS.map(() => false),
     stats: { draws: 0, fusions: 0, fusionWins: 0, coinsEarned: 0, coinsPicked: 0, vips: 0 }, tutorialDone: false,
     tickets: 0, missions: null, dexClaimed: [], lastSeen: 0, day: 1,
@@ -142,6 +145,11 @@ export function normalize(raw: unknown): SaveData {
   }
   out.items = Array.isArray(rr.items) ? (rr.items as SaveData['items']).filter((it) => it && typeof it.uid === 'number' && typeof it.type === 'string').map((it) => ({ uid: it.uid, type: it.type, x: Number.isFinite(it.x) ? Math.floor(it.x) : -1, y: Number.isFinite(it.y) ? Math.floor(it.y) : -1 })) : [];
   out.nextUid = Math.max(out.nextUid, ...out.items.map((it) => it.uid + 1));
+  // 시설: 단계 (예전 저장의 시설 물건은 개수만큼 단계로 바꾸고 물건은 지운다)
+  const fl = (rr.facLv ?? {}) as Partial<Record<FacilityType, number>>;
+  out.facLv = Object.fromEntries(FACILITIES.map((f) => [f.type, Math.max(0, Math.min(FAC_MAX_LV, Math.floor(Number(fl[f.type]) || 0)))])) as Record<FacilityType, number>;
+  for (const f of FACILITIES) { const n = out.items.filter((it) => it.type === `fac:${f.type}`).length; if (n) out.facLv[f.type] = Math.min(FAC_MAX_LV, Math.max(out.facLv[f.type], n)); }
+  out.items = out.items.filter((it) => !it.type.startsWith('fac:'));
   delete (out.upgrades as Record<string, number>).pens; delete (out.upgrades as Record<string, number>).size;
   out.staffSlots = Array.isArray(out.staffSlots) ? out.staffSlots.map((u) => (u !== null && keep(u) ? u : null)) : d.staffSlots;
   out.dex = ANIMALS.map((_, i) => !!(Array.isArray(r.dex) && r.dex[i]));

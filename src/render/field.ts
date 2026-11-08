@@ -61,6 +61,7 @@ export class FieldRenderer {
   private seasonN = 1;
   private items: SaveData['items'] = [];
   private decoTier = 0;
+  private facLv: Partial<Record<string, number>> = {};
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -71,7 +72,7 @@ export class FieldRenderer {
     const L = world.layout;
     const season = seasonOf(this.seasonN).key;
     const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
-    const key = `${season}|${this.decoTier}|${items}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
+    const key = `${season}|${this.decoTier}|${items}|${Object.values(this.facLv).join('')}|${world.props.length}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}:${g.gx},${g.gy}:${g.mask.map((r) => r.map(Number).join('')).join('/')}`).join(',')}`;
     if (this.bg && key === this.bgKey) return this.bg;
     this.bgKey = key;
     const cv = this.bg ?? document.createElement('canvas');
@@ -125,7 +126,13 @@ export class FieldRenderer {
     for (let ty = p0; ty <= p1; ty++) for (let tx = 0; tx < TW; tx++) autotile(onPath, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true);
 
     // 3. 관객존 꾸미기: 길 위쪽 잔디에 나무 · 벤치 · 가로등 · 화단을 번갈아, 길 아래엔 낮은 생울타리
-    for (const z of zoneRow(L.w)) obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1));
+    // 관객존 위 건물 줄: 지은 관객 건물(단계 그림)과 사이 소품. 아직 안 지은 자리는 빈 팻말
+    for (const z of zoneRow(L.w)) {
+      if (z.kind === 'prop') { obj(`park_${z.name === 'blossom' && season === 'winter' ? 'pine' : z.name}`, z.x, p0 * TILE - (z.name === 'lamp' ? 0 : 1)); continue; }
+      const lv = this.facLv[z.type] ?? 0;
+      if (lv > 0) obj(`bld_${z.type}_${lv - 1}`, z.x, p0 * TILE - 1);
+      else obj('park_sign', z.x, p0 * TILE - 2);
+    }
     for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
 
     // 4. 우리: 바닥 → 울타리. 우리마다 자기 둘레를 다 친다 (맞닿은 쪽은 두 줄이 나란히 붙어 끊김이 없다)
@@ -170,7 +177,6 @@ export class FieldRenderer {
     for (const it of this.items) {
       if (it.x < 0) continue;
       const X = bx0 + it.x * BLOCK, Y = by0 + it.y * BLOCK;
-      if (it.type.startsWith('fac:')) { const k = `bld_${it.type.slice(4)}_2`; if (hasPng(`v2_${k}`)) { obj(k, X + BLOCK / 2, Y + BLOCK - 2); continue; } }
       const k2 = itemSprite(it.type);
       if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
     }
@@ -283,7 +289,7 @@ export class FieldRenderer {
   /** 동물원 한 장 (월드 좌표, this.ctx = 2도트 캔버스) */
   private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
-    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0;
+    this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {};
     const bg = this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {

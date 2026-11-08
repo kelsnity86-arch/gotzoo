@@ -1,7 +1,7 @@
 // 규칙 계산 (화면 없음): 뽑기, 합성, 배치, 매력도, 업그레이드, 승급. 모두 SaveData를 직접 바꾼다.
 import { ANIMALS, animalsOfGrade, seasonalOfGrade, type Habitat } from '../data/animals';
 import { SEASON_FX, seasonOf, type SeasonDef } from '../data/seasons';
-import { DECO_ATTRACT, DECOR_FX, ITEM_SCALE, facilityDef, type FacilityType } from '../data/facilities';
+import { DECO_ATTRACT, DECOR_FX, FACILITIES, FAC_LV_PRICE, FAC_MAX_LV, ITEM_SCALE, facLevelValue, facilityDef, type FacilityType } from '../data/facilities';
 import { BOARD, CAP_PER_CELL, PEN_DRAW_MUL, PEN_OPTS, PEN_OPT_COUNT, PEN_SCALE, PEN_THEME_BONUS, PIECES, pieceDef, rotateCells, type PieceDef } from '../data/pieces';
 import { GRADE_SYN, HABITAT_TIERS, SHINY, SYNERGY_CAP, SYNERGY_SETS, type SynergySet } from '../data/synergy';
 import { GRADES, type Grade } from '../data/grades';
@@ -45,14 +45,23 @@ export function boardGrid(s: SaveData, skip = -1): number[][] {
 
 // ── 시설 · 꾸미기 ──
 export const placedItems = (s: SaveData) => s.items.filter((it) => it.x >= 0);
-export const facCount = (s: SaveData, t: FacilityType) => placedItems(s).filter((it) => it.type === `fac:${t}`).length;
-/** 시설 효과 합 (겹치면 최대치까지) */
-export const facSum = (s: SaveData, t: FacilityType) => { const d = facilityDef(t); return Math.min(d.cap, facCount(s, t) * d.value); };
-export const facPrice = (s: SaveData, t: FacilityType) => Math.round(drawPrice(s) * facilityDef(t).price);
+/** 시설 단계 (0 = 없음) */
+export const facCount = (s: SaveData, t: FacilityType) => s.facLv?.[t] ?? 0;
+/** 시설 효과 (단계만큼) */
+export const facSum = (s: SaveData, t: FacilityType) => facLevelValue(t, facCount(s, t));
+/** 다음 단계 증축 값 (최고 단계면 null) */
+export const facPrice = (s: SaveData, t: FacilityType): number | null => { const lv = facCount(s, t); return lv >= FAC_MAX_LV ? null : Math.round(drawPrice(s) * facilityDef(t).price * FAC_LV_PRICE[lv]); };
+/** 시설 한 단계 증축 (코인 모자라거나 최고 단계면 false) */
+export function buyFacility(s: SaveData, t: FacilityType): boolean {
+  const cost = facPrice(s, t);
+  if (cost === null || s.coins < cost) return false;
+  s.coins -= cost; s.facLv[t] = facCount(s, t) + 1;
+  return true;
+}
 export const decorPrice = (s: SaveData) => Math.round(drawPrice(s) * DECOR_FX.price);
 /** 사서 보관함에 넣는다. 코인이 모자라면(빚 포함) null */
 export function buyItem(s: SaveData, type: string): number | null {
-  const cost = type.startsWith('fac:') ? facPrice(s, type.slice(4) as FacilityType) : decorPrice(s);
+  const cost = decorPrice(s);
   if (s.coins < cost) return null;
   s.coins -= cost;
   const uid = s.nextUid++;
@@ -71,18 +80,17 @@ export function placeItem(s: SaveData, uid: number, x: number, y: number): boole
 /** 치우면 보관함으로 */
 export function removeItem(s: SaveData, uid: number) { const it = s.items.find((i) => i.uid === uid); if (it) { it.x = -1; it.y = -1; } }
 export const itemAt = (s: SaveData, x: number, y: number) => s.items.find((it) => it.x === x && it.y === y);
-/** 우리 i에 붙어 있는 분수 · 소품 보너스 (계절 소품은 그 계절이면 2배) */
+/** 우리 i의 분수 광장(모든 우리) · 붙어 있는 소품 보너스 (계절 소품은 그 계절이면 2배) */
 export function penItemBonus(s: SaveData, i: number): { fountain: number; decor: number } {
   const cells = new Set(penCells(s, i).map(([x, y]) => `${x},${y}`));
   const season = curSeason(s).key;
-  let fountain = 0, decor = 0;
+  let decor = 0;
   for (const it of placedItems(s)) {
     const near = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => cells.has(`${it.x + dx},${it.y + dy}`));
     if (!near) continue;
-    if (it.type === 'fac:fountain') fountain += facilityDef('fountain').value;
-    else if (it.type.startsWith('deco:')) decor += DECOR_FX.attract * (it.type.split(':')[1] === season ? 2 : 1);
+    if (it.type.startsWith('deco:')) decor += DECOR_FX.attract * (it.type.split(':')[1] === season ? 2 : 1);
   }
-  return { fountain: Math.min(facilityDef('fountain').cap, fountain), decor };
+  return { fountain: facSum(s, 'fountain'), decor };
 }
 function fits(grid: number[][], cells: [number, number][], ox: number, oy: number): boolean {
   return cells.every(([x, y]) => grid[y + oy]?.[x + ox] === -1);
@@ -674,7 +682,7 @@ export function dailyCosts(s: SaveData) {
     }
   });
   const cut = Math.min(0.6, staffSum(s, 'cleaner') + optSum(s, 'saver'));
-  const facility = Math.round(placedItems(s).reduce((t, it) => t + (it.type.startsWith('fac:') ? facilityDef(it.type.slice(4) as FacilityType).upkeep : 0), 0) * unit * (1 - cut));
+  const facility = Math.round(FACILITIES.reduce((t, f) => t + f.upkeep * facCount(s, f.type), 0) * unit * (1 - cut));
   const cells = s.board.reduce((t, _, i) => t + penCells(s, i).length, 0);
   const pens = Math.round(UPKEEP.perCell * cells * unit * (1 - cut));
   const food = Math.round(feed * unit * (1 - cut));
@@ -692,7 +700,8 @@ export function zooScale(s: SaveData): number {
   });
   for (const c of placedStaffCards(s, false)) v += STAFF_SCALE[c.grade];
   for (const lv of Object.values(s.upgrades)) v += lv * SCALE.upgradeLv;
-  for (const it of placedItems(s)) v += it.type.startsWith('fac:') ? ITEM_SCALE.facility : ITEM_SCALE.decor;
+  for (const it of placedItems(s)) v += it.type.startsWith('fac:') ? 0 : ITEM_SCALE.decor;
+  for (const f of FACILITIES) v += facCount(s, f.type) * ITEM_SCALE.facility;
   if (s.coins < 0) v -= (-s.coins / drawPrice(s)) * SCALE.debtPerDraw;
   return Math.round(v);
 }

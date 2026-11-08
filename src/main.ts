@@ -1,5 +1,7 @@
 // 뽑ZOO: 시작 · 화면 배치 · 입력 · 루프 · 자동 저장
 import './ui/styles.css';
+import juaLicense from '@fontsource/jua/LICENSE?raw';
+import gowunLicense from '@fontsource/gowun-dodum/LICENSE?raw';
 import juaKo from '@fontsource/jua/files/jua-korean-400-normal.woff2?url';
 import juaLa from '@fontsource/jua/files/jua-latin-400-normal.woff2?url';
 import gowunKo from '@fontsource/gowun-dodum/files/gowun-dodum-korean-400-normal.woff2?url';
@@ -295,6 +297,24 @@ function stepCamera(dt: number) {
 canvas.addEventListener('wheel', (e) => { e.preventDefault(); const p = toLocal(e); field.zoomAt(p.sx, p.sy, e.deltaY < 0 ? 1.15 : 1 / 1.15); }, { passive: false });
 
 // ── 설정: 소리 · 저장 코드 · 초기화 ──
+/** 크레딧 · 라이선스: 글꼴(OFL)은 저작권 표시와 라이선스 전문을 함께 보여 준다 */
+function openCredits() {
+  audio.sfx('click');
+  const lic = (title: string, text: string) => h('details', { class: 'lic' }, h('summary', {}, title), h('pre', { class: 'lic-text' }, text));
+  const back = h('div', { class: 'overlay', onclick: (e: Event) => { if (e.target === back) back.remove(); } },
+    h('div', { class: 'sheet settings credits' },
+      h('div', { class: 'sheet-head' }, h('b', {}, '크레딧 · 라이선스'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
+      h('div', { class: 'section-title' }, '뽑ZOO'),
+      h('p', { class: 'sub' }, '기획 · 개발 · 그림 편집: 뽑ZOO 개발팀'),
+      h('p', { class: 'sub' }, '그림: AI 이미지 생성 도구로 만든 원본을 개발팀이 잘라 내고 다듬어 사용했어요. 게임 중에 새로 만들어지는 AI 콘텐츠는 없어요.'),
+      h('p', { class: 'sub' }, '소리: 게임이 실행 중에 직접 합성해요.'),
+      h('div', { class: 'section-title' }, '글꼴'),
+      h('p', { class: 'sub' }, '주아 (BM JUA) · © 2018 The BM JUA Project Authors · SIL Open Font License 1.1'),
+      h('p', { class: 'sub' }, '고운돋움 (Gowun Dodum) · © 2021 The Gowun Dodum Project Authors · SIL Open Font License 1.1'),
+      lic('주아 라이선스 전문', juaLicense), lic('고운돋움 라이선스 전문', gowunLicense)));
+  ui.append(back);
+}
+
 function openSettings() {
   audio.sfx('click');
   const vol = h('input', { type: 'range', min: 0, max: 100, value: Math.round(audio.volume * 100), id: 'vol' }) as HTMLInputElement;
@@ -328,6 +348,7 @@ function openSettings() {
       h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
       h('div', { class: 'section-title' }, '저장 코드 (다른 기기로 옮기기)'), area, h('div', { class: 'row-btns' }, copy, load),
       h('div', { class: 'section-title' }, '초기화'), h('div', { class: 'row-btns' }, reset), msg,
+      h('div', { class: 'section-title' }, '정보'), h('div', { class: 'row-btns' }, h('button', { class: 'btn small ghost', onclick: openCredits }, '크레딧 · 라이선스')),
       h('div', { class: 'row-btns' }, h('button', { class: 'btn small ghost', onclick: () => { back.remove(); showTitle(); } }, '처음 화면 보기'))));
   ui.append(back);
 }

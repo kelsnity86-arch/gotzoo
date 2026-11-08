@@ -8,14 +8,14 @@ import { FUSION_MAX, FUSION_MIN, GACHA, MAX_STAGE, STAGE_TIP_MUL, UPGRADES } fro
 import type { Card, SaveData } from '../game/state';
 import type { World } from '../game/world';
 import {
-  assignStaff, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, facCount, facPrice, facSum, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
+  assignStaff, curSeason, penDetail, dailyCosts, buyItem, costUnit, decorPrice, buyFacility, facCount, facPrice, fireRefund, fireStaff, staffDraw, staffDrawPrice, staffPay, autoFusionPick, autoPlace, optimizePlacement, claimDexSet, claimMission, claimMissionBonus, dexSetDone, ensureMissions, missionText, ticketDraw, buyUpgrade, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, fusionChance,
   penCap, totalCap, boardDims, penCardAt, removePen, autoArrangePens, penDraw, penDrawPrice, penFusionCandidates, fusePens, placeAnimal, placedAnimals, placedSet, promote, stageReq, staffSlotCount, totalAttract, unplace, upgradeCost, upgradeLockedBy, upValue,
 } from '../game/rules';
 import { animalFrame, hasPng, shinyOf, staffFrame } from '../render/sprites';
 import { SEASONS, SEASON_FX, yearOf } from '../data/seasons';
 import { SYNERGY_SETS } from '../data/synergy';
 import { PEN_DRAW_MUL, PEN_THEME_BONUS, penOptDef, pieceDef } from '../data/pieces';
-import { DECO_TIERS, DECOR, DECOR_FX, FACILITIES, itemName, itemSprite } from '../data/facilities';
+import { DECO_TIERS, DECOR, DECOR_FX, FACILITIES, FAC_MAX_LV, facLevelValue, itemName, itemSprite, type FacilityType } from '../data/facilities';
 import { pieceArt } from './pieceart';
 import type { DayReport } from '../game/world';
 import { audio } from './audio';
@@ -539,25 +539,25 @@ export class Panel {
   private nightBuy(cost: number, onBuy: () => void) {
     return !this.ctx.world.isNight ? h('span', { class: 'night-only' }, '🌙 밤에 공사', h('small', {}, fmt(cost))) : this.costBtn(fmt(cost), cost, onBuy, 'small');
   }
-  // ── 동물원 > 시설 ──
+  // ── 동물원 > 시설 (관객존 위 건물 줄, 1~3단계 증축) ──
   private facView() {
     const s = this.ctx.save;
+    const val = (t: FacilityType, lv: number) => (t === 'bench' ? `+${facLevelValue(t, lv)}초` : `+${Math.round(facLevelValue(t, lv) * 100)}%`);
     const rows = FACILITIES.map((f) => {
-      const n = facCount(s, f.type), price = facPrice(s, f.type);
-      return h('div', { class: 'row' },
-        h('div', { class: 'row-art' }, hasPng(`fac_${f.type}`) ? pix(`fac_${f.type}`, 32) : null),
+      const lv = facCount(s, f.type), price = facPrice(s, f.type);
+      const art = `v2_bld_${f.type}_${Math.max(0, lv - 1)}`;
+      return h('div', { class: `row fac-row${lv ? '' : ' off'}` },
+        h('div', { class: 'row-art' }, hasPng(art) ? pix(art, 40) : null),
         h('div', { class: 'row-info' },
-          h('div', { class: 'row-name' }, f.name, n ? h('span', { class: 'gtag' }, `${n}개`) : null),
-          h('div', { class: 'sub' }, f.desc(f.value)),
-          h('div', { class: 'sub pay' }, `유지비 ${fmt(Math.round(f.upkeep * costUnit(s)))}/일 · 지금 효과 ${f.type === 'bench' ? `+${facSum(s, f.type)}초` : `${Math.round(facSum(s, f.type) * 100)}%`} (최대 ${f.type === 'bench' ? `${f.cap}초` : `${Math.round(f.cap * 100)}%`})`)),
-        this.nightBuy(price, () => { const uid = buyItem(s, `fac:${f.type}`); if (uid !== null) { audio.sfx('buy'); this.ctx.persist(); this.ctx.startPlaceItem?.(uid); } }));
+          h('div', { class: 'row-name' }, f.name, h('span', { class: 'gtag' }, lv ? `${lv}단계` : '없음'), h('span', { class: 'lv-dots' }, ...Array.from({ length: FAC_MAX_LV }, (_, k) => h('i', { class: k < lv ? 'on' : '' })))),
+          h('div', { class: 'sub' }, f.desc(facLevelValue(f.type, Math.max(1, lv)))),
+          h('div', { class: 'sub pay' }, lv ? `지금 ${val(f.type, lv)}` : '아직 없어요', price !== null ? ` → 다음 ${val(f.type, lv + 1)}` : ' · 최고 단계', ` · 유지비 ${fmt(Math.round(f.upkeep * Math.max(1, lv + (price !== null ? 1 : 0)) * costUnit(s)))}/일${lv ? '' : ' (지으면)'}`)),
+        price === null ? h('span', { class: 'max' }, '최고') : this.nightBuy(price, () => { if (buyFacility(s, f.type)) { audio.sfx('buy'); toast(`${f.name} ${facCount(s, f.type)}단계 완공!`, 'good'); this.changed(); } }));
     });
     return h('div', {},
-      h('div', { class: 'hero' }, h('div', { class: 'title' }, '시설'), h('div', { class: 'sub' }, '부지 빈 칸 1칸에 지어요 · 밤에만 공사 · 매일 유지비가 들어요 · 하나당 규모 +15')),
-      this.ctx.world.isNight ? h('p', { class: 'hint night-on' }, '🌙 밤 정비 시간이에요. 지금 지을 수 있어요.') : null,
-      h('div', { class: 'list' }, ...rows),
-      this.storedItems((t) => t.startsWith('fac:')),
-      h('p', { class: 'hint' }, '분수는 붙어 있는(위·아래·옆) 우리에만 효과가 있어요. 놓인 시설을 누르면 치울 수 있어요.'));
+      h('div', { class: 'hero' }, h('div', { class: 'title' }, '관객 건물'), h('div', { class: 'sub' }, '관객존 위 건물 줄에 서요 · 밤에만 공사 · 단계마다 효과 · 유지비 · 규모(+15)가 커져요')),
+      this.ctx.world.isNight ? h('p', { class: 'hint night-on' }, '🌙 밤 정비 시간이에요. 지금 증축할 수 있어요.') : null,
+      h('div', { class: 'list' }, ...rows));
   }
   // ── 동물원 > 꾸미기 ──
   private decoView() {

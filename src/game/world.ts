@@ -48,11 +48,18 @@ export interface AnimalEnt { shiny?: boolean; uid: number; animal: number; pen: 
 export type PropKind = 'den' | 'plant' | 'water' | 'rock' | 'food' | 'toy';
 /** 우리 안 소품 (x = 가운데, y = 바닥) */
 export interface PropEnt { pen: number; kind: PropKind; x: number; y: number; flip: boolean }
-/** 관객존 꾸미기 한 줄 (길 위쪽 잔디): 이름 · 가운데 x */
-export const ZONE_ROW = ['tree', 'lamp', 'flowerbed', 'bench', 'lamp', 'blossom', 'bush', 'lamp', 'bench', 'pine', 'flowerbush', 'lamp'] as const;
-export function zoneRow(w: number): { name: (typeof ZONE_ROW)[number]; x: number }[] {
-  const out: { name: (typeof ZONE_ROW)[number]; x: number }[] = [];
-  for (let x = 58, k = 0; x < w - 10; x += 30, k++) out.push({ name: ZONE_ROW[k % ZONE_ROW.length], x });
+/** 관객존 위 건물 줄: 관객 건물 6자리(시설) 사이사이에 가로등 · 벤치 · 꽃 · 나무 (x = 가운데) */
+export const ZONE_BUILDINGS = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic'] as const;
+const ZONE_FILL = ['bench', 'flowerbed', 'bush', 'bench', 'blossom', 'flowerbush'] as const;
+export type ZoneItem = { kind: 'bld'; type: (typeof ZONE_BUILDINGS)[number]; x: number } | { kind: 'prop'; name: string; x: number };
+export function zoneRow(w: number): ZoneItem[] {
+  const x0 = 64, slot = (w - x0 - 6) / ZONE_BUILDINGS.length, out: ZoneItem[] = [];
+  ZONE_BUILDINGS.forEach((type, i) => {
+    const c = x0 + slot * (i + 0.5);
+    out.push({ kind: 'prop', name: 'lamp', x: x0 + slot * i + 3 });
+    out.push({ kind: 'bld', type, x: c - slot * 0.12 });
+    if (slot > 40) out.push({ kind: 'prop', name: ZONE_FILL[i], x: c + slot * 0.26 });
+  });
   return out;
 }
 /** 관람객 자세 (정면): 구경 · 환호 · 사진 · 간식 · 가리키기 · 앉기 · 동전 던지기 · 실망 */
@@ -194,7 +201,7 @@ export class World {
       }
       kinds.forEach((kind, k) => { const [x, y] = spots[k]; this.props.push({ pen: i, kind, x: g.gx + (x + 0.5) * TILE, y: g.gy + (y + 1) * TILE - 1, flip: hash2(x, y + i) < 0.5 && kind !== 'den' }); });
     });
-    this.benches = zoneRow(this.layout.w).filter((z) => z.name === 'bench').map((z) => ({ x: z.x, y: Math.floor(PATH_Y0 / TILE) * TILE - 2, busy: false }));
+    this.benches = zoneRow(this.layout.w).filter((z) => z.kind === 'prop' && z.name === 'bench').map((z) => ({ x: z.x, y: Math.floor(PATH_Y0 / TILE) * TILE - 2, busy: false }));
   }
   /** 소품 앞 빈자리 (못 찾으면 null) */
   private spotNear(a: AnimalEnt, kind: PropKind): [number, number] | null {
@@ -635,7 +642,7 @@ export class World {
     if ((pen >= 0 && pen === this.sickPen && r < 0.6) || (evId === 'pollen' && r < 0.45) || (evId === 'heat' && r < 0.2)) return 'sad';
     if (v.vip || (star && r < 0.45) || ((evId === 'blossom' || evId === 'maple' || evId === 'firstsnow' || evId === 'xmas' || evId === 'halloween') && r < 0.5)) return 'photo';
     if (((evId === 'festival' || evId === 'kids' || evId === 'bus' || evId === 'chuseok' || evId === 'xmas') && r < 0.7) || (evId === 'splash' && this.geo[pen]?.theme === 'water' && r < 0.8) || (playing && r < 0.6)) return 'cheer';
-    if (this.save.items.some((it) => it.type === 'fac:snack' && it.x >= 0) && r < 0.3) return 'snack';
+    if (facSum(this.save, 'snack') > 0 && r < 0.3) return 'snack';
     if (r < 0.2) return 'point';
     if (r < 0.32) return 'photo';
     return 'watch';

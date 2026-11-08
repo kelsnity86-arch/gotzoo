@@ -421,3 +421,13 @@ body[data-season="spring"] .clock:not(.night) { background: rgba(240,140,190,.35
 
 /* 글꼴: 제목 · 숫자 · 버튼 · 탭 · 굵은 글씨 = 주아 (둥글고 통통), 본문 = 고운돋움 */
 b, strong, h1, h2, h3, .btn, .ptab, .hud, .hud-coins b, .chip, .badge, .sheet-head, .toast, .zoom-btns button { font-family: 'Jua', 'Gowun Dodum', sans-serif; font-weight: 400; }
+
+.credits .sub { margin: 2px 0; }
+.lic { margin-top: 6px; }
+.lic summary { cursor: pointer; color: var(--green-d, #2f7a4b); }
+.lic-text { max-height: 220px; overflow: auto; white-space: pre-wrap; font: 11px/1.4 ui-monospace, monospace; background: rgba(0,0,0,0.05); padding: 8px; border-radius: 6px; user-select: text; -webkit-user-select: text; }
+
+.fac-row.off .row-art { opacity: 0.45; filter: grayscale(0.6); }
+.lv-dots { display: inline-flex; gap: 3px; margin-left: 6px; vertical-align: middle; }
+.lv-dots i { width: 8px; height: 8px; border-radius: 50%; background: #d9cdb4; border: 1px solid #a8916b; }
+.lv-dots i.on { background: #f7c948; border-color: #b8862a; }
