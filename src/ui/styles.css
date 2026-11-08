@@ -165,7 +165,7 @@ body:not(.landscape) .ptabs { padding-top: 6px; }
 .toast { padding: 5px 12px; border-radius: 8px; background: rgba(26,28,44,0.9); color: #fff; font-size: 12px; border: 2px solid #94b0c2; transition: opacity 0.4s, transform 0.4s; text-align: center; }
 .toast.good { border-color: #a7d65b; } .toast.bad { border-color: #d83a3a; } .toast.gold { border-color: var(--gold); color: #fff3a3; }
 .toast.out { opacity: 0; transform: translateY(-6px); }
-@media (prefers-reduced-motion: reduce) { .btn.pulse, .field-hint, .machine.shake, .reveal-cell { animation: none; } }
+body.reduce-motion .btn.pulse, body.reduce-motion .field-hint, body.reduce-motion .machine.shake, body.reduce-motion .reveal-cell { animation: none; }
 @media (max-width: 380px) { .odds { grid-template-columns: repeat(2, 1fr); } .ptab { font-size: 11px; } }
 
 /* 세로 화면: 패널은 아래 서랍 (탭 막대만 보이다가 누르면 열림) */
@@ -254,7 +254,7 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .parade { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
 .parade span { animation: hop 0.9s ease-in-out infinite; animation-delay: calc(var(--i) * 0.11s); }
 @keyframes hop { 50% { transform: translateY(-6px); } }
-@media (prefers-reduced-motion: reduce) { .parade span { animation: none; } }
+body.reduce-motion .parade span { animation: none; }
 
 /* 전설 등장 */
 .legend-burst { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle, rgba(255,243,163,0.95), rgba(224,165,38,0.9) 40%, rgba(26,28,44,0.95) 75%); z-index: 2; animation: legendIn 0.6s ease-out; overflow: hidden; }
@@ -359,7 +359,7 @@ body:not(.landscape) .panel.closed .drawer-close { display: none; }
 .gtag.shiny { background: linear-gradient(90deg, #f08cbe, #f7c948, #73eff7); color: #1a1c2c; margin-left: 3px; }
 .card.shiny { box-shadow: 0 0 0 3px #f7c948, 0 0 14px 4px rgba(115,239,247,.8); animation: shinyGlow 1.6s ease-in-out infinite alternate; }
 @keyframes shinyGlow { from { box-shadow: 0 0 0 3px #f08cbe, 0 0 10px 2px rgba(240,140,190,.7); } to { box-shadow: 0 0 0 3px #73eff7, 0 0 16px 5px rgba(115,239,247,.8); } }
-@media (prefers-reduced-motion: reduce) { .card.shiny { animation: none; } }
+body.reduce-motion .card.shiny { animation: none; }
 .dex-cell.shiny { box-shadow: inset 0 0 0 2px #f7c948; }
 .section-title.s-spring { color: #c2417a; } .section-title.s-summer { color: #2a78c2; } .section-title.s-autumn { color: #b8452e; } .section-title.s-winter { color: #4a6f96; }
 .syn-list { display: flex; flex-direction: column; gap: 4px; }
@@ -480,7 +480,7 @@ body.landscape .panel.closed .drawer-close { display: none; }
 .rotate-note .rot-ico { font-size: 54px; animation: rot 1.8s ease-in-out infinite; }
 .rotate-note b { font: 24px 'Jua', sans-serif; color: #fff3a3; }
 @keyframes rot { 50% { transform: rotate(-90deg); } }
-@media (prefers-reduced-motion: reduce) { .rotate-note .rot-ico { animation: none; } }
+body.reduce-motion .rotate-note .rot-ico { animation: none; }
 /* 마우스 말풍선 */
 .hover-tip { position: absolute; z-index: 40; pointer-events: none !important; max-width: 320px; padding: 4px 10px; border-radius: 8px; background: rgba(18, 26, 16, 0.92); color: #fff3a3; font: 13px 'Jua', sans-serif; white-space: nowrap; }
 
@@ -539,12 +539,10 @@ body.compact .hud-coins b { font-size: 15px; }
 @keyframes flash { from { opacity: 0.85; } to { opacity: 0; } }
 .reveal-box { position: relative; }
 /* 움직임 줄이기: 흔들림 · 날아감 · 회전만 끄고 단계 그림과 빛은 그대로 보인다 */
-@media (prefers-reduced-motion: reduce) {
-  .machine.v3 .gm .pix, .machine.v3 .cap, .machine.v3 .cap-spark, .machine.v3 .cap-rays, .cutin .cutin-band, .cutin .cutin-art { animation: none !important; }
-  .machine.v3.st-open .cap-pillar, .machine.v3.st-open .cap-burst { animation: fadeIn 0.3s ease-out both !important; }
-  .reveal-flash { animation-duration: 0.3s; }
-  .reveal-cell.has-back * { transition-duration: 0.15s; }
-}
+body.reduce-motion .machine.v3 .gm .pix, body.reduce-motion .machine.v3 .cap, body.reduce-motion .machine.v3 .cap-spark, body.reduce-motion .machine.v3 .cap-rays, body.reduce-motion .cutin .cutin-band, body.reduce-motion .cutin .cutin-art { animation: none !important; }
+body.reduce-motion .machine.v3.st-open .cap-pillar, body.reduce-motion .machine.v3.st-open .cap-burst { animation: fadeIn 0.3s ease-out both !important; }
+body.reduce-motion .reveal-flash { animation-duration: 0.3s; }
+body.reduce-motion .reveal-cell.has-back * { transition-duration: 0.15s; }
 @keyframes fadeIn { from { opacity: 0; } }
 /* 새 카드 틀(28×44): 이름 칸은 아래쪽 31~36줄 */
 .card.art.v3 .card-name-in { left: 18%; right: 18%; top: 70.5%; height: 11.5%; color: #3b2a1a; }

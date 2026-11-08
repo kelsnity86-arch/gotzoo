@@ -8,7 +8,7 @@ import { pieceArt } from './pieceart';
 import { h, pix } from './dom';
 import { hasPng } from '../render/sprites';
 
-const reduce = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+import { motion } from './motion';
 
 /** 등급 키 (캡슐 · 빛 효과 그림 이름). 반짝이 동물이 있으면 무지개 */
 const GKEY = ['common', 'uncommon', 'rare', 'epic', 'legend'] as const;
@@ -75,15 +75,15 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     const bk = cardBack(backPx);
     const wrap = h('div', { class: `reveal-cell${g >= 2 ? ' shine' : ''}${bk ? ' has-back' : ''}`, style: g >= 0 ? `--glow:${GRADES[g].color}` : '--glow:#ef7d32' }, bk ? h('div', { class: 'cell-back' }, bk) : null, h('div', { class: 'cell-front' }, front));
     grid.append(wrap);
-    if (bk) window.setTimeout(() => wrap.classList.add('flipped'), reduce ? 0 : 160);
+    if (bk) window.setTimeout(() => wrap.classList.add('flipped'), motion.reduce ? 0 : 160);
     audio.sfx(g >= 2 ? 'rare' : 'reveal');
-    timer = window.setTimeout(showOne, reduce ? 0 : cards.length > 1 ? 240 : 0);
+    timer = window.setTimeout(showOne, motion.reduce ? 0 : cards.length > 1 ? 240 : 0);
   };
   const finish = () => { clearTimeout(timer); while (shown < cards.length) { grid.append(h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: cards.length > 5 ? 'r' : 'l' }))); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
   if (v3) {
     // 기계 흔들림(0.7초) → 캡슐 나옴 → 캡슐 흔들림 → 금 → 빛기둥과 함께 열림 → (영웅 · 전설 컷인) → 카드
     // 움직임 줄이기 설정이어도 단계는 보여 준다 (흔들림 · 날아감만 빠짐)
-    const T = reduce ? [450, 350, 300, 300, 600] : [750, 500, 500, 450, best >= 2 ? 1100 : 800];
+    const T = motion.reduce ? [450, 350, 300, 300, 600] : [750, 500, 500, 450, best >= 2 ? 1100 : 800];
     machine.classList.add('st-shake');
     timer = window.setTimeout(() => {
       machine.classList.replace('st-shake', 'st-drop');
@@ -102,7 +102,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   } else {
     machine.classList.add('shake');
     if (best >= 0) machine.style.setProperty('--cap', GRADES[best].color);
-    timer = window.setTimeout(() => { machine.classList.add('open'); showStar(); timer = window.setTimeout(showOne, reduce ? 0 : 350); }, reduce ? 0 : 700);
+    timer = window.setTimeout(() => { machine.classList.add('open'); showStar(); timer = window.setTimeout(showOne, motion.reduce ? 0 : 350); }, motion.reduce ? 0 : 700);
   }
   let closed = false;
   const closeAll = () => { if (closed) return; closed = true; audio.sfx('click'); back.remove(); onClose(); };

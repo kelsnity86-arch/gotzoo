@@ -18,6 +18,7 @@ import { seasonOf, yearOf } from './data/seasons';
 import { FieldRenderer } from './render/field';
 import { hasPng, preloadPngs } from './render/sprites';
 import { Panel, openPenSheet } from './ui/panel';
+import { motion } from './ui/motion';
 import { audio } from './ui/audio';
 import { fillIcons, fmt, h, iconSlot, pix, toast } from './ui/dom';
 
@@ -368,6 +369,8 @@ function openSettings() {
   vol.addEventListener('input', () => audio.setSettings({ volume: Number(vol.value) / 100 }));
   const mute = h('button', { class: 'btn small ghost' }, audio.muted ? '소리 켜기' : '소리 끄기') as HTMLButtonElement;
   mute.addEventListener('click', () => { audio.setSettings({ muted: !audio.muted }); mute.textContent = audio.muted ? '소리 켜기' : '소리 끄기'; });
+  const fxBtn = h('button', { class: 'btn small ghost' }, motion.reduce ? '연출 줄이기: 켬' : '연출 줄이기: 끔') as HTMLButtonElement;
+  fxBtn.addEventListener('click', () => { motion.set(!motion.reduce); fxBtn.textContent = motion.reduce ? '연출 줄이기: 켬' : '연출 줄이기: 끔'; });
   const area = h('textarea', { class: 'code', placeholder: 'ZOO- 로 시작하는 저장 코드', spellcheck: 'false' }) as HTMLTextAreaElement;
   const msg = h('div', { class: 'sub' });
   const copy = h('button', { class: 'btn small', onclick: () => {
@@ -393,6 +396,7 @@ function openSettings() {
     h('div', { class: 'sheet settings' },
       h('div', { class: 'sheet-head' }, h('b', {}, '설정'), h('button', { class: 'btn small', onclick: () => back.remove() }, '닫기')),
       h('div', { class: 'section-title' }, '소리'), h('div', { class: 'row-btns' }, h('label', { for: 'vol' }, '효과음'), vol, mute),
+      h('div', { class: 'section-title' }, '연출'), h('div', { class: 'row-btns' }, h('span', { class: 'sub' }, '흔들림 · 날아가는 효과를 줄여요'), fxBtn),
       h('div', { class: 'section-title' }, '저장 코드 (다른 기기로 옮기기)'), area, h('div', { class: 'row-btns' }, copy, load),
       h('div', { class: 'section-title' }, '초기화'), h('div', { class: 'row-btns' }, reset), msg,
       h('div', { class: 'section-title' }, '정보'), h('div', { class: 'row-btns' }, h('button', { class: 'btn small ghost', onclick: openCredits }, '크레딧 · 라이선스')),

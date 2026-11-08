@@ -20,7 +20,7 @@ const FLOOR: Record<Habitat, [string, string]> = {
 /** 등급별 크기 배율 (일반 → 전설). 도트 한 칸이 기기 픽셀 정수 개가 되게 반올림해서 그린다 */
 export { GRADE_MUL as GRADE_SIZE } from '../game/world';
 import { GRADE_MUL as GRADE_SIZE } from '../game/world';
-const reduceMotion = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+import { motion } from '../ui/motion';
 
 export class FieldRenderer {
   /** 마지막으로 그린 변환 (입력 좌표 변환용) */
@@ -425,7 +425,7 @@ export class FieldRenderer {
       const fr = v.state === 'view' ? 0 : Math.floor(v.anim * 6) % 2;
       list.push({ y: v.y, f: () => {
         const pose = this.poseSprite(v);
-        if (pose) { const hop = v.pose === 'cheer' && !v.tossT && !reduceMotion ? Math.round(Math.abs(Math.sin(v.t * 7)) * 4) : 0; this.blitDev(pose, v.x, v.y, pose.height / FieldRenderer.R, false, hop); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 15 + Math.sin(t * 6), 6); return; }
+        if (pose) { const hop = v.pose === 'cheer' && !v.tossT && !motion.reduce ? Math.round(Math.abs(Math.sin(v.t * 7)) * 4) : 0; this.blitDev(pose, v.x, v.y, pose.height / FieldRenderer.R, false, hop); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 15 + Math.sin(t * 6), 6); return; }
         // 걷기: 새 관객 8명(계절 옷) · VIP · 분장 손님 (도트 그대로)
         const wk = this.walkKey(v, seasonOf(save.season.n).key, fr);
         if (hasPng(wk)) { const im = sprite(wk); this.blitDev(im, v.x, v.y, im.height / FieldRenderer.R, v.dir > 0, 0); if (v.vip) this.icon(sprite('fx_15'), v.x, v.y - 15 + Math.sin(t * 6), 6); return; }
@@ -479,7 +479,7 @@ export class FieldRenderer {
         c.globalCompositeOperation = 'source-over';
         if (hasPng('v2_wx_lamplight')) { c.globalAlpha = 0.55; for (const lx of lamps) this.icon(sprite('v2_wx_lamplight'), lx, PATH_Y0 + 2, sprite('v2_wx_lamplight').width / FieldRenderer.R); c.globalAlpha = 1; }
         // 반딧불 (여름 · 가을 밤, 우리 위를 천천히)
-        if (!reduceMotion && hasPng('v2_wx_firefly') && (sea0 === 'summer' || sea0 === 'autumn')) {
+        if (!motion.reduce && hasPng('v2_wx_firefly') && (sea0 === 'summer' || sea0 === 'autumn')) {
           const ff = sprite('v2_wx_firefly');
           for (let i = 0; i < 14; i++) {
             const fx = ((i * 97.3 + Math.sin(t * 0.4 + i) * 20) % L.w + L.w) % L.w, fy = ZONE_H + ((i * 61.7 + Math.cos(t * 0.5 + i * 2) * 14) % (L.h - ZONE_H));
@@ -496,7 +496,7 @@ export class FieldRenderer {
     const parts = ev?.snow ? ['#f4f4f4', '#e9f3ff'] : sea.particle;
     // 날리는 것: 봄 꽃잎 · 가을 낙엽 · 겨울(눈 이벤트) 눈송이는 그림으로, 그 밖엔 점
     const wxKeys = ev?.snow || sea.key === 'winter' ? ['v2_wx_flake1'] : sea.key === 'spring' ? ['v2_wx_petal1', 'v2_wx_petal2', 'v2_wx_petal3'] : sea.key === 'autumn' ? ['v2_wx_leaf1', 'v2_wx_leaf2', 'v2_wx_ginkgo'] : [];
-    if (!reduceMotion && wxKeys.length && hasPng(wxKeys[0])) {
+    if (!motion.reduce && wxKeys.length && hasPng(wxKeys[0])) {
       const n = ev?.snow ? 34 : 10, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
       for (let i = 0; i < n; i++) {
         const sway = Math.sin(t * 1.3 + i) * 6;
@@ -504,7 +504,7 @@ export class FieldRenderer {
         const im = sprite(wxKeys[i % wxKeys.length]);
         this.icon(im, x, y, Math.max(im.width, im.height) / FieldRenderer.R); // 도트 그대로 (줄이면 외곽선만 남아 검은 점이 된다)
       }
-    } else if (parts.length && !reduceMotion) {
+    } else if (parts.length && !motion.reduce) {
       const n = ev?.snow ? 60 : 12, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
       for (let i = 0; i < n; i++) {
         const sway = Math.sin(t * 1.3 + i) * 6;
@@ -577,8 +577,8 @@ export class FieldRenderer {
       const fr = a.moving ? Math.floor(a.t * 5) % 2 : 0;
       const has16 = hasPng(`animal_${String(a.animal).padStart(3, '0')}`);
       // 행동별 몸짓 (기기 픽셀): 놀기 = 통통, 먹기 · 마시기 = 고개 끄덕, 잠 = 천천히 숨쉬기, 덜덜 = 좌우 떨기
-      let hop = a.moving && !reduceMotion && fr && has16 ? 1 : 0, x = a.x;
-      if (!reduceMotion) {
+      let hop = a.moving && !motion.reduce && fr && has16 ? 1 : 0, x = a.x;
+      if (!motion.reduce) {
         if (a.act === 'play' || a.act === 'splash') hop = Math.round(Math.abs(Math.sin(a.t * 9)) * (a.act === 'play' ? 6 : 3));
         else if (a.act === 'eat' || a.act === 'drink') hop = Math.floor(a.t * 4) % 2;
         else if (a.act === 'friend') hop = Math.floor(a.t * 3) % 2;
@@ -720,7 +720,7 @@ export class FieldRenderer {
     const list = world.animals.filter((a) => a.pen === i).sort((a, b) => a.y - b.y);
     for (const a of list) {
       const fr = a.moving ? Math.floor(a.t * 5) % 2 : 0;
-      const hop = a.moving && !reduceMotion && fr && hasPng(`animal_${String(a.animal).padStart(3, '0')}`) ? 1 : 0;
+      const hop = a.moving && !motion.reduce && fr && hasPng(`animal_${String(a.animal).padStart(3, '0')}`) ? 1 : 0;
       const img = animalFrame(a.animal, fr);
       this.blitAnimal(a.shiny ? shinyOf(img) : img, a.x, a.y, GRADE_SIZE[ANIMALS[a.animal].grade], a.face > 0, hop);
       if (a.shiny) this.sparkle(a.x, a.y - 4 * GRADE_SIZE[ANIMALS[a.animal].grade], a.t + a.uid);
