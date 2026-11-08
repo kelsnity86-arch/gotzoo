@@ -1,0 +1,30 @@
+BbopZOO professional cute retro pixel-art zoo game asset sheet. TRUE LOW RES PIXEL ART with solid square pixels, strict native grids described below, enlarged by integer nearest-neighbor only. 1-native-pixel dark outline #1a1c2c except floor tiles. Flat 1-2-tone shading. No antialiasing, gradients, blur, smooth vector curves, soft shadows, ground shadows, photographic textures or noise. Chunky clean silhouettes readable at tiny size, simple deliberate pixel clusters. All characters face LEFT in 3/4/profile, big heads. Background perfectly solid #FF00FF magenta, never inside sprites. Allowed colors ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. No writing, numbers, labels, watermarks, panel borders or visible grid. Plenty of empty magenta margin around each cell. Each requested item appears exactly once unless two walking frames are specified. Nothing touches neighboring artwork. Never crop feet, heads, props or ears.
+FILE: decor16_2.png (do not print file name).
+OUTPUT CANVAS EXACTLY 1536x1024 pixels.
+Rows 1–2 autumn, rows 3–4 winter. Objects use top-down 3/4 view and sit at cell bottom. No letters, even on signs.
+
+EXACTLY 24 objects, SIX columns by FOUR rows. Native object bitmap 32x32. All isolated 3/4 top-down miniature objects with the base at the bottom of its cell. No shared environment, no contact shadow, no text on signs. First two rows first season, last two rows second season. Exact left-to-right then top-to-bottom order:
+1. red maple tree
+2. golden ginkgo tree
+3. scarecrow
+4. pumpkin pile
+5. hay bale
+6. persimmon tree
+7. harvest basket
+8. jack-o-lantern
+9. fallen leaf pile
+10. wooden cart
+11. cosmos flower bed
+12. full-moon festival lantern
+13. snowman
+14. decorated christmas tree
+15. snow-covered pine tree
+16. small igloo
+17. wooden sled
+18. ice sculpture
+19. pile of gift boxes
+20. candy cane post
+21. snowball pile
+22. warm bonfire
+23. string lights arch
+24. hot cocoa stand

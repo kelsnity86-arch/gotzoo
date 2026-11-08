@@ -1,0 +1,305 @@
+{
+  "source_delivery": "PASS_13_READABLE_DISTINCT_PNGS",
+  "strict_pixel_and_runtime_gate": "HOLD",
+  "checks": [
+    {
+      "filename": "people16_spring.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 221518,
+      "off_palette_pixels": 1572827,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "HOLD_REVIEW_ALTERNATING_FEET",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "people16_summer.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 218977,
+      "off_palette_pixels": 1572835,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "HOLD_REVIEW_ALTERNATING_FEET",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "people16_autumn.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 243168,
+      "off_palette_pixels": 1572859,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "HOLD_REVIEW_ALTERNATING_FEET",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "people16_winter.png",
+      "readable_png": true,
+      "requested_slots": 32,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 232908,
+      "off_palette_pixels": 1572855,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "HOLD_REVIEW_ALTERNATING_FEET",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "staff16.png",
+      "readable_png": true,
+      "requested_slots": 20,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "requested_size": [
+        1024,
+        1536
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 241700,
+      "off_palette_pixels": 1572757,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "HOLD_REVIEW_ALTERNATING_FEET",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "tiles16_spring.png",
+      "readable_png": true,
+      "requested_slots": 16,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 126714,
+      "off_palette_pixels": 1572473,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "HOLD_NOT_CERTIFIED"
+    },
+    {
+      "filename": "tiles16_summer.png",
+      "readable_png": true,
+      "requested_slots": 16,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 124811,
+      "off_palette_pixels": 1572487,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "HOLD_NOT_CERTIFIED"
+    },
+    {
+      "filename": "tiles16_autumn.png",
+      "readable_png": true,
+      "requested_slots": 16,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 135494,
+      "off_palette_pixels": 1572508,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "HOLD_NOT_CERTIFIED"
+    },
+    {
+      "filename": "tiles16_winter.png",
+      "readable_png": true,
+      "requested_slots": 16,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "requested_size": [
+        1024,
+        1024
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 114121,
+      "off_palette_pixels": 1572496,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "HOLD_NOT_CERTIFIED"
+    },
+    {
+      "filename": "fences16.png",
+      "readable_png": true,
+      "requested_slots": 48,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "requested_size": [
+        1536,
+        768
+      ],
+      "requested_canvas_pass": false,
+      "unique_rgb_colors": 178029,
+      "off_palette_pixels": 1573488,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "HOLD_NOT_CERTIFIED"
+    },
+    {
+      "filename": "decor16_1.png",
+      "readable_png": true,
+      "requested_slots": 24,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 355280,
+      "off_palette_pixels": 1572813,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "decor16_2.png",
+      "readable_png": true,
+      "requested_slots": 24,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 378584,
+      "off_palette_pixels": 1572843,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    },
+    {
+      "filename": "facilities16.png",
+      "readable_png": true,
+      "requested_slots": 10,
+      "visual_grid_count_reviewed": true,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "requested_canvas_pass": true,
+      "unique_rgb_colors": 232835,
+      "off_palette_pixels": 1572809,
+      "palette_pass": false,
+      "exact_magenta_perimeter_pass": false,
+      "native_pixel_grid_status": "NOT_EXPORTED_OR_CERTIFIED",
+      "walk_cycle_status": "NOT_APPLICABLE",
+      "seamless_or_connection_status": "NOT_APPLICABLE"
+    }
+  ],
+  "canvas_matches": 8,
+  "canvas_mismatches": 5,
+  "corrections": [
+    "Spring walking-pose readability edit used as seasonal reference.",
+    "Autumn grandma B skirt changed to match A.",
+    "Winter tile spring blossoms replaced by ice accents and red berries."
+  ],
+  "remaining": [
+    "Exact native grid and specified 38-color palette plus magenta.",
+    "Verify A/B opposing feet and loop playback; some paired silhouettes remain similar.",
+    "Verify floor edge tiling and fence joint coordinates / concave corner geometry.",
+    "Export requested dimensions for four tile sheets and the fence sheet."
+  ]
+}

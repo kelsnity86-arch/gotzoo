@@ -1,0 +1,39 @@
+BbopZOO professional cute retro pixel-art zoo game asset sheet. TRUE LOW RES PIXEL ART with solid square pixels, strict native grids described below, enlarged by integer nearest-neighbor only. 1-native-pixel dark outline #1a1c2c except floor tiles. Flat 1-2-tone shading. No antialiasing, gradients, blur, smooth vector curves, soft shadows, ground shadows, photographic textures or noise. Chunky clean silhouettes readable at tiny size, simple deliberate pixel clusters. All characters face LEFT in 3/4/profile, big heads. Background perfectly solid #FF00FF magenta, never inside sprites. Allowed colors ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. No writing, numbers, labels, watermarks, panel borders or visible grid. Plenty of empty magenta margin around each cell. Each requested item appears exactly once unless two walking frames are specified. Nothing touches neighboring artwork. Never crop feet, heads, props or ears.
+FILE: people16_spring.png (do not print file name).
+OUTPUT CANVAS EXACTLY 1536x1024 pixels.
+Light spring clothes: cardigans, pastel colors, some holding flowers. About 8px big head. Each visitor has two adjacent walking frames: A left foot forward, B right foot forward. Same face, hair and body shape in all seasons; only clothes change.
+EXACTLY 32 separate complete human figures in 8 columns by 4 rows. Each native sprite is 16 wide x 24 high, head about 8px. Both frames of each individual are horizontal neighbors, not vertical neighbors. Frame A left cell left foot forward toward screen-left; frame B right cell right foot forward with changed opposite leg silhouette. Both face LEFT; never mirror the head to create B. Faces, hair, proportions and held props identical within each pair. Arms swing subtly and feet visibly alternate. All heads and hands intact; props in same hand. No labels A/B. Each row contains 4 character pairs. Characters in precise row-major order:
+1. boy child
+2. girl child with pigtails
+3. toddler holding a balloon
+4. teen boy with backpack
+5. teen girl holding a phone
+6. young man
+7. young woman with tote bag
+8. dad with glasses
+9. mom with shoulder bag
+10. grandpa with cane
+11. grandma with handbag
+12. tourist with camera
+13. office worker
+14. student in school uniform
+15. artist with beret and sketchbook
+16. VIP guest in a fancy suit with gold accents
+Permanent identity design (same people in every season):
+1. boy child: short tousled brown hair, small round face
+2. girl child: chestnut pigtails with two small bows
+3. toddler: tiny blond tuft, round cheeks, one red balloon on a string held in visible hand
+4. teen boy: short black hair, navy backpack
+5. teen girl: straight black bob, phone in near hand
+6. young man: brown side-part hair, slightly taller slim body
+7. young woman: long auburn hair, beige tote bag
+8. dad: short black hair and square black glasses
+9. mom: wavy dark-brown bob, shoulder bag
+10. grandpa: white hair and white mustache, slight stoop, brown cane
+11. grandma: silver hair in bun, rounded body, handbag
+12. tourist: brown hair under tan brimmed hat, camera in front
+13. office worker: neatly parted black hair, tie and dark trousers
+14. student: black bowl-cut hair, navy school uniform with white collar
+15. artist: ginger bob under a dark beret, blank brown sketchbook
+16. VIP guest: dark skin, short neat black hair, elegant dark suit with small gold accents
+Spring outfit palette: red/pastel blue boy, pink/cardigan girl, cream toddler, soft green teen boy, lavender teen girl, light blue young man, mint young woman, blue dad, pink mom, tan grandpa, lavender grandma, tan tourist, pale gray office worker, navy student, green artist, navy/gold VIP. Generous spacing, 32 human sprites, 8 across not 4 across.

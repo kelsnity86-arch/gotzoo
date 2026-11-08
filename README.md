@@ -52,6 +52,10 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 
 [동물 300종 생성 원본 ZIP 다운로드](https://raw.githubusercontent.com/kelsnity86-arch/gotzoo/main/downloads/gotzoo-animals16-sources.zip) — 원본 12장·순서표·기본 제작 문구·검수 기록, 약 18.7MB.
 
+## 관람객·직원·동물원 환경 신규 시트 원본
+
+[13장 시트 목록과 규격](assets/spritesheets16/world/README.md), [318칸의 요청 순서표](assets/catalog16_world.json)를 추가했습니다. 계절별 관람객·타일, 직원 10종, 4단계 울타리, 계절 장식과 시설·입구를 포함합니다. 봄 시트를 참조해 계절 의상과 환경을 편집했습니다. **정확한 네이티브 격자·38색, A/B 보행, 타일/울타리 연결성은 검증 미완료**이며 [검수 기록](reports/WORLD16_SOURCE_REVIEW.md)에 구분했습니다.
+
 ## 구조
 | 폴더 | 내용 |
 |---|---|

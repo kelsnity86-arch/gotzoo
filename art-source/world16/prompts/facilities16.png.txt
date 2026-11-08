@@ -1,0 +1,18 @@
+BbopZOO professional cute retro pixel-art zoo game asset sheet. TRUE LOW RES PIXEL ART with solid square pixels, strict native grids described below, enlarged by integer nearest-neighbor only. 1-native-pixel dark outline #1a1c2c except floor tiles. Flat 1-2-tone shading. No antialiasing, gradients, blur, smooth vector curves, soft shadows, ground shadows, photographic textures or noise. Chunky clean silhouettes readable at tiny size, simple deliberate pixel clusters. All characters face LEFT in 3/4/profile, big heads. Background perfectly solid #FF00FF magenta, never inside sprites. Allowed colors ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. No writing, numbers, labels, watermarks, panel borders or visible grid. Plenty of empty magenta margin around each cell. Each requested item appears exactly once unless two walking frames are specified. Nothing touches neighboring artwork. Never crop feet, heads, props or ears.
+FILE: facilities16.png (do not print file name).
+OUTPUT CANVAS EXACTLY 1536x1024 pixels.
+Six facilities in row 1, four entrance gates in row 2. Gates share an arch silhouette, signs blank. Top-down 3/4 view; objects sit at bottom of cell.
+
+EXACTLY TWO ROWS. Top row has SIX evenly spaced 32x32 facilities. Bottom row has FOUR evenly spaced 48x32 entrance gates. Larger lower row cells are intentional; do not force a uniform 6-column grid. Every item has equal baseline within its own row, generous magenta gutters. Top row order:
+1. snack stand with striped awning
+2. small restroom building
+3. pair of park benches
+4. stone fountain with water
+5. photo spot frame with a cute animal cutout (no text)
+6. animal clinic building with a green cross
+Bottom row order:
+1. wooden gate
+2. stone gate
+3. black iron gate
+4. golden gate with gems
+All four gates have the same wide arch silhouette, open walk-through passage, two pillars and an ABSOLUTELY BLANK signboard. Show increasing material quality wood→stone→black iron→gold gems. Small clinic has GREEN CROSS, restroom has no gender symbols or letters. Photobooth has a cute animal-shaped cutout and no writing. No floating ground platforms, no text.
