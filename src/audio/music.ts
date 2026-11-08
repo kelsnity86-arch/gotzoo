@@ -35,6 +35,8 @@ export interface Song {
   parts: Part[];
   /** 반복하지 않는 징글 */
   once?: boolean;
+  /** 짧게 반복하는 곡 (이벤트 · 화면용, 25초 이상) */
+  short?: boolean;
   /** 전체 음량 */
   gain?: number;
 }
@@ -147,6 +149,18 @@ export function compile(song: Song): Compiled {
               else if (st === 'sleigh') { hit(4, tt, onBeat ? 0.8 : 0.5); if (onBeat && b === 0) hit(0, tt, 0.5); }
               else if (st === 'soft') { if (onBeat && b === 0) hit(0, tt, 0.5); if (!onBeat) hit(3, tt, 0.35); }
               else if (st === 'tick') { hit(2, tt, onBeat ? 0.6 : 0.4); hit(2, tt + 0.25, 0.3); if (onBeat && b % 2 === 0) hit(0, tt, 0.7); }
+              else if (st === 'epic') {
+                // 장렬: 첫 마디 스네어 롤이 커지고, 둘째 마디 박마다 팀파니, 마지막 마디 첫 박에 심벌 · 팀파니
+                const last = bi === bars - 1;
+                if (bi === 0) { hit(1, tt, 0.35 + 0.6 * (k / (len * 2))); hit(1, tt + 0.25, 0.3 + 0.6 * (k / (len * 2))); }
+                else if (!last) { if (onBeat) { hit(6, tt, 0.9); hit(0, tt, 0.6); } hit(1, tt + 0.25, 0.25); }
+                else if (k === 0) { hit(5, tt, 1); hit(6, tt, 1); hit(0, tt, 0.9); }
+              }
+              else if (st === 'janggu') { // 세마치 느낌: 덩 · 따 · 쿵따
+                const pat = [[8, 0.9, 1], [0, 0, 0], [7, 0.6, 0], [7, 0.4, 0], [8, 0.6, 1], [7, 0.5, 0], [0, 0, 0], [7, 0.5, 0]][k % 8];
+                if (pat[0]) { ev.push({ t: tt, part: pi, midi: pat[0] === 8 ? 7 : 7, dur: pat[2] ? 0.3 : 0.1, vel: pat[1] * (p.vol ?? 1) }); if (pat[2]) hit(8, tt, 0.7); }
+              }
+              else if (st === 'spooky') { if (onBeat && b % 2 === 0) hit(6, tt, 0.5); if (!onBeat && b % 2 === 1) hit(2, tt, 0.5); }
               else if (st === 'roll') { hit(1, tt, 0.4 + 0.5 * (k / (len * 2))); hit(1, tt + 0.25, 0.35 + 0.5 * (k / (len * 2))); }
             }
           } else if (p.role === 'fx') {
@@ -161,14 +175,14 @@ export function compile(song: Song): Compiled {
   return { song, events: ev.sort((a, b) => a.t - b.t), beats: beat, spb: 60 / song.bpm };
 }
 
-const DRUM: Inst[] = ['kick', 'snare', 'hat', 'shaker', 'sleigh'];
+const DRUM: Inst[] = ['kick', 'snare', 'hat', 'shaker', 'sleigh', 'crash', 'timp', 'janggu', 'buk'];
 /** 박 위치 → 초 (스윙: 뒷 8분음표를 늦춘다) */
 const when = (c: Compiled, t: number) => { const sw = c.song.swing ?? 0, frac = t % 1; return (t + (Math.abs(frac - 0.5) < 1e-6 ? sw * 0.5 : 0)) * c.spb; };
 function fire(s: Synth, c: Compiled, e: Ev, at: number, layer: number, shift: number) {
   const p = c.song.parts[e.part];
   if ((p.layer ?? 0) > layer) return;
   const inst = p.role === 'drums' ? DRUM[e.midi] : p.inst;
-  s.play(inst, at, p.role === 'drums' ? 60 : e.midi + shift, e.dur * c.spb, e.vel);
+  s.play(inst, at, p.role === 'drums' ? (e.midi === 7 ? (e.dur > 0.15 ? 50 : 70) : 60) : e.midi + shift, e.dur * c.spb, e.vel);
 }
 
 /** 실시간 재생기: 앞서서 예약 · 반복 · 페이드 */

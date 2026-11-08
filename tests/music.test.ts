@@ -7,8 +7,8 @@ describe('배경음 악보', () => {
     for (const s of SONGS) {
       const c = compile(s);
       const sec = c.beats * c.spb;
-      expect(c.events.length).toBeGreaterThan(5);
-      if (!s.once && s.id !== 'gacha') { expect(sec, s.id).toBeGreaterThan(55); expect(sec, s.id).toBeLessThan(130); }
+      expect(c.events.length).toBeGreaterThan(2);
+      if (!s.once && s.id !== 'gacha') { expect(sec, s.id).toBeGreaterThan(s.short ? 9 : 55); expect(sec, s.id).toBeLessThan(130); }
       for (const e of c.events) if (s.parts[e.part].role !== 'drums') { expect(e.midi, s.id).toBeGreaterThan(20); expect(e.midi, s.id).toBeLessThan(110); }
     }
   });

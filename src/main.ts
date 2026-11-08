@@ -455,6 +455,9 @@ function showTitle(onStart?: () => void) {
   back.addEventListener('pointerdown', () => audio.unlock(), { once: true });
 }
 let titleOn = false;
+/** 배경음: 화면이 정한 곡(1주년 · 폐원) · 이벤트 곡 */
+let bgmOverride: string | null = null;
+let eventBgm: string | null = null;
 
 // ── 하루 정산 ──
 function showReport(r: import('./game/world').DayReport) {
@@ -506,7 +509,7 @@ function archEl(tier: number, name: string, hue: number | null, stars = 0) {
 function showSeason(r: import('./game/world').DayReport) {
   const se = r.season!;
   if (se.result === 'win') {
-    audio.sfx('legend');
+    audio.sting('jingle_win');
     const next = rivalOf(se.n + 1);
     const rIdx = (se.n - 1) % RIVAL_HUE.length;
     const total = Math.max(1, r.mine + r.rival);
@@ -529,7 +532,7 @@ function showSeason(r: import('./game/world').DayReport) {
 }
 /** 처음 진 시즌: 하트가 깨지고 최후의 기회 */
 function showSurvive(r: import('./game/world').DayReport) {
-  audio.sfx('fuseFail');
+  audio.sting('jingle_lose');
   const se = r.season!;
   const rIdx = (se.n - 1) % RIVAL_HUE.length;
   const back = h('div', { class: 'overlay' },
@@ -556,6 +559,7 @@ function showLastStand() {
 }
 /** 1년 평가: 항목 막대 · 별 (올라가기만) · 다음 별까지 */
 function showYearEval(e: YearEval) {
+  bgmOverride = 'anniversary';
   audio.sfx(e.after > e.before ? 'legend' : 'fuseWin');
   const next = STAR_NEED[e.after];
   const rewards = ['', '입구 간판에 별 · 손님 +5%', '기계 정비 마지막 단계가 열려요', '마지막 특별 확장(24×6)이 열려요', '무지개 기계 확률 +0.5%p', '손님 +15% · 황금 별 간판'];
@@ -566,7 +570,7 @@ function showYearEval(e: YearEval) {
       ...e.items.map((it) => h('div', { class: 'ye-row' }, h('b', {}, it.name), h('div', { class: 'pbar' }, h('i', { style: `width:${it.score * 5}%` }), h('span', {}, `${it.score} / 20`)), h('small', {}, it.note))),
       h('div', { class: 'ye-total' }, `합계 ${e.total}점`, next !== undefined ? h('small', {}, ` · 다음 별까지 ${next - e.total}점`) : h('small', {}, ' · 최고 등급!')),
       e.after > e.before ? h('div', { class: 'offline-amount' }, `★${e.after} 달성! ${rewards[e.after]}`) : h('div', { class: 'sub' }, '별은 내려가지 않아요. 내년에 더 높여 봐요!'),
-      h('button', { class: 'btn big', onclick: () => { back.remove(); panel.render(true); } }, '좋아!')));
+      h('button', { class: 'btn big', onclick: () => { bgmOverride = null; back.remove(); panel.render(true); } }, '좋아!')));
   ui.append(back);
 }
 /** 동물원 이름 (비면 뽑ZOO) */
@@ -600,6 +604,7 @@ function applyZooName() {
 }
 
 function showClosure() {
+  bgmOverride = 'closure';
   audio.sfx('fuseFail');
   const picked = { animals: new Set<number>(), staff: null as number | null };
   const rc = save.records;
@@ -614,7 +619,7 @@ function showClosure() {
         h('div', {}, h('b', {}, `${save.dex.filter(Boolean).length}종`), h('span', {}, '도감 (그대로 남아요)'))),
       h('div', { class: 'sub' }, '돈·코인·우리·건물은 처음부터 다시 시작해요. 도감 · 기록 · 올림푸스 신전은 남아요.'),
       carryPicker(picked),
-      h('button', { class: 'btn big', onclick: () => replaceSave(closeZoo(save, { animals: [...picked.animals], staff: picked.staff })) }, '새 동물원 열기')));
+      h('button', { class: 'btn big', onclick: () => { bgmOverride = null; replaceSave(closeZoo(save, { animals: [...picked.animals], staff: picked.staff })); } }, '새 동물원 열기')));
   ui.append(back);
 }
 /** 폐원 때 데려갈 동물(칸 안) · 직원 1명 고르기 */
@@ -692,11 +697,21 @@ function frame(now: number) {
       persist(); panel.render(true);
     }
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
-    else if (ev.type === 'rivalNews') { window.setTimeout(() => toast(`📰 ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
+    else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`📰 ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
     else if (ev.type === 'lastStand') { audio.sfx('legend'); window.setTimeout(() => showLastStand(), 300); }
-    else if (ev.type === 'fever') { if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
+    else if (ev.type === 'fever') { audio.fever(ev.on, world.lastStand); if (ev.on) { audio.sfx('legend'); toast('피버 타임! 동전이 쏟아져요', 'gold', 2200); document.body.classList.add('fever-on'); } else document.body.classList.remove('fever-on'); }
     else if (ev.type === 'combo') { audio.sfx('buy'); comboEl.textContent = `콤보 ×${ev.n} 끝! 보너스 +${fmt(ev.bonus)}`; comboEl.classList.remove('hidden'); comboEl.classList.add('end'); window.setTimeout(() => { comboEl.classList.add('hidden'); comboEl.classList.remove('end'); }, 1300); }
-    else if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
+    else if (ev.type === 'eventStart') {
+      // 이벤트 곡 · 소리: 축제 4종은 계절 축제 곡, 비 · 장마는 비 곡 + 빗소리, 나머지는 소리만
+      const sk = seasonOf(save.season.n).key;
+      const music: Record<string, string> = { festival: `festival_${sk}`, blossom: `festival_${sk}`, maple: `festival_${sk}`, kids: `festival_${sk}`, chuseok: 'chuseok', halloween: 'halloween', xmas: 'xmas', rain: 'rain', monsoon: 'rain' };
+      const amb: Record<string, 'rain' | 'cicada' | 'wind' | 'sparkle' | 'splash' | 'sneeze'> = { rain: 'rain', monsoon: 'rain', heat: 'cicada', coldwave: 'wind', firstsnow: 'sparkle', splash: 'splash', pollen: 'sneeze' };
+      if (music[ev.id]) eventBgm = music[ev.id];
+      audio.ambience(amb[ev.id] ?? null);
+      if (ev.id === 'bus') audio.sting('notify_bus');
+    }
+    if (ev.type === 'eventEnd') { eventBgm = null; audio.ambience(null); }
+    if (ev.type === 'eventStart') { audio.sfx('event'); const d = eventDef(ev.id); toast(`${d.name}! ${d.desc}`, 'gold', 2600); }
     else if (ev.type === 'eventEnd') toast(`${eventDef(ev.id).name} 끝`, 'info');
     else if (ev.type === 'synergy') { audio.sfx('rare'); toast(`✨ 시너지 발견! ${ev.name} · ${ev.desc}`, 'gold', 3000); panel.render(true); }
     else if (ev.type === 'incident') {
@@ -704,7 +719,7 @@ function frame(now: number) {
       else toast(ev.blocked ? '수의사가 동물 감기를 미리 막았어요!' : `우리 ${ev.pen + 1} 동물들이 감기에 걸렸어요. 오늘 매력 −40% (수의사가 막아요)`, ev.blocked ? 'good' : 'bad', 2800);
       audio.sfx(ev.blocked ? 'buy' : 'deny');
     }
-    else if (ev.type === 'vip') { audio.sfx('rare'); toast(`VIP 손님이 큰 동전(${fmt(ev.amount)})을 떨어뜨렸어요! 주워요`, 'gold', 2200); }
+    else if (ev.type === 'vip') { audio.sting('notify_vip'); toast(`VIP 손님이 큰 동전(${fmt(ev.amount)})을 떨어뜨렸어요! 주워요`, 'gold', 2200); }
   }
   world.events.length = 0;
   field.draw(world, save, fieldRect, dpr, pointer);
@@ -757,7 +772,13 @@ function updateHud() {
   // 하루 시계 · 개장하기
   const night = world.isNight;
   // 배경음: 타이틀 · 계절 낮/밤 (저녁부터 밤 곡으로 천천히), 규모가 클수록 악기가 많다
-  if (!titleOn) { const sk = seasonOf(save.season.n).key; const toNight = night || world.phase === 'dusk'; audio.bgm(`${sk}_${toNight ? 'night' : 'day'}`, world.phase === 'dusk' ? 10 : 3); }
+  if (!titleOn) {
+    const sk = seasonOf(save.season.n).key, toNight = night || world.phase === 'dusk';
+    const temple = panel.isOpen && panel.tab === 'log' && panel.sub.log === 'olympus';
+    const id = bgmOverride ?? (temple ? 'temple' : null) ?? (eventBgm && !toNight ? eventBgm : null) ?? `${sk}_${toNight ? 'night' : 'day'}`;
+    audio.bgm(id, world.phase === 'dusk' && !bgmOverride && !temple ? 10 : 2.5);
+    if (toNight && eventBgm) { eventBgm = null; audio.ambience(null); }
+  }
   audio.setLayer(save.stage <= 2 ? 0 : save.stage <= 4 ? 1 : save.stage <= 6 ? 2 : 3);
   clock.classList.toggle('night', night);
   const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));

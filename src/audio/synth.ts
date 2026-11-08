@@ -1,7 +1,7 @@
 // 악기: Web Audio로 합성 (외부 음원 없음). 실시간(AudioContext)과 음원 뽑기(OfflineAudioContext) 둘 다 같은 코드로 연주한다.
 export type Inst =
   | 'lead' | 'soft' | 'flute' | 'marimba' | 'musicbox' | 'bell' | 'pluck' | 'steel' | 'pad' | 'organ' | 'bass' | 'brass' | 'gayageum'
-  | 'kick' | 'snare' | 'hat' | 'shaker' | 'sleigh' | 'tom' | 'cricket';
+  | 'kick' | 'snare' | 'hat' | 'shaker' | 'sleigh' | 'tom' | 'cricket' | 'crash' | 'timp' | 'janggu' | 'buk';
 
 export const midiHz = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
@@ -150,6 +150,19 @@ export class Synth {
       case 'shaker': this.noiseHit(t, 0.06, 0.05 * v, 4500, 11000, 0.1); break;
       case 'sleigh': for (let i = 0; i < 3; i++) this.noiseHit(t + i * 0.025, 0.05, 0.05 * v, 6500, 15000, 0.2); break;
       case 'tom': { const g = this.ctx.createGain(); g.gain.setValueAtTime(0.35 * v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4); g.connect(this.out); const w = this.ctx.createGain(); w.gain.value = 0.3; g.connect(w).connect(this.wet); const o = this.osc('sine', f, t, t + 0.45, g); o.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.3); break; }
+      case 'crash': this.noiseHit(t, 1.6, 0.16 * v, 3000, 15000, 0.4); this.noiseHit(t, 0.25, 0.12 * v, 800, 6000, 0.2); break;
+      case 'timp': { // 팀파니: 낮은 사인 + 쿵
+        const g = this.ctx.createGain(); g.gain.setValueAtTime(0.42 * v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9); g.connect(this.out);
+        const w = this.ctx.createGain(); w.gain.value = 0.35; g.connect(w).connect(this.wet);
+        const o = this.osc('sine', 98, t, t + 1, g); o.frequency.exponentialRampToValueAtTime(82, t + 0.4);
+        this.noiseHit(t, 0.05, 0.08 * v, 200, 2000, 0); break;
+      }
+      case 'janggu': { // 장구: 궁편(둥) · 채편(따) — midi 낮으면 둥, 높으면 따
+        if (midi < 62) { const g = this.ctx.createGain(); g.gain.setValueAtTime(0.3 * v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3); g.connect(this.out); const o = this.osc('sine', 130, t, t + 0.32, g); o.frequency.exponentialRampToValueAtTime(90, t + 0.2); }
+        else { this.noiseHit(t, 0.07, 0.16 * v, 1800, 7000, 0.15); const g = this.ctx.createGain(); g.gain.setValueAtTime(0.1 * v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06); g.connect(this.out); this.osc('triangle', 420, t, t + 0.07, g); }
+        break;
+      }
+      case 'buk': { const g = this.ctx.createGain(); g.gain.setValueAtTime(0.36 * v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35); g.connect(this.out); const o = this.osc('sine', 110, t, t + 0.4, g); o.frequency.exponentialRampToValueAtTime(70, t + 0.25); this.noiseHit(t, 0.04, 0.06 * v, 300, 3000, 0.1); break; }
       case 'cricket': { // 풀벌레: 높은 사인을 빠르게 떨기
         const e = this.env(t, 0.01, 0.05, 1, dur, 0.03, 0.025 * v);
         const am = this.ctx.createGain(); am.gain.value = 0; am.connect(e.g);

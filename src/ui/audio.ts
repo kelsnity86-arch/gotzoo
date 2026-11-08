@@ -70,6 +70,50 @@ class Audio {
     window.setTimeout(() => p.stop(0.5), (c.beats * c.spb + 2.5) * 1000);
   }
   gachaEnd() { this.gachaP?.stop(0.4); this.gachaP = null; this.setDuck(false); }
+  /** 짧은 알림 · 승리/패배 징글: 배경음을 잠깐 낮추고 한 번 */
+  sting(id: string) {
+    if (!this.ctx || !this.bgmBus || this.muted) return;
+    const c = this.compiled(id); if (!c) return;
+    const p = new Player(this.ctx, this.bgmBus, c, 1);
+    p.start(0.02, Math.max(0.0001, Math.min(1, this.bgmVolume * 1.1 + 0.15)));
+    const len = c.beats * c.spb;
+    if (!this.gachaP) { this.cur?.p.setVol(Math.max(0.0001, this.bgmLevel() * 0.35), 0.15); window.setTimeout(() => this.cur?.p.setVol(this.bgmLevel(), 0.8), len * 1000 + 300); }
+    window.setTimeout(() => p.stop(0.5), (len + 2.5) * 1000);
+  }
+  private feverP: Player | null = null;
+  /** 피버 타임 (막판 대목이면 반음 2 올려 더 긴박하게): 배경음 위에 빠른 곡 */
+  fever(on: boolean, stand = false) {
+    if (!on) { this.feverP?.stop(0.8); this.feverP = null; this.cur?.p.setVol(this.bgmLevel(), 1); return; }
+    if (!this.ctx || !this.bgmBus || this.muted || this.feverP) return;
+    const c = this.compiled('fever'); if (!c) return;
+    const p = new Player(this.ctx, this.bgmBus, c, 1); p.shift = stand ? 2 : 0;
+    p.start(0.3, Math.max(0.0001, this.bgmVolume * 0.85));
+    this.cur?.p.setVol(Math.max(0.0001, this.bgmLevel() * 0.2), 0.3);
+    this.feverP = p;
+  }
+  // ── 날씨 · 이벤트 소리 (곡 위에 얹는다) ──
+  private amb: { kind: string; nodes: AudioScheduledSourceNode[]; gain: GainNode; timer: number } | null = null;
+  ambience(kind: 'rain' | 'cicada' | 'wind' | 'sparkle' | 'splash' | 'sneeze' | null) {
+    if (this.amb?.kind === kind) return;
+    if (this.amb) { const a = this.amb; const t = this.ctx!.currentTime; a.gain.gain.setTargetAtTime(0.0001, t, 0.5); window.clearInterval(a.timer); window.setTimeout(() => { a.nodes.forEach((n) => { try { n.stop(); } catch { /* 이미 멈춤 */ } }); a.gain.disconnect(); }, 2500); this.amb = null; }
+    if (!kind || !this.ctx || this.muted) return;
+    const c = this.ctx, g = c.createGain(); g.gain.value = 0.0001; g.connect(c.destination);
+    g.gain.setTargetAtTime(this.volume * 0.5, c.currentTime, 0.6);
+    const nodes: AudioScheduledSourceNode[] = [];
+    const noise = () => { const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const s = c.createBufferSource(); s.buffer = b; s.loop = true; nodes.push(s); return s; };
+    const filt = (type: BiquadFilterType, f: number, q = 0.7) => { const x = c.createBiquadFilter(); x.type = type; x.frequency.value = f; x.Q.value = q; return x; };
+    const vol = (v: number) => { const x = c.createGain(); x.gain.value = v; return x; };
+    let timer = 0;
+    if (kind === 'rain') { const s = noise(); s.connect(filt('highpass', 900)).connect(filt('lowpass', 7000)).connect(vol(0.12)).connect(g); s.start();
+      timer = window.setInterval(() => { if (Math.random() < 0.6) this.tone(c.currentTime, 1200 + Math.random() * 1500, 0.03, 0.012, 'sine', 600); }, 120); }
+    else if (kind === 'wind') { const s = noise(); const lp = filt('bandpass', 500, 1.2); s.connect(lp).connect(vol(0.16)).connect(g); s.start();
+      const l = c.createOscillator(); l.frequency.value = 0.12; const lg = vol(350); l.connect(lg).connect(lp.frequency); l.start(); nodes.push(l); }
+    else if (kind === 'cicada') { timer = window.setInterval(() => { const t = c.currentTime; for (let i = 0; i < 14; i++) this.tone(t + i * 0.045, 4200 + Math.random() * 300, 0.035, 0.008, 'square'); }, 1600); }
+    else if (kind === 'sparkle') { timer = window.setInterval(() => { if (Math.random() < 0.5) { const m = [84, 88, 91, 96][Math.floor(Math.random() * 4)]; this.tone(c.currentTime, 440 * Math.pow(2, (m - 69) / 12), 0.6, 0.02, 'sine'); } }, 700); }
+    else if (kind === 'splash') { timer = window.setInterval(() => { if (Math.random() < 0.45) this.tone(c.currentTime, 900 + Math.random() * 700, 0.09, 0.03, 'sine', 300); }, 650); }
+    else if (kind === 'sneeze') { timer = window.setInterval(() => { if (Math.random() < 0.18) { const t = c.currentTime; this.tone(t, 700, 0.25, 0.02, 'triangle', 900); this.tone(t + 0.3, 900, 0.18, 0.04, 'sawtooth', 250); } }, 3000); }
+    this.amb = { kind, nodes, gain: g, timer };
+  }
   /** 앱이 뒤로 가면 멈춤 */
   suspend(on: boolean) { if (!this.ctx) return; if (on) void this.ctx.suspend(); else void this.ctx.resume(); }
   private tone(t: number, f: number, d: number, v: number, type: OscillatorType = 'square', f2?: number) {
