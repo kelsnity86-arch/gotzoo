@@ -15,8 +15,8 @@ import { EVENTS, EVENT_TIMING, eventDef, type EventId } from '../data/events';
 export const TILE = 8;
 /** 등급별 크기 배율 (render/field.ts의 GRADE_SIZE와 같게) */
 export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
-export const ZONE_H = 48;      // 관객존 높이
-export const PATH_Y0 = 18, PATH_Y1 = 40; // 관람객이 걷는 길 (관객존 안)
+export const ZONE_H = 80;      // 관객존 높이 (위 = 관객 건물 줄, 아래 = 관람객 길)
+export const PATH_Y0 = 50, PATH_Y1 = 72; // 관람객이 걷는 길 (관객존 안)
 
 export interface PenRect { x: number; y: number; w: number; h: number }
 /** 우리 모양: 타일 격자 원점 · 칸 수 · 마스크(우리 칸) · 바닥(테두리 아닌 우리 칸) */

@@ -12,6 +12,22 @@ import { eventDef } from '../data/events';
 
 export interface View { x: number; y: number; w: number; h: number }
 /** GPT 타일 (assets/sprites/tiles): 서식지별 바닥 */
+/** 깔끔한 스타일 팔레트: 계절마다 땅 · 벽돌 한 톤 */
+const CLEAN_PAL: Record<string, { grass: string; grassDot: string; brick: string; mortar: string; edge: string }> = {
+  spring: { grass: '#9ccf6e', grassDot: '#b6dd86', brick: '#e2a77a', mortar: '#c98a62', edge: '#b97752' },
+  summer: { grass: '#7fbe58', grassDot: '#95cc6a', brick: '#dca068', mortar: '#c08350', edge: '#a96d40' },
+  autumn: { grass: '#b8a35a', grassDot: '#c9b46a', brick: '#cf8f5a', mortar: '#b07246', edge: '#985f38' },
+  winter: { grass: '#e6eef3', grassDot: '#f6fafc', brick: '#c9b4a6', mortar: '#ad978a', edge: '#957f72' },
+};
+/** 서식지 바닥 · 턱 색 */
+const HAB_PAL: Record<Habitat, { floor: string; dot: string; rim: string; rimHi: string; rimLo: string }> = {
+  grass: { floor: '#8fca63', dot: '#a6d878', rim: '#5d9a44', rimHi: '#7dbb57', rimLo: '#4a7f36' },
+  sand: { floor: '#f0d197', dot: '#f6dfb0', rim: '#d98f4e', rimHi: '#eaa865', rimLo: '#b8723c' },
+  water: { floor: '#5bb7e0', dot: '#82cdec', rim: '#9aa6b1', rimHi: '#c3ccd4', rimLo: '#77838e' },
+  snow: { floor: '#eef4f8', dot: '#ffffff', rim: '#a9bccb', rimHi: '#cbd8e2', rimLo: '#8a9dac' },
+  rock: { floor: '#a8b1b7', dot: '#bcc4c9', rim: '#737d85', rimHi: '#8d969d', rimLo: '#5c656c' },
+  cloud: { floor: '#f6dceb', dot: '#fdeef6', rim: '#d4a2c2', rimHi: '#e6bdd7', rimLo: '#b886a6' },
+};
 const FLOOR_TILE: Record<Habitat, string> = { grass: 'tiles_09', sand: 'tiles_10', water: 'tiles_11', snow: 'tiles_12', rock: 'tiles_13', cloud: 'tiles_14' };
 const FLOOR: Record<Habitat, [string, string]> = {
   grass: ['#38a35b', '#2f8f4f'], sand: ['#e8c39e', '#d9ae84'], water: ['#41a6f6', '#3b8fe0'],
@@ -52,6 +68,8 @@ export class FieldRenderer {
   ghost: { cells: [number, number][]; ok: boolean } | null = null;
 
   static readonly R = 2;
+  /** 깔끔한 스타일 (턱 테두리 · 벽돌 광장 · 단색 바닥 · 관객 건물 줄) */
+  clean = false;
   private wc: HTMLCanvasElement | null = null;
   private bg: HTMLCanvasElement | null = null;
   private seasonN = 1;
@@ -61,6 +79,108 @@ export class FieldRenderer {
   constructor(private ctx: CanvasRenderingContext2D) {}
 
   /** 움직이지 않는 바탕(잔디·길·나무·울타리·우리 바닥)을 GPT 타일로 한 번 그려 둔다 */
+  /** 깔끔한 스타일 바탕: 계절 팔레트 한 톤, 벽돌 광장 · 길, 우리는 단색 바닥 + 두꺼운 턱, 관객존 위에 관객 건물 줄 */
+  private cleanBackground(world: World): HTMLCanvasElement | null {
+    const L = world.layout;
+    const season = seasonOf(this.seasonN).key;
+    const items = this.items.map((it) => `${it.type}@${it.x},${it.y}`).join(';');
+    const key = `clean|${season}|${this.decoTier}|${items}|${L.w}x${L.h}|${L.pens.map((r) => `${r.x},${r.y},${r.w},${r.h}`).join(';')}|${world.geo.map((g) => `${g.theme}${g.mask.flat().filter(Boolean).length}`).join(',')}`;
+    if (this.bg && key === this.bgKey) return this.bg;
+    this.bgKey = key;
+    const cv = this.bg ?? document.createElement('canvas');
+    const R = FieldRenderer.R;
+    cv.width = L.w * R; cv.height = L.h * R;
+    const c = cv.getContext('2d')!;
+    c.setTransform(R, 0, 0, R, 0, 0);
+    c.imageSmoothingEnabled = false;
+    const P = CLEAN_PAL[season];
+    const px = 1 / R;
+    // 땅: 계절 잔디색 + 아주 옅은 점
+    c.fillStyle = P.grass; c.fillRect(0, 0, L.w, L.h);
+    c.fillStyle = P.grassDot;
+    for (let y = 0; y < L.h; y += 3) for (let x = (y * 7) % 5; x < L.w; x += 5) if (((x * 13 + y * 7) | 0) % 3 === 0) c.fillRect(x, y, px, px);
+    // 벽돌 (가로줄 2칸, 벽돌 4칸, 줄마다 엇갈림)
+    const bricks = (x0: number, y0: number, w: number, h: number) => {
+      c.fillStyle = P.brick; c.fillRect(x0, y0, w, h);
+      c.fillStyle = P.mortar;
+      for (let y = y0; y < y0 + h; y += 2) {
+        c.fillRect(x0, y, w, px);
+        const off = ((y - y0) / 2) % 2 ? 2 : 0;
+        for (let x = x0 + off; x < x0 + w; x += 4) c.fillRect(x, y, px, 2);
+      }
+    };
+    const { bx0, by0, bw, bh } = L;
+    // 관객존: 위 = 관객 건물 줄 (잔디 띠), 아래 = 벽돌 길
+    bricks(0, PATH_Y0 - 2, L.w, PATH_Y1 - PATH_Y0 + 8);
+    c.fillStyle = P.edge; c.fillRect(0, PATH_Y0 - 2, L.w, px); c.fillRect(0, PATH_Y1 + 6 - px, L.w, px);
+    const bld = ['snack', 'restroom', 'photo', 'fountain', 'bench', 'clinic'];
+    const slot = Math.max(40, (L.w - 16) / bld.length);
+    bld.forEach((b, i) => { const k = `fac_${b}`; if (hasPng(k)) this.cleanObj(c, sprite(k), 8 + slot * (i + 0.5), PATH_Y0 - 3, 30); });
+    // 건물 사이 나무
+    for (let i = 0; i <= bld.length; i++) { const k = `t16_${season}_11`; if (hasPng(k)) this.cleanObj(c, sprite(k), 8 + slot * i, PATH_Y0 - 6, 18); }
+    // 부지: 벽돌 광장
+    bricks(bx0 - 4, by0 - 4, bw * BLOCK + 8, bh * BLOCK + 8);
+    // 우리: 단색 바닥(옅은 점) + 바깥쪽 턱 + 아래 그림자
+    const owner = new Map<string, number>();
+    L.pens.forEach((_, i) => { const g = world.geo[i]; if (g) g.mask.forEach((row, y) => row.forEach((v, x) => { if (v) owner.set(`${g.gx + x * TILE},${g.gy + y * TILE}`, i); })); });
+    L.pens.forEach((_, i) => {
+      const g = world.geo[i];
+      if (!g) return;
+      const hb = (g.theme ?? 'grass') as Habitat;
+      const F = HAB_PAL[hb];
+      const m = g.mask;
+      const at = (x: number, y: number) => !!m[y]?.[x];
+      // 그림자
+      c.fillStyle = 'rgba(60,30,10,0.18)';
+      for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) if (at(x, y) && !at(x, y + 1)) c.fillRect(g.gx + x * TILE, g.gy + (y + 1) * TILE, TILE, 2);
+      for (let y = 0; y < g.rows; y++) for (let x = 0; x < g.cols; x++) {
+        if (!at(x, y)) continue;
+        const X = g.gx + x * TILE, Y = g.gy + y * TILE;
+        c.fillStyle = F.floor; c.fillRect(X, Y, TILE, TILE);
+        c.fillStyle = F.dot;
+        for (let k = 0; k < 3; k++) c.fillRect(X + ((x * 5 + y * 3 + k * 3) % 7) + 0.5, Y + ((x * 3 + y * 7 + k * 5) % 7) + 0.5, px * 2, px);
+        // 턱: 바깥으로 트인 쪽에 두꺼운 띠 (위는 밝게, 아래는 어둡게)
+        const T = 2.5;
+        if (!at(x, y - 1)) { c.fillStyle = F.rim; c.fillRect(X, Y, TILE, T); c.fillStyle = F.rimHi; c.fillRect(X, Y, TILE, px); }
+        if (!at(x, y + 1)) { c.fillStyle = F.rimLo; c.fillRect(X, Y + TILE - T, TILE, T); }
+        if (!at(x - 1, y)) { c.fillStyle = F.rim; c.fillRect(X, Y, T, TILE); }
+        if (!at(x + 1, y)) { c.fillStyle = F.rim; c.fillRect(X + TILE - T, Y, T, TILE); }
+        // 바깥 모서리는 비스듬히 깎는다
+        if (!at(x, y - 1) && !at(x - 1, y)) { c.fillStyle = P.brick; c.fillRect(X, Y, 3, 1); c.fillRect(X, Y + 1, 2, 1); c.fillRect(X, Y + 2, 1, 1); }
+        if (!at(x, y - 1) && !at(x + 1, y)) { c.fillStyle = P.brick; c.fillRect(X + TILE - 3, Y, 3, 1); c.fillRect(X + TILE - 2, Y + 1, 2, 1); c.fillRect(X + TILE - 1, Y + 2, 1, 1); }
+        if (!at(x, y + 1) && !at(x - 1, y)) { c.fillStyle = P.brick; c.fillRect(X, Y + TILE - 1, 3, 1); c.fillRect(X, Y + TILE - 2, 2, 1); c.fillRect(X, Y + TILE - 3, 1, 1); }
+        if (!at(x, y + 1) && !at(x + 1, y)) { c.fillStyle = P.brick; c.fillRect(X + TILE - 3, Y + TILE - 1, 3, 1); c.fillRect(X + TILE - 2, Y + TILE - 2, 2, 1); c.fillRect(X + TILE - 1, Y + TILE - 3, 1, 1); }
+      }
+    });
+    // 광장 화분 · 나무: 부지 가장자리 빈 블록에 몇 개
+    const itemAt = new Set(this.items.filter((it) => it.x >= 0).map((it) => `${it.x},${it.y}`));
+    for (let by = 0; by < bh; by++) for (let bx = 0; bx < bw; bx++) {
+      if (itemAt.has(`${bx},${by}`)) continue;
+      let empty = true;
+      for (let ty = 0; ty < 4 && empty; ty++) for (let tx = 0; tx < 4; tx++) if (owner.has(`${bx0 + bx * BLOCK + tx * TILE},${by0 + by * BLOCK + ty * TILE}`)) { empty = false; break; }
+      if (!empty || (bx * 5 + by * 11) % 4 !== 0) continue;
+      const k = `t16_${season}_${(bx + by) % 3 === 0 ? 12 : 11}`;
+      if (hasPng(k)) this.cleanObj(c, sprite(k), bx0 + bx * BLOCK + BLOCK / 2, by0 + by * BLOCK + BLOCK - 6, (bx + by) % 3 === 0 ? 12 : 20);
+    }
+    // 시설 · 소품
+    for (const it of this.items) {
+      if (it.x < 0) continue;
+      const k2 = itemSprite(it.type);
+      if (hasPng(k2)) this.cleanObj(c, sprite(k2), L.bx0 + it.x * BLOCK + BLOCK / 2, L.by0 + it.y * BLOCK + BLOCK - 3, BLOCK - 6);
+    }
+    this.bg = cv;
+    return cv;
+  }
+  /** 물체를 도트 그림용으로 줄여 바닥 가운데에 (그림자 포함) */
+  private cleanObj(c: CanvasRenderingContext2D, im: Sprite, cx: number, by: number, maxUnits: number) {
+    const R = FieldRenderer.R, k = (maxUnits * R) / Math.max(im.width, im.height);
+    const d = k < 1 ? pixelDown(im, im.width * k, im.height * k) : im;
+    const s2 = k < 1 ? 1 / R : Math.max(1, Math.floor(k)) / R;
+    const w = d.width * s2, h = d.height * s2;
+    c.fillStyle = 'rgba(60,30,10,0.18)'; c.beginPath(); c.ellipse(cx, by, w * 0.38, 1.5, 0, 0, Math.PI * 2); c.fill();
+    c.drawImage(d, Math.round((cx - w / 2) * R) / R, Math.round((by - h) * R) / R, w, h);
+  }
+
   private background(world: World): HTMLCanvasElement | null {
     if (!hasPng('tiles_01')) return null;
     const L = world.layout;
@@ -242,7 +362,7 @@ export class FieldRenderer {
     c.font = '11px Galmuri11, sans-serif';
     L.pens.forEach((r, i) => {
       const n = save.pens[i]?.length ?? 0;
-      if (!n) return;
+      if (!n || (this.clean && i !== this.selectedPen)) return; // 깔끔한 스타일: 누른 우리만
       const label = `♥${fmt(Math.round(penAttract(save, i, world.fedLeft[i] > 0 ? 1.1 : 1)))}`;
       const g = world.geo[i];
       // 모양의 맨 윗줄 가운데 (ㄱ자 등에서 빈 곳에 뜨지 않게)
@@ -262,7 +382,7 @@ export class FieldRenderer {
   private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
     this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0;
-    const bg = this.background(world);
+    const bg = this.clean ? this.cleanBackground(world) : this.background(world);
     if (bg) { c.drawImage(bg, 0, 0, L.w, L.h); this.drawDynamic(world, save); }
     else {
     // 바닥 잔디
