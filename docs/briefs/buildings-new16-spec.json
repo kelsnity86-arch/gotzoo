@@ -1,0 +1,51 @@
+{
+  "project": "BbopZOO",
+  "filename": "buildings_new16.png",
+  "requested_size": [
+    1536,
+    1536
+  ],
+  "grid": [
+    6,
+    3
+  ],
+  "native_by_row": [
+    [
+      48,
+      48
+    ],
+    [
+      64,
+      64
+    ],
+    [
+      80,
+      80
+    ]
+  ],
+  "columns": [
+    "souvenir shop",
+    "family restaurant",
+    "ice cream parlor",
+    "carousel",
+    "observation tower",
+    "animal research lab"
+  ],
+  "upgrade_levels": [
+    "small",
+    "medium",
+    "large and fancy"
+  ],
+  "reference": "assets/spritesheets16/buildings-large/buildings_big16.png",
+  "background": "#FF00FF",
+  "outline": "#2b1d14",
+  "request_source": "docs/prompt_buildings_new16.txt",
+  "identities": [
+    "purple/yellow awning, plush animals, balloons",
+    "orange roof, chimney, parasol tables",
+    "pink/mint stripes, rooftop ice cream cone",
+    "round tent roof, flag, horse and animal seats",
+    "wooden tower, roofed deck, telescope, stairs",
+    "white walls, teal roof, greenhouse dome, paw emblem"
+  ]
+}

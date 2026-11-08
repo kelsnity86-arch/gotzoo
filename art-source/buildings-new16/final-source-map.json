@@ -1,0 +1,8 @@
+{
+  "filename": "buildings_new16.png",
+  "reference": "assets/spritesheets16/buildings-large/buildings_big16.png",
+  "initial_source": "/workspace/generated_images/exec-1ca1890b-fca0-4c75-bff8-29d14ff8ef5f.png",
+  "final_source": "/workspace/generated_images/exec-966574fa-e329-4c0c-82d7-9a8c6eb4b5d0.png",
+  "destination": "assets/spritesheets16/buildings-new/buildings_new16.png",
+  "correction": "Added blank plaques to all three observation-tower balcony railings."
+}
