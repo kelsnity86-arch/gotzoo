@@ -17,8 +17,11 @@ export const TILE = 8;
 export const GRADE_MUL = [1, 1.2, 1.45, 1.75, 2.2] as const;
 export const ZONE_H = 80;      // 관객존 높이 (위 = 관객 건물 줄, 아래 = 관람객 길)
 export const PATH_Y0 = 50, PATH_Y1 = 72; // 관람객이 걷는 길 (관객존 안)
-/** 입구 게이트 가운데 x: 왼쪽 손님은 여기서 나오고 여기로 나간다 */
-export const GATE_X = 22;
+/** 입구 게이트: 관객존 위쪽 가운데. 손님은 문 안(GATE_Y)에서 나와 길로 내려가고, 구경을 마치면 문으로 돌아가 나간다 */
+export const gateX = (w: number) => Math.round(w / 2);
+export const GATE_Y = 43;
+/** 입구 양옆 비워 둘 너비 (게이트 + 매표소) */
+export const GATE_HALF = 34;
 
 export interface PenRect { x: number; y: number; w: number; h: number }
 /** 우리 모양: 타일 격자 원점 · 칸 수 · 마스크(우리 칸) · 바닥(테두리 아닌 우리 칸) */
@@ -55,20 +58,28 @@ export const ZONE_BUILDINGS = ['snack', 'restroom', 'photo', 'fountain', 'bench'
 const ZONE_FILL = ['bench', 'flowerbed', 'bush', 'bench', 'blossom', 'flowerbush'] as const;
 export type ZoneItem = { kind: 'bld'; type: (typeof ZONE_BUILDINGS)[number]; x: number } | { kind: 'prop'; name: string; x: number };
 export function zoneRow(w: number): ZoneItem[] {
-  const x0 = 64, slot = (w - x0 - 6) / ZONE_BUILDINGS.length, out: ZoneItem[] = [];
-  ZONE_BUILDINGS.forEach((type, i) => {
-    const c = x0 + slot * (i + 0.5);
-    out.push({ kind: 'prop', name: 'lamp', x: x0 + slot * i + 3 });
-    out.push({ kind: 'bld', type, x: c - slot * 0.12 });
-    if (slot > 40) out.push({ kind: 'prop', name: ZONE_FILL[i], x: c + slot * 0.26 });
-  });
+  // 입구(가운데) 왼쪽에 3동, 오른쪽에 3동
+  const gx = gateX(w), out: ZoneItem[] = [];
+  const side = (x0: number, x1: number, types: readonly (typeof ZONE_BUILDINGS)[number][], fill: readonly string[]) => {
+    const slot = (x1 - x0) / types.length;
+    types.forEach((type, i) => {
+      const c = x0 + slot * (i + 0.5);
+      out.push({ kind: 'prop', name: 'lamp', x: x0 + slot * i + 3 });
+      out.push({ kind: 'bld', type, x: c - slot * 0.1 });
+      if (slot > 36) out.push({ kind: 'prop', name: fill[i], x: c + slot * 0.3 });
+    });
+  };
+  side(6, gx - GATE_HALF, ZONE_BUILDINGS.slice(0, 3), ZONE_FILL.slice(0, 3));
+  side(gx + GATE_HALF, w - 6, ZONE_BUILDINGS.slice(3), ZONE_FILL.slice(3));
   return out;
 }
 /** 관람객 자세 (정면): 구경 · 환호 · 사진 · 간식 · 가리키기 · 앉기 · 동전 던지기 · 실망 */
 export type VisitorPose = 'watch' | 'cheer' | 'photo' | 'snack' | 'point' | 'sit' | 'toss' | 'sad';
 /** 0~1 해시 (같은 자리면 늘 같은 값) */
 export const hash2 = (x: number, y: number) => { let h = (x * 374761393 + y * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
-export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'walk' | 'view' | 'leave' | 'sit'; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number;
+export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; kind: number; state: 'enter' | 'walk' | 'view' | 'leave' | 'sit' | 'exit';
+  /** 걸어 다닐 길 높이 */
+  laneY?: number; targetX: number; t: number; viewFor: number; thrown: boolean; anim: number;
   /** 멈춰서 하는 자세 · 던지는 순간 자세 남은 시간 · 앉을 벤치(-1 = 안 앉음) · 효과 타이머 */
   pose?: VisitorPose; tossT?: number; bench?: number; fx?: number }
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean }
@@ -566,7 +577,16 @@ export class World {
       const v = this.visitors[i];
       v.t += dt; v.anim += dt; v.fx = (v.fx ?? 0) + dt;
       if (v.tossT) v.tossT = Math.max(0, v.tossT - dt);
-      if (v.state === 'walk') {
+      const gx = gateX(L.w);
+      if (v.state === 'enter') {
+        // 문에서 나와 길로 내려간다
+        v.y += VISITOR.walkSpeed * dt;
+        if (v.y >= (v.laneY ?? PATH_Y0 + 6)) { v.y = v.laneY ?? v.y; v.state = 'walk'; }
+      } else if (v.state === 'exit') {
+        // 문으로 올라가 나간다
+        v.y -= VISITOR.walkSpeed * 1.2 * dt;
+        if (v.y <= GATE_Y) { this.visitors.splice(i, 1); continue; }
+      } else if (v.state === 'walk') {
         v.x += v.dir * VISITOR.walkSpeed * (evId === 'coldwave' || evId === 'monsoon' ? 1.3 : 1) * dt;
         if ((v.dir > 0 && v.x >= v.targetX) || (v.dir < 0 && v.x <= v.targetX)) { v.state = 'view'; v.t = 0; v.pose = this.choosePose(v); v.fx = 0; }
       } else if (v.state === 'view') {
@@ -574,15 +594,18 @@ export class World {
         // 자세별 효과: 사진 플래시 · 환호 하트 · 실망 땀
         const every = v.pose === 'photo' ? 1.3 : v.pose === 'cheer' ? 1.1 : v.pose === 'sad' ? 1.6 : 99;
         if (v.fx > every) { v.fx = 0; this.emotes.push({ x: v.x + (v.pose === 'photo' ? -2 : 0), y: v.y - (v.pose === 'photo' ? 9 : 15), t: 0, icon: v.pose === 'photo' ? 'v2_fx_flash' : v.pose === 'cheer' ? (evId === 'festival' || evId === 'blossom' || evId === 'maple' ? 'v2_fx_petals' : 'v2_fx_heart') : 'v2_fx_sweat' }); }
-        if (v.t > v.viewFor) { v.state = 'leave'; }
+        if (v.t > v.viewFor) { v.state = 'leave'; v.dir = Math.sign(gx - v.x) || 1; }
       } else if (v.state === 'sit') {
-        if (v.t > 5) { v.state = 'leave'; const b = this.benches[v.bench ?? -1]; if (b) b.busy = false; v.bench = -1; v.y = PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6); }
+        if (v.t > 5) { v.state = 'leave'; const b = this.benches[v.bench ?? -1]; if (b) b.busy = false; v.bench = -1; v.y = v.laneY ?? PATH_Y0 + 6; v.dir = Math.sign(gx - v.x) || 1; }
       } else {
-        v.x += v.dir * VISITOR.walkSpeed * 1.2 * dt;
+        // 입구 쪽으로 돌아간다 (붐비면 조금 빨리)
+        v.dir = Math.sign(gx - v.x) || 1;
+        v.x += v.dir * VISITOR.walkSpeed * (this.visitors.length > 80 ? 1.6 : 1.25) * dt;
+        if (Math.abs(v.x - gx) < 2) { v.x = gx + (this.rng() - 0.5) * 6; v.state = 'exit'; continue; }
         // 돌아가다 벤치에서 쉬어 간다 (정한 사람만, 비었을 때)
         const b = this.benches[v.bench ?? -1];
         if (b && this.phase === 'day' && !b.busy && Math.abs(b.x - v.x) < 1.5) { b.busy = true; v.state = 'sit'; v.t = 0; v.x = b.x; v.y = b.y; v.pose = 'sit'; continue; }
-        if (v.x < GATE_X || v.x > L.w + 16) this.visitors.splice(i, 1);
+
       }
     }
 
@@ -673,15 +696,16 @@ export class World {
 
   private spawnVisitor(vip = false) {
     const L = this.layout;
-    const dir = this.rng() < 0.5 ? 1 : -1;
-    // 동물이 있는 우리 앞을 고른다 (위쪽 줄 우리일수록 잘 고름)
+    // 동물이 있는 우리 앞을 고른다
     const pens = this.layout.pens.map((_, i) => i).filter((i) => this.save.pens[i]?.length);
     const pi = pens.length ? pens[Math.floor(this.rng() * pens.length)] : 0;
     const r = L.pens[pi];
     const targetX = r ? r.x + r.w * (0.2 + this.rng() * 0.6) : L.w / 2;
     if (this.visitors.length > 160 && !vip) return; // 화면이 너무 붐비면 더 들이지 않는다
-    this.visitors.push({ vip, x: dir > 0 ? GATE_X : L.w + 10, y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6), dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
-      state: 'walk', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng(),
+    const gx = gateX(L.w), dir = targetX >= gx ? 1 : -1;
+    const laneY = PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6);
+    this.visitors.push({ vip, x: gx + (this.rng() - 0.5) * 8, y: GATE_Y, laneY, dir, kind: vip ? 15 : Math.floor(this.rng() * 15),
+      state: 'enter', targetX, t: 0, viewFor: VISITOR.viewSecMin + this.rng() * (VISITOR.viewSecMax - VISITOR.viewSecMin), thrown: false, anim: this.rng(),
       bench: this.benches.length && this.rng() < 0.18 ? Math.floor(this.rng() * this.benches.length) : -1 });
   }
 

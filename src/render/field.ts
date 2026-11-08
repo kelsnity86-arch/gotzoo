@@ -2,7 +2,7 @@
 import { ANIMALS, type Habitat } from '../data/animals';
 import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { BLOCK, GATE_X, PATH_Y0, PATH_Y1, TILE, ZONE_H, zoneRow, type VisitorEnt, type World } from '../game/world';
+import { BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import { penAttract } from '../game/rules';
 import { animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite } from './sprites';
 import { seasonOf } from '../data/seasons';
@@ -119,11 +119,23 @@ export class FieldRenderer {
     const TW = Math.ceil(L.w / TILE), TH = Math.ceil(L.h / TILE);
     for (let ty = 0; ty < TH; ty++) for (let tx = 0; tx < TW; tx++) c.drawImage(v(`ground_${season}_${pick(tx, ty)}`), tx * TILE, ty * TILE, TILE, TILE);
 
-    // 2. 관객 길: 맵 양 끝 밖으로 이어진다
-    const p0 = Math.floor(PATH_Y0 / TILE), p1 = Math.ceil(PATH_Y1 / TILE) - 1;
-    const onPath = (_tx: number, ty: number) => ty >= p0 && ty <= p1;
+    // 2. 담장 밖: 맨 위에 나무 한 줄 (바깥 세상), 그 앞에 동물원 담장 (게이트 단계 재질)
+    const tier4 = Math.max(0, Math.min(3, this.decoTier));
+    const gx = gateX(L.w), p0 = Math.floor(PATH_Y0 / TILE), p1 = Math.ceil(PATH_Y1 / TILE) - 1;
+    const WALL_Y = 34;
+    for (let x = 6, k = 0; x < L.w; x += 22, k++) if (Math.abs(x - gx) > 22) obj(k % 3 === 1 ? 'park_pine' : season === 'spring' && k % 3 === 2 ? 'park_blossom' : 'park_tree', x + (hash(k, 3) - 0.5) * 6, WALL_Y - 8);
+    if (hasPng(`v2_gatepart_${tier4}_wall`)) {
+      const ww = v(`gatepart_${tier4}_wall`).width / R - 1;
+      for (let x = 0; x < gx - 12; x += ww) obj(`gatepart_${tier4}_wall`, x + ww / 2, WALL_Y);
+      for (let x = L.w; x > gx + 12; x -= ww) obj(`gatepart_${tier4}_wall`, x - ww / 2, WALL_Y);
+    }
+
+    // 3. 관객 길 + 입구 앞 광장 (문 아래로 길이 이어져 들어간다). 길 양 끝은 막힌다
+    const gt0 = Math.floor((gx - 12) / TILE), gt1 = Math.ceil((gx + 12) / TILE) - 1;
+    const onPath = (tx: number, ty: number) => tx >= 0 && tx < TW && ((ty >= p0 && ty <= p1) || (ty === p0 - 1 && tx >= gt0 && tx <= gt1));
     const w = season === 'winter' ? '_w' : '';
-    for (let ty = p0; ty <= p1; ty++) for (let tx = 0; tx < TW; tx++) autotile(onPath, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true);
+    for (let ty = p0 - 1; ty <= p1; ty++) for (let tx = 0; tx < TW; tx++) if (onPath(tx, ty)) autotile(onPath, tx, ty, v(`path_sq${w}`), v(`path_ring${w}`), ringAt, true);
+    obj('park_bush', 4, p1 * TILE + TILE - 6); obj('park_bush', L.w - 4, p1 * TILE + TILE - 6);
 
     // 3. 관객존 꾸미기: 길 위쪽 잔디에 나무 · 벤치 · 가로등 · 화단을 번갈아, 길 아래엔 낮은 생울타리
     // 관객존 위 건물 줄: 지은 관객 건물(단계 그림)과 사이 소품. 아직 안 지은 자리는 빈 팻말
@@ -132,6 +144,25 @@ export class FieldRenderer {
       const lv = this.facLv[z.type] ?? 0;
       if (lv > 0) obj(`bld_${z.type}_${lv - 1}`, z.x, p0 * TILE - 1);
       else obj('park_sign', z.x, p0 * TILE - 2);
+    }
+    // 가운데 입구: 앞에서 본 아치 문 (손님이 문을 지나 화면 쪽으로 나온다), 양옆 매표소 · 깃대, 간판 이름, 계절 장식
+    if (hasPng(`v2_gate_${tier4}`)) {
+      const im = v(`gate_${tier4}`), gw = im.width / R, gh = im.height / R, gb = p0 * TILE - 1;
+      const gl = gx - gw / 2, gt = gb - gh;
+      obj(`gatepart_${tier4}_flag`, gl - 13, gb);
+      obj(`gatepart_${tier4}_flag`, gl + gw + 13, gb);
+      obj(`gatepart_${tier4}_booth`, gl - 4, gb);
+      obj(`gatepart_${tier4}_booth`, gl + gw + 4, gb, true);
+      obj(`gate_${tier4}`, gx, gb);
+      c.save();
+      c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17), name = tier4 === 2 ? 'ZOO' : '뽑ZOO';
+      c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = '#fff6e0'; c.strokeText(name, gx, ty);
+      c.fillStyle = '#5d3a24'; c.fillText(name, gx, ty);
+      c.restore();
+      obj(`gatedeco_${season}_arch`, gx, gt + gh * 0.5);
+      obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
+      obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);
     }
     for (let x = 4; x < L.w - 10; x += 16) if ((x / 16) % 5 !== 2) obj('park_hedge', x + 8, ZONE_H - 1);
 
@@ -180,25 +211,6 @@ export class FieldRenderer {
       const k2 = itemSprite(it.type);
       if (hasPng(k2)) this.obj(c, sprite(k2), X + BLOCK / 2, Y + BLOCK - 3, BLOCK - 8);
     }
-    // 8. 입구 게이트 (울타리 꾸미기 단계): 관람객 길 왼쪽
-    // 앞에서 본 아치 문: 손님은 가운데 열린 문으로 드나든다. 간판에 이름, 계절 장식(아치 · 기둥 밑), 옆에 깃대
-    const tier4 = Math.max(0, Math.min(3, this.decoTier));
-    if (hasPng(`v2_gate_${tier4}`)) {
-      const im = v(`gate_${tier4}`), gw = im.width / R, gh = im.height / R, gb = p1 * TILE + TILE - 1;
-      const gl = GATE_X - gw / 2, gt = gb - gh;
-      obj(`gatepart_${tier4}_flag`, gl + gw + 5, gb - 2);
-      obj(`gate_${tier4}`, GATE_X, gb);
-      // 간판 이름 (2단계 철문은 둥근 표지판이라 짧게)
-      c.save();
-      c.font = `${tier4 === 2 ? 4.2 : 5.2}px Jua, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
-      const ty = gt + gh * (tier4 === 2 ? 0.13 : tier4 === 3 ? 0.27 : 0.17);
-      c.lineJoin = 'round'; c.lineWidth = 1; c.strokeStyle = '#fff6e0'; c.strokeText(tier4 === 2 ? 'ZOO' : '뽑ZOO', GATE_X, ty);
-      c.fillStyle = '#5d3a24'; c.fillText(tier4 === 2 ? 'ZOO' : '뽑ZOO', GATE_X, ty);
-      c.restore();
-      obj(`gatedeco_${season}_arch`, GATE_X, gt + gh * 0.5);
-      obj(`gatedeco_${season}_base0`, gl + 1, gb + 1);
-      obj(`gatedeco_${season}_base1`, gl + gw - 1, gb + 1);
-    }
     this.bg = cv;
     return cv;
   }
@@ -223,7 +235,7 @@ export class FieldRenderer {
     if (!this.autoZoomed && L.w > 64) {
       this.autoZoomed = true;
       const uz = FieldRenderer.START_PX / fit;
-      if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = 0; this.camY = 0; }
+      if (uz > 1.15) { this.userZoom = Math.min(4, uz); this.camX = L.w / 2; this.camY = 0; }
     }
     // 배율: 도트 1개가 기기 픽셀 정수 배가 되게 내림 (28% 넘게 작아지면 소수 배율).
     // 화면 밀도가 높은 기기(dpr ≥ 2)는 소수 배율이어도 고르지 않은 게 안 보여서 꽉 채운다
