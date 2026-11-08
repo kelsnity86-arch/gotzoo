@@ -13,8 +13,8 @@
     1254,
     1254
   ],
-  "sha256": "4d6262dd42566abf0f4239e25a6292d60b36edb4d9178e3f871f541d5042f180",
-  "bytes": 1448581,
+  "sha256": "28d3823d8393c1b548dcc7d1d49742d5d0a7b98793d2e5bfeaa21bf300801626",
+  "bytes": 1452493,
   "requested_grid_columns_rows": [
     2,
     2
@@ -64,17 +64,29 @@
   ],
   "audit": {
     "png_decodes": true,
-    "unique_rgb_colors": 144797,
-    "pixels_outside_allowed_palette_including_background": 1572444,
+    "unique_rgb_colors": 145248,
+    "pixels_outside_allowed_palette_including_background": 1572497,
     "dimensions_match": false,
     "palette_match": false,
     "native_grid_and_outline": "not_validated",
     "same_footprint_as_existing_gate": "not_validated",
-    "game_integration": "not_performed"
+    "game_integration": "not_performed",
+    "doorway_interior_sample": {
+      "rectangle": [
+        300,
+        280,
+        410,
+        510
+      ],
+      "magenta_like_pixels": 25300,
+      "sample_pixels": 25300,
+      "threshold": "R>230, G<30, B>230; checks hue, not exact RGB compliance"
+    }
   },
   "notes": [
     "Generated PNG preserved without code-based resampling or recoloring.",
-    "Round booth window and warm shadow inside the open doorway were corrected in image generation.",
+    "User correction: the open central gate passage must use magenta background, not a brown interior fill. This supersedes the dark-interior wording in the original brief.",
+    "Gate doorway was changed to magenta using image generation; doors, marble steps, columns and other props were retained visually.",
     "Requested item positions and art sizes are specifications, not verified extraction rectangles."
   ]
 }
