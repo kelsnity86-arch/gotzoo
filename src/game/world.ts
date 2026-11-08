@@ -158,15 +158,23 @@ export class World {
     return at(x, y - 1) && at(x - half * 0.8, y - 1) && at(x + half * 0.8, y - 1) && at(x, y - half * 1.6);
   }
   /** 우리 바닥 안 아무 자리 (큰 동물이 들어갈 자리가 없으면 바닥 칸 가운데) */
-  private randomSpot(pen: number, animal: number): [number, number] {
+  private randomSpot(pen: number, animal: number, self?: AnimalEnt): [number, number] {
     const g = this.geo[pen];
     if (!g || !g.floorCells.length) { const r = this.layout.pens[pen]; return [r.x + r.w / 2, r.y + r.h / 2]; }
     const half = 4 * GRADE_MUL[ANIMALS[animal].grade];
-    for (let k = 0; k < 16; k++) {
+    // 들어갈 자리 몇 군데 중 다른 동물(지금 자리 · 가려는 자리)과 가장 먼 곳: 한데 뭉치지 않게
+    const others = this.animals.filter((o) => o.pen === pen && o !== self);
+    let best: [number, number] | null = null, bestD = -1;
+    for (let k = 0, ok = 0; k < 24 && ok < 6; k++) {
       const [cx, cy] = g.floorCells[Math.floor(this.rng() * g.floorCells.length)];
       const x = g.gx + (cx + this.rng()) * TILE, y = g.gy + (cy + 0.3 + this.rng() * 0.7) * TILE;
-      if (this.okAt(pen, x, y, half)) return [x, y];
+      if (!this.okAt(pen, x, y, half)) continue;
+      ok++;
+      let d = Infinity;
+      for (const o of others) d = Math.min(d, Math.hypot(o.x - x, (o.y - y) * 1.4), Math.hypot(o.tx - x, (o.ty - y) * 1.4));
+      if (d > bestD) { bestD = d; best = [x, y]; }
     }
+    if (best) return best;
     const [cx, cy] = g.floorCells[Math.floor(this.rng() * g.floorCells.length)];
     return [g.gx + (cx + 0.5) * TILE, g.gy + (cy + 0.9) * TILE];
   }
@@ -174,7 +182,7 @@ export class World {
   private placeIn(a: AnimalEnt, keep = false) {
     if (!this.layout.pens[a.pen]) return;
     const half = 4 * GRADE_MUL[ANIMALS[a.animal].grade];
-    if (!keep || !this.okAt(a.pen, a.x, a.y, half)) [a.x, a.y] = this.randomSpot(a.pen, a.animal);
+    if (!keep || !this.okAt(a.pen, a.x, a.y, half)) [a.x, a.y] = this.randomSpot(a.pen, a.animal, a);
     a.tx = a.x; a.ty = a.y;
   }
 
@@ -404,7 +412,7 @@ export class World {
       const dx = a.tx - a.x, dy = a.ty - a.y, d = Math.hypot(dx, dy);
       if (d < 1) {
         a.wait = 0.5 + this.rng() * 2.5;
-        [a.tx, a.ty] = this.randomSpot(a.pen, a.animal);
+        [a.tx, a.ty] = this.randomSpot(a.pen, a.animal, a);
         continue;
       }
       const sp = 10 * dt;
