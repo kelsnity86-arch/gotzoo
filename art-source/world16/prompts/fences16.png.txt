@@ -1,0 +1,24 @@
+BbopZOO professional cute retro pixel-art zoo game asset sheet. TRUE LOW RES PIXEL ART with solid square pixels, strict native grids described below, enlarged by integer nearest-neighbor only. 1-native-pixel dark outline #1a1c2c except floor tiles. Flat 1-2-tone shading. No antialiasing, gradients, blur, smooth vector curves, soft shadows, ground shadows, photographic textures or noise. Chunky clean silhouettes readable at tiny size, simple deliberate pixel clusters. All characters face LEFT in 3/4/profile, big heads. Background perfectly solid #FF00FF magenta, never inside sprites. Allowed colors ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. No writing, numbers, labels, watermarks, panel borders or visible grid. Plenty of empty magenta margin around each cell. Each requested item appears exactly once unless two walking frames are specified. Nothing touches neighboring artwork. Never crop feet, heads, props or ears.
+FILE: fences16.png (do not print file name).
+OUTPUT CANVAS EXACTLY 1536x768 pixels.
+One material tier per row. Twelve column shapes in each row. Fence line sits in the middle of the tile, all neighbors align; inner corners form concave L-shaped enclosures. Top-down 3/4 view.
+
+EXTREMELY IMPORTANT: EXACTLY 12 columns by 4 rows = 48 separate small modular pieces. Do not simplify to fewer columns. Each native piece 16x16. Use a WIDE 2:1 canvas, tightly but clearly spaced. Column order in EVERY row:
+1. horizontal fence segment
+2. vertical fence segment
+3. outer corner top-left
+4. outer corner top-right
+5. outer corner bottom-left
+6. outer corner bottom-right
+7. inner corner top-left
+8. inner corner top-right
+9. inner corner bottom-left
+10. inner corner bottom-right
+11. gate (closed)
+12. single fence post
+Row materials:
+1. rustic wooden fence
+2. gray stone wall
+3. black iron railing
+4. luxurious golden fence with small gems
+Every tile uses the same centered attachment coordinates. Horizontal segment has ends at west/east edge midpoints; vertical at north/south midpoints. Four outer and four inner corners must have appropriate distinct L geometry, not duplicated straight fence segments. Gate is closed. Single post stands alone. All 48 pieces must remain in 48 separate invisible cells; never draw long continuous fence lines across cells. No ground bases. Readable toy-zoo pixel art, not diagrams with labels.

@@ -1,0 +1,4236 @@
+{
+  "schema": 1,
+  "asset_kind": "image_generator_source_sheets",
+  "engine_ready": false,
+  "sheet_count": 13,
+  "requested_slot_count": 318,
+  "sheets": [
+    {
+      "filename": "people16_spring.png",
+      "path": "assets/spritesheets16/world/people/people16_spring.png",
+      "group": "people",
+      "season": "spring",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "926e3a34881ff28362c9de329c0a0275323be33a1d5336dd008860f3a66a90b6",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "spring",
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "spring",
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "people16_summer.png",
+      "path": "assets/spritesheets16/world/people/people16_summer.png",
+      "group": "people",
+      "season": "summer",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "69060761ad34ccb3ef614da82706c8cbb3c017aff0a9e4873258f2d16f5439ee",
+      "reference_sheet_used": "people16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "summer",
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "summer",
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "people16_autumn.png",
+      "path": "assets/spritesheets16/world/people/people16_autumn.png",
+      "group": "people",
+      "season": "autumn",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "e6e23b50f28da5e32d958371a912b8f0c6dac9ae9338484ef564c727b5567818",
+      "reference_sheet_used": "people16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "autumn",
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "autumn",
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "people16_winter.png",
+      "path": "assets/spritesheets16/world/people/people16_winter.png",
+      "group": "people",
+      "season": "winter",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "3dd7b958511ab251d6467675944ad740bd8e866f524520bb76869406c99a7034",
+      "reference_sheet_used": "people16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "boy child",
+          "identity_index": 1,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "girl child with pigtails",
+          "identity_index": 2,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "toddler holding a balloon",
+          "identity_index": 3,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen boy with backpack",
+          "identity_index": 4,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 9,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "teen girl holding a phone",
+          "identity_index": 5,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 10,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 11,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young man",
+          "identity_index": 6,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 12,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 13,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "young woman with tote bag",
+          "identity_index": 7,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 14,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 15,
+          "row": 2,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "dad with glasses",
+          "identity_index": 8,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 16,
+          "row": 2,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 17,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "mom with shoulder bag",
+          "identity_index": 9,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 18,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 19,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandpa with cane",
+          "identity_index": 10,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 20,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 21,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "grandma with handbag",
+          "identity_index": 11,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 22,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 23,
+          "row": 3,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tourist with camera",
+          "identity_index": 12,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 24,
+          "row": 3,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 25,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "office worker",
+          "identity_index": 13,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 26,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 27,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "student in school uniform",
+          "identity_index": 14,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 28,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 29,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "artist with beret and sketchbook",
+          "identity_index": 15,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 30,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": "winter",
+          "slot": 31,
+          "row": 4,
+          "column": 7,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "VIP guest in a fancy suit with gold accents",
+          "identity_index": 16,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": "winter",
+          "slot": 32,
+          "row": 4,
+          "column": 8,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "staff16.png",
+      "path": "assets/spritesheets16/world/staff/staff16.png",
+      "group": "staff",
+      "season": null,
+      "actual_size": [
+        1024,
+        1536
+      ],
+      "target_size": [
+        1024,
+        1536
+      ],
+      "sha256": "0001c06e0ee1b3c136995385d49298f5892bbd4680b5a6def32948d3f340b555",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "coin collector: orange cap and vest, carrying a coin bag",
+          "identity_index": 1,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "coin collector: orange cap and vest, carrying a coin bag",
+          "identity_index": 1,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "zookeeper: khaki uniform and hat, carrying a food bucket",
+          "identity_index": 2,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "zookeeper: khaki uniform and hat, carrying a food bucket",
+          "identity_index": 2,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tour guide: purple uniform, holding a small flag",
+          "identity_index": 3,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "tour guide: purple uniform, holding a small flag",
+          "identity_index": 3,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "groundskeeper: gray overalls, holding a rake",
+          "identity_index": 4,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "groundskeeper: gray overalls, holding a rake",
+          "identity_index": 4,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "ticket seller: red vest and bow tie, holding a ticket roll",
+          "identity_index": 5,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "ticket seller: red vest and bow tie, holding a ticket roll",
+          "identity_index": 5,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "cleaner: light blue uniform, holding a broom and dustpan",
+          "identity_index": 6,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "cleaner: light blue uniform, holding a broom and dustpan",
+          "identity_index": 6,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "security guard: navy uniform, cap and whistle",
+          "identity_index": 7,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "security guard: navy uniform, cap and whistle",
+          "identity_index": 7,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "veterinarian: white coat and stethoscope",
+          "identity_index": 8,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "veterinarian: white coat and stethoscope",
+          "identity_index": 8,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "promoter: bright yellow jacket, holding a megaphone",
+          "identity_index": 9,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 17,
+          "row": 5,
+          "column": 1,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "promoter: bright yellow jacket, holding a megaphone",
+          "identity_index": 9,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 18,
+          "row": 5,
+          "column": 2,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "performer: colorful clown-like costume, juggling balls",
+          "identity_index": 10,
+          "frame": "A",
+          "requested_forward_foot": "left",
+          "season": null,
+          "slot": 19,
+          "row": 5,
+          "column": 3,
+          "target_native_size": [
+            16,
+            24
+          ]
+        },
+        {
+          "name": "performer: colorful clown-like costume, juggling balls",
+          "identity_index": 10,
+          "frame": "B",
+          "requested_forward_foot": "right",
+          "season": null,
+          "slot": 20,
+          "row": 5,
+          "column": 4,
+          "target_native_size": [
+            16,
+            24
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "tiles16_spring.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_spring.png",
+      "group": "tiles",
+      "season": "spring",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "sha256": "8dced97965396773f61ad8174f9a4788953a5a9e00014076c6c3642462c5372c",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "grass ground",
+          "season": "spring",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "grass ground variation with tiny seasonal details",
+          "season": "spring",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "dirt path",
+          "season": "spring",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "stone paved path",
+          "season": "spring",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: meadow grass",
+          "season": "spring",
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: desert sand",
+          "season": "spring",
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: water (pond, with light ripples)",
+          "season": "spring",
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: snow and ice",
+          "season": "spring",
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: rocky mountain stone",
+          "season": "spring",
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: magic clouds",
+          "season": "spring",
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "seasonal tree (top-down 3/4 view)",
+          "season": "spring",
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "bush",
+          "season": "spring",
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "small seasonal flower or ground decoration",
+          "season": "spring",
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "lamp post with seasonal decoration",
+          "season": "spring",
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "low hedge",
+          "season": "spring",
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "scattered seasonal ground particles on magenta",
+          "season": "spring",
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "tiles16_summer.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_summer.png",
+      "group": "tiles",
+      "season": "summer",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "sha256": "342084cfd4c3407aca3e5f863c0ae23f5ee2c6c100ad18b945fea611d56b5a7a",
+      "reference_sheet_used": "tiles16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "grass ground",
+          "season": "summer",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "grass ground variation with tiny seasonal details",
+          "season": "summer",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "dirt path",
+          "season": "summer",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "stone paved path",
+          "season": "summer",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: meadow grass",
+          "season": "summer",
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: desert sand",
+          "season": "summer",
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: water (pond, with light ripples)",
+          "season": "summer",
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: snow and ice",
+          "season": "summer",
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: rocky mountain stone",
+          "season": "summer",
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: magic clouds",
+          "season": "summer",
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "seasonal tree (top-down 3/4 view)",
+          "season": "summer",
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "bush",
+          "season": "summer",
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "small seasonal flower or ground decoration",
+          "season": "summer",
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "lamp post with seasonal decoration",
+          "season": "summer",
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "low hedge",
+          "season": "summer",
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "scattered seasonal ground particles on magenta",
+          "season": "summer",
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "tiles16_autumn.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_autumn.png",
+      "group": "tiles",
+      "season": "autumn",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "sha256": "3a48074c55eac43154ac77d4f4fd3507bac75da861aeb4aac4b962a4ca8a5a19",
+      "reference_sheet_used": "tiles16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "grass ground",
+          "season": "autumn",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "grass ground variation with tiny seasonal details",
+          "season": "autumn",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "dirt path",
+          "season": "autumn",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "stone paved path",
+          "season": "autumn",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: meadow grass",
+          "season": "autumn",
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: desert sand",
+          "season": "autumn",
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: water (pond, with light ripples)",
+          "season": "autumn",
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: snow and ice",
+          "season": "autumn",
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: rocky mountain stone",
+          "season": "autumn",
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: magic clouds",
+          "season": "autumn",
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "seasonal tree (top-down 3/4 view)",
+          "season": "autumn",
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "bush",
+          "season": "autumn",
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "small seasonal flower or ground decoration",
+          "season": "autumn",
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "lamp post with seasonal decoration",
+          "season": "autumn",
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "low hedge",
+          "season": "autumn",
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "scattered seasonal ground particles on magenta",
+          "season": "autumn",
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "tiles16_winter.png",
+      "path": "assets/spritesheets16/world/tiles/tiles16_winter.png",
+      "group": "tiles",
+      "season": "winter",
+      "actual_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        1024,
+        1024
+      ],
+      "sha256": "b16b1f9a76ccdd02a2b8ad9db48d2315523eb0b79b77b3da2420655396d0df39",
+      "reference_sheet_used": "tiles16_spring.png",
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "grass ground",
+          "season": "winter",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "grass ground variation with tiny seasonal details",
+          "season": "winter",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "dirt path",
+          "season": "winter",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "stone paved path",
+          "season": "winter",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: meadow grass",
+          "season": "winter",
+          "slot": 5,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: desert sand",
+          "season": "winter",
+          "slot": 6,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: water (pond, with light ripples)",
+          "season": "winter",
+          "slot": 7,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: snow and ice",
+          "season": "winter",
+          "slot": 8,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: rocky mountain stone",
+          "season": "winter",
+          "slot": 9,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "enclosure floor: magic clouds",
+          "season": "winter",
+          "slot": 10,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "seasonal tree (top-down 3/4 view)",
+          "season": "winter",
+          "slot": 11,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "bush",
+          "season": "winter",
+          "slot": 12,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "small seasonal flower or ground decoration",
+          "season": "winter",
+          "slot": 13,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "lamp post with seasonal decoration",
+          "season": "winter",
+          "slot": 14,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "low hedge",
+          "season": "winter",
+          "slot": 15,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "scattered seasonal ground particles on magenta",
+          "season": "winter",
+          "slot": 16,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "fences16.png",
+      "path": "assets/spritesheets16/world/fences/fences16.png",
+      "group": "fences",
+      "season": null,
+      "actual_size": [
+        1774,
+        887
+      ],
+      "target_size": [
+        1536,
+        768
+      ],
+      "sha256": "7c6f4dc95aa18cb56c5755201e6f6594b7c08daaaf1bca7130d7c7123c7010b2",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "horizontal fence segment",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "vertical fence segment",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-left",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-right",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-left",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-right",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-left",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 7,
+          "row": 1,
+          "column": 7,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-right",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 8,
+          "row": 1,
+          "column": 8,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-left",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 9,
+          "row": 1,
+          "column": 9,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-right",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 10,
+          "row": 1,
+          "column": 10,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "gate (closed)",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 11,
+          "row": 1,
+          "column": 11,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "single fence post",
+          "material_tier": 1,
+          "material": "rustic wooden fence",
+          "slot": 12,
+          "row": 1,
+          "column": 12,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "horizontal fence segment",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 13,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "vertical fence segment",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 14,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-left",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 15,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-right",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 16,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-left",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 17,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-right",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 18,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-left",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 19,
+          "row": 2,
+          "column": 7,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-right",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 20,
+          "row": 2,
+          "column": 8,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-left",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 21,
+          "row": 2,
+          "column": 9,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-right",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 22,
+          "row": 2,
+          "column": 10,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "gate (closed)",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 23,
+          "row": 2,
+          "column": 11,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "single fence post",
+          "material_tier": 2,
+          "material": "gray stone wall",
+          "slot": 24,
+          "row": 2,
+          "column": 12,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "horizontal fence segment",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 25,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "vertical fence segment",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 26,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-left",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 27,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-right",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 28,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-left",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 29,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-right",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 30,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-left",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 31,
+          "row": 3,
+          "column": 7,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-right",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 32,
+          "row": 3,
+          "column": 8,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-left",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 33,
+          "row": 3,
+          "column": 9,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-right",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 34,
+          "row": 3,
+          "column": 10,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "gate (closed)",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 35,
+          "row": 3,
+          "column": 11,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "single fence post",
+          "material_tier": 3,
+          "material": "black iron railing",
+          "slot": 36,
+          "row": 3,
+          "column": 12,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "horizontal fence segment",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 37,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "vertical fence segment",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 38,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-left",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 39,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner top-right",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 40,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-left",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 41,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "outer corner bottom-right",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 42,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-left",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 43,
+          "row": 4,
+          "column": 7,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner top-right",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 44,
+          "row": 4,
+          "column": 8,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-left",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 45,
+          "row": 4,
+          "column": 9,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "inner corner bottom-right",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 46,
+          "row": 4,
+          "column": 10,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "gate (closed)",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 47,
+          "row": 4,
+          "column": 11,
+          "target_native_size": [
+            16,
+            16
+          ]
+        },
+        {
+          "name": "single fence post",
+          "material_tier": 4,
+          "material": "luxurious golden fence with small gems",
+          "slot": 48,
+          "row": 4,
+          "column": 12,
+          "target_native_size": [
+            16,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "decor16_1.png",
+      "path": "assets/spritesheets16/world/decor/decor16_1.png",
+      "group": "decor",
+      "season": null,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "d1af65249a4eb6af96f67dffbd8a0cf5cb9c1373039f2cda8a880ab3a64728f8",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "cherry blossom tree",
+          "season": "spring",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "tulip flower bed",
+          "season": "spring",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "flower arch",
+          "season": "spring",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "picnic mat with basket",
+          "season": "spring",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "flying kite on a post",
+          "season": "spring",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "pink paper lantern",
+          "season": "spring",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "tiered flower pot stand",
+          "season": "spring",
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "bird house on a pole",
+          "season": "spring",
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "watering can and bucket",
+          "season": "spring",
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "carp streamer pole",
+          "season": "spring",
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "wooden swing",
+          "season": "spring",
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "butterfly garden bush",
+          "season": "spring",
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "beach umbrella",
+          "season": "summer",
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "small inflatable pool",
+          "season": "summer",
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "sandcastle",
+          "season": "summer",
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "watermelon stand",
+          "season": "summer",
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "wind chime post",
+          "season": "summer",
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "hibiscus bush",
+          "season": "summer",
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "beach chair",
+          "season": "summer",
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "surfboard rack",
+          "season": "summer",
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "water sprinkler",
+          "season": "summer",
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "ice cream cart",
+          "season": "summer",
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "lifebuoy post",
+          "season": "summer",
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "palm tree",
+          "season": "summer",
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "decor16_2.png",
+      "path": "assets/spritesheets16/world/decor/decor16_2.png",
+      "group": "decor",
+      "season": null,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "0723573d6307c3ffd2b908b67aba6476dcfc33b06ff6d57a7023199cdb7b51de",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "red maple tree",
+          "season": "autumn",
+          "slot": 1,
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "golden ginkgo tree",
+          "season": "autumn",
+          "slot": 2,
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "scarecrow",
+          "season": "autumn",
+          "slot": 3,
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "pumpkin pile",
+          "season": "autumn",
+          "slot": 4,
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "hay bale",
+          "season": "autumn",
+          "slot": 5,
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "persimmon tree",
+          "season": "autumn",
+          "slot": 6,
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "harvest basket",
+          "season": "autumn",
+          "slot": 7,
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "jack-o-lantern",
+          "season": "autumn",
+          "slot": 8,
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "fallen leaf pile",
+          "season": "autumn",
+          "slot": 9,
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "wooden cart",
+          "season": "autumn",
+          "slot": 10,
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "cosmos flower bed",
+          "season": "autumn",
+          "slot": 11,
+          "row": 2,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "full-moon festival lantern",
+          "season": "autumn",
+          "slot": 12,
+          "row": 2,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "snowman",
+          "season": "winter",
+          "slot": 13,
+          "row": 3,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "decorated christmas tree",
+          "season": "winter",
+          "slot": 14,
+          "row": 3,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "snow-covered pine tree",
+          "season": "winter",
+          "slot": 15,
+          "row": 3,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "small igloo",
+          "season": "winter",
+          "slot": 16,
+          "row": 3,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "wooden sled",
+          "season": "winter",
+          "slot": 17,
+          "row": 3,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "ice sculpture",
+          "season": "winter",
+          "slot": 18,
+          "row": 3,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "pile of gift boxes",
+          "season": "winter",
+          "slot": 19,
+          "row": 4,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "candy cane post",
+          "season": "winter",
+          "slot": 20,
+          "row": 4,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "snowball pile",
+          "season": "winter",
+          "slot": 21,
+          "row": 4,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "warm bonfire",
+          "season": "winter",
+          "slot": 22,
+          "row": 4,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "string lights arch",
+          "season": "winter",
+          "slot": 23,
+          "row": 4,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ]
+        },
+        {
+          "name": "hot cocoa stand",
+          "season": "winter",
+          "slot": 24,
+          "row": 4,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "filename": "facilities16.png",
+      "path": "assets/spritesheets16/world/facilities/facilities16.png",
+      "group": "facilities",
+      "season": null,
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "target_size": [
+        1536,
+        1024
+      ],
+      "sha256": "5e75bf1fe4dc01a707f1855a765d6bce1d97ad1a29363f75a08cc2da8680cea0",
+      "reference_sheet_used": null,
+      "entries_describe_requested_slots": true,
+      "entries": [
+        {
+          "name": "snack stand with striped awning",
+          "row": 1,
+          "column": 1,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 1
+        },
+        {
+          "name": "small restroom building",
+          "row": 1,
+          "column": 2,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 2
+        },
+        {
+          "name": "pair of park benches",
+          "row": 1,
+          "column": 3,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 3
+        },
+        {
+          "name": "stone fountain with water",
+          "row": 1,
+          "column": 4,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 4
+        },
+        {
+          "name": "photo spot frame with a cute animal cutout (no text)",
+          "row": 1,
+          "column": 5,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 5
+        },
+        {
+          "name": "animal clinic building with a green cross",
+          "row": 1,
+          "column": 6,
+          "target_native_size": [
+            32,
+            32
+          ],
+          "slot": 6
+        },
+        {
+          "name": "wooden gate",
+          "row": 2,
+          "column": 1,
+          "target_native_size": [
+            48,
+            32
+          ],
+          "slot": 7
+        },
+        {
+          "name": "stone gate",
+          "row": 2,
+          "column": 2,
+          "target_native_size": [
+            48,
+            32
+          ],
+          "slot": 8
+        },
+        {
+          "name": "black iron gate",
+          "row": 2,
+          "column": 3,
+          "target_native_size": [
+            48,
+            32
+          ],
+          "slot": 9
+        },
+        {
+          "name": "golden gate with gems",
+          "row": 2,
+          "column": 4,
+          "target_native_size": [
+            48,
+            32
+          ],
+          "slot": 10
+        }
+      ]
+    }
+  ]
+}

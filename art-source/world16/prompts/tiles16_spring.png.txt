@@ -1,0 +1,23 @@
+BbopZOO professional cute retro pixel-art zoo game asset sheet. TRUE LOW RES PIXEL ART with solid square pixels, strict native grids described below, enlarged by integer nearest-neighbor only. 1-native-pixel dark outline #1a1c2c except floor tiles. Flat 1-2-tone shading. No antialiasing, gradients, blur, smooth vector curves, soft shadows, ground shadows, photographic textures or noise. Chunky clean silhouettes readable at tiny size, simple deliberate pixel clusters. All characters face LEFT in 3/4/profile, big heads. Background perfectly solid #FF00FF magenta, never inside sprites. Allowed colors ONLY: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0. No writing, numbers, labels, watermarks, panel borders or visible grid. Plenty of empty magenta margin around each cell. Each requested item appears exactly once unless two walking frames are specified. Nothing touches neighboring artwork. Never crop feet, heads, props or ears.
+FILE: tiles16_spring.png (do not print file name).
+OUTPUT CANVAS EXACTLY 1024x1024 pixels.
+Fresh bright green grass with small pink petals. Tiles 1–10 fill the entire square without outline and tile seamlessly. Tiles 11–16 are isolated objects with normal dark outline.
+
+EXACTLY 16 items in 4 columns x 4 rows. Order:
+1. grass ground
+2. grass ground variation with tiny seasonal details
+3. dirt path
+4. stone paved path
+5. enclosure floor: meadow grass
+6. enclosure floor: desert sand
+7. enclosure floor: water (pond, with light ripples)
+8. enclosure floor: snow and ice
+9. enclosure floor: rocky mountain stone
+10. enclosure floor: magic clouds
+11. seasonal tree (top-down 3/4 view)
+12. bush
+13. small seasonal flower or ground decoration
+14. lamp post with seasonal decoration
+15. low hedge
+16. scattered seasonal ground particles on magenta
+CRITICAL: items 1–10 are square top-down ground TEXTURE TILES, NOT floating isometric blocks or framed panels. Each is a complete edge-to-edge 16x16 colored square, with flat straight square boundaries, NO dark edge outline and no magenta within it. All four edges have a uniform material base color, keep details away from the outermost row/column so each tile repeats seamlessly. Display each whole square separately on magenta. Items 11–16 are separate outlined prop sprites on magenta, not full square textures. At slots 11–16 respectively place ONE tree, ONE bush, ONE seasonal flower/ground item, ONE lamp, ONE horizontal hedge, ONE compact scattered-particle cluster. No floor plates under props. SAME 16-slot arrangement in every season.

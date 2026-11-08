@@ -1,0 +1,448 @@
+{
+  "project": "BbopZOO",
+  "background": "#FF00FF",
+  "palette_source": "docs/briefs/animals16-spec.json",
+  "style": "True pixel art; flat 1–2 tone shading; one native pixel dark outline #1a1c2c; no antialiasing, gradients, blur or soft shadows; chunky proportions; characters face left 3/4; magenta background outside sprites; no text, grid lines, frames or watermarks.",
+  "visitors": [
+    "boy child",
+    "girl child with pigtails",
+    "toddler holding a balloon",
+    "teen boy with backpack",
+    "teen girl holding a phone",
+    "young man",
+    "young woman with tote bag",
+    "dad with glasses",
+    "mom with shoulder bag",
+    "grandpa with cane",
+    "grandma with handbag",
+    "tourist with camera",
+    "office worker",
+    "student in school uniform",
+    "artist with beret and sketchbook",
+    "VIP guest in a fancy suit with gold accents"
+  ],
+  "staff": [
+    "coin collector: orange cap and vest, carrying a coin bag",
+    "zookeeper: khaki uniform and hat, carrying a food bucket",
+    "tour guide: purple uniform, holding a small flag",
+    "groundskeeper: gray overalls, holding a rake",
+    "ticket seller: red vest and bow tie, holding a ticket roll",
+    "cleaner: light blue uniform, holding a broom and dustpan",
+    "security guard: navy uniform, cap and whistle",
+    "veterinarian: white coat and stethoscope",
+    "promoter: bright yellow jacket, holding a megaphone",
+    "performer: colorful clown-like costume, juggling balls"
+  ],
+  "tiles": [
+    "grass ground",
+    "grass ground variation with tiny seasonal details",
+    "dirt path",
+    "stone paved path",
+    "enclosure floor: meadow grass",
+    "enclosure floor: desert sand",
+    "enclosure floor: water (pond, with light ripples)",
+    "enclosure floor: snow and ice",
+    "enclosure floor: rocky mountain stone",
+    "enclosure floor: magic clouds",
+    "seasonal tree (top-down 3/4 view)",
+    "bush",
+    "small seasonal flower or ground decoration",
+    "lamp post with seasonal decoration",
+    "low hedge",
+    "scattered seasonal ground particles on magenta"
+  ],
+  "fence_columns": [
+    "horizontal fence segment",
+    "vertical fence segment",
+    "outer corner top-left",
+    "outer corner top-right",
+    "outer corner bottom-left",
+    "outer corner bottom-right",
+    "inner corner top-left",
+    "inner corner top-right",
+    "inner corner bottom-left",
+    "inner corner bottom-right",
+    "gate (closed)",
+    "single fence post"
+  ],
+  "fence_materials": [
+    "rustic wooden fence",
+    "gray stone wall",
+    "black iron railing",
+    "luxurious golden fence with small gems"
+  ],
+  "decor_spring": [
+    "cherry blossom tree",
+    "tulip flower bed",
+    "flower arch",
+    "picnic mat with basket",
+    "flying kite on a post",
+    "pink paper lantern",
+    "tiered flower pot stand",
+    "bird house on a pole",
+    "watering can and bucket",
+    "carp streamer pole",
+    "wooden swing",
+    "butterfly garden bush"
+  ],
+  "decor_summer": [
+    "beach umbrella",
+    "small inflatable pool",
+    "sandcastle",
+    "watermelon stand",
+    "wind chime post",
+    "hibiscus bush",
+    "beach chair",
+    "surfboard rack",
+    "water sprinkler",
+    "ice cream cart",
+    "lifebuoy post",
+    "palm tree"
+  ],
+  "decor_autumn": [
+    "red maple tree",
+    "golden ginkgo tree",
+    "scarecrow",
+    "pumpkin pile",
+    "hay bale",
+    "persimmon tree",
+    "harvest basket",
+    "jack-o-lantern",
+    "fallen leaf pile",
+    "wooden cart",
+    "cosmos flower bed",
+    "full-moon festival lantern"
+  ],
+  "decor_winter": [
+    "snowman",
+    "decorated christmas tree",
+    "snow-covered pine tree",
+    "small igloo",
+    "wooden sled",
+    "ice sculpture",
+    "pile of gift boxes",
+    "candy cane post",
+    "snowball pile",
+    "warm bonfire",
+    "string lights arch",
+    "hot cocoa stand"
+  ],
+  "facilities": [
+    "snack stand with striped awning",
+    "small restroom building",
+    "pair of park benches",
+    "stone fountain with water",
+    "photo spot frame with a cute animal cutout (no text)",
+    "animal clinic building with a green cross"
+  ],
+  "gates": [
+    "wooden gate",
+    "stone gate",
+    "black iron gate",
+    "golden gate with gems"
+  ],
+  "sheets": [
+    {
+      "filename": "people16_spring.png",
+      "group": "people",
+      "season": "spring",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "native": [
+        16,
+        24
+      ],
+      "frames": 2,
+      "entries": "visitors",
+      "description": "Light spring clothes: cardigans, pastel colors, some holding flowers. About 8px big head. Each visitor has two adjacent walking frames: A left foot forward, B right foot forward. Same face, hair and body shape in all seasons; only clothes change."
+    },
+    {
+      "filename": "people16_summer.png",
+      "group": "people",
+      "season": "summer",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "native": [
+        16,
+        24
+      ],
+      "frames": 2,
+      "entries": "visitors",
+      "description": "T-shirts, shorts, sun hats, sunglasses, some holding ice cream or a fan. Same identities and adjacent A/B walking frames as spring."
+    },
+    {
+      "filename": "people16_autumn.png",
+      "group": "people",
+      "season": "autumn",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "native": [
+        16,
+        24
+      ],
+      "frames": 2,
+      "entries": "visitors",
+      "description": "Knit sweaters and coats in brown, orange and mustard, some with a scarf. Same identities and adjacent A/B walking frames as spring."
+    },
+    {
+      "filename": "people16_winter.png",
+      "group": "people",
+      "season": "winter",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        8,
+        4
+      ],
+      "native": [
+        16,
+        24
+      ],
+      "frames": 2,
+      "entries": "visitors",
+      "description": "Puffy padded jackets, beanies, mittens and red scarves. Same identities and adjacent A/B walking frames as spring."
+    },
+    {
+      "filename": "staff16.png",
+      "group": "staff",
+      "size": [
+        1024,
+        1536
+      ],
+      "grid": [
+        4,
+        5
+      ],
+      "native": [
+        16,
+        24
+      ],
+      "frames": 2,
+      "entries": "staff",
+      "description": "10 clearly distinct uniforms and job props, two adjacent walking frames per person. About 8px big head; all face left."
+    },
+    {
+      "filename": "tiles16_spring.png",
+      "group": "tiles",
+      "season": "spring",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "entries": "tiles",
+      "description": "Fresh bright green grass with small pink petals. Tiles 1–10 fill the entire square without outline and tile seamlessly. Tiles 11–16 are isolated objects with normal dark outline."
+    },
+    {
+      "filename": "tiles16_summer.png",
+      "group": "tiles",
+      "season": "summer",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "entries": "tiles",
+      "description": "Deep saturated green grass, bright sunlight represented by flat colors. Tiles 1–10 fill the entire square without outline and tile seamlessly. Tiles 11–16 are isolated objects with normal dark outline."
+    },
+    {
+      "filename": "tiles16_autumn.png",
+      "group": "tiles",
+      "season": "autumn",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "entries": "tiles",
+      "description": "Yellow-brown grass with fallen orange and red leaves. Tiles 1–10 fill the entire square without outline and tile seamlessly. Tiles 11–16 are isolated objects with normal dark outline."
+    },
+    {
+      "filename": "tiles16_winter.png",
+      "group": "tiles",
+      "season": "winter",
+      "size": [
+        1024,
+        1024
+      ],
+      "grid": [
+        4,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "entries": "tiles",
+      "description": "Grass mostly covered in white snow, frosty colors. Tiles 1–10 fill the entire square without outline and tile seamlessly. Tiles 11–16 are isolated objects with normal dark outline."
+    },
+    {
+      "filename": "fences16.png",
+      "group": "fences",
+      "size": [
+        1536,
+        768
+      ],
+      "grid": [
+        12,
+        4
+      ],
+      "native": [
+        16,
+        16
+      ],
+      "entries": "fence_columns",
+      "description": "One material tier per row. Twelve column shapes in each row. Fence line sits in the middle of the tile, all neighbors align; inner corners form concave L-shaped enclosures. Top-down 3/4 view."
+    },
+    {
+      "filename": "decor16_1.png",
+      "group": "decor",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        6,
+        4
+      ],
+      "native": [
+        32,
+        32
+      ],
+      "entries": [
+        "decor_spring",
+        "decor_summer"
+      ],
+      "description": "Rows 1–2 spring, rows 3–4 summer. Objects use top-down 3/4 view and sit at cell bottom. No letters, even on signs."
+    },
+    {
+      "filename": "decor16_2.png",
+      "group": "decor",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        6,
+        4
+      ],
+      "native": [
+        32,
+        32
+      ],
+      "entries": [
+        "decor_autumn",
+        "decor_winter"
+      ],
+      "description": "Rows 1–2 autumn, rows 3–4 winter. Objects use top-down 3/4 view and sit at cell bottom. No letters, even on signs."
+    },
+    {
+      "filename": "facilities16.png",
+      "group": "facilities",
+      "size": [
+        1536,
+        1024
+      ],
+      "row_columns": [
+        6,
+        4
+      ],
+      "native_by_row": [
+        [
+          32,
+          32
+        ],
+        [
+          48,
+          32
+        ]
+      ],
+      "entries": [
+        "facilities",
+        "gates"
+      ],
+      "description": "Six facilities in row 1, four entrance gates in row 2. Gates share an arch silhouette, signs blank. Top-down 3/4 view; objects sit at bottom of cell."
+    }
+  ],
+  "palette": [
+    "#1a1c2c",
+    "#333c57",
+    "#566c86",
+    "#94b0c2",
+    "#f4f4f4",
+    "#2b1d14",
+    "#5d3a24",
+    "#8a5a3b",
+    "#c28a5c",
+    "#e8c39e",
+    "#f6e6c8",
+    "#8b1e2d",
+    "#d83a3a",
+    "#ef7d32",
+    "#f7c948",
+    "#fff3a3",
+    "#e0a526",
+    "#1f5d3a",
+    "#38a35b",
+    "#a7d65b",
+    "#2a9d8f",
+    "#29366f",
+    "#3b5dc9",
+    "#41a6f6",
+    "#73eff7",
+    "#5d275d",
+    "#8e44ad",
+    "#f08cbe",
+    "#ffc8dd",
+    "#c7cfdd",
+    "#ffb7d0",
+    "#b8452e",
+    "#d9822b",
+    "#6b8f2e",
+    "#e9f3ff",
+    "#7fb5d6",
+    "#3e2f5b",
+    "#f2e3a0"
+  ]
+}
