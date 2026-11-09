@@ -1,0 +1,44 @@
+You are making CONCEPT MOCKUP images (not sprite sheets) for "BbopZOO", a cute, cozy top-down pixel-art zoo management game. We want to see how the area AROUND the zoo should look at three growth stages, in the game's "overview" camera (zoomed far out, just for sightseeing). The idea: like an aerial photo of a big city park (a famous green park in the middle of a dense city), the zoo sits in the middle and the world around it grows from forest to a huge city as the zoo levels up.
+
+I attached three screenshots of the CURRENT game zoo (zoo_stage1_now.png, zoo_stage5_now.png, zoo_stage8_now.png). Keep the zoo itself looking like those (same pixel style, same grass, pens, visitor path, wooden arch gate with signs and ticket booths), just smaller in the middle of the picture. Everything OUTSIDE the zoo is what we are designing.
+
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid, matching the pixel size and look of the attached screenshots (16 px tiles). Each art pixel is one solid square block. No anti-aliasing, no gradients, no blur, no painterly texture, no photo look.
+- Camera: the same gentle top-down 3/4 view as the attached screenshots (we look down at the ground and see a little of the front face of buildings and walls). Light from the TOP-LEFT. Soft 1-pixel dark outline (#2b1d14) like the game.
+- Use this palette only: #1a1c2c #333c57 #566c86 #94b0c2 #f4f4f4 #2b1d14 #5d3a24 #8a5a3b #c28a5c #e8c39e #f6e6c8 #8b1e2d #d83a3a #ef7d32 #f7c948 #fff3a3 #e0a526 #1f5d3a #38a35b #a7d65b #2a9d8f #29366f #3b5dc9 #41a6f6 #73eff7 #5d275d #8e44ad #f08cbe #ffc8dd #c7cfdd #ffb7d0 #b8452e #d9822b #6b8f2e #e9f3ff #7fb5d6 #3e2f5b #f2e3a0
+- Season: SPRING for all three (pink cherry blossom trees mixed with green trees, a few falling pink petals), daytime.
+- NO people anywhere (no visitors, no pedestrians, no drivers visible). Only vehicles, animals, birds, boats and sky objects.
+- Absolutely no text, numbers, letters, logos, real brand names, real famous buildings, watermarks or frames. Signs and billboards are blank colored shapes.
+- The whole image is the game world, edge to edge (no magenta background, no white border).
+
+Layout rules shared by all three images (very important):
+- The zoo is a rectangle in the middle. It is fully enclosed by a WALL on all four sides.
+- The zoo's wooden ARCH GATE stands in the MIDDLE OF THE TOP WALL: the top wall runs left and right from the gate, the gate rises above the wall line, and the gate opening connects the zoo to the road outside.
+- Directly outside the wall, on ALL FOUR SIDES, runs a RING ROAD around the zoo (about 2 to 3 tiles wide). The gate opens onto this road with a small plaza / crosswalk in front of it.
+- Beyond the ring road is the OUTSIDE SCENERY, filling the picture to every edge: above the gate, left, right and below the zoo. The outside must be busy and rich, so the picture feels alive.
+- Draw small motion hints on moving things (a short 2-3 pixel light streak behind cars, a little wake behind boats) so we can tell what will animate in the game.
+
+Generate THREE images, one at a time. After each image, wait for me to say "next" before making the next one.
+
+=== IMAGE 1 of 3: surround_stage1.png (stage 1, small zoo) ===
+Size 1536x1024 (landscape). Camera fits a medium area: the zoo (from zoo_stage1_now.png) takes about 45% of the image width, centered, slightly lower than center so there is more scenery above the gate.
+- WALL: a simple wooden post-and-rail fence, brown, with a small wooden post every few tiles.
+- RING ROAD: a dirt road (light brown earth) with two faint wheel ruts, a few small puddles, grass tufts growing on the edges.
+- OUTSIDE: wild nature. Dense mixed forest of green trees and pink cherry trees, bushes and flowers, a winding blue stream crossing the top-right with a tiny wooden footbridge, a small pond with lily pads at the bottom-left, a few rocks, a meadow patch with wildflowers.
+- MOVING THINGS: a small wooden farm cart pulled by a donkey on the dirt road (no rider shown), a flock of small birds in the sky area above the trees, two ducks on the pond, butterflies near the flowers.
+
+=== IMAGE 2 of 3: surround_stage5.png (stage 5, theme zoo) ===
+Size 1536x1024 (landscape). Camera zoomed out further: the zoo (from zoo_stage5_now.png) takes about 50% of the image width, centered, slightly lower than center.
+- WALL: colorful brick wall (cream, coral and teal bricks) with small festive flags on poles every few tiles and flower boxes.
+- RING ROAD: a wide two-lane road paved with colorful block tiles (warm cream and coral pattern), a raised center median with small flower beds, white crosswalk stripes in front of the gate, small round street lamps.
+- OUTSIDE: a cheerful small city that grew around the zoo. A shopping street with low 2-4 storey buildings with colorful awnings and blank signboards, a small amusement park area at the top-left with a Ferris wheel and a carousel tent, a city square with a fountain at the bottom-right, rows of street trees (pink cherry and green), a parking lot with tour buses. Streets form a loose grid.
+- MOVING THINGS (no people): tour buses arriving at the gate plaza, small cars and yellow taxis on the streets, a little tourist road-train (3 small wagons), a few colorful balloons floating up, pigeons on the square, the Ferris wheel (we will animate it turning).
+
+=== IMAGE 3 of 3: surround_stage8.png (stage 8, world zoo) ===
+Size 1536x1024 (landscape). Camera zoomed out the most: the zoo (from zoo_stage8_now.png) takes about 75% of the image width, centered, so the zoo looks like a big green park in the middle of a huge dense city.
+- WALL: grand white marble wall with gold trim and gold-topped pillars every few tiles, small elegant lamps on top.
+- RING ROAD: a very wide, clean granite boulevard (light gray stone) with golden lane lines, a central median with flower decorations and small trees, ornate black-and-gold street lamps, wide crosswalks at the gate plaza.
+- OUTSIDE: a dense metropolis wrapping the park on ALL sides, like an aerial view of a big city park: tightly packed blocks of tall buildings and skyscrapers in a strict street grid (rooftops with water tanks, rooftop gardens, AC units), the buildings get taller the farther they are from the park. A river runs along the very top edge with a long bridge and a small harbor. Avenues lead straight to the park.
+- MOVING THINGS (no people): lots of yellow taxis and cars streaming along the avenues and the ring boulevard, a few long black limousines near the gate, an elegant horse-drawn sightseeing carriage on the ring boulevard (horse and carriage only, no visible driver), boats and a ferry on the river, a helicopter above the buildings, a cute blimp in the sky (blank colored, no letters), two hot-air balloons, a flock of pigeons.
+
+Start with IMAGE 1 now.
