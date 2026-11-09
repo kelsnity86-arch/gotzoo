@@ -12,7 +12,7 @@ import { eventDef } from './data/events';
 import { BLOCK, PATH_Y0, TILE, World, ZONE_H, zoneRow, type DayReport } from './game/world';
 import { rotateCells } from './data/pieces';
 import { facLevelValue, facilityDef, itemName } from './data/facilities';
-import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero, stageName, gateCapOf, HOT } from './game/rules';
+import { autoArrangePens, boardDims, penCells, drawPrice, penAttract, type YearEval, penCardAt, syncSlots, totalAttract, placedAnimals, offlineEarnings, finishLegacy, canPlacePen, placePen, autoPlace, cardById, penPiece, canPlaceItem, placeItem, itemAt, removeItem, ensureMissions, missionText, closeZoo, carrySlots, carryCost, gainGod, gainHero, stageName, gateCapOf, HOT, curSeason } from './game/rules';
 import { showReveal } from './ui/reveal';
 import { compile, renderSong, wav } from './audio/music';
 import { songById } from './audio/songs';
@@ -25,6 +25,7 @@ import { ANIMALS } from './data/animals';
 import { GRADES } from './data/grades';
 import { staffDef } from './data/staff';
 import { Panel, openPenSheet } from './ui/panel';
+import { titleScene, seasonMachines, startFireworks, type SeasonKey } from './ui/title';
 import { motion } from './ui/motion';
 import { STAR_NEED, SPEED_MAX, COIN_FEEL } from './data/balance';
 import { audio } from './ui/audio';
@@ -452,16 +453,27 @@ function replaceSave(next: ReturnType<typeof defaultSave>) {
 
 // ── 타이틀 ──
 function showTitle(onStart?: () => void) {
-  const parade = h('div', { class: 'parade' }, ...[0, 30, 56, 78, 92, 95, 5, 60].map((id, i) => h('span', { style: `--i:${i}` }, pix(`animal_${String(id).padStart(3, '0')}`, 40))));
   const first = !save.freeDrawUsed;
-  const back = h('div', { class: 'overlay title' },
+  const season = curSeason(save).key as SeasonKey;
+  // 산책길 동물: 도감에서 높은 등급부터 (없으면 기본 동물들)
+  const seen = ANIMALS.filter((a) => save.dex[a.id]).sort((a, b) => b.grade - a.grade).map((a) => a.id);
+  const animals = [...new Set([...seen.slice(0, 8), 0, 30, 56, 78, 92, 95, 5, 60])].slice(0, 8);
+  const vw = () => window.innerWidth / uiScale, vh = () => window.innerHeight / uiScale;
+  const mSize = () => Math.round(Math.max(40, Math.min(86, vh() * 0.11)));
+  let scene = titleScene(season, vw(), vh(), animals);
+  const back = h('div', { class: 'overlay title tt' },
+    scene,
     h('div', { class: 'title-box' },
+      seasonMachines(season, mSize()),
       h('div', { class: 'title-logo' }, '뽑', h('span', {}, 'ZOO')),
       h('div', { class: 'title-sub' }, '동물 카드를 뽑고 합성해서 나만의 동물원을 키워요'),
-      parade,
-      h('button', { class: 'btn big', onclick: () => { audio.unlock(); audio.sfx('draw'); titleOn = false; back.remove(); onStart?.(); } }, first ? '시작하기' : '이어하기'),
-      h('div', { class: 'sub' }, 'PC: 커서로 동전 쓸어 담기 · 휠로 확대 / 폰: 손가락으로 쓸기 · 두 손가락 확대')));
+      h('button', { class: 'btn big', onclick: () => { audio.unlock(); audio.sfx('draw'); titleOn = false; stopFw(); window.removeEventListener('resize', relayout); back.remove(); onStart?.(); } }, first ? '시작하기' : '이어하기')),
+    h('div', { class: 'tt-hint' }, 'PC: 커서로 동전 쓸어 담기 · 휠로 확대 / 폰: 손가락으로 쓸기 · 두 손가락 확대'));
   ui.append(back);
+  let stopFw = startFireworks(scene, Math.round(mSize() * 0.5));
+  // 화면 크기가 바뀌면 배경을 다시 깐다
+  const relayout = () => { if (!back.isConnected) return; stopFw(); const ns = titleScene(season, vw(), vh(), animals); scene.replaceWith(ns); scene = ns; stopFw = startFireworks(scene, Math.round(mSize() * 0.5)); };
+  window.addEventListener('resize', relayout);
   // 타이틀 곡: 브라우저는 첫 터치 전엔 소리를 못 내서, 화면을 처음 누르면 시작
   titleOn = true; audio.bgm('title');
   back.addEventListener('pointerdown', () => audio.unlock(), { once: true });

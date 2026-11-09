@@ -801,3 +801,45 @@ body.reduce-motion .confetti { display: none; }
 .coin-sum.fly { transition: left .45s cubic-bezier(.5,0,.8,.4), top .45s cubic-bezier(.5,0,.8,.4), opacity .45s, transform .45s; opacity: 0.2; transform: translate(-50%, -50%) scale(0.6); }
 .zoom-btns .speed-btn { font-weight: 700; font-size: 15px; }
 .zoom-btns .speed-btn.on { background: #f7c948; color: #5d3a24; }
+
+/* ── 타이틀: 밤 축제 + 언덕 위 동물원 ── */
+.overlay.title.tt { background: linear-gradient(#10173a 0%, #1f2b5c 42%, #34407a 62%, #2b4a36 80%, #1f2a1c 100%); overflow: hidden; }
+.tt-scene { position: absolute; inset: 0; pointer-events: none; }
+.tt-scene > * { position: absolute; }
+.tt-stars { inset: 0; background-image: radial-gradient(2px 2px at 10% 20%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 30% 8%, #fff3a3 50%, transparent 51%), radial-gradient(2px 2px at 70% 15%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 88% 30%, #73eff7 50%, transparent 51%), radial-gradient(2px 2px at 55% 5%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 20% 40%, #fff3a3 50%, transparent 51%), radial-gradient(2px 2px at 80% 45%, #fff 50%, transparent 51%), radial-gradient(3px 3px at 42% 28%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 64% 34%, #fff3a3 50%, transparent 51%), radial-gradient(2px 2px at 5% 50%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 95% 8%, #fff 50%, transparent 51%); animation: tt-twinkle 4s ease-in-out infinite alternate; }
+@keyframes tt-twinkle { to { opacity: .55; } }
+.tt-lights { left: -2%; right: -2%; top: 30px; height: 60px; border-top: 3px solid #0d1022; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
+.tt-lights i { position: absolute; width: 14px; height: 20px; border-radius: 6px; border: 2px solid #0d1022; box-shadow: 0 0 14px currentColor; animation: tt-bulb 1.4s ease-in-out infinite alternate; }
+@keyframes tt-bulb { to { filter: brightness(.6); box-shadow: 0 0 4px currentColor; } }
+.tt-hill2 { left: -5%; right: -5%; bottom: 12%; height: 26%; background: #24452d; border-radius: 50% 50% 0 0 / 60% 60% 0 0; }
+.tt-hill { left: 0; right: 0; bottom: 0; height: 20%; background: #2f6b3a; border-top: 4px solid #1f4a28; }
+.tt-path { left: 0; right: 0; bottom: 0; height: 10.5%; background: repeating-linear-gradient(90deg, #b7a58a 0 46px, #a8957a 46px 50px); border-top: 4px solid #6d5a42; box-shadow: inset 0 4px 0 rgba(255,255,255,0.15); }
+.tt-scene .tt-px { position: absolute; translate: -50% 0; }
+.tt-back { filter: brightness(.62) saturate(.8); }
+.tt-mid { filter: brightness(.82); }
+.tt-glow { translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,226,140,0.55), transparent 65%); animation: tt-glow 2.2s ease-in-out infinite alternate; }
+@keyframes tt-glow { to { opacity: .6; transform: scale(.9); } }
+.tt-gatesign { left: 50%; translate: -50% 0; color: #fff3a3; font-family: 'Jua', sans-serif; text-shadow: 2px 2px 0 #3b2414, -1px -1px 0 #3b2414, 1px -1px 0 #3b2414, -1px 1px 0 #3b2414; z-index: 1; }
+.tt-ani { bottom: 2%; translate: -50% 0; animation: tt-walk var(--walk, 7s) ease-in-out var(--d, 0s) infinite alternate; }
+.tt-ani .pix { animation: tt-hop 2.6s ease-in-out var(--d, 0s) infinite; }
+.tt-ani.flip .pix { transform: scaleX(-1); }
+@keyframes tt-walk { from { margin-left: -24px; } to { margin-left: 24px; } }
+@keyframes tt-hop { 0%, 70%, 100% { translate: 0 0; } 80% { translate: 0 -10px; } 90% { translate: 0 0; } }
+.overlay.title.tt .title-box { position: relative; z-index: 2; gap: 4px; width: min(640px, 100%); margin-bottom: 46vh; }
+.tt-machines { display: flex; gap: 22px; align-items: flex-end; }
+.tt-gm .pix { filter: drop-shadow(0 0 10px rgba(255,243,196,0.55)) drop-shadow(0 4px 0 rgba(0,0,0,0.35)); animation: tt-bob 2.4s ease-in-out var(--d, 0s) infinite; }
+.tt-gm.cur .pix { filter: drop-shadow(0 0 16px rgba(255,243,196,0.95)) drop-shadow(0 4px 0 rgba(0,0,0,0.35)); }
+@keyframes tt-bob { 0%, 60%, 100% { translate: 0 0; } 75% { translate: 0 -8px; } }
+.overlay.title.tt .title-logo { font-size: clamp(48px, 11vh, 84px); text-shadow: 5px 5px 0 #0d1022, 0 0 30px rgba(247,201,72,0.8); }
+.overlay.title.tt .title-sub { color: #fff3a3; text-shadow: 2px 2px 0 #0d1022; }
+.overlay.title.tt .btn.big { font-size: 24px; padding: 10px 70px; background: linear-gradient(#ff8fc4, #e0559a); border: 4px solid #5d1f3e; box-shadow: 0 6px 0 #5d1f3e, 0 0 20px rgba(255,143,196,0.6); border-radius: 16px; color: #fff; }
+.tt-hint { position: absolute; left: 0; right: 0; bottom: 6px; z-index: 3; text-align: center; font-size: 11px; color: #e8dccb; text-shadow: 1px 1px 0 #3b2414; pointer-events: none; }
+.tt-fw { position: absolute; translate: -50% -50%; pointer-events: none; }
+.tt-fw .tt-cap { position: absolute; left: 50%; top: 50%; translate: -50% -50%; filter: drop-shadow(0 0 10px var(--c)); }
+.tt-trail { position: absolute; left: 50%; top: 50%; width: 3px; height: 70px; translate: -50% 0; background: linear-gradient(to bottom, rgba(255,243,163,0.8), transparent); }
+.tt-ring { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, var(--c) 0 3px, transparent 4px) 0 0 / 18px 18px; -webkit-mask: radial-gradient(circle, transparent 0 22%, #000 23% 40%, transparent 41% 50%, #000 51% 64%, transparent 65%); mask: radial-gradient(circle, transparent 0 22%, #000 23% 40%, transparent 41% 50%, #000 51% 64%, transparent 65%); }
+body.reduce-motion .tt-ani, body.reduce-motion .tt-ani .pix, body.reduce-motion .tt-gm .pix, body.reduce-motion .tt-lights i, body.reduce-motion .tt-stars, body.reduce-motion .tt-glow { animation: none; }
+body.compact .overlay.title.tt .title-box { margin-bottom: 52vh; gap: 2px; }
+body.compact .overlay.title.tt .title-sub { font-size: 12px; }
+body.compact .overlay.title.tt .btn.big { padding: 6px 60px; font-size: 20px; }
+body.compact .tt-machines { gap: 12px; }
