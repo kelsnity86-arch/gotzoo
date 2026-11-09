@@ -5,8 +5,32 @@ export type Inst =
 
 export const midiHz = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
+/** 잔향 · 잡음 소리는 만들기가 무거워서 (특히 폰) 오디오 컨텍스트마다 한 번만 만들어 다시 쓴다 */
+const bufCache = new WeakMap<BaseAudioContext, { noise: AudioBuffer; impulse: AudioBuffer; pool: ConvolverNode[]; filling: boolean }>();
+function bufsOf(ctx: BaseAudioContext, mk: () => AudioBuffer) {
+  let b = bufCache.get(ctx);
+  if (!b) {
+    const len = ctx.sampleRate, noise = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = noise.getChannelData(0);
+    let seed = 1234567;
+    for (let i = 0; i < len; i++) { seed = (seed * 1103515245 + 12345) & 0x7fffffff; d[i] = (seed / 0x7fffffff) * 2 - 1; }
+    b = { noise, impulse: mk(), pool: [], filling: false };
+    bufCache.set(ctx, b);
+  }
+  return b;
+}
+/** 잔향 노드는 붙일 때 무거워서, 실시간 재생용은 쉬는 틈에 미리 두 개쯤 만들어 둔다 */
+function refill(ctx: BaseAudioContext) {
+  const b = bufCache.get(ctx);
+  if (!b || b.filling || b.pool.length >= 2 || typeof window === 'undefined' || ctx instanceof OfflineAudioContext) return;
+  b.filling = true;
+  window.setTimeout(() => { const r = ctx.createConvolver(); r.buffer = b.impulse; b.pool.push(r); b.filling = false; refill(ctx); }, 250);
+}
+
 /** 악기 하나를 이 출력(dest)으로 연주하는 도구 묶음 (컨텍스트마다 하나) */
 export class Synth {
+  /** 소리를 켤 때 미리: 잔향 · 잡음 소리와 잔향 노드를 준비해 둔다 (첫 뽑기에서 멈칫하지 않게) */
+  static warm(ctx: BaseAudioContext) { const s = new Synth(ctx, ctx.createGain()); void s; }
   private noise: AudioBuffer;
   readonly out: GainNode;
   readonly wet: GainNode;
@@ -15,14 +39,13 @@ export class Synth {
     // 출력 앞에 낮은 소리 거르기 (55Hz 아래) — 작은 스피커 · 폰에서 뭉개지지 않게
     const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 55; hp.connect(dest);
     this.out = ctx.createGain(); this.out.connect(hp);
-    const rev = ctx.createConvolver(); rev.buffer = this.impulse(2.2, 2.6);
+    const bufs = bufsOf(ctx, () => this.impulse(2.2, 2.6));
+    let rev = bufs.pool.pop();
+    if (!rev) { rev = ctx.createConvolver(); rev.buffer = bufs.impulse; }
+    refill(ctx);
     this.wet = ctx.createGain(); this.wet.gain.value = 0.22;
     this.wet.connect(rev).connect(dest);
-    const len = ctx.sampleRate;
-    this.noise = ctx.createBuffer(1, len, ctx.sampleRate);
-    const d = this.noise.getChannelData(0);
-    let seed = 1234567;
-    for (let i = 0; i < len; i++) { seed = (seed * 1103515245 + 12345) & 0x7fffffff; d[i] = (seed / 0x7fffffff) * 2 - 1; }
+    this.noise = bufs.noise;
   }
   /** 잔향: 지수적으로 줄어드는 잡음 (씨앗 고정 → 매번 같은 소리) */
   private impulse(sec: number, decay: number) {

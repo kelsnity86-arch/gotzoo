@@ -1,6 +1,7 @@
 // 효과음 · 배경음 (Web Audio 합성, 외부 음원 없음). 첫 터치 후에 켜진다.
 import { compile, Player, type Compiled } from '../audio/music';
 import { songById } from '../audio/songs';
+import { Synth } from '../audio/synth';
 type Sfx = 'coin' | 'tip' | 'draw' | 'reveal' | 'rare' | 'fuseWin' | 'fuseFail' | 'buy' | 'click' | 'deny' | 'feed' | 'legend' | 'event';
 const KEY = 'bbopzoo.settings';
 class Audio {
@@ -24,7 +25,7 @@ class Audio {
     this.cur?.p.setVol(this.bgmLevel());
   }
   unlock() {
-    if (!this.ctx) try { this.ctx = new AudioContext(); const comp = this.ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(this.ctx.destination); this.bgmBus = comp as unknown as GainNode; } catch { /* 미지원 */ }
+    if (!this.ctx) try { this.ctx = new AudioContext(); const comp = this.ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(this.ctx.destination); this.bgmBus = comp as unknown as GainNode; const c = this.ctx; window.setTimeout(() => Synth.warm(c), 50); } catch { /* 미지원 */ }
     else void this.ctx.resume();
     if (this.wantId && !this.cur) this.bgm(this.wantId, 1.5);
   }

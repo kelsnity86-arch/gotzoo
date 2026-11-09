@@ -738,7 +738,7 @@ function showOffline() {
 }
 
 // ── 루프 ──
-let last = performance.now(), hudAcc = 0, saveAcc = 0;
+let last = performance.now(), hudAcc = 0, saveAcc = 0, coverAcc = 0;
 function frame(now: number) {
   const dt = Math.min(0.1, Math.max(0, (now - last) / 1000));
   last = now;
@@ -813,7 +813,10 @@ function frame(now: number) {
   }
   if (newcomers.length) { welcome(newcomers); newcomers.length = 0; }
   world.events.length = 0;
-  field.draw(world, save, fieldRect, dpr, pointer);
+  // 뽑기 결과 · 타이틀처럼 화면을 덮는 창이 떠 있으면 뒤 동물원은 멈춰 둔다 (어둡게 깔린 배경이라 안 움직여도 됨 · 뽑기 연출이 끊기지 않게)
+  const covered = !!ui.querySelector('.overlay.reveal, .overlay.title');
+  if (!covered || coverAcc > 0) { field.draw(world, save, fieldRect, dpr, pointer); }
+  coverAcc = covered ? 0 : 1;
   hudAcc += dt; saveAcc += dt;
   if (hudAcc > 0.25) { hudAcc = 0; updateHud(); panel.render(); }
   if (saveAcc > 15) { saveAcc = 0; persist(); }
