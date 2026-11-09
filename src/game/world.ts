@@ -344,7 +344,14 @@ export class World {
     }
     // 새 식구 · 매력 변화: 처음 sync 때 있던 동물은 '본 것'으로 치고, 그 뒤로 처음 배치된 동물만
     const fresh: number[] = [];
-    for (const [uid] of want) if (!this.seen.has(uid)) { this.seen.add(uid); if (this.seeded) fresh.push(uid); }
+    if (!this.seeded) for (const u of s.welcomed ?? []) this.seen.add(u);
+    for (const [uid] of want) if (!this.seen.has(uid)) {
+      this.seen.add(uid);
+      if (this.seeded) fresh.push(uid);
+      (s.welcomed ??= []).push(uid);
+    }
+    // 오래된 기록 정리: 없어진 카드는 지운다
+    if ((s.welcomed?.length ?? 0) > s.cards.length + 50) { const alive = new Set(s.cards.map((c) => c.uid)); s.welcomed = s.welcomed!.filter((u) => alive.has(u)); }
     if (fresh.length) {
       const before = this.lastPenAtt.slice(), incBefore = this.lastIncome;
       const now = s.pens.map((_, i) => totalAttractPen(s, i));
@@ -355,7 +362,8 @@ export class World {
         const c = cardById(s, uid);
         if (c?.kind !== 'animal') continue;
         const grade = c.god !== undefined ? 5 : ANIMALS[c.animal].grade;
-        if (grade >= HOT.minGrade) { markHot(s, uid); this.events.push({ type: 'newcomer', uid, pen: want.get(uid)!, animal: c.animal, grade, god: c.god, shiny: !!c.shiny }); }
+        if (grade >= HOT.minGrade) markHot(s, uid);
+        if (grade >= HOT.minGrade || c.shiny) this.events.push({ type: 'newcomer', uid, pen: want.get(uid)!, animal: c.animal, grade, god: c.god, shiny: !!c.shiny });
       }
     }
     this.seeded = true;

@@ -112,14 +112,26 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   const scatter = cards.length > 1;
   const bestIdx = cards.reduce((bi, c, i) => (cardGrade(c) > cardGrade(cards[bi]) || (isNamed(c) && !isNamed(cards[bi])) ? i : bi), 0);
   const grid = h('div', { class: `reveal-grid n${cards.length}${scatter ? ' scatter' : ''}` });
+  // 흩뿌린 카드 크기: 결과 창 높이 · 폭에 맞춰 (양옆 두 줄이 꽉 차게)
+  const zm = parseFloat(document.getElementById('ui')?.style.zoom || '1') || 1;
+  const gW = Math.min(1120, (window.innerWidth / zm) * 0.94), gH = Math.min(640, (window.innerHeight / zm) * 0.72);
+  const wide = gW / gH > 2.2; // 가로로 긴 폰 화면: 카드를 더 키우고 옆으로 넓게
+  const scatterPx = Math.round(Math.min(240, gH * (wide ? 0.42 : 0.34), (gW / 6.2) * 1.6)); // 카드 세로 길이
   const placeCell = (wrap: HTMLElement, i: number) => {
     if (!scatter) return;
     if (i === bestIdx) { wrap.classList.add('star-card'); return; }
-    const others = cards.length - 1, k = i < bestIdx ? i : i - 1;
-    const ang = (k / others) * Math.PI * 2 + 0.4, rx = 38 + (k % 2) * 6, ry = 30 + ((k + 1) % 3) * 5;
-    const rnd = Math.sin(i * 12.9898) * 43758.5453; const jit = rnd - Math.floor(rnd);
-    wrap.style.left = `${50 + Math.cos(ang) * rx}%`; wrap.style.top = `${50 + Math.sin(ang) * ry}%`;
-    wrap.style.setProperty('--rot', `${(jit - 0.5) * 36}deg`);
+    // 최고 등급 카드를 중심으로 둥글게 흩뿌림: 서로 겹쳐도 되고, 쌓인 순서·각도는 제각각
+    const n = cards.length - 1, k = i < bestIdx ? i : i - 1;
+    const r1 = Math.sin((i + 1) * 12.9898) * 43758.5453, j1 = r1 - Math.floor(r1);
+    const r2 = Math.sin((i + 1) * 78.233) * 12345.678, j2 = r2 - Math.floor(r2);
+    const ch = scatterPx, cw = scatterPx / 1.6;
+    const rx = Math.min(gW / 2 - cw * 0.6, cw * (n <= 4 ? 1.7 : wide ? 2.9 : 2.3)), ry = Math.min(gH / 2 - ch * 0.5, ch * (wide ? 0.5 : 0.62));
+    const ang = -Math.PI / 2 + (k / Math.max(1, n)) * Math.PI * 2 + (j1 - 0.5) * 0.5;
+    const rr = 0.82 + j2 * 0.28;
+    wrap.style.left = `${50 + ((Math.cos(ang) * rx * rr) / gW) * 100}%`;
+    wrap.style.top = `${48 + ((Math.sin(ang) * ry * rr) / gH) * 100}%`;
+    wrap.style.zIndex = String(1 + Math.floor(j2 * 4));
+    wrap.style.setProperty('--rot', `${(j1 - 0.5) * 36}deg`);
   };
   const skip = h('button', { class: 'btn ghost' }, '모두 보기');
   const close = h('button', { class: 'btn', style: 'display:none' }, '확인');
@@ -176,7 +188,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     if (shown >= cards.length) { finish(); return; }
     const c = cards[shown++];
     const g = cardGrade(c);
-    const front = cardEl(c, { isNew: newUids.has(c.uid), size: scatter ? (shown - 1 === bestIdx ? 'l' : 'r') : cards.length > 5 ? 'r' : 'l' });
+    const front = cardEl(c, { isNew: newUids.has(c.uid), size: scatter ? 'r' : cards.length > 5 ? 'r' : 'l', px: scatter ? scatterPx : undefined });
     const bk = cardBack(backPx);
     const wrap = h('div', { class: `reveal-cell${g >= 2 ? ' shine' : ''}${bk ? ' has-back' : ''}`, style: g >= 0 ? `--glow:${GRADES[g].color}` : '--glow:#ef7d32' }, bk ? h('div', { class: 'cell-back' }, bk) : null, h('div', { class: 'cell-front' }, front));
     placeCell(wrap, shown - 1);
@@ -185,7 +197,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     audio.sfx(g >= 2 ? 'rare' : 'reveal');
     timer = window.setTimeout(showOne, motion.reduce ? 0 : cards.length > 1 ? 240 : 0);
   };
-  const finish = () => { clearTimeout(timer); while (shown < cards.length) { const cell = h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: scatter ? (shown === bestIdx ? 'l' : 'r') : cards.length > 5 ? 'r' : 'l' })); placeCell(cell, shown); grid.append(cell); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
+  const finish = () => { clearTimeout(timer); while (shown < cards.length) { const cell = h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: scatter ? 'r' : cards.length > 5 ? 'r' : 'l', px: scatter ? scatterPx : undefined })); placeCell(cell, shown); grid.append(cell); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
   if (v3 && gs) {
     const G = gs, R = motion.reduce, amp = R ? 0.35 : 1;
     const show = (els: HTMLElement[], i: number) => els.forEach((e, k) => { e.style.opacity = k === i ? '1' : '0'; });

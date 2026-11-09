@@ -36,7 +36,7 @@ function composite(frameKey: string, art: Sprite): HTMLCanvasElement {
   return cv;
 }
 
-export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean } = {}): HTMLElement {
+export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean; px?: number } = {}): HTMLElement {
   // l = 크게(한두 장), r = 뽑기 결과 여러 장, m = 작게
   const big = opts.size === 'l' || opts.size === 'r';
   const g = GRADES[cardGrade(c)];
@@ -78,9 +78,14 @@ export function cardEl(c: Card, opts: { size?: 'l' | 'r' | 'm'; isNew?: boolean 
     const zm = typeof document !== 'undefined' ? parseFloat((document.getElementById('ui')?.style.zoom || '1')) || 1 : 1;
     const vw = typeof window !== 'undefined' ? window.innerWidth / zm : 1200, vh = typeof window !== 'undefined' ? window.innerHeight / zm : 800;
     const rPx = Math.max(56, Math.min(150, Math.floor((vw * 0.9 - 80) / 5.4), Math.floor(((vh * 0.9 - 150) / 2 - 44) / 1.6)));
-    const px = opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96;
+    const px = opts.px ?? (opts.size === 'l' ? 200 : opts.size === 'r' ? rPx : 96);
+    const cv = pix(composite(frame, art), px);
+    if (opts.px) { // 정확한 크기 지정: 정수배에 묶이지 않게 화면 크기를 직접 맞춤 (긴 변 = px)
+      const r = px / Math.max(cv.width, cv.height);
+      cv.style.width = `${cv.width * r}px`; cv.style.height = `${cv.height * r}px`;
+    }
     return h('div', { class: `card art${v3 ? ' v3' : ''} g-${key}${big ? ' big' : ''}${shiny ? ' shiny' : ''}${named ? ' mythic' : ''}` },
-      h('div', { class: 'card-frame' }, pix(composite(frame, art), px), h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
+      h('div', { class: 'card-frame' }, cv, h('div', { class: `card-name-in${name.length >= 6 ? ' xlong' : name.length >= 4 ? ' long' : ''}` }, name)),
       h('div', { class: 'card-grade' }, gradeLabel),
       sub ? h('div', { class: 'card-sub' }, sub) : null,
       opts.isNew ? h('span', { class: 'card-new' }, 'NEW') : null);

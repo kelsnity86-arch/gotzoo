@@ -96,6 +96,9 @@ export class FieldRenderer {
   }
   focus(x: number, y: number, z: number, dur = 2.8) { this.focusFx = { x, y, z, t: performance.now(), dur: dur * 1000, z0: this.userZoom, cx0: this.camX, cy0: this.camY }; }
   get focusing() { return !!this.focusFx; }
+  /** 반짝이 동물 첫 배치: 그 동물 둘레에 반짝임 · 별이 2초 동안 터진다 */
+  private shines: { uid: number; t: number }[] = [];
+  shine(uid: number) { this.shines.push({ uid, t: performance.now() }); }
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -412,6 +415,7 @@ export class FieldRenderer {
       c.fillRect(Math.round(view.x * dpr), Math.round(view.y * dpr), Math.round(view.w * dpr), Math.round(view.h * dpr));
     }
     c.drawImage(this.wc, Math.round(this.ox * dpr), Math.round(this.oy * dpr), Math.round(L.w * z * dpr), Math.round(L.h * z * dpr));
+    this.screenFx(world, save, view, z, dpr);
 
     // 떠오르는 글자 (화면 좌표로, 글자는 선명하게)
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -597,6 +601,20 @@ export class FieldRenderer {
         }
       }
     }
+    // 반짝이 첫 배치: 동물 둘레로 반짝임 · 별이 퍼진다
+    if (this.shines.length) {
+      const now = performance.now();
+      this.shines = this.shines.filter((sh) => now - sh.t < 2200);
+      for (const sh of this.shines) {
+        const a = world.animals.find((e) => e.uid === sh.uid); if (!a) continue;
+        const k = (now - sh.t) / 2200;
+        for (let n = 0; n < 8; n++) {
+          const ang = n * Math.PI / 4 + k * 2, d = 4 + k * 10;
+          this.spr(n % 2 ? 'v2_gf_star' : 'v2_gf_sparkle', a.x + Math.cos(ang) * d, a.y - 5 + Math.sin(ang) * d * 0.7 + 3, 5, 5, 1 - k, k * 4);
+        }
+        if (k < 0.35) this.spr('v2_gf_burst_shiny', a.x, a.y + 4, 10 + k * 30, 10 + k * 30, 1 - k / 0.35);
+      }
+    }
     // 규모 확장 직후 6초: 새로 생긴 부지 칸이 금빛으로 반짝이고 테두리가 깜빡인다
     if (this.expandFx) {
       const k = (performance.now() - this.expandFx.t) / 6000;
@@ -640,46 +658,7 @@ export class FieldRenderer {
         }
       }
     }
-    // 피버 타임: 관객존이 금빛으로 일렁인다
-    if (world.feverOn) {
-      const a = 0.12 + 0.06 * Math.sin(t * 8);
-      const g = c.createLinearGradient(0, 0, 0, ZONE_H + 10);
-      g.addColorStop(0, `rgba(255,243,163,${a + 0.08})`); g.addColorStop(1, 'rgba(247,201,72,0)');
-      c.fillStyle = g; c.fillRect(0, 0, L.w, ZONE_H + 10);
-    }
-    // 계절: 살짝 덧칠 + 날리는 꽃잎 · 낙엽 · 눈 (이벤트가 눈이면 더 많이)
-    const sea = seasonOf(save.season.n);
-    const ev = world.event ? eventDef(world.event.id) : null;
-    c.fillStyle = sea.tint; c.fillRect(0, 0, L.w, L.h);
-    const parts = ev?.snow ? ['#f4f4f4', '#e9f3ff'] : sea.particle;
-    // 날리는 것: 봄 꽃잎 · 가을 낙엽 · 겨울(눈 이벤트) 눈송이는 그림으로, 그 밖엔 점
-    const wxKeys = ev?.snow || sea.key === 'winter' ? ['v2_wx_flake1'] : sea.key === 'spring' ? ['v2_wx_petal1', 'v2_wx_petal2', 'v2_wx_petal3'] : sea.key === 'autumn' ? ['v2_wx_leaf1', 'v2_wx_leaf2', 'v2_wx_ginkgo'] : [];
-    if (!motion.reduce && wxKeys.length && hasPng(wxKeys[0])) {
-      const n = ev?.snow ? 34 : 10, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
-      for (let i = 0; i < n; i++) {
-        const sway = Math.sin(t * 1.3 + i) * 6;
-        const x = ((i * 71.3 + t * 7 + sway) % L.w + L.w) % L.w, y = ((i * 43.7 + t * fall) % L.h);
-        const im = sprite(wxKeys[i % wxKeys.length]);
-        this.icon(im, x, y, Math.max(im.width, im.height) / FieldRenderer.R); // 도트 그대로 (줄이면 외곽선만 남아 검은 점이 된다)
-      }
-    } else if (parts.length && !motion.reduce) {
-      const n = ev?.snow ? 60 : 12, fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
-      for (let i = 0; i < n; i++) {
-        const sway = Math.sin(t * 1.3 + i) * 6;
-        const x = ((i * 71.3 + t * 7 + sway) % L.w + L.w) % L.w, y = ((i * 43.7 + t * fall) % L.h);
-        c.fillStyle = parts[i % parts.length];
-        c.fillRect(Math.round(x), Math.round(y), sea.key === 'autumn' && !ev?.snow ? 2 : 1, 1);
-      }
-    }
-    // 비 (소나기 · 장마)
-    if (ev?.rain) {
-      c.fillStyle = 'rgba(115,239,247,0.55)';
-      const rain = hasPng('v2_wx_rain') ? sprite('v2_wx_rain') : null;
-      for (let i = 0; i < 60; i++) { const x = ((i * 53.7 + t * 30) % L.w), y = ((i * 37.3 + t * 140) % L.h); if (rain) this.icon(rain, x, y, Math.max(rain.width, rain.height) / FieldRenderer.R); else c.fillRect(Math.round(x), Math.round(y), 1, 3); }
-      // 땅에 튀는 빗방울
-      if (hasPng('v2_wx_splash1')) for (let i = 0; i < 16; i++) { const ph = (t * 2 + i * 0.37) % 1; const sx = (i * 131.7) % L.w, sy = ZONE_H * 0.6 + (i * 77.1) % (L.h - ZONE_H * 0.6); c.globalAlpha = 1 - ph; { const sp = sprite(ph < 0.5 ? 'v2_wx_splash1' : 'v2_wx_splash2'); this.icon(sp, sx, sy, Math.max(sp.width, sp.height) / FieldRenderer.R); } c.globalAlpha = 1; }
-      c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(0, 0, L.w, L.h);
-    }
+    // 피버 금빛 · 계절 덧칠 · 날리는 것 · 비는 화면 전체에 (screenFx) — 지도 경계에서 끊기지 않게
     // 우리 놓기: 들어갈 자리 미리 보기 (초록 = 놓을 수 있음, 빨강 = 겹침·밖)
     if (this.ghost) {
       const gh = this.ghost;
@@ -823,6 +802,48 @@ export class FieldRenderer {
     c.fillStyle = '#fff3a3'; c.fillText(d.name, e.x, top);
     c.restore();
   }
+  /** 화면 전체 덧칠: 계절 색 · 피버 금빛 · 비 어둡기 · 입장식 어둡기, 날리는 꽃잎 · 낙엽 · 눈 · 빗방울 (지도 밖 숲까지 이어서) */
+  private screenFx(world: World, save: SaveData, view: { x: number; y: number; w: number; h: number }, z: number, dpr: number) {
+    const c = this.ctx, L = world.layout, t = performance.now() / 1000, R = FieldRenderer.R;
+    const vx = view.x * dpr, vy = view.y * dpr, vw = view.w * dpr, vh = view.h * dpr;
+    const sea = seasonOf(save.season.n), ev = world.event ? eventDef(world.event.id) : null;
+    c.fillStyle = sea.tint; c.fillRect(vx, vy, vw, vh);
+    // 피버: 관객존 높이까지 금빛 (화면 폭 전체)
+    if (world.feverOn) {
+      const a = 0.12 + 0.06 * Math.sin(t * 8), y1 = (this.oy + (ZONE_H + 10) * z) * dpr;
+      const g = c.createLinearGradient(0, vy, 0, y1);
+      g.addColorStop(0, `rgba(255,243,163,${a + 0.08})`); g.addColorStop(1, 'rgba(247,201,72,0)');
+      c.fillStyle = g; c.fillRect(vx, vy, vw, Math.max(0, y1 - vy));
+    }
+    // 날리는 것: 보이는 월드 범위 전체에 (지도 밖 포함)
+    const wx0 = (view.x - this.ox) / z, wy0 = (view.y - this.oy) / z, ww = view.w / z, wh = view.h / z;
+    const put = (key: string, x: number, y: number) => { if (!hasPng(key)) return false; const im = sprite(key), w = (im.width / R) * z * dpr, h = (im.height / R) * z * dpr; c.drawImage(im, Math.round((this.ox + x * z) * dpr - w / 2), Math.round((this.oy + y * z) * dpr - h), Math.round(w), Math.round(h)); return true; };
+    const wxKeys = ev?.snow || sea.key === 'winter' ? ['v2_wx_flake1'] : sea.key === 'spring' ? ['v2_wx_petal1', 'v2_wx_petal2', 'v2_wx_petal3'] : sea.key === 'autumn' ? ['v2_wx_leaf1', 'v2_wx_leaf2', 'v2_wx_ginkgo'] : [];
+    if (!motion.reduce && wxKeys.length) {
+      const dens = ev?.snow ? 34 : 10, n = Math.round(dens * (ww * wh) / (L.w * L.h)), fall = sea.key === 'winter' || ev?.snow ? 14 : 9;
+      for (let i = 0; i < n; i++) {
+        const sway = Math.sin(t * 1.3 + i) * 6;
+        const x = wx0 + (((i * 71.3 + t * 7 + sway) % ww) + ww) % ww, y = wy0 + ((i * 43.7 + t * fall) % wh);
+        put(wxKeys[i % wxKeys.length], x, y);
+      }
+    }
+    if (ev?.rain) {
+      const n = Math.round(60 * (ww * wh) / (L.w * L.h));
+      for (let i = 0; i < n; i++) put('v2_wx_rain', wx0 + ((i * 53.7 + t * 30) % ww), wy0 + ((i * 37.3 + t * 140) % wh));
+      for (let i = 0; i < 16; i++) { const ph = (t * 2 + i * 0.37) % 1; c.globalAlpha = 1 - ph; put(ph < 0.5 ? 'v2_wx_splash1' : 'v2_wx_splash2', wx0 + (i * 131.7) % ww, wy0 + wh * 0.3 + (i * 77.1) % (wh * 0.7)); c.globalAlpha = 1; }
+      c.fillStyle = 'rgba(41,54,111,0.12)'; c.fillRect(vx, vy, vw, vh);
+    }
+    // 입장식: 우리 둘레만 밝게, 나머지 화면은 어둡게
+    if (this.spot) {
+      const r = L.pens[this.spot.pen], k = (performance.now() - this.spot.t) / 3200;
+      if (r && k < 1) {
+        const a = Math.min(1, k * 5, (1 - k) * 4), cx = (this.ox + (r.x + r.w / 2) * z) * dpr, cy = (this.oy + (r.y + r.h / 2) * z) * dpr;
+        const g = c.createRadialGradient(cx, cy, Math.max(r.w, r.h) * 0.45 * z * dpr, cx, cy, Math.max(vw, vh) * 0.75);
+        g.addColorStop(0, 'rgba(10,8,20,0)'); g.addColorStop(1, `rgba(10,8,20,${0.55 * a})`);
+        c.fillStyle = g; c.fillRect(vx, vy, vw, vh);
+      }
+    }
+  }
   /** (시안) 등급별 우리 꾸밈: 발밑 후광 · 모서리 대리석 기둥 · 월계관 간판 · 반짝임, 화제의 신입은 파티 · 하트 */
   private decorPensFx(world: World, save: SaveData, tt: number) {
     const L = world.layout, c = this.ctx;
@@ -880,9 +901,6 @@ export class FieldRenderer {
     if (k >= 1 || !r) { this.spot = null; return; }
     const a = Math.min(1, k * 5, (1 - k) * 4);
     const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
-    const g = c.createRadialGradient(cx, cy, Math.max(r.w, r.h) * 0.45, cx, cy, Math.max(L.w, L.h) * 0.7);
-    g.addColorStop(0, 'rgba(10,8,20,0)'); g.addColorStop(1, `rgba(10,8,20,${0.55 * a})`);
-    c.fillStyle = g; c.fillRect(0, 0, L.w, L.h);
     const gk = ['common', 'uncommon', 'rare', 'epic', 'legend', 'shiny'][Math.min(5, sp.grade)];
     c.save(); c.globalCompositeOperation = 'lighter';
     this.spr(`v2_gf_rays`, cx, cy, 60, 60, 0.6 * a, k * 3);

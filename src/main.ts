@@ -461,19 +461,24 @@ let titleOn = false;
 const newcomers: Extract<import('./game/world').WorldEvent, { type: 'newcomer' }>[] = [];
 const banner = h('div', { class: 'newcomer-banner hidden' });
 function welcome(list: typeof newcomers) {
-  const best = list.slice().sort((a, b) => b.grade - a.grade)[0];
+  // 반짝이: 처음 배치 때 그 동물에 반짝임만 (전설 이상이면 아래 입장식에 포함)
+  for (const n of list) if (n.shiny && n.grade < 4) field.shine(n.uid);
+  // 입장식(카메라 · 빛기둥 · 이름 띠)은 전설 이상만 — 자주 나오면 눈이 아프다
+  const big = list.filter((n) => n.grade >= 4);
+  if (!big.length) { if (list.some((n) => n.shiny)) audio.sfx('rare'); return; }
+  const best = big.slice().sort((a, b) => b.grade - a.grade)[0];
   const r = world.layout.pens[best.pen]; if (!r) return;
-  if (!field.focusing) field.focus(r.x + r.w / 2, r.y + r.h / 2, best.grade >= 4 ? 2.4 : 2, best.grade >= 4 ? 3.2 : 2.6);
-  field.spot = { pen: best.pen, t: performance.now(), grade: best.grade };
+  if (!field.focusing) field.focus(r.x + r.w / 2, r.y + r.h / 2, 2.4, 3.2);
+  field.spot = { pen: best.pen, t: performance.now(), grade: best.shiny ? 5 : best.grade };
   const name = best.god !== undefined ? GODS[best.god].name : ANIMALS[best.animal].name;
   const label = best.grade >= 5 ? '신화' : GRADES[Math.min(4, best.grade)].name;
   if (!banner.isConnected) ui.append(banner);
   banner.className = `newcomer-banner g${Math.min(5, best.grade)}`;
-  const band = best.grade >= 4 ? 'v2_cutin_legend' : 'v2_cutin_epic';
-  banner.replaceChildren(hasPng(band) ? pix(band, 460, 'pix nb-band') : '', h('small', {}, list.length > 1 ? `새 식구 ${list.length}마리!` : '새 식구!'), h('b', {}, `${best.shiny ? '반짝이 ' : ''}${label} · ${name}`), h('span', {}, `오늘 하루 화제의 신입 · 매력 ×${HOT.mul} · 손님이 몰려요`));
+  const band = 'v2_cutin_legend';
+  banner.replaceChildren(hasPng(band) ? pix(band, 460, 'pix nb-band') : '', h('small', {}, big.length > 1 ? `새 식구 ${big.length}마리!` : '새 식구!'), h('b', {}, `${best.shiny ? '반짝이 ' : ''}${label} · ${name}`), h('span', {}, `오늘 하루 화제의 신입 · 매력 ×${HOT.mul} · 손님이 몰려요`));
   banner.style.left = upx(fieldRect.x + fieldRect.w / 2); banner.style.top = upx(fieldRect.y + fieldRect.h - 96 * uiScale);
-  if (best.grade >= 5) audio.sting('jingle_mythic'); else if (best.grade >= 4) audio.sting('jingle_legend'); else audio.sfx('rare');
-  window.clearTimeout(bannerTimer); bannerTimer = window.setTimeout(() => banner.classList.add('hidden'), best.grade >= 4 ? 3400 : 2700);
+  if (best.grade >= 5) audio.sting('jingle_mythic'); else audio.sting('jingle_legend');
+  window.clearTimeout(bannerTimer); bannerTimer = window.setTimeout(() => banner.classList.add('hidden'), 3400);
 }
 let bannerTimer = 0;
 let incomeToastAt = 0;
