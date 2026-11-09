@@ -14,6 +14,8 @@ import type { Grade } from '../../src/data/grades';
 
 const MIN = Number(process.env.SIM_MIN ?? 60);
 const PICK = Number(process.env.SIM_PICK ?? 0.7);
+const HAND = process.env.SIM_HAND ?? 'pick', SWEEP = Number(process.env.SIM_SWEEP ?? 3), AWAY = Number(process.env.SIM_AWAY ?? 0.35), REAL_LIFE = !!process.env.SIM_REALLIFE, CUT = Number(process.env.SIM_LIFECUT ?? 0);
+const seen = new Set<number>();
 
 it('경제 곡선', () => {
   const s = defaultSave();
@@ -24,6 +26,7 @@ it('경제 곡선', () => {
   const dayLog: string[] = [];
   const seasonLog: string[] = [];
   let condAt = 0;
+  const got = { hand: 0, staff: 0 };
   let t = 0, draws = 0, secondDraw = -1, lastStage = 1, think = 0, pickAcc = 0;
   freeDraw(s); optimizePlacement(s); w.sync();
   const dt = 0.1;
@@ -34,10 +37,18 @@ it('경제 곡선', () => {
     w.update(dt * SPEED, null);
     for (const e of w.events) if (e.type === 'night') { const r = e.report; dayLog.push(`${r.day}일 ${(t/60).toFixed(1)}분 단계${s.stage}: 수입 ${r.income} · 비용 ${r.costs.total}(월급 ${r.costs.salary} 우리 ${r.costs.pens} 사료 ${r.costs.food}) · 순 ${r.net} · 돈 ${r.coinsAfter} · 규모 ${r.mine} vs ${r.rival}${r.season ? ` → ${r.season.result}` : ''}`); if (r.season) seasonLog.push(`S${r.season.n} ${['부진','보통','절호조'][condAt] ?? '?'} ${r.season.result}${r.season.survived ? '(하트)' : ''}${r.season.heartBack ? '(회복)' : ''} 내${r.mine} 라${r.rival} 기본${rivalScale(7, r.season.n)} 응원${r.season.cheer ?? 0} 비${(r.mine / rivalScale(7, r.season.n)).toFixed(2)}`); if (process.env.SIM_NOLOSE) s.lastChance = false; else if (r.season?.result === 'lose' && !r.season.survived) t = MIN * 60; }
     condAt = s.season.cond ?? 1;
+    for (const e of w.events) if (e.type === 'pickup') { if (e.by === 'hand') got.hand += e.amount; else got.staff += e.amount; }
     w.events.length = 0;
-    // 손으로 줍기: 초당 바닥 동전의 PICK 비율
+    if (REAL_LIFE) for (const c of w.coins) c.age -= dt * (SPEED - 1); // 동전 수명을 실제 시간으로 (비교용)
+    // 기본 수명을 CUT초 줄인 것처럼 (새 동전에 나이를 미리 얹는다)
+    if (CUT) for (const c of w.coins) if (!seen.has(c.id)) { seen.add(c.id); if (c.pile === undefined) c.age += CUT; }
     pickAcc += dt;
-    if (pickAcc >= 1) { pickAcc = 0; for (const c of w.coins) if (c.z === 0 && Math.random() < PICK) w.pick(c, 'hand'); }
+    if (HAND === 'sweep') {
+      // 사람처럼: SWEEP초마다 한 번 쓸어 담고(바닥 동전 85%), 1분 중 AWAY 비율은 메뉴 보느라 손을 안 댄다
+      const away = (t % 60) / 60 < AWAY;
+      if (pickAcc >= SWEEP) { pickAcc = 0; if (!away) for (const c of w.coins) if (c.z === 0 && c.pile === undefined && Math.random() < 0.85) w.pick(c, 'hand'); }
+      if (!away) for (const c of w.coins) if (c.pile !== undefined && c.z === 0) w.pick(c, 'hand');
+    } else if (pickAcc >= 1) { pickAcc = 0; for (const c of w.coins) if (c.z === 0 && Math.random() < PICK) w.pick(c, 'hand'); }
     think += dt;
     if (think < 2) continue;
     think = 0;
@@ -79,6 +90,7 @@ it('경제 곡선', () => {
       log.push(`   ┗ 매력 ${Math.round(w.attract)} · 수요 ${f2(w.visitorDemand)}/분 · 게이트 ${f2(w.gateCap)} · 입장 ${f2(w.visitorRate)} · 손님배율 ${f2(visitorMul(s))} | 질 ${f2(upValue(s, 'quality'))} · 단계 ${f2(stageTipMul(s))} · 넘침 ${f2(w.overflowMul)} · 직원 ${f2(staffTipMul(s))} · 매표/기념품 ${f2(1 + staffSum(s, 'ticket') + facSum(s, 'souvenir'))} · 뽑기값 ${drawPrice(s)}`);
     }
   }
+  { const tot = got.hand + got.staff + w.missed; console.log(`COINS 손 ${(got.hand / tot * 100).toFixed(1)}% · 직원 ${(got.staff / tot * 100).toFixed(1)}% · 놓침 ${(w.missed / tot * 100).toFixed(1)}% · 수명 ${w.coinLife.toFixed(0)}초(게임)`); }
   console.log(`두 번째 뽑기: ${secondDraw >= 0 ? `${secondDraw.toFixed(0)}초` : '없음'}`);
   console.log(log.join('\n'));
   console.log(dayLog.join('\n'));
