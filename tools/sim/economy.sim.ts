@@ -7,18 +7,34 @@ import { UPGRADES } from '../../src/data/balance';
 import { FACILITIES } from '../../src/data/facilities';
 import {
   assignStaff, autoFusionPick, canPromote, draw, drawPrice, freeDraw, fuse, fusionCandidates, optimizePlacement, placedAnimals,
-  promote, totalAttract, visitorMul, upValue, stageTipMul, staffTipMul, staffSum, facSum, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts, expandCost,
+  promote, closeZoo, carrySlots, carryCost, totalAttract, visitorMul, upValue, stageTipMul, staffTipMul, staffSum, facSum, upgradeCost, upgradeLockedBy, buyUpgrade, autoArrangePens, penFusionCandidates, fusePens, buyFacility, facPrice, dailyCosts, expandCost,
 } from '../../src/game/rules';
 import { rivalScale } from '../../src/data/rivals';
 import type { Grade } from '../../src/data/grades';
+import { cardGrade } from '../../src/ui/cardview';
 
 const MIN = Number(process.env.SIM_MIN ?? 60);
 const PICK = Number(process.env.SIM_PICK ?? 0.7);
 const HAND = process.env.SIM_HAND ?? 'pick', SWEEP = Number(process.env.SIM_SWEEP ?? 3), AWAY = Number(process.env.SIM_AWAY ?? 0.35), REAL_LIFE = !!process.env.SIM_REALLIFE, CUT = Number(process.env.SIM_LIFECUT ?? 0), LIFE = Number(process.env.SIM_LIFE ?? 0), SWEEP_P = Number(process.env.SIM_SWEEP_P ?? 0.85);
 const seen = new Set<number>();
 
+/** 폐원 뒤 새 동물원처럼 시작: 지난 동물원에서 K시즌을 버텼다고 치고, 그만큼 뽑은 카드 중 칸 안에서 가장 좋은 동물과 직원 1명을 데려온다 */
+function carriedSave(seasons: number) {
+  const p = defaultSave();
+  p.season.n = seasons + 1;
+  p.tokens = 1e12;
+  for (let i = 0; i < seasons * 70; i++) draw(p, 1);
+  const animals = p.cards.filter((c): c is Extract<typeof c, { kind: 'animal' }> => c.kind === 'animal').sort((a, b) => carryCost(b) - carryCost(a));
+  let room = carrySlots(p); const keep: number[] = [];
+  for (const c of animals) { const k = carryCost(c); if (k <= room) { keep.push(c.uid); room -= k; } }
+  const staff = p.cards.filter((c) => c.kind === 'staff').sort((a, b) => cardGrade(b) - cardGrade(a))[0];
+  return closeZoo(p, { animals: keep, staff: staff?.uid ?? null });
+}
+
 it('경제 곡선', () => {
-  const s = defaultSave();
+  const CARRY_SEASONS = Number(process.env.SIM_CARRY ?? 0);
+  const s = CARRY_SEASONS ? carriedSave(CARRY_SEASONS) : defaultSave();
+  if (CARRY_SEASONS) console.log(`데려온 카드: ${s.cards.map((c) => c.kind === 'animal' ? `동물${cardGrade(c)}` : `직원${cardGrade(c)}`).join(' ')} · 도감 ${s.dex.filter(Boolean).length}`);
   const w = new World(s, Math.random);
   const SPEED = Number(process.env.SIM_SPEED ?? 1); w.speed = SPEED; // 배속: t는 실제 시간
   w.relayout(1.6);

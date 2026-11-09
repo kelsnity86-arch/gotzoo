@@ -60,7 +60,7 @@ export const UPGRADES: readonly UpgradeDef[] = [
     costs: [3000, 15000, 60000], need: [3, 5, 7], describe: (v) => `피버 타임 ${v}초` },
   { id: 'feverCharge', name: '피버 충전', icon: '', group: 'pick', values: [1, 1.15, 1.3, 1.5],
     costs: [2000, 10000, 40000], need: [2, 4, 6], describe: (v) => `피버 게이지 ×${v} 빨리` },
-  { id: 'coinLife', name: '동전 오래 남기', icon: '', group: 'pick', values: [0, 15, 30, 45, 60],
+  { id: 'coinLife', name: '동전 오래 남기', icon: '', group: 'pick', values: [0, 1, 2, 3, 4],
     costs: [800, 3000, 10000, 35000], need: [1, 3, 4, 6], describe: (v) => `바닥 동전 +${v}초` },
   // ── 뽑기 · 기계 ──
   { id: 'machine', name: '기계 정비', icon: '', group: 'gacha', values: [1, 1.25, 1.5, 2, 2.5],
@@ -108,9 +108,9 @@ export const VISITOR = {
 } as const;
 
 /** 동전: 관람객 발밑(관객존 바닥)에 떨어져 쌓인다. 오래 방치하면(lifeSec) 사라진다. 끝나기 blinkSec 전부터 깜빡인다 */
-export const COIN = { lifeSec: 60, blinkSec: 8, mergeDist: 5, mergeMax: 3, crowd: 250, popSpeed: 30, gravity: 150 } as const;
+export const COIN = { lifeSec: 8, lifeMax: 20, blinkSec: 2, mergeDist: 5, mergeMax: 3, crowd: 250, popSpeed: 30, gravity: 150 } as const;
 /** 동전 손맛: 자석(줍는 범위의 배수 · 끌려오는 속도) · 손가락으로 빨려드는 시간 · 콤보 단계 · 동전 더미 */
-export const COIN_FEEL = { magnet: 1.8, magnetSpeed: 70, suck: 0.16, steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 30, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
+export const COIN_FEEL = { magnet: 1.8, magnetSpeed: 70, suck: 0.16, steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
 /** 배속: 폐원을 한 번 하면 열린다 */
 export const SPEED_MAX = 2;
 

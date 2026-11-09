@@ -16,7 +16,7 @@ const pct = (v: number) => `${Math.round(v * 100)}%`;
 export const FACILITIES: readonly FacilityDef[] = [
   { type: 'snack', name: '매점', value: 0.13, cap: 0.4, desc: (v) => `관람객이 간식을 사요 · 투척액 +${pct(v)}`, price: 3, upkeep: 0.2 },
   { type: 'restroom', name: '화장실', value: 0.17, cap: 0.5, desc: (v) => `오래 머물러요 · 손님 정원 +${pct(v)}`, price: 3, upkeep: 0.15 },
-  { type: 'bench', name: '쉼터', value: 20, cap: 60, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
+  { type: 'bench', name: '쉼터', value: 1, cap: 3, desc: (v) => `쉬어 가요 · 바닥 동전 +${v}초`, price: 1, upkeep: 0.05 },
   { type: 'fountain', name: '분수 광장', value: 0.05, cap: 0.15, desc: (v) => `모든 동물 매력 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'photo', name: '포토존', value: 0.13, cap: 0.4, desc: (v) => `사진 찍으러 와요 · 관람객 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'clinic', name: '동물병원', value: 0.3, cap: 0.9, desc: (v) => `동물 감기를 ${pct(v)} 확률로 막아요 (수의사와 따로)`, price: 5, upkeep: 0.2 },

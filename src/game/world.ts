@@ -405,7 +405,7 @@ export class World {
     return overflowMulOf(this.visitorDemand, this.gateCap);
   }
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
-  get coinLife() { return COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife'); }
+  get coinLife() { return Math.min(COIN.lifeMax, COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife')); }
   get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower') + heroVal(this.save, 'lucky')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
   /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */

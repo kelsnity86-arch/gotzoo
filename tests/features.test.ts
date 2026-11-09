@@ -75,12 +75,12 @@ describe('이벤트 · 새 직원', () => {
     for (let i = 0; i < 30 * 21; i++) w.update(1 / 30, null);
     expect(w.event).toBeNull();
   });
-  it('직원 효과는 등급을 따른다: 고급 안내원 +12%, 고급 관리인 +30초', () => {
+  it('직원 효과는 등급을 따른다: 고급 안내원 +12%, 고급 관리인 +1.5초', () => {
     const s = defaultSave(); s.upgrades.staff = 1; s.staffSlots = [null, null];
     s.cards.push({ uid: 1, kind: 'staff', staff: 'guide', grade: 1, pay: 0.3, opts: [] }, { uid: 2, kind: 'staff', staff: 'janitor', grade: 1, pay: 0.3, opts: [] }); s.nextUid = 3;
     assignStaff(s, 1); assignStaff(s, 2);
     expect(staffTipMul(s)).toBeCloseTo(1.12, 5);
-    expect(coinLifeBonus(s)).toBe(30);
+    expect(coinLifeBonus(s)).toBe(1.5);
   });
 });
 
