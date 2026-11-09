@@ -103,3 +103,7 @@ npm run build:artifact   # 한 파일 배포본 dist-artifact/bbopzoo.html
 | `src/ui` | 패널(뽑기·보관함·합성·업그레이드·직원·도감), 뽑기 연출, 스타일 |
 
 글꼴: 갈무리(OFL, `licenses/`).
+
+## 동물원 주변 환경 시안
+
+[1·5·8단계 전체 보기 이미지](assets/concepts/surround16/README.md). 최종 명령서의 화면 양끝까지 이어지는 상단 직선 도로를 반영한 구도 시안이며, 게임에 적용된 타일맵은 아닙니다.
