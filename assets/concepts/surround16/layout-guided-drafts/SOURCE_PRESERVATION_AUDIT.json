@@ -1,0 +1,49 @@
+{
+  "status": "HOLD",
+  "kind": "generated_visual_concepts",
+  "pixel_preservation_pass": false,
+  "images": [
+    {
+      "stage": 1,
+      "file": "surround_stage1.png",
+      "reference": "docs/briefs/surround-ref/layout_stage1.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "canvas_size_matches": true,
+      "protected_source_pixels": 503254,
+      "changed_protected_pixels": 503221,
+      "pixel_preservation_pass": false,
+      "sha256": "03afd668c17719c833c0a463f4b5ba73ee707586fd2dd2809f4f14d8a31b47b4"
+    },
+    {
+      "stage": 5,
+      "file": "surround_stage5.png",
+      "reference": "docs/briefs/surround-ref/layout_stage5.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "canvas_size_matches": true,
+      "protected_source_pixels": 432642,
+      "changed_protected_pixels": 432642,
+      "pixel_preservation_pass": false,
+      "sha256": "58f04fe587ae676cd7462d6ba7f85b9054212a7287571d41c5a89a75631d6c8f"
+    },
+    {
+      "stage": 8,
+      "file": "surround_stage8.png",
+      "reference": "docs/briefs/surround-ref/layout_stage8.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "canvas_size_matches": true,
+      "protected_source_pixels": 697318,
+      "changed_protected_pixels": 697114,
+      "pixel_preservation_pass": false,
+      "sha256": "b46e0bedbfe30a0edd93c866ca62212dda16e8b4f7d18658873ac575b322f4e7"
+    }
+  ]
+}
