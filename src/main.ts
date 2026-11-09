@@ -26,7 +26,7 @@ import { GRADES } from './data/grades';
 import { staffDef } from './data/staff';
 import { Panel, openPenSheet } from './ui/panel';
 import { motion } from './ui/motion';
-import { STAR_NEED, SPEED_MAX } from './data/balance';
+import { STAR_NEED, SPEED_MAX, COIN_FEEL } from './data/balance';
 import { audio } from './ui/audio';
 import { fillIcons, fmt, h, iconSlot, pix, toast } from './ui/dom';
 
@@ -160,7 +160,7 @@ const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclic
 const comboEl = h('div', { class: 'combo-pop hidden' });
 // 손가락 옆 합산 숫자: 콤보 동안 불어나고, 끝나면 코인 칸으로 날아간다
 const sumEl = h('div', { class: 'coin-sum hidden' });
-let sumShown = 0, sumFlying = false, lastScreen = { x: 0, y: 0 };
+let sumShown = 0, sumFlying = false, lastScreen = { x: 0, y: 0 }, coinSfxAt = 0;
 // 패널을 접었을 때: 오늘 미션 n/3 (누르면 홈)
 const mDots = [0, 1, 2].map(() => h('i', {}));
 const mText = h('span', {});
@@ -753,7 +753,12 @@ function frame(now: number) {
       if (ev.strike) window.setTimeout(() => toast('빚이 3일 넘게 밀려서 오늘은 직원들이 파업해요!', 'bad', 3200), 800);
       persist(); panel.render(true);
     }
-    else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
+    else if (ev.type === 'pickup' && ev.by === 'hand') {
+      // 한꺼번에 많이 주워도 소리가 뭉개지지 않게: 짧은 간격으로만 (음은 콤보 수만큼 계속 올라간다)
+      const nowMs = performance.now();
+      if (ev.lucky) audio.sfx('rare');
+      if (nowMs - coinSfxAt >= COIN_FEEL.sfxGapMs) { coinSfxAt = nowMs; if (LOOP) audio.coinCombo(ev.combo ?? 0); else audio.sfx('coin'); }
+    }
     else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`라이벌 소식 · ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
     else if (ev.type === 'newcomer') { newcomers.push(ev); }
     else if (ev.type === 'comboStep') {
