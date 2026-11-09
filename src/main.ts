@@ -460,7 +460,7 @@ function showTitle(onStart?: () => void) {
   const animals = [...new Set([...seen.slice(0, 8), 0, 30, 56, 78, 92, 95, 5, 60])].slice(0, 8);
   const vw = () => window.innerWidth / uiScale, vh = () => window.innerHeight / uiScale;
   const mSize = () => Math.round(Math.max(40, Math.min(86, vh() * 0.11)));
-  let scene = titleScene(season, vw(), vh(), animals);
+  let scene = titleScene(season, vw(), vh(), animals, save.zooName);
   const back = h('div', { class: 'overlay title tt' },
     scene,
     h('div', { class: 'title-box' },
@@ -472,7 +472,7 @@ function showTitle(onStart?: () => void) {
   ui.append(back);
   let stopFw = startFireworks(scene, Math.round(mSize() * 0.5));
   // 화면 크기가 바뀌면 배경을 다시 깐다
-  const relayout = () => { if (!back.isConnected) return; stopFw(); const ns = titleScene(season, vw(), vh(), animals); scene.replaceWith(ns); scene = ns; stopFw = startFireworks(scene, Math.round(mSize() * 0.5)); };
+  const relayout = () => { if (!back.isConnected) return; stopFw(); const ns = titleScene(season, vw(), vh(), animals, save.zooName); scene.replaceWith(ns); scene = ns; stopFw = startFireworks(scene, Math.round(mSize() * 0.5)); };
   window.addEventListener('resize', relayout);
   // 타이틀 곡: 브라우저는 첫 터치 전엔 소리를 못 내서, 화면을 처음 누르면 시작
   titleOn = true; audio.bgm('title');

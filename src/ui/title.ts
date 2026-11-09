@@ -1,7 +1,7 @@
 // 타이틀 화면 배경: 밤 축제 (별 · 꼬마전구 · 캡슐 불꽃놀이) + 언덕 위 동물원 (문 · 벚꽃나무 · 회전목마 · 산책길 동물)
 // 그림은 모두 게임 도트 그림. 계절마다 나무 · 문 장식 · 소품이 바뀐다.
 import { h, pix } from './dom';
-import { hasPng } from '../render/sprites';
+import { hasPng, sprite } from '../render/sprites';
 import { motion } from './motion';
 
 export type SeasonKey = 'spring' | 'summer' | 'autumn' | 'winter';
@@ -23,7 +23,7 @@ function put(key: string, x: number, bottom: number, size: number, cls = '') {
 }
 
 /** 배경 장면. w · h는 #ui 확대를 뺀 화면 크기 */
-export function titleScene(season: SeasonKey, w: number, hgt: number, animals: number[]): HTMLElement {
+export function titleScene(season: SeasonKey, w: number, hgt: number, animals: number[], zooName = ''): HTMLElement {
   const u = Math.min(w / 1366, hgt / 768) * 1.0;
   const S = (n: number) => Math.round(n * u);
   const scene = h('div', { class: 'tt-scene' });
@@ -45,14 +45,29 @@ export function titleScene(season: SeasonKey, w: number, hgt: number, animals: n
   for (let x = 0, i = 0; x < w + fw; x += fw, i++) add(put(i % 6 === 0 ? 'f16_1_p' : 'f16_1_h', x / w, 0.165, fw, 'tt-mid'));
   // 가운데 문 + 계절 장식 + 간판 글씨
   const gs = S(250);
-  add(put('v2_gate_0', 0.5, 0.1, gs), put(`v2_gatedeco_${season}_arch`, 0.5, 0.1 + (gs * 0.86) / hgt, gs));
-  add(h('div', { class: 'tt-gatesign', style: `bottom:calc(10% + ${Math.round(gs * 0.79)}px); font-size:${S(24)}px` }, '뽑ZOO'));
-  // 문 옆: 가게 · 분수 · 등불
-  add(put('v2_bld_icecream_2', 0.3, 0.1, S(164)), put('v2_bld_fountain_2', 0.7, 0.1, S(166)));
-  for (const x of [0.39, 0.61]) { add(h('div', { class: 'tt-glow', style: `left:${x * 100}%; bottom:calc(10% + ${S(40)}px); width:${S(90)}px; height:${S(90)}px` })); add(put(`decor_${season}_6`, x, 0.1, S(90))); }
+  // 문: 게임 필드와 같은 배치 (양옆 깃대 · 매표소, 문 위 판자에 동물원 이름, 문 가운데부터 위로 계절 장식, 문 발치 계절 장식)
+  const k = gs / 107; // 화면 px / 원본 그림 px (문 그림 폭 107)
+  const at = (key: string, dx: number, dy: number, flip = false) => {
+    if (!hasPng(key)) return;
+    const im = sprite(key), cv = fit(key, Math.max(im.width, im.height) * k, `pix tt-px${flip ? ' flip' : ''}`);
+    cv.style.left = `calc(50% + ${Math.round(dx * k)}px)`; cv.style.bottom = `calc(10% + ${Math.round(dy * k)}px)`;
+    add(cv);
+  };
+  const half = 107 / 2;
+  at('v2_gatepart_0_flag', -(half + 39), 0); at('v2_gatepart_0_flag', half + 39, 0);
+  at('v2_gatepart_0_booth', -(half + 12), 0); at('v2_gatepart_0_booth', half + 12, 0, true);
+  at('v2_gate_0', 0, 0);
+  const name = zooName || '뽑ZOO';
+  const fontU = Math.min(5.2, (34 / Math.max(1, [...name].length)) * 1.6); // 필드와 같은 글자 크기 (필드 1칸 = 원본 3px)
+  add(h('div', { class: 'tt-gatesign', style: `bottom:calc(10% + ${Math.round(99 * 0.83 * k)}px); font-size:${Math.round(fontU * 3 * k)}px` }, name));
+  at(`v2_gatedeco_${season}_arch`, 0, 99 * 0.5);
+  at(`v2_gatedeco_${season}_base0`, -half + 3, -3); at(`v2_gatedeco_${season}_base1`, half - 3, -3);
+  // 문 옆: 가게 · 분수 · 등불 (깃대 바깥)
+  add(put('v2_bld_icecream_2', 0.21, 0.1, S(164)), put('v2_bld_fountain_2', 0.79, 0.1, S(166)));
+  for (const x of [0.3, 0.7]) { add(h('div', { class: 'tt-glow', style: `left:${x * 100}%; bottom:calc(10% + ${S(40)}px); width:${S(90)}px; height:${S(90)}px` })); add(put(`decor_${season}_6`, x, 0.1, S(90))); }
   // 앞쪽 산책길 + 꽃밭 · 덤불 · 소품
   add(h('div', { class: 'tt-path' }));
-  for (const [x, k, sz] of [[0.04, `decor_${season}_2`, 70], [0.1, `t16_${season}_13`, 56], [0.24, `decor_${season}_1`, 84], [0.45, `t16_${season}_12`, 58], [0.55, `t16_${season}_16`, 52],
+  for (const [x, k, sz] of [[0.04, `decor_${season}_2`, 70], [0.1, `t16_${season}_13`, 56], [0.135, `decor_${season}_1`, 84], [0.37, `t16_${season}_12`, 58], [0.63, `t16_${season}_16`, 52],
     [0.77, `decor_${season}_2`, 70], [0.9, `t16_${season}_13`, 56], [0.97, `t16_${season}_12`, 58]] as [number, string, number][]) add(put(k, x, 0.1, S(sz)));
   add(put(`decor_${season}_5`, 0.95, 0.2, S(76)), put(`decor_${season}_9`, 0.05, 0.2, S(76)));
   // 산책길 위 동물들: 천천히 오가며 가끔 폴짝

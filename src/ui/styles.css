@@ -819,7 +819,8 @@ body.reduce-motion .confetti { display: none; }
 .tt-mid { filter: brightness(.82); }
 .tt-glow { translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,226,140,0.55), transparent 65%); animation: tt-glow 2.2s ease-in-out infinite alternate; }
 @keyframes tt-glow { to { opacity: .6; transform: scale(.9); } }
-.tt-gatesign { left: 50%; translate: -50% 0; color: #fff3a3; font-family: 'Jua', sans-serif; text-shadow: 2px 2px 0 #3b2414, -1px -1px 0 #3b2414, 1px -1px 0 #3b2414, -1px 1px 0 #3b2414; z-index: 1; }
+.tt-gatesign { left: 50%; translate: -50% 50%; color: #5d3a24; font-family: 'Jua', sans-serif; white-space: nowrap; line-height: 1; -webkit-text-stroke: 3px #fff6e0; paint-order: stroke fill; z-index: 1; }
+.tt-scene .tt-px.flip { transform: scaleX(-1); }
 .tt-ani { bottom: 2%; translate: -50% 0; animation: tt-walk var(--walk, 7s) ease-in-out var(--d, 0s) infinite alternate; }
 .tt-ani .pix { animation: tt-hop 2.6s ease-in-out var(--d, 0s) infinite; }
 .tt-ani.flip .pix { transform: scaleX(-1); }
