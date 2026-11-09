@@ -312,9 +312,10 @@ body.reduce-motion .parade span { animation: none; }
 /* 라이벌 */
 .rival { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: #2d5a3a; font-size: 13px; color: #d7f5c0; }
 .rival.losing { background: #7a2f2f; color: #ffd6d6; }
-.rival .bar { position: relative; width: 150px; height: 14px; border-radius: 7px; background: linear-gradient(#e0605a, #b23a3a); overflow: hidden; border: 2px solid #1a1c2c; }
-.rival .bar i { display: block; height: 100%; background: linear-gradient(#9be36b, #4ea83a); transition: width .6s ease; }
-.rival .bar em { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: rgba(255,255,255,0.85); }
+.rival .bar { position: relative; display: flex; width: 160px; height: 12px; border-radius: 3px; background: #d6453f; overflow: visible; margin: 0 2px; }
+.rival .bar i { display: block; height: 100%; border-radius: 3px 0 0 3px; background: #4cbb4a; transition: width .6s ease; }
+/* 가운데 고정 흰 선: 초록이 이 선을 넘으면 이기는 중 */
+.rival .bar em { display: block; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 3px; translate: -50% 0; background: #fff; border-radius: 1px; }
 .clock .bar.hidden { display: none; }
 .report .vs.ahead { background: #e7f6dc; } .report .vs.behind { background: #fbe1df; }
 .warn { padding: 6px 10px; border-radius: 8px; background: #c94c4c; color: #fff; font-size: 13px; }
@@ -557,8 +558,8 @@ body.reduce-motion .reveal-cell.has-back * { transition-duration: 0.15s; }
 .gacha-gauge.ready { border-color: #f7c948; box-shadow: 0 0 10px #f7c948; animation: ggPulse 1s ease-in-out infinite; }
 .gacha-gauge.ready10 { border-color: #fff3a3; box-shadow: 0 0 16px #fff3a3, 0 0 4px #f08cbe inset; animation: ggShake 0.5s ease-in-out infinite; }
 .gacha-gauge.ready b, .gacha-gauge.ready10 b { color: #fff3a3; }
-@keyframes ggPulse { 50% { transform: scale(1.06); } }
-@keyframes ggShake { 25% { transform: rotate(-3deg) scale(1.05); } 75% { transform: rotate(3deg) scale(1.05); } }
+@keyframes ggPulse { 50% { box-shadow: 0 0 2px #f7c948; } }
+@keyframes ggShake { 50% { box-shadow: 0 0 4px #fff3a3, 0 0 2px #f08cbe inset; filter: brightness(1.25); } }
 .combo-pop { position: absolute; transform: translateX(-50%) scale(var(--s, 1)); font: 26px 'Jua', sans-serif; color: #fff3a3; text-shadow: 3px 3px 0 #8a5a3b, 0 0 10px #f7c948; pointer-events: none !important; z-index: 6; }
 .combo-pop.end { font-size: 22px; color: #fff; text-shadow: 3px 3px 0 #2f7a4b; }
 body.reduce-motion .gacha-gauge { animation: none !important; }
@@ -847,3 +848,14 @@ body.compact .overlay.title.tt .title-box { margin-bottom: 52vh; gap: 2px; }
 body.compact .overlay.title.tt .title-sub { font-size: 12px; }
 body.compact .overlay.title.tt .btn.big { padding: 6px 60px; font-size: 20px; }
 body.compact .tt-machines { gap: 12px; }
+
+/* 정보 줄 고정: 숫자 · 시계 · 남은 날이 바뀌어도 칸 크기가 그대로 (흔들림 없음) */
+.hud { font-variant-numeric: tabular-nums; }
+.hud-coins b, .gacha-gauge .gg-coins { display: inline-block; min-width: 7ch; text-align: right; }
+.hud-stats .stat b { display: inline-block; min-width: 15em; text-align: left; }
+.clock > b { display: inline-block; flex: none; width: 14.4em; text-align: center; white-space: nowrap; overflow: hidden; }
+body.hud-s .clock > b { width: 8.4em; }
+.rival, .rival.losing { background: rgba(0,0,0,0.35); color: #f6efd8; }
+.rival .rv-day { display: inline-block; flex: none; min-width: 3.6em; text-align: center; }
+.rival .bar { flex: none; }
+.hud-coins, .gacha-gauge, .clock, .rival { flex: none; }

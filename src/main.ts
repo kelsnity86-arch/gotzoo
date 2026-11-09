@@ -193,8 +193,8 @@ function layout() {
   document.body.classList.toggle('compact', H < 500);
   // 정보 줄이 좁으면 덜 중요한 것부터 줄인다 (수입 → 시계 막대 · 라이벌 이름 → 확대 버튼)
   const hudW = (landscape ? W - (panel.isOpen ? Math.min(400 * uiScale, Math.max(280 * uiScale, W * 0.34)) : 58 * uiScale) : W) / uiScale;
-  document.body.classList.toggle('hud-s', hudW < 1050);
-  document.body.classList.toggle('hud-xs', hudW < 860);
+  document.body.classList.toggle('hud-s', hudW < 1320);
+  document.body.classList.toggle('hud-xs', hudW < 1000);
   document.body.classList.toggle('hud-xxs', hudW < 700);
   const hudH = hud.getBoundingClientRect().height || 44;
   if (landscape) {
@@ -885,7 +885,7 @@ function updateHud() {
   const left = night ? 0 : Math.max(0, Math.ceil(world.phaseLeft));
   const sea = seasonOf(save.season.n);
   // 시계: 글자만 (좁으면 줄여 쓴다)
-  const narrow = document.body.classList.contains('hud-xs');
+  const narrow = document.body.classList.contains('hud-s');
   const when = narrow ? `${sea.name} ${world.seasonDay}일` : `${yearOf(save.season.n)}년 ${sea.name} ${world.seasonDay}일째`;
   const tm = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   clockText.textContent = night ? `${when} · ${narrow ? '밤' : '밤 정비 중'}` : `${when} · ${world.phase === 'dusk' ? '저녁' : '낮'} ${tm}`;
