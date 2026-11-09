@@ -1,8 +1,8 @@
 // 필드 그리기: 관객존(길·관람객·동전) + 동물존(우리·동물). 도트 한 칸이 화면 픽셀 정수 개가 되게 배율을 맞춘다.
 import { ANIMALS, type Habitat } from '../data/animals';
-import { COIN, COIN_FEEL, DAY } from '../data/balance';
+import { COIN, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
-import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
+import { coinSize, BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
 import type { AnimalEnt, CoinEnt, StaffEnt } from '../game/world';
 import { penAttract , penBest, cardById , isHot } from '../game/rules';
 import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite , godFrame, heroFrame } from './sprites';
@@ -99,12 +99,28 @@ export class FieldRenderer {
   /** 반짝이 동물 첫 배치: 그 동물 둘레에 반짝임 · 별이 2초 동안 터진다 */
   private shines: { uid: number; t: number }[] = [];
   shine(uid: number) { this.shines.push({ uid, t: performance.now() }); }
-  /** 쓸고 지나간 자국 (월드 좌표, 0.3초) */
-  private trail: { x: number; y: number; t: number }[] = [];
-  addTrail(p: { x: number; y: number } | null) {
+  /** 따라다니는 반짝이 잔상 (월드 좌표). 움직인 거리만큼 별이 남고, 깜빡이며 작아지다 사라진다 */
+  private trail: { x: number; y: number; t: number; life: number; col: string; seed: number }[] = [];
+  private trailLast: { x: number; y: number } | null = null;
+  addTrail(p: { x: number; y: number } | null, combo = 0) {
     const now = performance.now();
-    if (p) { const l = this.trail[this.trail.length - 1]; if (!l || Math.hypot(l.x - p.x, l.y - p.y) > 0.4 || now - l.t > 40) this.trail.push({ x: p.x, y: p.y, t: now }); }
-    while (this.trail.length && now - this.trail[0].t > 420) this.trail.shift();
+    if (!p) this.trailLast = null;
+    else if (!this.trailLast) this.trailLast = { x: p.x, y: p.y };
+    else {
+      const gap = combo >= 25 ? 1.6 : 2.2, d = Math.hypot(p.x - this.trailLast.x, p.y - this.trailLast.y);
+      if (d >= gap) {
+        const n = Math.min(12, Math.floor(d / gap));
+        for (let i = 1; i <= n; i++) {
+          const k = i / n, x = this.trailLast.x + (p.x - this.trailLast.x) * k, y = this.trailLast.y + (p.y - this.trailLast.y) * k;
+          const r = Math.random();
+          this.trail.push({ x: x + (Math.random() - 0.5) * 5, y: y + (Math.random() - 0.65) * 6, t: now - (1 - k) * 16, life: 360 + Math.random() * 140,
+            col: r < 0.45 ? '#fff3a3' : r < 0.75 ? '#73eff7' : '#ffffff', seed: Math.random() * 4 });
+        }
+        this.trailLast = { x: p.x, y: p.y };
+      }
+    }
+    this.trail = this.trail.filter((s) => now - s.t < s.life);
+    if (this.trail.length > 160) this.trail.splice(0, this.trail.length - 160);
   }
   /** 콤보 단계 터짐 (월드 좌표) */
   private bursts: { x: number; y: number; n: number; t: number }[] = [];
@@ -435,16 +451,11 @@ export class FieldRenderer {
       c.imageSmoothingEnabled = false;
       for (const f of world.flying) {
         if (f.t < 0) continue;
-        // 1) 손가락으로 쏙 빨려들고 2) 코인 칸으로 날아간다
-        const sx0 = this.ox + f.x * z, sy0 = this.oy + f.y * z;
-        const hx = f.px !== undefined ? this.ox + f.px * z : sx0, hy = f.py !== undefined ? this.oy + (f.py ?? 0) * z : sy0;
-        let x: number, y: number, s: number;
-        if (f.t < COIN_FEEL.suck) { const q = f.t / COIN_FEEL.suck, e = q * q; x = sx0 + (hx - sx0) * e; y = sy0 + (hy - sy0) * e; s = 18 - q * 6; }
-        else {
-          const k = Math.min(1, (f.t - COIN_FEEL.suck) / 0.55), e = k * k * (3 - 2 * k);
-          x = hx + (this.hudTarget.x - hx) * e; y = hy + (this.hudTarget.y - hy) * e - Math.sin(k * Math.PI) * 50; s = 12 + Math.sin(Math.min(1, k * 4) * Math.PI) * 6 - k * 2;
-          c.globalAlpha = k > 0.9 ? (1 - k) * 10 : 1;
-        }
+        // 닿은 자리에서 바로 코인 칸으로 날아간다
+        const hx = this.ox + f.x * z, hy = this.oy + f.y * z;
+        const k = Math.min(1, f.t / 0.55), e = k * k * (3 - 2 * k);
+        const x = hx + (this.hudTarget.x - hx) * e, y = hy + (this.hudTarget.y - hy) * e - Math.sin(k * Math.PI) * 50, s = 18 - k * 6;
+        c.globalAlpha = k > 0.9 ? (1 - k) * 10 : 1;
         c.drawImage(coin, Math.round(x - s / 2), Math.round(y - s / 2), s, s);
         c.globalAlpha = 1;
       }
@@ -522,7 +533,7 @@ export class FieldRenderer {
       const img = co.count >= 3 && hasPng('fx_06') ? sprite('fx_06') : sprite(`coin_${(coinFrame + co.id) % 4}`);
       if (co.count === 2) this.icon(sprite('coin_0'), co.x + 2, co.y - 2 - co.z, 7);
       // 오래 쌓일수록 더미가 커진다 (시안 loop)
-      const sz = world.loop ? Math.min(13, 7 + Math.floor(co.count / 3) * 2) : 7;
+      const sz = coinSize(co, world.loop);
       this.icon(img, co.x, co.y - 1 - co.z, sz);
       if (co.lucky) { this.sparkle(co.x, co.y - 6 - co.z, t * 2 + co.id); this.sparkle(co.x + 3, co.y - 3 - co.z, t * 2 + co.id + 1.5); }
       c.globalAlpha = 1;
@@ -946,24 +957,26 @@ export class FieldRenderer {
     this.sparkle(co.x - 4, base - 9, t * 2 + co.id); this.sparkle(co.x + 4, base - 6, t * 2 + co.id + 1.3); this.sparkle(co.x, base - 12, t * 2 + co.id + 2.1);
     c.globalAlpha = 1;
   }
-  /** 쓸고 지나간 자국: 콤보가 클수록 굵게 · 은 → 금 → 무지개 */
+  /** 반짝이 잔상: 도트 별 (진한 테두리로 밝은 길 위에서도 보이게), 처음엔 크고 점점 작아지며 깜빡 */
   private trailFx(world: World, z: number) {
-    if (this.trail.length < 2) return;
-    const c = this.ctx, now = performance.now(), n = world.combo.t > 0 ? world.combo.n : 0;
-    const w0 = 6 + Math.min(8, n / 6);
-    c.save(); c.lineCap = 'round';
-    for (let i = 1; i < this.trail.length; i++) {
-      const a = this.trail[i - 1], b = this.trail[i];
-      if (b.t - a.t > 80) continue;
-      const life = 1 - (now - b.t) / 420;
-      if (life <= 0) continue;
-      const col = n >= 50 ? `hsl(${(now / 4 + i * 18) % 360} 90% 65%)` : n >= 25 ? '#f7c948' : n >= 10 ? '#e8eef5' : '#b8c8d8';
-      c.beginPath(); c.moveTo(this.ox + a.x * z, this.oy + a.y * z); c.lineTo(this.ox + b.x * z, this.oy + b.y * z);
-      c.globalAlpha = life * 0.7; c.strokeStyle = '#5d3a24'; c.lineWidth = w0 * life + 4; c.stroke();
-      c.globalAlpha = Math.min(1, life * 1.3); c.strokeStyle = col; c.lineWidth = w0 * life; c.stroke();
-      c.globalAlpha = life * 0.9; c.strokeStyle = '#ffffff'; c.lineWidth = Math.max(1, w0 * life * 0.35); c.stroke();
+    if (!this.trail.length) return;
+    void world;
+    const c = this.ctx, now = performance.now(), U = Math.max(3, Math.round(z));
+    for (const s of this.trail) {
+      const k = (now - s.t) / s.life;
+      if (k < 0 || k >= 1) continue;
+      if (k > 0.45 && Math.floor((now - s.t) / 70 + s.seed) % 3 === 2) continue; // 깜빡
+      const arm = k < 0.3 ? 2 : k < 0.7 ? 1 : 0, a = 1 - k * 0.55;
+      const cx = Math.round((this.ox + s.x * z) / U) * U, cy = Math.round((this.oy + s.y * z) / U) * U;
+      const cells: [number, number][] = [[0, 0]];
+      for (let m = 1; m <= arm; m++) cells.push([m, 0], [-m, 0], [0, m], [0, -m]);
+      c.globalAlpha = a * 0.6; c.fillStyle = '#462814';
+      for (const [x, y] of cells) c.fillRect(cx + x * U - U, cy + y * U - U, U * 3, U * 3);
+      c.globalAlpha = a; c.fillStyle = s.col;
+      for (const [x, y] of cells) c.fillRect(cx + x * U, cy + y * U, U, U);
+      if (arm) { c.fillStyle = '#ffffff'; c.fillRect(cx, cy, U, U); }
     }
-    c.restore();
+    c.globalAlpha = 1;
   }
   /** 콤보 단계 터짐: 번쩍 + 반짝이 · 색종이가 사방으로 */
   private burstFx(z: number) {

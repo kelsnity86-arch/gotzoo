@@ -109,8 +109,8 @@ export const VISITOR = {
 
 /** 동전: 관람객 발밑(관객존 바닥)에 떨어져 쌓인다. 오래 방치하면(lifeSec) 사라진다. 끝나기 blinkSec 전부터 깜빡인다 */
 export const COIN = { lifeSec: 8, lifeMax: 20, blinkSec: 2, mergeDist: 5, mergeMax: 3, crowd: 250, popSpeed: 30, gravity: 150 } as const;
-/** 동전 손맛: 자석(줍는 범위의 배수 · 끌려오는 속도) · 손가락으로 빨려드는 시간 · 콤보 단계 · 동전 더미 */
-export const COIN_FEEL = { magnet: 1.8, magnetSpeed: 70, suck: 0.16, steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
+/** 동전 손맛: 콤보 단계 · 동전 더미 · 날아가는 동전 수 · 효과음 간격 */
+export const COIN_FEEL = { steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
 /** 배속: 폐원을 한 번 하면 열린다 */
 export const SPEED_MAX = 2;
 

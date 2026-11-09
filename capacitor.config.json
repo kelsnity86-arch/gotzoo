@@ -2,5 +2,5 @@
   "appId": "com.bbopzoo.game",
   "appName": "뽑ZOO",
   "webDir": "dist-apk",
-  "android": { "backgroundColor": "#2b3a1f" }
+  "android": { "backgroundColor": "#1f2a1c" }
 }

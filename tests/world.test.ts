@@ -63,14 +63,14 @@ describe('필드', () => {
     w.pick({ id: 9999, x: 50, y: 60, vx: 0, vy: 0, value: 1, count: 10, age: 0, z: 0, picked: false }, 'staff');
     expect(w.fever.gauge).toBe(0);
   });
-  it('처음부터 끌어서 줍는다: 범위는 작고(1.5) 업그레이드로 커진다, 빨리 그어도 사이 동전을 줍는다', () => {
+  it('처음부터 끌어서 줍는다: 동전 그림 어디든 닿으면 줍고 업그레이드로 더 멀리서도, 빨리 그어도 사이 동전을 줍는다', () => {
     const { s, w } = setup();
     expect(w.pickupRadius).toBe(1.5);
     const c0 = waitCoin(w);
     const b0 = s.stats.coinsPicked;
-    w.update(1 / 30, { x: c0.x + 4, y: c0.y - 1 }); // 범위 밖
+    w.update(1 / 30, { x: c0.x + 9, y: c0.y - 1 }); // 동전 그림 밖
     expect(s.stats.coinsPicked).toBe(b0);
-    w.update(1 / 30, { x: c0.x - 4, y: c0.y - 1 }); // 동전 위를 지나쳐 그음
+    w.update(1 / 30, { x: c0.x - 9, y: c0.y - 1 }); // 동전 위를 지나쳐 그음
     expect(s.stats.coinsPicked).toBeGreaterThan(b0);
     s.upgrades.pickup = 2;
     expect(w.pickupRadius).toBe(4.5);

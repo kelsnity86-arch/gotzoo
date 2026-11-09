@@ -736,7 +736,7 @@ function frame(now: number) {
   if (speedBtn.classList.contains('hidden') === !!save.speedOk) syncSpeedBtn();
   if (save.speedNew) { save.speedNew = false; syncSpeedBtn(); window.setTimeout(() => toast('폐원 보상: 이제 2배속을 쓸 수 있어요 (위쪽 ×1 버튼)', 'gold', 4200), 1500); }
   world.update(dt * world.speed, pointer);
-  field.addTrail(pointer);
+  field.addTrail(pointer, world.combo.t > 0 ? world.combo.n : 0);
   for (const ev of world.events) {
     if (ev.type === 'night') { if (ev.report.season && (save.speed ?? 1) > 1) setSpeed(1); reports.push(ev.report); if (reports.length > 14) reports.shift(); audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
     else if (ev.type === 'morning') {
