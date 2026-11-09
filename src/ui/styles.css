@@ -857,5 +857,5 @@ body.compact .tt-machines { gap: 12px; }
 body.hud-s .clock > b { width: 8.4em; }
 .rival, .rival.losing { background: rgba(0,0,0,0.35); color: #f6efd8; }
 .rival .rv-day { display: inline-block; flex: none; min-width: 3.6em; text-align: center; }
-.rival .bar { flex: none; }
+.rival .bar { flex: none; padding: 0 !important; }
 .hud-coins, .gacha-gauge, .clock, .rival { flex: none; }
