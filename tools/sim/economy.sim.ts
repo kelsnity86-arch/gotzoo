@@ -18,6 +18,7 @@ const PICK = Number(process.env.SIM_PICK ?? 0.7);
 it('경제 곡선', () => {
   const s = defaultSave();
   const w = new World(s, Math.random);
+  const SPEED = Number(process.env.SIM_SPEED ?? 1); w.speed = SPEED; // 배속: t는 실제 시간
   w.relayout(1.6);
   const log: string[] = [];
   const dayLog: string[] = [];
@@ -30,7 +31,7 @@ it('경제 곡선', () => {
   while (t < MIN * 60) {
     t += dt;
     w.relayout(1.6); w.sync();
-    w.update(dt, null);
+    w.update(dt * SPEED, null);
     for (const e of w.events) if (e.type === 'night') { const r = e.report; dayLog.push(`${r.day}일 ${(t/60).toFixed(1)}분 단계${s.stage}: 수입 ${r.income} · 비용 ${r.costs.total}(월급 ${r.costs.salary} 우리 ${r.costs.pens} 사료 ${r.costs.food}) · 순 ${r.net} · 돈 ${r.coinsAfter} · 규모 ${r.mine} vs ${r.rival}${r.season ? ` → ${r.season.result}` : ''}`); if (r.season) seasonLog.push(`S${r.season.n} ${['부진','보통','절호조'][condAt] ?? '?'} ${r.season.result}${r.season.survived ? '(하트)' : ''}${r.season.heartBack ? '(회복)' : ''} 내${r.mine} 라${r.rival} 기본${rivalScale(7, r.season.n)} 응원${r.season.cheer ?? 0} 비${(r.mine / rivalScale(7, r.season.n)).toFixed(2)}`); if (process.env.SIM_NOLOSE) s.lastChance = false; else if (r.season?.result === 'lose' && !r.season.survived) t = MIN * 60; }
     condAt = s.season.cond ?? 1;
     w.events.length = 0;

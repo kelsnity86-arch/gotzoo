@@ -793,3 +793,11 @@ body.reduce-motion .confetti { display: none; }
 .newcomer-banner:has(.nb-band) small { color: #fff3a3; text-shadow: 0 1px 0 #3e2f5b, 1px 0 #3e2f5b, -1px 0 #3e2f5b, 0 -1px #3e2f5b; font-size: 12px; }
 .newcomer-banner:has(.nb-band) span { position: absolute; top: 118%; left: 50%; transform: translateX(-50%); white-space: nowrap; background: rgba(26,28,44,.8); padding: 2px 10px; border-radius: 8px; }
 .reveal-box:has(.reveal-grid.scatter.arranged) { width: auto; max-width: 100%; }
+
+/* 손가락 옆 합산 숫자 · 배속 버튼 */
+.coin-sum { position: absolute; transform: translate(-50%, -50%); font: 22px 'Jua', sans-serif; color: #fff3a3; text-shadow: 2px 2px 0 #8a5a3b, -1px -1px 0 #8a5a3b, 1px -1px 0 #8a5a3b, -1px 1px 0 #8a5a3b, 0 0 8px #f7c948; pointer-events: none !important; z-index: 7; white-space: nowrap; }
+.coin-sum.bump { animation: sum-bump .18s ease-out; }
+@keyframes sum-bump { 0% { transform: translate(-50%, -50%) scale(1.25); } 100% { transform: translate(-50%, -50%) scale(1); } }
+.coin-sum.fly { transition: left .45s cubic-bezier(.5,0,.8,.4), top .45s cubic-bezier(.5,0,.8,.4), opacity .45s, transform .45s; opacity: 0.2; transform: translate(-50%, -50%) scale(0.6); }
+.zoom-btns .speed-btn { font-weight: 700; font-size: 15px; }
+.zoom-btns .speed-btn.on { background: #f7c948; color: #5d3a24; }

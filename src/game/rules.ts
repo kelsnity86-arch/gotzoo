@@ -836,6 +836,7 @@ export function closeZoo(s: SaveData, keep: { animals?: number[]; staff?: number
   if (st?.kind === 'staff') { const { uid: _o, ...rest } = st; void _o; const nc = { ...rest, uid: n.nextUid++ }; n.cards.push(nc); n.staffSlots[0] = nc.uid; }
   n.godDex = (s.godDex ?? []).slice(); n.heroDex = (s.heroDex ?? []).slice();
   n.zooName = s.zooName; n.zooNameAsked = s.zooNameAsked;
+  n.speedOk = true; n.speedNew = !s.speedOk; n.speed = s.speedOk ? s.speed ?? 1 : 1;
   if (n.cards.some((c) => c.kind === 'animal')) autoPlace(n);
   n.dex = s.dex.slice();
   n.dexClaimed = s.dexClaimed.slice();

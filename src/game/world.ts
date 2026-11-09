@@ -1,7 +1,7 @@
 // 동물원 필드 시뮬레이션 (화면 없음). 위쪽 관객존: 관람객이 걷다 멈춰 동전을 던진다. 아래쪽 동물존: 우리 안을 동물이 돌아다닌다.
 // 좌표 단위 = 도트 1칸. 타일 8칸.
 import { ANIMALS } from '../data/animals';
-import { COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
+import { COIN, COIN_FEEL, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
 import { isEdge, penMask, type PenShape } from '../data/shapes';
@@ -97,7 +97,9 @@ export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; 
   pose?: VisitorPose; tossT?: number; bench?: number; fx?: number }
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean;
   /** (시안 ?loop) 행운의 동전: 주우면 뽑기권 */
-  lucky?: boolean }
+  lucky?: boolean;
+  /** 동전 더미: 쓸면 와르르. 남은 시간(실제 초) 안에 안 주우면 직원이 가져간다 */
+  pile?: number }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number;
   /** 일하는 동작 남은 시간 (> 0이면 멈춰서 동작) */
   act?: number;
@@ -110,6 +112,8 @@ export type WorldEvent =
   | { type: 'tip'; amount: number; x: number; y: number }
   | { type: 'pickup'; amount: number; x: number; y: number; by: 'hand' | 'staff'; combo?: number; lucky?: boolean }
   | { type: 'combo'; n: number; bonus: number }
+  | { type: 'comboStep'; n: number; x: number; y: number }
+  | { type: 'pileBurst'; amount: number; x: number; y: number }
   | { type: 'fever'; on: boolean }
   | { type: 'rivalNews'; text: string; mul: number }
   | { type: 'lastStand' }
@@ -163,7 +167,12 @@ export class World {
   fever = { gauge: 0, left: 0, rainAcc: 0 };
   get feverOn() { return this.fever.left > 0; }
   /** 주운 동전이 날아가는 연출 (월드 좌표에서 출발, 남은 시간) */
-  flying: { x: number; y: number; t: number; lucky?: boolean }[] = [];
+  flying: { x: number; y: number; t: number; lucky?: boolean; px?: number; py?: number }[] = [];
+  /** 배속 (폐원 뒤 열림). 게임 시간이 이만큼 빨리 흐른다. 동전 수명 · 콤보 · 피버는 실제 시간 */
+  speed = 1;
+  /** 배속 중 동전: 여러 번 던질 것을 하나로 합쳐 값만 키운다 (줍기가 정신없지 않게) */
+  private coinBuf = { v: 0, n: 0 };
+  private pileAcc = 0;
   staff: StaffEnt[] = [];
   floats: FloatText[] = [];
   emotes: Emote[] = [];
@@ -589,6 +598,7 @@ export class World {
   }
 
   update(dt: number, pointer: { x: number; y: number } | null) {
+    const rdt = dt / this.speed; // 실제로 흐른 시간
     this.time += dt;
     this.updateDay(dt);
     const night = this.phase === 'night';
@@ -714,10 +724,18 @@ export class World {
     // 동전: 살짝 튀었다가 관객존 바닥에 떨어져 있다. 오래 방치하면 사라진다 (보너스를 놓침)
     for (let i = this.coins.length - 1; i >= 0; i--) {
       const c = this.coins[i];
-      c.age += dt;
-      if (c.z > 0 || c.vy !== 0) { c.vy -= COIN.gravity * dt; c.z = Math.max(0, c.z + c.vy * dt); if (c.z === 0) c.vy = 0; }
+      c.age += rdt;
+      if (c.z > 0 || c.vy !== 0) { c.vy -= COIN.gravity * rdt; c.z = Math.max(0, c.z + c.vy * rdt); if (c.z === 0) c.vy = 0; }
       if (c.picked) { this.coins.splice(i, 1); continue; }
-      if (c.age > this.coinLife) { this.coins.splice(i, 1); this.missed += c.value; continue; }
+      if (c.pile !== undefined) {
+        c.pile -= rdt;
+        if (c.pile <= 0) { this.pick(c, 'staff'); this.coins.splice(i, 1); continue; }
+      } else if (c.age > this.coinLife) { this.coins.splice(i, 1); this.missed += c.value; continue; }
+      // 자석: 줍는 범위 바깥 가까이 있는 동전은 손가락 쪽으로 끌려온다
+      if (pointer && c.pile === undefined) {
+        const dx = pointer.x - c.x, dy = pointer.y - (c.y - 1 - c.z), d = Math.hypot(dx, dy), R = this.pickupRadius;
+        if (d < R * COIN_FEEL.magnet && d > 0.01) { const step = Math.min(d, COIN_FEEL.magnetSpeed * rdt * (1 + (R * COIN_FEEL.magnet - d) / R)); c.x += (dx / d) * step; c.y += (dy / d) * step; }
+      }
       // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
       // 끌기: 지난 프레임 위치 → 지금 위치 선분과의 거리 (빨리 그어도 사이 동전을 놓치지 않게)
       if (pointer && this.canSweep && segDist(c.x, c.y - 1 - c.z, this.lastPointer ?? pointer, pointer) < this.pickupRadius) this.pick(c, 'hand');
@@ -727,21 +745,26 @@ export class World {
     this.lastPointer = pointer ? { x: pointer.x, y: pointer.y } : null;
     // 피버 타임: 남은 시간만큼 게이지가 줄고, 하늘에서 동전 비
     if (this.fever.left > 0) {
-      this.fever.left -= dt;
+      this.fever.left -= rdt;
       this.fever.gauge = Math.max(0, this.fever.left / feverTimeOf(this.save));
-      this.fever.rainAcc += dt;
+      this.fever.rainAcc += rdt;
       const rainEvery = VISITOR.fever.rainEvery / (this.lastStand ? LAST_STAND.rain : 1);
       while (this.fever.rainAcc >= rainEvery) {
         this.fever.rainAcc -= rainEvery;
-        const v = Math.max(1, Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * VISITOR.tokenShare));
+        const v = Math.max(1, Math.round((VISITOR.tipMin + this.rng() * (VISITOR.tipMax - VISITOR.tipMin)) * this.tipMul * VISITOR.tokenShare * this.speed));
         this.coins.push({ id: this.coinId++, x: 12 + this.rng() * (L.w - 24), y: PATH_Y0 + 2 + this.rng() * (ZONE_H - 8 - PATH_Y0), vx: 0, vy: 0, value: v, count: 1, age: 0, z: 50 + this.rng() * 30, picked: false });
       }
       if (this.fever.left <= 0 || this.phase !== 'day') { this.fever.left = 0; this.fever.gauge = 0; this.events.push({ type: 'fever', on: false }); }
     }
     if (this.loop) {
-      for (let i = this.flying.length - 1; i >= 0; i--) { this.flying[i].t += dt; if (this.flying[i].t > 0.55) this.flying.splice(i, 1); }
+      for (let i = this.flying.length - 1; i >= 0; i--) { const f = this.flying[i]; f.t += rdt; if (pointer && f.t < COIN_FEEL.suck) { f.px = pointer.x; f.py = pointer.y; } if (f.t > COIN_FEEL.suck + 0.55) this.flying.splice(i, 1); }
+      // 동전 더미: 낮에 가끔 인기 우리 앞에 생긴다
+      if (this.phase === 'day' && !this.coins.some((c) => c.pile !== undefined)) {
+        this.pileAcc += dt;
+        if (this.pileAcc >= COIN_FEEL.pileEvery) { this.pileAcc = 0; this.spawnPile(); }
+      }
       if (this.combo.t > 0) {
-        this.combo.t -= dt;
+        this.combo.t -= rdt;
         if (this.combo.t <= 0) {
           // 콤보 끝: 5개 넘게 이었으면 보너스 (최대 +50%)
           if (this.combo.n >= 5) { const bonus = Math.round(this.combo.sum * Math.min(upValue(this.save, 'comboBonus'), this.combo.n * 0.02)); this.earn(0, bonus); this.events.push({ type: 'combo', n: this.combo.n, bonus }); }
@@ -858,9 +881,29 @@ export class World {
     const lucky = this.rng() < VISITOR.luckyChance * (1 + facSum(this.save, 'icecream') + heroVal(this.save, 'lucky'));
     const x = v.x + (this.rng() - 0.5) * 10, y = Math.min(ZONE_H - 6, Math.max(PATH_Y0 + 2, v.y + 4 + this.rng() * 6));
     // 가까운 동전과 합친다 (오래된 쪽 시간을 그대로 따라서 수명이 늘지 않게)
-    const near = this.coins.find((c) => !c.picked && c.z === 0 && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
-    if (near && !lucky && !near.lucky) { near.value += bonus; near.count++; return; }
-    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value: bonus, count: 1, age: 0, z: 8, picked: false, lucky });
+    let value = bonus, count = 1;
+    if (this.speed > 1 && !lucky) {
+      this.coinBuf.v += bonus; this.coinBuf.n++;
+      if (this.coinBuf.n < this.speed) return;
+      value = this.coinBuf.v; count = this.coinBuf.n; this.coinBuf = { v: 0, n: 0 };
+    }
+    const near = this.coins.find((c) => !c.picked && c.z === 0 && c.pile === undefined && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
+    if (near && !lucky && !near.lucky) { near.value += value; near.count += count; return; }
+    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value, count, age: 0, z: 8, picked: false, lucky });
+  }
+
+  /** 동전 더미: 매력이 가장 높은 우리 앞 길 위에 · 동전 8~12개 값 */
+  private spawnPile() {
+    const L = this.layout;
+    if (!L.pens.length) return;
+    let bi = 0, bv = -1;
+    L.pens.forEach((_, i) => { const v = totalAttractPen(this.save, i); if (v > bv) { bv = v; bi = i; } });
+    if (bv <= 0) return;
+    const r = L.pens[bi];
+    const n = COIN_FEEL.pileMin + Math.floor(this.rng() * (COIN_FEEL.pileMax - COIN_FEEL.pileMin + 1));
+    const one = (VISITOR.tipMin + VISITOR.tipMax) / 2 * this.tipMul * VISITOR.tokenShare;
+    const x = Math.max(14, Math.min(L.w - 14, r.x + r.w / 2 + (this.rng() - 0.5) * r.w * 0.4)), y = PATH_Y0 + 9 + this.rng() * (PATH_Y1 - PATH_Y0 - 13);
+    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: 0, value: Math.max(n, Math.round(one * n)), count: n, age: 0, z: 30, picked: false, pile: COIN_FEEL.pileLife });
   }
 
   /** 동전 줍기: 먼저 닿은 쪽만 보너스 (picked로 한 번만) */
@@ -873,13 +916,17 @@ export class World {
     this.today.coins += c.count;
     if (by === 'hand') {
       // 콤보: 1.2초 안에 계속 주우면 이어진다 · 행운의 동전은 뽑기권
+      const before = this.combo.n;
       this.combo.n += c.count; this.combo.sum += c.value; this.combo.t = upValue(this.save, 'comboTime');
+      for (const st of COIN_FEEL.steps) if (before < st && this.combo.n >= st) this.events.push({ type: 'comboStep', n: st, x: c.x, y: c.y - c.z });
+      if (c.pile !== undefined) this.events.push({ type: 'pileBurst', amount: c.value, x: c.x, y: c.y });
       // 피버 게이지: 주운 동전 수만큼 (콤보가 길수록 최대 2배 빨리)
       if (!this.feverOn) {
         this.fever.gauge = Math.min(1, this.fever.gauge + (c.count / VISITOR.fever.need) * (1 + Math.min(1, this.combo.n / 25)) * feverChargeOf(this.save) * (this.lastStand ? LAST_STAND.feverCharge + godVal(this.save, 'lastStand') : 1));
         if (this.fever.gauge >= 1 && this.phase === 'day') { this.fever.left = feverTimeOf(this.save); this.events.push({ type: 'fever', on: true }); }
       }
-      this.flying.push({ x: c.x, y: c.y - 2 - c.z, t: 0, lucky: c.lucky });
+      const fly = c.pile !== undefined ? Math.min(12, c.count) : 1;
+      for (let k = 0; k < fly; k++) this.flying.push({ x: c.x + (fly > 1 ? (this.rng() - 0.5) * 14 : 0), y: c.y - 2 - c.z + (fly > 1 ? (this.rng() - 0.5) * 8 : 0), t: -k * 0.03, lucky: c.lucky, px: this.lastPointer?.x, py: this.lastPointer?.y });
       if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }
       this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by, combo: this.combo.n, lucky: c.lucky });
       return;
@@ -915,11 +962,11 @@ export class World {
         if (!e.target || e.t > 1) {
           e.t = 0;
           let best: CoinEnt | null = null, bd: number = STAFF_AI.collectorSearch;
-          for (const c of this.coins) { if (c.picked || c.z > 0) continue; const d = Math.hypot(c.x - e.x, c.y - e.y); if (d < bd) { bd = d; best = c; } }
+          for (const c of this.coins) { if (c.picked || c.z > 0 || c.pile !== undefined) continue; const d = Math.hypot(c.x - e.x, c.y - e.y); if (d < bd) { bd = d; best = c; } }
           e.target = best ? { x: best.x, y: best.y } : { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) };
         }
         this.moveTo(e, STAFF_AI.collectorSpeed * sp, dt);
-        for (const c of this.coins) if (!c.picked && c.z === 0 && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) { this.pick(c, 'staff'); e.act = 0.35; }
+        for (const c of this.coins) if (!c.picked && c.z === 0 && c.pile === undefined && Math.hypot(c.x - e.x, c.y - e.y) < STAFF_AI.collectorReach) { this.pick(c, 'staff'); e.act = 0.35; }
       } else if (e.kind !== 'keeper') {
         // 그 밖의 직원: 길을 천천히 오가며 일한다 (효과는 상시 적용)
         if (!e.target || this.moveTo(e, 14, dt)) { if (e.target) e.act = 1.4 + this.rng() * 1.4; e.target = { x: 10 + this.rng() * (this.layout.w - 20), y: PATH_Y0 + 4 + this.rng() * (PATH_Y1 - PATH_Y0 - 6) }; }

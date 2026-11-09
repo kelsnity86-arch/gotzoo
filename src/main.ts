@@ -26,7 +26,7 @@ import { GRADES } from './data/grades';
 import { staffDef } from './data/staff';
 import { Panel, openPenSheet } from './ui/panel';
 import { motion } from './ui/motion';
-import { STAR_NEED } from './data/balance';
+import { STAR_NEED, SPEED_MAX } from './data/balance';
 import { audio } from './ui/audio';
 import { fillIcons, fmt, h, iconSlot, pix, toast } from './ui/dom';
 
@@ -77,6 +77,11 @@ const zoomReset = h('div', { class: 'zoom-btns' },
   h('button', { type: 'button', 'aria-label': '확대', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom * 1.5); } }, '＋'),
   h('button', { type: 'button', 'aria-label': '축소', onclick: () => { audio.sfx('click'); zoomTo(field.userZoom / 1.5); } }, '－'),
   h('button', { type: 'button', class: 'all', onclick: () => { audio.sfx('click'); zoomAnim = null; fling = null; field.resetZoom(); } }, '전체'));
+// 배속: 폐원을 한 번 하면 열린다 (×1 ↔ ×2)
+const speedBtn = h('button', { type: 'button', class: 'speed-btn hidden', 'aria-label': '배속', onclick: () => { audio.sfx('click'); setSpeed(save.speed === SPEED_MAX ? 1 : SPEED_MAX); } }, '×1') as HTMLButtonElement;
+function setSpeed(v: number) { save.speed = save.speedOk ? v : 1; syncSpeedBtn(); persist(); }
+function syncSpeedBtn() { speedBtn.classList.toggle('hidden', !save.speedOk); speedBtn.textContent = `×${save.speed ?? 1}`; speedBtn.classList.toggle('on', (save.speed ?? 1) > 1); }
+zoomReset.prepend(speedBtn);
 const settingsBtn = h('button', { class: 'hud-gear', title: '설정', onclick: () => openSettings() }, hasPng('v2_ui_gear') ? iconSlot('v2_ui_gear', 20) : '⚙');
 hud.append(zoomReset, settingsBtn);
 
@@ -153,6 +158,9 @@ const gaugeFill = h('i', {}), gaugeCoins = h('b', { class: 'gg-coins' });
 const gauge = h('button', { class: 'gacha-gauge hidden', title: '뽑기', onclick: () => { audio.sfx('click'); panel.openTab(0); layout(); } },
   hasPng('v2_gm_spring_0') ? iconSlot('v2_gm_spring_0', 30) : null, hasPng('v2_ui_coin') ? iconSlot('v2_ui_coin', 16) : null, gaugeCoins, h('span', { class: 'gg-bar', title: '피버 게이지: 동전을 주울수록 차요' }, gaugeFill));
 const comboEl = h('div', { class: 'combo-pop hidden' });
+// 손가락 옆 합산 숫자: 콤보 동안 불어나고, 끝나면 코인 칸으로 날아간다
+const sumEl = h('div', { class: 'coin-sum hidden' });
+let sumShown = 0, sumFlying = false, lastScreen = { x: 0, y: 0 };
 // 패널을 접었을 때: 오늘 미션 n/3 (누르면 홈)
 const mDots = [0, 1, 2].map(() => h('i', {}));
 const mText = h('span', {});
@@ -161,7 +169,7 @@ const missionChip = h('button', { class: 'mission-chip hidden', onclick: () => {
 const rotateNote = h('div', { class: 'rotate-note hidden' }, h('div', { class: 'rot-ico' }, '📱↻'), h('b', {}, '가로로 돌려 주세요'), h('span', {}, '뽑ZOO는 가로 화면에서 즐길 수 있어요'));
 const tip = h('div', { class: 'hover-tip hidden' });
 const panel = new Panel({ save, world, persist, overlayRoot: ui, startPlace, startPlaceItem, reports });
-ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip, comboEl, missionChip);
+ui.append(hud, hint, eventBanner, openBtn, placeBar, panel.el, rotateNote, tip, comboEl, sumEl, missionChip);
 if (LOOP) { world.loop = true; hud.insertBefore(gauge, hud.children[2] ?? null); gauge.classList.remove('hidden'); }
 // HUD 높이가 바뀌면(줄바꿈) 필드 자리를 다시 잡는다
 new ResizeObserver(() => layout()).observe(hud);
@@ -224,6 +232,7 @@ let fling: { vx: number; vy: number } | null = null;
 let lastTap: { sx: number; sy: number; t: number } | null = null;
 let tapTimer = 0;
 canvas.addEventListener('pointermove', (e) => {
+  lastScreen = { x: e.clientX, y: e.clientY };
   const p = toLocal(e);
   if (touches.has(e.pointerId)) touches.set(e.pointerId, p);
   if (touches.size >= 2) {
@@ -253,6 +262,7 @@ canvas.addEventListener('pointermove', (e) => {
 });
 canvas.addEventListener('pointerleave', () => { pointer = null; });
 canvas.addEventListener('pointerdown', (e) => {
+  lastScreen = { x: e.clientX, y: e.clientY };
   audio.unlock();
   if (panel.isOpen && !document.body.classList.contains('landscape')) { panel.setOpen(false); panel.render(true); }
   const p = toLocal(e);
@@ -722,9 +732,13 @@ function frame(now: number) {
   world.relayout(fieldRect.w / fieldRect.h);
   world.sync();
   stepCamera(dt);
-  world.update(dt, pointer);
+  world.speed = save.speedOk && save.speed === SPEED_MAX ? SPEED_MAX : 1;
+  if (speedBtn.classList.contains('hidden') === !!save.speedOk) syncSpeedBtn();
+  if (save.speedNew) { save.speedNew = false; syncSpeedBtn(); window.setTimeout(() => toast('폐원 보상: 이제 2배속을 쓸 수 있어요 (위쪽 ×1 버튼)', 'gold', 4200), 1500); }
+  world.update(dt * world.speed, pointer);
+  field.addTrail(pointer);
   for (const ev of world.events) {
-    if (ev.type === 'night') { reports.push(ev.report); if (reports.length > 14) reports.shift(); audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
+    if (ev.type === 'night') { if (ev.report.season && (save.speed ?? 1) > 1) setSpeed(1); reports.push(ev.report); if (reports.length > 14) reports.shift(); audio.sfx('fuseWin'); showReport(ev.report); persist(); panel.render(true); }
     else if (ev.type === 'morning') {
       const sd = world.seasonDay;
       if (sd === 1) {
@@ -742,6 +756,13 @@ function frame(now: number) {
     else if (ev.type === 'pickup' && ev.by === 'hand') { if (LOOP) { audio.coinCombo(ev.combo ?? 0); if (ev.lucky) audio.sfx('rare'); } else audio.sfx('coin'); }
     else if (ev.type === 'rivalNews') { window.setTimeout(() => audio.sting(ev.mul > 1 ? 'notify_rival_bad' : 'notify_rival_good'), 2400); window.setTimeout(() => toast(`라이벌 소식 · ${rivalOf(save.season.n).name}: ${ev.text} (규모 ${ev.mul >= 1 ? '+' : '−'}${Math.round(Math.abs(ev.mul - 1) * 100)}%)`, ev.mul > 1 ? 'bad' : 'good', 3200), 2400); }
     else if (ev.type === 'newcomer') { newcomers.push(ev); }
+    else if (ev.type === 'comboStep') {
+      field.burst(ev.x, ev.y, ev.n);
+      audio.sfx(ev.n >= 50 ? 'fuseWin' : 'rare');
+      world.floats.push({ x: ev.x, y: ev.y - 14, text: `${ev.n} 콤보!`, t: 0, color: ev.n >= 50 ? '#ff8fc4' : ev.n >= 25 ? '#f7c948' : '#fff3a3', big: true });
+      if (!motion.reduce) canvas.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${ev.n >= 50 ? 3 : 2}px,-2px)` }, { transform: 'translate(-2px,1px)' }, { transform: 'translate(0,0)' }], { duration: 160 });
+    }
+    else if (ev.type === 'pileBurst') { audio.sfx('fuseWin'); field.burst(ev.x, ev.y, 25); world.floats.push({ x: ev.x, y: ev.y - 16, text: `와르르! +${fmt(ev.amount)}`, t: 0, color: '#f7c948', big: true }); }
     else if (ev.type === 'attractUp') {
       const r = world.layout.pens[ev.pen];
       if (r) world.floats.push({ x: r.x + r.w / 2, y: r.y + 6, text: `+${fmt(ev.delta)}♥`, t: 0, color: '#ff8fc4', big: true });
@@ -805,6 +826,16 @@ function updateHud() {
     gauge.classList.toggle('full', !world.feverOn && world.fever.gauge > 0.85);
     gauge.classList.toggle('ready', coins >= price && coins < ten); gauge.classList.toggle('ready10', coins >= ten);
     const cb = world.combo;
+    if (cb.t > 0 && cb.sum > 0) {
+      if (sumFlying || sumEl.classList.contains('hidden')) { sumFlying = false; sumEl.className = 'coin-sum'; }
+      if (cb.sum !== sumShown) { sumShown = cb.sum; sumEl.textContent = `+${fmt(cb.sum)}`; sumEl.classList.remove('bump'); void sumEl.offsetWidth; sumEl.classList.add('bump'); }
+      sumEl.style.left = upx(lastScreen.x + 28); sumEl.style.top = upx(lastScreen.y - 36);
+    } else if (sumShown && !sumFlying) {
+      sumFlying = true; sumShown = 0;
+      const gr = gaugeCoins.getBoundingClientRect();
+      sumEl.classList.add('fly'); sumEl.style.left = upx(gr.left + gr.width / 2); sumEl.style.top = upx(gr.top + gr.height / 2);
+      window.setTimeout(() => { if (sumFlying) sumEl.classList.add('hidden'); }, 480);
+    }
     if (cb.n >= 2 && cb.t > 0) { comboEl.textContent = `콤보 ×${cb.n}`; comboEl.classList.remove('hidden', 'end'); comboEl.style.left = upx(fieldRect.x + fieldRect.w / 2); comboEl.style.top = upx(fieldRect.y + 40); comboEl.style.setProperty('--s', String(1 + Math.min(0.6, cb.n * 0.02))); }
     else if (!comboEl.classList.contains('end')) comboEl.classList.add('hidden');
   }

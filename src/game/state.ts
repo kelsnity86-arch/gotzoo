@@ -89,6 +89,8 @@ export interface SaveData {
   hot?: { uid: number; day: number }[];
   /** 이미 처음 배치(입장식 · 반짝임)를 한 동물 uid — 껐다 켜도 다시 하지 않게 */
   welcomed?: number[];
+  /** 배속: 폐원을 한 번 하면 열림 · 지금 배속 · 열렸다고 알려 줘야 하는지 */
+  speedOk?: boolean; speed?: number; speedNew?: boolean;
   /** 평판 하트를 잃었는지: 한 번 지면 최후의 기회, 또 지면 폐원 */
   lastChance?: boolean;
   /** 빚(코인 < 0)으로 끝난 날이 이어진 수 · 오늘 파업 중인지 */
@@ -206,6 +208,7 @@ export function normalize(raw: unknown): SaveData {
   const num = (v: unknown, def: number) => (typeof v === 'number' && Number.isFinite(v) ? v : def);
   out.season = { n: Math.max(1, Math.floor(num(se.n, 1))), start: Math.max(1, Math.floor(num(se.start, out.day))), mine: Math.max(0, num(se.mine, 0)), rival: Math.max(0, num(se.rival, 0)), ...(se.lost ? { lost: true } : {}), cond: Math.max(0, Math.min(2, Math.floor(num(se.cond, 0)))), rmul: num(se.rmul, 1), rev: se.rev ?? null, stand: !!se.stand, cheer: Math.max(0, num(se.cheer, 0)) };
   out.lastChance = !!rr.lastChance;
+  out.speedOk = rr.speedOk === true; out.speed = rr.speed === 2 && out.speedOk ? 2 : 1; out.speedNew = rr.speedNew === true;
   out.welcomed = Array.isArray(rr.welcomed) ? (rr.welcomed as unknown[]).filter((x): x is number => typeof x === 'number') : [];
   out.hot = Array.isArray(rr.hot) ? (rr.hot as { uid: number; day: number }[]).filter((x) => x && typeof x.uid === 'number' && typeof x.day === 'number' && x.day >= out.day) : [];
   if (out.season.start > out.day) out.season.start = out.day;

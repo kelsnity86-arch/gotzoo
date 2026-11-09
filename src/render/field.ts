@@ -1,9 +1,9 @@
 // 필드 그리기: 관객존(길·관람객·동전) + 동물존(우리·동물). 도트 한 칸이 화면 픽셀 정수 개가 되게 배율을 맞춘다.
 import { ANIMALS, type Habitat } from '../data/animals';
-import { COIN, DAY } from '../data/balance';
+import { COIN, COIN_FEEL, DAY } from '../data/balance';
 import type { SaveData } from '../game/state';
 import { BLD_ART, BLOCK, PATH_Y0, PATH_Y1, TILE, ZONE_H, gateX, zoneRow, type VisitorEnt, type World } from '../game/world';
-import type { AnimalEnt, StaffEnt } from '../game/world';
+import type { AnimalEnt, CoinEnt, StaffEnt } from '../game/world';
 import { penAttract , penBest, cardById , isHot } from '../game/rules';
 import { BIG, animalFrame, person16, personFrame, pixelDown, shinyOf, sprite, staff16, staffFrame, hasPng, type Sprite , godFrame, heroFrame } from './sprites';
 import { GODS, HEROES } from '../data/olympus';
@@ -99,6 +99,16 @@ export class FieldRenderer {
   /** 반짝이 동물 첫 배치: 그 동물 둘레에 반짝임 · 별이 2초 동안 터진다 */
   private shines: { uid: number; t: number }[] = [];
   shine(uid: number) { this.shines.push({ uid, t: performance.now() }); }
+  /** 쓸고 지나간 자국 (월드 좌표, 0.3초) */
+  private trail: { x: number; y: number; t: number }[] = [];
+  addTrail(p: { x: number; y: number } | null) {
+    const now = performance.now();
+    if (p) { const l = this.trail[this.trail.length - 1]; if (!l || Math.hypot(l.x - p.x, l.y - p.y) > 0.4 || now - l.t > 40) this.trail.push({ x: p.x, y: p.y, t: now }); }
+    while (this.trail.length && now - this.trail[0].t > 420) this.trail.shift();
+  }
+  /** 콤보 단계 터짐 (월드 좌표) */
+  private bursts: { x: number; y: number; n: number; t: number }[] = [];
+  burst(x: number, y: number, n: number) { this.bursts.push({ x, y, n, t: performance.now() }); }
   private bgKey = '';
   constructor(private ctx: CanvasRenderingContext2D) {}
 
@@ -424,15 +434,24 @@ export class FieldRenderer {
       const coin = hasPng('v2_ui_coin') ? sprite('v2_ui_coin') : sprite('coin_0');
       c.imageSmoothingEnabled = false;
       for (const f of world.flying) {
-        const k = Math.min(1, f.t / 0.55), e = k * k * (3 - 2 * k);
-        const x0 = this.ox + f.x * z, y0 = this.oy + f.y * z;
-        const x = x0 + (this.hudTarget.x - x0) * e, y = y0 + (this.hudTarget.y - y0) * e - Math.sin(k * Math.PI) * 60;
-        const s = 20 - k * 6;
-        c.globalAlpha = k > 0.9 ? (1 - k) * 10 : 1;
+        if (f.t < 0) continue;
+        // 1) 손가락으로 쏙 빨려들고 2) 코인 칸으로 날아간다
+        const sx0 = this.ox + f.x * z, sy0 = this.oy + f.y * z;
+        const hx = f.px !== undefined ? this.ox + f.px * z : sx0, hy = f.py !== undefined ? this.oy + (f.py ?? 0) * z : sy0;
+        let x: number, y: number, s: number;
+        if (f.t < COIN_FEEL.suck) { const q = f.t / COIN_FEEL.suck, e = q * q; x = sx0 + (hx - sx0) * e; y = sy0 + (hy - sy0) * e; s = 18 - q * 6; }
+        else {
+          const k = Math.min(1, (f.t - COIN_FEEL.suck) / 0.55), e = k * k * (3 - 2 * k);
+          x = hx + (this.hudTarget.x - hx) * e; y = hy + (this.hudTarget.y - hy) * e - Math.sin(k * Math.PI) * 50; s = 12 + Math.sin(Math.min(1, k * 4) * Math.PI) * 6 - k * 2;
+          c.globalAlpha = k > 0.9 ? (1 - k) * 10 : 1;
+        }
         c.drawImage(coin, Math.round(x - s / 2), Math.round(y - s / 2), s, s);
+        c.globalAlpha = 1;
       }
       c.globalAlpha = 1;
     }
+    this.trailFx(world, z);
+    this.burstFx(z);
     // 글자는 굵은 테두리로 (어떤 바닥 위에서도 읽히게)
     const outlined = (text: string, x: number, y: number, color: string) => {
       c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#1a1c2c'; c.strokeText(text, x, y);
@@ -496,6 +515,7 @@ export class FieldRenderer {
     // 동전 (관객존 바닥)
     const coinFrame = Math.floor(t * 8) % 4;
     for (const co of world.coins) {
+      if (co.pile !== undefined) { this.drawPile(co, t); continue; }
       const fade = co.age > world.coinLife - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
       c.globalAlpha = fade;
       // 많이 합쳐진 동전은 동전 더미 그림
@@ -912,6 +932,61 @@ export class FieldRenderer {
       const px = r.x + ((n * 37.7) % r.w), py = r.y - 16 + ((k * 80 + n * 17) % (r.h + 16));
       this.spr(['v2_gf_confetti', 'v2_gf_star', 'v2_gf_sparkle'][n % 3], px, py, 6, 6, a, k * 6 + n);
     }
+  }
+  /** 동전 더미: 동전이 소복이 · 반짝 · 사라지기 전 깜빡 */
+  private drawPile(co: CoinEnt, t: number) {
+    const c = this.ctx;
+    c.globalAlpha = co.pile! < 6 ? (Math.floor(t * 6) % 2 ? 0.45 : 1) : 1;
+    const bob = Math.sin(t * 4 + co.id) * 0.6;
+    const base = co.y - 1 - co.z;
+    const pts: [number, number][] = [[-5, 1], [5, 1], [-2.5, -1], [2.5, -1], [0, 2], [-6, -2], [6, -2]];
+    for (const [dx, dy] of pts) this.icon(sprite(`coin_${(Math.floor(t * 8) + dx + 8) % 4}`), co.x + dx, base + dy, 7);
+    const heap = hasPng('fx_06') ? sprite('fx_06') : sprite('coin_0');
+    this.icon(heap, co.x, base - 2 + bob, 12);
+    this.sparkle(co.x - 4, base - 9, t * 2 + co.id); this.sparkle(co.x + 4, base - 6, t * 2 + co.id + 1.3); this.sparkle(co.x, base - 12, t * 2 + co.id + 2.1);
+    c.globalAlpha = 1;
+  }
+  /** 쓸고 지나간 자국: 콤보가 클수록 굵게 · 은 → 금 → 무지개 */
+  private trailFx(world: World, z: number) {
+    if (this.trail.length < 2) return;
+    const c = this.ctx, now = performance.now(), n = world.combo.t > 0 ? world.combo.n : 0;
+    const w0 = 6 + Math.min(8, n / 6);
+    c.save(); c.lineCap = 'round';
+    for (let i = 1; i < this.trail.length; i++) {
+      const a = this.trail[i - 1], b = this.trail[i];
+      if (b.t - a.t > 80) continue;
+      const life = 1 - (now - b.t) / 420;
+      if (life <= 0) continue;
+      const col = n >= 50 ? `hsl(${(now / 4 + i * 18) % 360} 90% 65%)` : n >= 25 ? '#f7c948' : n >= 10 ? '#e8eef5' : '#b8c8d8';
+      c.beginPath(); c.moveTo(this.ox + a.x * z, this.oy + a.y * z); c.lineTo(this.ox + b.x * z, this.oy + b.y * z);
+      c.globalAlpha = life * 0.7; c.strokeStyle = '#5d3a24'; c.lineWidth = w0 * life + 4; c.stroke();
+      c.globalAlpha = Math.min(1, life * 1.3); c.strokeStyle = col; c.lineWidth = w0 * life; c.stroke();
+      c.globalAlpha = life * 0.9; c.strokeStyle = '#ffffff'; c.lineWidth = Math.max(1, w0 * life * 0.35); c.stroke();
+    }
+    c.restore();
+  }
+  /** 콤보 단계 터짐: 번쩍 + 반짝이 · 색종이가 사방으로 */
+  private burstFx(z: number) {
+    if (!this.bursts.length) return;
+    const c = this.ctx, now = performance.now();
+    this.bursts = this.bursts.filter((b) => now - b.t < 700);
+    c.imageSmoothingEnabled = false;
+    for (const b of this.bursts) {
+      const k = (now - b.t) / 700, x = this.ox + b.x * z, y = this.oy + b.y * z;
+      const gk = b.n >= 100 ? 'legend' : b.n >= 50 ? 'epic' : b.n >= 25 ? 'rare' : 'uncommon';
+      const bk = `v2_gf_burst_${gk}`;
+      if (hasPng(bk) && k < 0.45) { const s = (30 + k * 160) * (b.n >= 50 ? 1.4 : 1); c.globalAlpha = 1 - k / 0.45; c.drawImage(sprite(bk), x - s / 2, y - s / 2, s, s); }
+      const parts = motion.reduce ? 6 : 10 + Math.min(14, b.n / 5);
+      for (let i = 0; i < parts; i++) {
+        const ang = (i / parts) * Math.PI * 2 + b.n, dist = (20 + (i % 3) * 10) * (0.3 + k) * (b.n >= 50 ? 1.5 : 1);
+        const key = ['v2_gf_confetti', 'v2_gf_star', 'v2_gf_sparkle'][i % 3];
+        if (!hasPng(key)) continue;
+        const s = 10 - k * 4;
+        c.globalAlpha = Math.max(0, 1 - k);
+        c.drawImage(sprite(key), x + Math.cos(ang) * dist - s / 2, y + Math.sin(ang) * dist - s / 2 + k * k * 30, s, s);
+      }
+    }
+    c.globalAlpha = 1;
   }
   private sparkle(x: number, y: number, t: number) {
     const ph = (t * 2) % 3;
