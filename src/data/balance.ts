@@ -110,10 +110,9 @@ export const VISITOR = {
 /** 동전: 관람객 발밑(관객존 바닥)에 떨어져 쌓인다. 오래 방치하면(lifeSec) 사라진다. 끝나기 blinkSec 전부터 깜빡인다 */
 export const COIN = { lifeSec: 8, lifeMax: 20, blinkSec: 2, mergeDist: 5, mergeMax: 3, crowd: 250, popSpeed: 30, gravity: 150 } as const;
 /** 동전 손맛: 콤보 단계 · 동전 더미 · 날아가는 동전 수 · 효과음 간격 */
-export const COIN_FEEL = { steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
-/** 황금 동전: 값 배수 · 쓸기 속도 상한(맵 칸/초, 화면을 줄여 크게 쓸어도 더 좋아지지 않게) */
+export const COIN_FEEL = { steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35, reach: 2 } as const;
+/** 황금 동전: 값 배수 */
 export const GOLD_COIN = { mul: 5 } as const;
-export const SWEEP_MAX = 260;
 /** 배속: 폐원을 한 번 하면 열린다 */
 export const SPEED_MAX = 2;
 

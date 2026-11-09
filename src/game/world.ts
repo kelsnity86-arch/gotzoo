@@ -1,7 +1,7 @@
 // 동물원 필드 시뮬레이션 (화면 없음). 위쪽 관객존: 관람객이 걷다 멈춰 동전을 던진다. 아래쪽 동물존: 우리 안을 동물이 돌아다닌다.
 // 좌표 단위 = 도트 1칸. 타일 8칸.
 import { ANIMALS } from '../data/animals';
-import { COIN, COIN_FEEL, GOLD_COIN, SWEEP_MAX, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
+import { COIN, COIN_FEEL, GOLD_COIN, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
 import { isEdge, penMask, type PenShape } from '../data/shapes';
@@ -420,7 +420,8 @@ export class World {
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return Math.min(COIN.lifeMax, COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife')); }
   /** 동전 그림 바깥으로 더 닿는 거리: 기본 0.5칸 + 쓸어 담기 업그레이드 */
-  get pickReach() { return 0.5; }
+  /** 회수 반경: 맵 기준 고정 (화면에선 확대/축소를 따라 커지고 작아진다). 동전 그림 바깥으로 이만큼 더 닿는다 */
+  get pickReach() { return COIN_FEEL.reach; }
   /** 황금 동전 확률 (업그레이드 × 전망대 · 이카로스) */
   get goldChance() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower') + heroVal(this.save, 'lucky')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
@@ -734,9 +735,8 @@ export class World {
       }
     }
 
-    // 쓸기: 지난 위치 → 지금 위치. 한 프레임에 쓸 수 있는 거리는 SWEEP_MAX (화면을 줄여 크게 휘둘러도 더 많이 줍지 못하게)
-    let sweepFrom = this.lastPointer ?? pointer ?? { x: 0, y: 0 };
-    if (pointer) { const dx = pointer.x - sweepFrom.x, dy = pointer.y - sweepFrom.y, len = Math.hypot(dx, dy), max = SWEEP_MAX * rdt; if (len > max) sweepFrom = { x: pointer.x - (dx / len) * max, y: pointer.y - (dy / len) * max }; }
+    // 쓸기: 지난 위치 → 지금 위치 (빨리 그어도 사이 동전을 놓치지 않게, 제한 없음)
+    const sweepFrom = this.lastPointer ?? pointer ?? { x: 0, y: 0 };
     // 동전: 살짝 튀었다가 관객존 바닥에 떨어져 있다. 오래 방치하면 사라진다 (보너스를 놓침)
     for (let i = this.coins.length - 1; i >= 0; i--) {
       const c = this.coins[i];
