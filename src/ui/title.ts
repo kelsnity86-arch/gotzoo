@@ -75,11 +75,38 @@ export function titleScene(season: SeasonKey, w: number, hgt: number, animals: n
   animals.slice(0, xs.length).forEach((id, i) => {
     const key = `animal_${String(id).padStart(3, '0')}`;
     if (!hasPng(key)) return;
-    const wrap = h('div', { class: 'tt-ani', style: `left:${xs[i] * 100}%; --d:${(i * 0.7) % 3}s; --walk:${6 + (i % 3) * 2}s` }, fit(key, S(64 + (i % 3) * 8)));
-    if (xs[i] > 0.5) wrap.classList.add('flip');
+    const wrap = h('div', { class: 'tt-ani', style: `left:${xs[i] * 100}%; --d:${(i * 0.7) % 3}s` }, fit(key, S(64 + (i % 3) * 8)));
     add(wrap);
   });
   return scene;
+}
+
+/** 산책길 동물: 길 위 아무 데나 목표로 걸어가고, 도착하면 잠깐 쉬었다가 다시 (가는 쪽을 바라본다). 끝낼 함수를 돌려준다 */
+export function startWalkers(scene: HTMLElement): () => void {
+  if (motion.reduce) return () => {};
+  const list = [...scene.querySelectorAll<HTMLElement>('.tt-ani')].map((el) => {
+    const x = parseFloat(el.style.left) / 100;
+    return { el, x, tx: x, speed: 0.025 + Math.random() * 0.03, wait: Math.random() * 2 };
+  });
+  let raf = 0, last = performance.now(), alive = true;
+  const step = (now: number) => {
+    if (!alive) return;
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    for (const a of list) {
+      if (a.wait > 0) {
+        a.wait -= dt;
+        if (a.wait <= 0) { a.tx = Math.max(0.04, Math.min(0.96, a.x + (Math.random() - 0.5) * 0.6)); a.el.classList.add('walk'); a.el.classList.toggle('flip', a.tx > a.x); }
+        continue;
+      }
+      const d = a.tx - a.x, mv = a.speed * dt;
+      if (Math.abs(d) <= mv) { a.x = a.tx; a.wait = 1 + Math.random() * 2; a.el.classList.remove('walk'); }
+      else a.x += Math.sign(d) * mv;
+      a.el.style.left = `${a.x * 100}%`;
+    }
+    raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+  return () => { alive = false; cancelAnimationFrame(raf); };
 }
 
 /** 계절 기계 4대 (가운데 줄). 지금 계절 기계가 조금 더 밝다 */

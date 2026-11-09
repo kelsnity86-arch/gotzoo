@@ -25,7 +25,7 @@ import { ANIMALS } from './data/animals';
 import { GRADES } from './data/grades';
 import { staffDef } from './data/staff';
 import { Panel, openPenSheet } from './ui/panel';
-import { titleScene, seasonMachines, startFireworks, type SeasonKey } from './ui/title';
+import { titleScene, seasonMachines, startFireworks, startWalkers, type SeasonKey } from './ui/title';
 import { motion } from './ui/motion';
 import { STAR_NEED, SPEED_MAX, COIN_FEEL } from './data/balance';
 import { audio } from './ui/audio';
@@ -470,9 +470,10 @@ function showTitle(onStart?: () => void) {
       h('button', { class: 'btn big', onclick: () => { audio.unlock(); audio.sfx('draw'); titleOn = false; stopFw(); window.removeEventListener('resize', relayout); back.remove(); onStart?.(); } }, first ? '시작하기' : '이어하기')),
     h('div', { class: 'tt-hint' }, 'PC: 커서로 동전 쓸어 담기 · 휠로 확대 / 폰: 손가락으로 쓸기 · 두 손가락 확대'));
   ui.append(back);
-  let stopFw = startFireworks(scene, Math.round(mSize() * 0.5));
+  const titleLife = () => { const a = startFireworks(scene, Math.round(mSize() * 0.5)), b = startWalkers(scene); return () => { a(); b(); }; };
+  let stopFw = titleLife();
   // 화면 크기가 바뀌면 배경을 다시 깐다
-  const relayout = () => { if (!back.isConnected) return; stopFw(); const ns = titleScene(season, vw(), vh(), animals, save.zooName); scene.replaceWith(ns); scene = ns; stopFw = startFireworks(scene, Math.round(mSize() * 0.5)); };
+  const relayout = () => { if (!back.isConnected) return; stopFw(); const ns = titleScene(season, vw(), vh(), animals, save.zooName); scene.replaceWith(ns); scene = ns; stopFw = titleLife(); };
   window.addEventListener('resize', relayout);
   // 타이틀 곡: 브라우저는 첫 터치 전엔 소리를 못 내서, 화면을 처음 누르면 시작
   titleOn = true; audio.bgm('title');
