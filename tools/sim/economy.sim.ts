@@ -14,7 +14,7 @@ import type { Grade } from '../../src/data/grades';
 
 const MIN = Number(process.env.SIM_MIN ?? 60);
 const PICK = Number(process.env.SIM_PICK ?? 0.7);
-const HAND = process.env.SIM_HAND ?? 'pick', SWEEP = Number(process.env.SIM_SWEEP ?? 3), AWAY = Number(process.env.SIM_AWAY ?? 0.35), REAL_LIFE = !!process.env.SIM_REALLIFE, CUT = Number(process.env.SIM_LIFECUT ?? 0);
+const HAND = process.env.SIM_HAND ?? 'pick', SWEEP = Number(process.env.SIM_SWEEP ?? 3), AWAY = Number(process.env.SIM_AWAY ?? 0.35), REAL_LIFE = !!process.env.SIM_REALLIFE, CUT = Number(process.env.SIM_LIFECUT ?? 0), LIFE = Number(process.env.SIM_LIFE ?? 0), SWEEP_P = Number(process.env.SIM_SWEEP_P ?? 0.85);
 const seen = new Set<number>();
 
 it('경제 곡선', () => {
@@ -42,11 +42,13 @@ it('경제 곡선', () => {
     if (REAL_LIFE) for (const c of w.coins) c.age -= dt * (SPEED - 1); // 동전 수명을 실제 시간으로 (비교용)
     // 기본 수명을 CUT초 줄인 것처럼 (새 동전에 나이를 미리 얹는다)
     if (CUT) for (const c of w.coins) if (!seen.has(c.id)) { seen.add(c.id); if (c.pile === undefined) c.age += CUT; }
+    // 동전 수명을 LIFE초(게임 시간)로 바꾼 것처럼
+    if (LIFE) for (const c of w.coins) if (!seen.has(c.id)) { seen.add(c.id); if (c.pile === undefined) c.age += Math.max(0, w.coinLife - LIFE); }
     pickAcc += dt;
     if (HAND === 'sweep') {
       // 사람처럼: SWEEP초마다 한 번 쓸어 담고(바닥 동전 85%), 1분 중 AWAY 비율은 메뉴 보느라 손을 안 댄다
       const away = (t % 60) / 60 < AWAY;
-      if (pickAcc >= SWEEP) { pickAcc = 0; if (!away) for (const c of w.coins) if (c.z === 0 && c.pile === undefined && Math.random() < 0.85) w.pick(c, 'hand'); }
+      if (pickAcc >= SWEEP) { pickAcc = 0; if (!away) for (const c of w.coins) if (c.z === 0 && c.pile === undefined && Math.random() < SWEEP_P) w.pick(c, 'hand'); }
       if (!away) for (const c of w.coins) if (c.pile !== undefined && c.z === 0) w.pick(c, 'hand');
     } else if (pickAcc >= 1) { pickAcc = 0; for (const c of w.coins) if (c.z === 0 && Math.random() < PICK) w.pick(c, 'hand'); }
     think += dt;
