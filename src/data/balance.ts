@@ -49,8 +49,8 @@ export const UPGRADES: readonly UpgradeDef[] = [
     costs: [800, 2500, 8000, 22000, 60000, 160000], need: [2, 3, 4, 5, 6, 7], describe: (v) => (v > 1 ? `손님 정원 +${Math.round((v - 1) * 100)}%` : '손님 정원 그대로'), group: 'zoo' },
   { id: 'staff', name: '직원 슬롯', icon: 'icon_badge', values: [1, 2, 3, 4, 5],
     costs: [600, 1800, 6000, 20000], need: [1, 3, 5, 7], describe: (v) => `직원 ${v}명`, group: 'zoo' },
-  { id: 'pickup', name: '쓸어 담기', icon: 'icon_magnet', values: [1.5, 3, 4.5, 6.5, 9, 12],
-    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `끌거나 커서를 대면 줍기 · 범위 ${v}`, group: 'pick' },
+  { id: 'pickup', name: '황금 동전', icon: 'icon_magnet', values: [0.01, 0.015, 0.02, 0.03, 0.04, 0.05],
+    costs: [400, 900, 2000, 4500, 10000], need: [1, 2, 3, 4, 5], describe: (v) => `가끔 값 ${GOLD_COIN.mul}배 황금 동전 · 확률 ${+(v * 100).toFixed(1)}%`, group: 'pick' },
   // ── 줍기 · 피버 ──
   { id: 'comboTime', name: '콤보 유지', icon: '', group: 'pick', values: [1.2, 1.4, 1.6, 1.8, 2],
     costs: [1200, 4000, 14000, 45000], need: [2, 3, 5, 6], describe: (v) => `콤보가 ${v}초 안에 이어져요` },
@@ -111,6 +111,9 @@ export const VISITOR = {
 export const COIN = { lifeSec: 8, lifeMax: 20, blinkSec: 2, mergeDist: 5, mergeMax: 3, crowd: 250, popSpeed: 30, gravity: 150 } as const;
 /** 동전 손맛: 콤보 단계 · 동전 더미 · 날아가는 동전 수 · 효과음 간격 */
 export const COIN_FEEL = { steps: [10, 25, 50, 100] as readonly number[], pileEvery: 40, pileLife: 12, pileMin: 8, pileMax: 12, flyMax: 40, sfxGapMs: 35 } as const;
+/** 황금 동전: 값 배수 · 쓸기 속도 상한(맵 칸/초, 화면을 줄여 크게 쓸어도 더 좋아지지 않게) */
+export const GOLD_COIN = { mul: 5 } as const;
+export const SWEEP_MAX = 260;
 /** 배속: 폐원을 한 번 하면 열린다 */
 export const SPEED_MAX = 2;
 

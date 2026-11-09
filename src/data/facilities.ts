@@ -25,7 +25,7 @@ export const FACILITIES: readonly FacilityDef[] = [
   { type: 'restaurant', name: '식당', value: 0.1, cap: 0.3, desc: (v) => `손님이 떨어뜨리는 코인 +${pct(v)}`, price: 4, upkeep: 0.2 },
   { type: 'icecream', name: '아이스크림 가게', value: 0.33, cap: 1, desc: (v) => `행운의 동전이 ${pct(v)} 더 자주`, price: 3, upkeep: 0.15 },
   { type: 'carousel', name: '회전목마', value: 0.33, cap: 1, desc: (v) => `VIP 손님이 ${pct(v)} 더 자주`, price: 5, upkeep: 0.25 },
-  { type: 'tower', name: '전망대', value: 0.17, cap: 0.5, desc: (v) => `동전 줍는 범위 +${pct(v)}`, price: 4, upkeep: 0.15 },
+  { type: 'tower', name: '전망대', value: 0.17, cap: 0.5, desc: (v) => `황금 동전 확률 +${pct(v)}`, price: 4, upkeep: 0.15 },
   { type: 'lab', name: '동물 연구소', value: 0.01, cap: 0.03, desc: (v) => `희귀 이상 동물 확률 +${(v * 100).toFixed(0)}%p`, price: 6, upkeep: 0.25 },
 ];
 export const facilityDef = (t: FacilityType) => FACILITIES.find((f) => f.type === t)!;

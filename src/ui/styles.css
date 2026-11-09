@@ -312,8 +312,9 @@ body.reduce-motion .parade span { animation: none; }
 /* 라이벌 */
 .rival { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: #2d5a3a; font-size: 13px; color: #d7f5c0; }
 .rival.losing { background: #7a2f2f; color: #ffd6d6; }
-.rival .bar { width: 46px; height: 6px; border-radius: 3px; background: #c94c4c; overflow: hidden; }
-.rival .bar i { display: block; height: 100%; background: #7ad35a; }
+.rival .bar { position: relative; width: 150px; height: 14px; border-radius: 7px; background: linear-gradient(#e0605a, #b23a3a); overflow: hidden; border: 2px solid #1a1c2c; }
+.rival .bar i { display: block; height: 100%; background: linear-gradient(#9be36b, #4ea83a); transition: width .6s ease; }
+.rival .bar em { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: rgba(255,255,255,0.85); }
 .clock .bar.hidden { display: none; }
 .report .vs.ahead { background: #e7f6dc; } .report .vs.behind { background: #fbe1df; }
 .warn { padding: 6px 10px; border-radius: 8px; background: #c94c4c; color: #fff; font-size: 13px; }
@@ -488,7 +489,8 @@ body.reduce-motion .rotate-note .rot-ico { animation: none; }
 body.landscape .hud > * { flex: none; white-space: nowrap; }
 body.landscape .hud .hud-stats { flex: 0 1 auto; }
 body.compact .hud .stat, body.compact .hud .zoom-btns { display: none; }
-body.compact .hud .rival .bar, body.compact .hud .clock .bar { display: none; }
+body.compact .hud .clock .bar { display: none; }
+body.compact .hud .rival .bar { width: 96px; height: 10px; }
 body.compact .hud-coins b { font-size: 15px; }
 
 /* ── 뽑기 연출 (새 그림): 기계 → 캡슐 → 빛기둥 → 카드 뒤집기 ── */
@@ -610,7 +612,8 @@ body.landscape .hud .hud-stats > * { min-width: 0; overflow: hidden; text-overfl
 body.landscape .hud .gacha-gauge b:not(.gg-coins) { overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
 body.hud-s .hud .stat { display: none; }
 body.hud-s .hud .gacha-gauge b:not(.gg-coins) { max-width: 140px; }
-body.hud-s .hud .rv-name, body.hud-xs .hud .clock .bar, body.hud-xs .hud .rival .bar { display: none; }
+body.hud-xs .hud .clock .bar { display: none; }
+body.hud-xs .hud .rival .bar { width: 96px; }
 body.hud-xs .hud .logo { display: none; }
 body.hud-xs .hud .gacha-gauge .gg-bar { width: 44px; }
 body.hud-xxs .hud .zoom-btns { display: none; }
@@ -741,7 +744,6 @@ body.reduce-motion .gacha-gauge.fever { animation: none; }
 .rival .rv-cond.c0 { color: #a7d65b; } .rival .rv-cond.c2 { color: #ffb08a; }
 .rival .rv-day { opacity: .85; }
 .rival .rv-tag.last { color: #ffd6d6; background: #b23a3a; padding: 0 6px; border-radius: 6px; animation: lc-blink 1s steps(2) infinite; }
-body.hud-s .rival .bar { display: none; }
 body.hud-xs .rival .rv-cond { display: none; }
 body.hud-xxs .rival .rv-me, body.hud-xxs .rival .rv-name { max-width: 4.5em; }
 /* 픽셀 하트 (이모티콘 대신): 7×6 도트를 box-shadow로 */

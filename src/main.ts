@@ -59,7 +59,7 @@ const strikeTag = h('span', { class: 'strike-tag hidden' }, '파업');
 const clockText = h('b', {}), clockFill = h('i', {});
 const clock = h('span', { class: 'clock', title: '하루: 낮에는 관람객, 밤에는 정비' }, clockText, h('span', { class: 'bar' }, clockFill));
 const rivalText = h('b', {}), rivalFill = h('i', {});
-const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 규모 = 전시 동물 + 우리 + 직원 + 업그레이드 − 빚` }, rivalText, h('span', { class: 'bar' }, rivalFill));
+const rivalChip = h('span', { class: 'rival', title: `라이벌 동물원: 시즌 마지막 날(${SEASON.days}일째) 동물원 규모가 더 커야 버틸 수 있어요. 초록 = 우리 · 빨강 = 라이벌` }, h('span', { class: 'bar' }, rivalFill, h('em', {})), rivalText);
 const logo = h('div', { class: 'logo' }, '뽑', h('span', {}, 'ZOO'));
 const hud = h('div', { class: 'hud' }, logo,
   h('div', { class: 'hud-coins hud-money', title: '돈 (입장료): 건물 · 업그레이드 · 월급' }, hasPng('v2_ui_money') ? iconSlot('v2_ui_money', 18) : h('i', { class: 'coin-ico' }), hudCoins, strikeTag),
@@ -780,6 +780,7 @@ function frame(now: number) {
       world.floats.push({ x: ev.x, y: ev.y - 14, text: `${ev.n} 콤보!`, t: 0, color: ev.n >= 50 ? '#ff8fc4' : ev.n >= 25 ? '#f7c948' : '#fff3a3', big: true });
       if (!motion.reduce) canvas.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${ev.n >= 50 ? 3 : 2}px,-2px)` }, { transform: 'translate(-2px,1px)' }, { transform: 'translate(0,0)' }], { duration: 160 });
     }
+    else if (ev.type === 'goldCoin') { audio.sfx('rare'); field.burst(ev.x, ev.y, 10); world.floats.push({ x: ev.x, y: ev.y - 14, text: `황금 동전! +${fmt(ev.amount)}`, t: 0, color: '#f7c948', big: true }); }
     else if (ev.type === 'pileBurst') { audio.sfx('fuseWin'); field.burst(ev.x, ev.y, 25); world.floats.push({ x: ev.x, y: ev.y - 16, text: `와르르! +${fmt(ev.amount)}`, t: 0, color: '#f7c948', big: true }); }
     else if (ev.type === 'attractUp') {
       const r = world.layout.pens[ev.pen];
@@ -897,9 +898,9 @@ function updateHud() {
   rivalChip.classList.toggle('losing', mine < rv);
   const cond = RIVAL_COND[save.season.cond ?? 1];
   // 라이벌: [우리 이름] 규모 vs 규모 [라이벌 이름] · 남은 날 (이모티콘 없이, 좁으면 컨디션 글자부터 숨김)
+  // 라이벌: 누가 이기는지만 (초록 우리 · 빨강 라이벌 게이지) + 남은 날
+  void cond;
   rivalText.replaceChildren(
-    h('span', { class: 'rv-me' }, zooName()), h('span', { class: 'rv-num' }, fmt(mine)), h('span', { class: 'rv-vs' }, 'vs'), h('span', { class: 'rv-num' }, fmt(rv)),
-    h('span', { class: 'rv-name' }, rivalOf(save.season.n).name), h('span', { class: `rv-cond c${save.season.cond ?? 1}`, title: '라이벌 컨디션' }, cond.name),
     h('span', { class: 'rv-day' }, dleft <= 0 ? '마지막 날' : `D-${dleft}`),
     save.lastChance ? h('span', { class: 'rv-tag last' }, world.lastStand ? '막판 대목' : '최후의 기회') : '');
   rivalFill.style.width = `${Math.round((mine / Math.max(1, mine + rv)) * 100)}%`;

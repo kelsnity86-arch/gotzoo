@@ -36,7 +36,7 @@ export const HEROES: readonly HeroDef[] = [
   { id: 0, name: '헤라클레스', title: '열두 과업의 영웅', staff: 'guard', ability: 'guardAll', value: 0.05, desc: (v) => `소매치기를 모두 막아요 · 시즌 규모 +${pct(v)}`, color: '#c28a5c' },
   { id: 1, name: '오르페우스', title: '전설의 음유시인', staff: 'performer', ability: 'stage', value: 0.25, desc: (v) => `이벤트 간격 −${pct(v)} · 실망 손님 −${pct(v)}`, color: '#38a35b' },
   { id: 2, name: '아스클레피오스', title: '의술의 신', staff: 'vet', ability: 'vetAll', value: 0.1, desc: (v) => `동물 감기를 모두 막아요 · 먹이 효과 +${pct(v)}`, color: '#f4f4f4' },
-  { id: 3, name: '이카로스', title: '하늘을 나는 소년', staff: 'collector', ability: 'lucky', value: 0.5, desc: (v) => `행운의 동전 +${pct(v)} · 줍는 범위 +${pct(v)}`, color: '#41a6f6' },
+  { id: 3, name: '이카로스', title: '하늘을 나는 소년', staff: 'collector', ability: 'lucky', value: 0.5, desc: (v) => `행운의 동전 +${pct(v)} · 황금 동전 +${pct(v)}`, color: '#41a6f6' },
   { id: 4, name: '아탈란테', title: '바람의 사냥꾼', staff: 'guide', ability: 'tipMul', value: 0.15, desc: (v) => `손님 씀씀이 +${pct(v)}`, color: '#1f5d3a' },
   { id: 5, name: '다이달로스', title: '위대한 발명가', staff: 'janitor', ability: 'upkeepCut', value: 0.15, desc: (v) => `하루 유지비 −${pct(v)}`, color: '#8a5a3b' },
 ];

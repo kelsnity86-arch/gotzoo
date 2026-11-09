@@ -500,7 +500,7 @@ export class FieldRenderer {
   }
 
   /** 동물원 한 장 (월드 좌표, this.ctx = 2도트 캔버스) */
-  private drawWorld(world: World, save: SaveData, pointer: { x: number; y: number } | null) {
+  private drawWorld(world: World, save: SaveData, _pointer: { x: number; y: number } | null) {
     const c = this.ctx, L = world.layout, t = world.time;
     this.seasonN = save.season.n; this.items = save.items; this.decoTier = save.upgrades.deco ?? 0; this.facLv = save.facLv ?? {}; this.stage = save.stage + (save.bigLand ? 1 : 0); this.temple = (save.godDex ?? []).filter((x) => x > 0).length >= 12;
     const bg = this.background(world);
@@ -527,6 +527,7 @@ export class FieldRenderer {
     const coinFrame = Math.floor(t * 8) % 4;
     for (const co of world.coins) {
       if (co.pile !== undefined) { this.drawPile(co, t); continue; }
+      if (co.gold) { this.drawGold(co, t); continue; }
       const fade = co.age > world.coinLife - COIN.blinkSec ? (Math.floor(co.age * 6) % 2 ? 0.35 : 1) : 1;
       c.globalAlpha = fade;
       // 많이 합쳐진 동전은 동전 더미 그림
@@ -699,11 +700,6 @@ export class FieldRenderer {
       c.globalAlpha = 1;
       c.strokeStyle = gh.ok ? '#a7d65b' : '#ffc8dd'; c.lineWidth = 0.5;
       for (const [x, y] of gh.cells) c.strokeRect(L.bx0 + x * BLOCK + 1, L.by0 + y * BLOCK + 1, BLOCK - 2, BLOCK - 2);
-    }
-    // 손 수거 범위
-    if (pointer && !this.ghost) {
-      c.strokeStyle = 'rgba(255,243,163,0.8)'; c.lineWidth = 0.5;
-      c.beginPath(); c.arc(pointer.x, pointer.y, world.pickupRadius, 0, Math.PI * 2); c.stroke();
     }
 
   }
@@ -944,33 +940,48 @@ export class FieldRenderer {
       this.spr(['v2_gf_confetti', 'v2_gf_star', 'v2_gf_sparkle'][n % 3], px, py, 6, 6, a, k * 6 + n);
     }
   }
-  /** 동전 더미: 동전이 소복이 · 반짝 · 사라지기 전 깜빡 */
+  /** 동전 더미: 같은 모양 동전들이 하늘에서 우르르 몰려 떨어져 소복이 쌓인다 (반짝임도 다 같이) */
   private drawPile(co: CoinEnt, t: number) {
     const c = this.ctx;
-    c.globalAlpha = co.pile! < 6 ? (Math.floor(t * 6) % 2 ? 0.45 : 1) : 1;
-    const bob = Math.sin(t * 4 + co.id) * 0.6;
-    const base = co.y - 1 - co.z;
-    const pts: [number, number][] = [[-5, 1], [5, 1], [-2.5, -1], [2.5, -1], [0, 2], [-6, -2], [6, -2]];
-    for (const [dx, dy] of pts) this.icon(sprite(`coin_${(Math.floor(t * 8) + dx + 8) % 4}`), co.x + dx, base + dy, 7);
-    const heap = hasPng('fx_06') ? sprite('fx_06') : sprite('coin_0');
-    this.icon(heap, co.x, base - 2 + bob, 12);
-    this.sparkle(co.x - 4, base - 9, t * 2 + co.id); this.sparkle(co.x + 4, base - 6, t * 2 + co.id + 1.3); this.sparkle(co.x, base - 12, t * 2 + co.id + 2.1);
+    c.globalAlpha = co.pile! < 3 ? (Math.floor(t * 6) % 2 ? 0.45 : 1) : 1;
+    const img = hasPng('v2_ui_coin') ? sprite('v2_ui_coin') : sprite('coin_0');
+    const base = co.y - 1;
+    // 아래 줄부터 위로 (피라미드)
+    const spots: [number, number][] = [[-6, 2], [-2, 2.5], [2, 2.5], [6, 2], [-4, -0.5], [0, 0], [4, -0.5], [-2, -3], [2, -3], [0, -6], [-6.5, -1], [6.5, -1]];
+    const n = Math.min(spots.length, Math.max(8, co.count));
+    for (let j = 0; j < n; j++) {
+      const [dx, dy] = spots[j];
+      const k = Math.max(0, Math.min(1, (co.age - j * 0.045) / 0.4)); // 하나씩 조금씩 늦게
+      if (k <= 0) continue;
+      const fall = (1 - k * k) * 46, bounce = k >= 1 ? 0 : 0;
+      this.icon(img, co.x + dx, base + dy - fall - bounce, 6.5);
+    }
+    if (co.age > 0.8) { const tw = t * 2; this.sparkle(co.x - 4, base - 9, tw); this.sparkle(co.x + 4, base - 7, tw + 1.5); }
     c.globalAlpha = 1;
+  }
+  /** 황금 동전: 크고 반짝 · 둘레에 빛 */
+  private drawGold(co: CoinEnt, t: number) {
+    const c = this.ctx, by = co.y - 1 - co.z;
+    const img = hasPng('v2_ui_coin') ? sprite('v2_ui_coin') : sprite('coin_0');
+    c.save(); c.globalAlpha = 0.35 + Math.sin(t * 6 + co.id) * 0.15; c.fillStyle = '#fff3a3';
+    c.beginPath(); c.arc(co.x, by - 5, 7, 0, Math.PI * 2); c.fill(); c.restore();
+    this.icon(img, co.x, by, 10);
+    this.sparkle(co.x - 3, by - 10, t * 2 + co.id); this.sparkle(co.x + 4, by - 6, t * 2 + co.id + 1.2);
   }
   /** 반짝이 잔상: 도트 별 (진한 테두리로 밝은 길 위에서도 보이게), 처음엔 크고 점점 작아지며 깜빡 */
   private trailFx(world: World, z: number) {
     if (!this.trail.length) return;
     void world;
-    const c = this.ctx, now = performance.now(), U = Math.max(3, Math.round(z));
+    const c = this.ctx, now = performance.now(), U = Math.max(2, Math.round(z * 0.8)); // 동전 크기와 같은 비율로 (확대하면 커지고 축소하면 작아짐)
     for (const s of this.trail) {
       const k = (now - s.t) / s.life;
       if (k < 0 || k >= 1) continue;
       if (k > 0.45 && Math.floor((now - s.t) / 70 + s.seed) % 3 === 2) continue; // 깜빡
-      const arm = k < 0.3 ? 2 : k < 0.7 ? 1 : 0, a = 1 - k * 0.55;
+      const arm = k < 0.3 ? 2 : k < 0.7 ? 1 : 0, a = (1 - k * 0.55) * 0.5; // 반투명
       const cx = Math.round((this.ox + s.x * z) / U) * U, cy = Math.round((this.oy + s.y * z) / U) * U;
       const cells: [number, number][] = [[0, 0]];
       for (let m = 1; m <= arm; m++) cells.push([m, 0], [-m, 0], [0, m], [0, -m]);
-      c.globalAlpha = a * 0.6; c.fillStyle = '#462814';
+      c.globalAlpha = a * 0.45; c.fillStyle = '#462814';
       for (const [x, y] of cells) c.fillRect(cx + x * U - U, cy + y * U - U, U * 3, U * 3);
       c.globalAlpha = a; c.fillStyle = s.col;
       for (const [x, y] of cells) c.fillRect(cx + x * U, cy + y * U, U, U);

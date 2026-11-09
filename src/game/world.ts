@@ -1,7 +1,7 @@
 // 동물원 필드 시뮬레이션 (화면 없음). 위쪽 관객존: 관람객이 걷다 멈춰 동전을 던진다. 아래쪽 동물존: 우리 안을 동물이 돌아다닌다.
 // 좌표 단위 = 도트 1칸. 타일 8칸.
 import { ANIMALS } from '../data/animals';
-import { COIN, COIN_FEEL, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
+import { COIN, COIN_FEEL, GOLD_COIN, SWEEP_MAX, DAY, DEBT, FEED, INCIDENT, STAFF_AI, VISITOR, upgradeDef } from '../data/balance';
 import type { StaffKind } from '../data/staff';
 import type { Mission, SaveData, StaffCard } from './state';
 import { isEdge, penMask, type PenShape } from '../data/shapes';
@@ -98,6 +98,8 @@ export interface VisitorEnt { vip?: boolean; x: number; y: number; dir: number; 
 export interface CoinEnt { id: number; x: number; y: number; vx: number; vy: number; value: number; count: number; age: number; z: number; picked: boolean;
   /** (시안 ?loop) 행운의 동전: 주우면 뽑기권 */
   lucky?: boolean;
+  /** 황금 동전: 값 5배 · 크게 반짝 */
+  gold?: boolean;
   /** 동전 더미: 쓸면 와르르. 남은 시간(실제 초) 안에 안 주우면 직원이 가져간다 */
   pile?: number }
 export interface StaffEnt { uid: number; kind: StaffKind; x: number; y: number; target: { x: number; y: number } | null; t: number; anim: number; face: number;
@@ -114,6 +116,7 @@ export type WorldEvent =
   | { type: 'combo'; n: number; bonus: number }
   | { type: 'comboStep'; n: number; x: number; y: number }
   | { type: 'pileBurst'; amount: number; x: number; y: number }
+  | { type: 'goldCoin'; amount: number; x: number; y: number }
   | { type: 'fever'; on: boolean }
   | { type: 'rivalNews'; text: string; mul: number }
   | { type: 'lastStand' }
@@ -150,7 +153,7 @@ export interface DayReport {
 
 /** 점 (px, py)와 선분 a–b 사이 거리 */
 /** 동전이 그려지는 크기(월드 칸) · 그림 전체 사각형 (아래 가운데 기준) */
-export function coinSize(c: CoinEnt, loop: boolean) { return c.pile !== undefined ? 14 : loop ? Math.min(13, 7 + Math.floor(c.count / 3) * 2) : 7; }
+export function coinSize(c: CoinEnt, loop: boolean) { return c.pile !== undefined ? 14 : c.gold ? 10 : loop ? Math.min(13, 7 + Math.floor(c.count / 3) * 2) : 7; }
 export function coinRect(c: CoinEnt, loop: boolean) { const s = coinSize(c, loop), by = c.y - 1 - c.z; return { x0: c.x - s / 2, x1: c.x + s / 2, y0: by - s, y1: by }; }
 /** 선분(지난 위치 → 지금 위치)과 사각형 사이 거리. 겹치면 0 */
 function segRectDist(r: { x0: number; x1: number; y0: number; y1: number }, a: { x: number; y: number }, b: { x: number; y: number }) {
@@ -417,8 +420,9 @@ export class World {
   get tipMul() { return upValue(this.save, 'quality') * stageTipMul(this.save) * this.overflowMul * staffTipMul(this.save) * (this.event ? eventDef(this.event.id).tipMul : 1); }
   get coinLife() { return Math.min(COIN.lifeMax, COIN.lifeSec + coinLifeBonus(this.save) + upValue(this.save, 'coinLife')); }
   /** 동전 그림 바깥으로 더 닿는 거리: 기본 0.5칸 + 쓸어 담기 업그레이드 */
-  get pickReach() { return 0.5 + Math.max(0, this.pickupRadius - 1.5); }
-  get pickupRadius() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower') + heroVal(this.save, 'lucky')); }
+  get pickReach() { return 0.5; }
+  /** 황금 동전 확률 (업그레이드 × 전망대 · 이카로스) */
+  get goldChance() { return upValue(this.save, 'pickup') * (1 + facSum(this.save, 'tower') + heroVal(this.save, 'lucky')); }
   /** '쓸어 담기' 업그레이드를 사면 커서를 대기만 해도 줍는다. 그 전에는 눌러야 줍는다 */
   /** 처음부터 끌어서(쓸어서) 줍는다. 범위는 업그레이드로 커진다 */
   get canSweep() { return true; }
@@ -426,8 +430,6 @@ export class World {
   /** 누른 자리의 동전을 줍는다 (범위 안 모두). 주운 개수 */
   clickAt(x: number, y: number): number {
     let n = 0;
-    const r = Math.max(this.pickupRadius, 4);
-    void r;
     for (const c of this.coins) if (!c.picked && segRectDist(coinRect(c, this.loop), { x, y }, { x, y }) <= this.pickReach + 1) { this.pick(c, 'hand'); n++; }
     return n;
   }
@@ -732,6 +734,9 @@ export class World {
       }
     }
 
+    // 쓸기: 지난 위치 → 지금 위치. 한 프레임에 쓸 수 있는 거리는 SWEEP_MAX (화면을 줄여 크게 휘둘러도 더 많이 줍지 못하게)
+    let sweepFrom = this.lastPointer ?? pointer ?? { x: 0, y: 0 };
+    if (pointer) { const dx = pointer.x - sweepFrom.x, dy = pointer.y - sweepFrom.y, len = Math.hypot(dx, dy), max = SWEEP_MAX * rdt; if (len > max) sweepFrom = { x: pointer.x - (dx / len) * max, y: pointer.y - (dy / len) * max }; }
     // 동전: 살짝 튀었다가 관객존 바닥에 떨어져 있다. 오래 방치하면 사라진다 (보너스를 놓침)
     for (let i = this.coins.length - 1; i >= 0; i--) {
       const c = this.coins[i];
@@ -745,7 +750,7 @@ export class World {
       // 손: 떨어지는 중에도 바로 줍는다 (그려진 동전 가운데 기준)
       // 끌기: 지난 프레임 위치 → 지금 위치 선분과의 거리 (빨리 그어도 사이 동전을 놓치지 않게)
       // 동전 그림 어디든 닿으면 바로 줍는다 (쓸어 담기 업그레이드만큼 더 멀리서도)
-      if (pointer && this.canSweep && segRectDist(coinRect(c, this.loop), this.lastPointer ?? pointer, pointer) <= this.pickReach) this.pick(c, 'hand');
+      if (pointer && this.canSweep && segRectDist(coinRect(c, this.loop), sweepFrom, pointer) <= this.pickReach) this.pick(c, 'hand');
     }
 
     if (this.benchKey !== `${this.layout.w}|${Object.values(this.save.facLv ?? {}).join('')}`) this.placeBenches();
@@ -891,9 +896,10 @@ export class World {
     const value = bonus, count = 1;
     // 합치기: 동전 하나에 3개까지만 (바닥에 많이 깔려야 쓸어 담는 맛). 화면에 너무 많으면 그때부터는 다 합친다
     const crowded = this.coins.length > COIN.crowd;
-    const near = this.coins.find((c) => !c.picked && c.z === 0 && c.pile === undefined && (crowded || c.count < COIN.mergeMax) && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
+    const gold = !lucky && this.rng() < this.goldChance;
+    const near = gold ? undefined : this.coins.find((c) => !c.picked && c.z === 0 && c.pile === undefined && !c.gold && (crowded || c.count < COIN.mergeMax) && Math.hypot(c.x - x, c.y - y) < COIN.mergeDist);
     if (near && !lucky && !near.lucky) { near.value += value; near.count += count; return; }
-    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value, count, age: 0, z: 8, picked: false, lucky });
+    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: COIN.popSpeed, value: gold ? value * GOLD_COIN.mul : value, count, age: 0, z: 8, picked: false, lucky, gold });
   }
 
   /** 동전 더미: 매력이 가장 높은 우리 앞 길 위에 · 동전 8~12개 값 */
@@ -907,7 +913,7 @@ export class World {
     const n = COIN_FEEL.pileMin + Math.floor(this.rng() * (COIN_FEEL.pileMax - COIN_FEEL.pileMin + 1));
     const one = (VISITOR.tipMin + VISITOR.tipMax) / 2 * this.tipMul * VISITOR.tokenShare;
     const x = Math.max(14, Math.min(L.w - 14, r.x + r.w / 2 + (this.rng() - 0.5) * r.w * 0.4)), y = PATH_Y0 + 9 + this.rng() * (PATH_Y1 - PATH_Y0 - 13);
-    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: 0, value: Math.max(n, Math.round(one * n)), count: n, age: 0, z: 30, picked: false, pile: COIN_FEEL.pileLife });
+    this.coins.push({ id: this.coinId++, x, y, vx: 0, vy: 0, value: Math.max(n, Math.round(one * n)), count: n, age: 0, z: 0, picked: false, pile: COIN_FEEL.pileLife });
   }
 
   /** 동전 줍기: 먼저 닿은 쪽만 보너스 (picked로 한 번만) */
@@ -931,6 +937,7 @@ export class World {
       }
       const fly = c.pile !== undefined ? Math.min(12, c.count) : 1;
       for (let k = 0; k < fly && this.flying.length < COIN_FEEL.flyMax; k++) this.flying.push({ x: c.x + (fly > 1 ? (this.rng() - 0.5) * 14 : 0), y: c.y - 2 - c.z + (fly > 1 ? (this.rng() - 0.5) * 8 : 0), t: -k * 0.03, lucky: c.lucky });
+      if (c.gold) this.events.push({ type: 'goldCoin', amount: c.value, x: c.x, y: c.y - c.z });
       if (c.lucky) { this.save.tickets += 1; this.floats.push({ x: c.x, y: c.y - 10, text: '행운의 동전! 뽑기권 +1', t: 0, color: '#73eff7' }); }
       this.events.push({ type: 'pickup', amount: c.value, x: c.x, y: c.y, by, combo: this.combo.n, lucky: c.lucky });
       return;
