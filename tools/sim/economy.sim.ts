@@ -65,7 +65,7 @@ it('경제 곡선', () => {
       autoArrangePens(s);
       void landBefore;
       w.openPark();
-    } else if ((s.tokens ?? 0) >= price * 10) { draw(s, 10); draws += 10; }
+    } else if ((s.tokens ?? 0) >= price * 2) { const n = Math.min(10, Math.floor((s.tokens ?? 0) / price)); draw(s, n); draws += n; }
     else if ((s.tokens ?? 0) >= price) { draw(s, 1); draws++; if (secondDraw < 0) secondDraw = t; }
     for (const c of s.cards) if (c.kind === 'staff') assignStaff(s, c.uid);
     optimizePlacement(s);

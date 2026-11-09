@@ -136,7 +136,7 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   const skip = h('button', { class: 'btn ghost' }, '모두 보기');
   const close = h('button', { class: 'btn', style: 'display:none' }, '확인');
   const back = h('div', { class: 'overlay reveal' },
-    h('div', { class: 'reveal-box' }, h('div', { class: 'reveal-title' }, `카드 ${cards.length}장`), machine, grid, h('div', { class: 'row-btns' }, skip, close)));
+    h('div', { class: 'reveal-box' }, h('div', { class: 'reveal-title' }, `카드 ${cards.length}장`), machine, grid, h('div', { class: 'row-btns', 'data-hint': '아무 곳이나 눌러도 돼요' }, skip, close)));
   root.append(back);
   audio.sfx('draw');
   audio.gachaStart(tier);
@@ -197,7 +197,35 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
     audio.sfx(g >= 2 ? 'rare' : 'reveal');
     timer = window.setTimeout(showOne, motion.reduce ? 0 : cards.length > 1 ? 240 : 0);
   };
-  const finish = () => { clearTimeout(timer); while (shown < cards.length) { const cell = h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: scatter ? 'r' : cards.length > 5 ? 'r' : 'l', px: scatter ? scatterPx : undefined })); placeCell(cell, shown); grid.append(cell); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); };
+  const finish = () => { clearTimeout(timer); while (shown < cards.length) { const cell = h('div', { class: 'reveal-cell' }, cardEl(cards[shown], { isNew: newUids.has(cards[shown].uid), size: scatter ? 'r' : cards.length > 5 ? 'r' : 'l', px: scatter ? scatterPx : undefined })); placeCell(cell, shown); grid.append(cell); shown++; } skip.style.display = 'none'; close.style.display = ''; machine.classList.add('done'); if (scatter && !arranged) setHint('한 번 더 누르면 정리'); };
+  // 흩뿌린 카드 → 한 번 더 누르면 뽑힌 순서대로 칸에 정렬 (모두 같은 크기, 창은 칸 크기에 딱 맞게)
+  let arranged = false;
+  const setHint = (t: string) => { const r = grid.parentElement?.querySelector<HTMLElement>('.row-btns'); if (r) r.dataset.hint = t; };
+  const arrange = () => {
+    arranged = true;
+    const n = cards.length, gap = 6, AR = 176 / 112;
+    let cols = n, ch = 0;
+    for (let c = 1; c <= n; c++) {
+      const rows = Math.ceil(n / c), v = Math.min(260, (gH - gap * (rows - 1)) / rows, ((gW - gap * (c - 1)) / c) * AR);
+      if (v > ch + 0.5) { ch = v; cols = c; }
+    }
+    ch = Math.floor(ch); const cw = Math.floor(ch / AR), rows = Math.ceil(n / cols);
+    grid.classList.add('arranged');
+    grid.style.width = `${cols * cw + gap * (cols - 1)}px`; grid.style.height = `${rows * ch + gap * (rows - 1)}px`;
+    [...grid.children].forEach((el, i) => {
+      const cell = el as HTMLElement, r = Math.floor(i / cols), c = i % cols;
+      // 마지막 줄이 덜 차면 가운데로
+      const inRow = r === rows - 1 ? n - r * cols : cols, off = ((cols - inRow) * (cw + gap)) / 2;
+      cell.classList.toggle('best-card', cell.classList.contains('star-card'));
+      cell.classList.remove('star-card');
+      cell.style.left = `${off + c * (cw + gap) + cw / 2}px`; cell.style.top = `${r * (ch + gap) + ch / 2}px`;
+      cell.style.zIndex = ''; cell.style.setProperty('--rot', '0deg');
+      const cv = cell.querySelector<HTMLElement>('.cell-front .pix, :scope > .card .pix');
+      if (cv) { cv.style.width = `${cw}px`; cv.style.height = `${ch}px`; }
+    });
+    audio.sfx('click');
+    setHint('아무 곳이나 눌러도 돼요');
+  };
   if (v3 && gs) {
     const G = gs, R = motion.reduce, amp = R ? 0.35 : 1;
     const show = (els: HTMLElement[], i: number) => els.forEach((e, k) => { e.style.opacity = k === i ? '1' : '0'; });
@@ -294,5 +322,5 @@ export function showReveal(root: HTMLElement, cards: Card[], newUids: Set<number
   skip.addEventListener('click', (e) => { e.stopPropagation(); audio.sfx('click'); jingle(); finish(); });
   close.addEventListener('click', (e) => { e.stopPropagation(); closeAll(); });
   // 아무 곳이나 누르면: 공개 중이면 모두 보기, 다 보였으면 확인
-  back.addEventListener('click', () => { if (close.style.display === 'none') finish(); else closeAll(); });
+  back.addEventListener('click', () => { if (close.style.display === 'none') finish(); else if (scatter && !arranged) arrange(); else closeAll(); });
 }

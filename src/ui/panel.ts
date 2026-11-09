@@ -136,7 +136,24 @@ export class Panel {
 
   /** data-cost가 있는 버튼은 돈(또는 코인)이 모자라면 꺼 둔다 */
   private updateAffordable() {
+    for (const b of this.body.querySelectorAll<HTMLButtonElement>('button[data-bulk]')) this.setBulk(b, Number(b.dataset.bulk));
     for (const b of this.body.querySelectorAll<HTMLButtonElement>('button[data-cost]')) b.disabled = (b.dataset.cur === 't' ? this.ctx.save.tokens ?? 0 : this.ctx.save.coins) < Number(b.dataset.cost) || b.dataset.lock === '1';
+  }
+  /** 한꺼번에 뽑기: 가진 코인으로 뽑을 수 있는 만큼 (최대 10회). 1회분뿐이면 꺼 둔다 */
+  static readonly BULK_MAX = 10;
+  private bulkN(price: number) { return Math.min(Panel.BULK_MAX, Math.floor((this.ctx.save.tokens ?? 0) / price)); }
+  private setBulk(b: HTMLButtonElement, price: number) {
+    const n = this.bulkN(price), show = Math.max(2, n);
+    if (b.dataset.n === String(show)) return;
+    b.dataset.n = String(show); b.dataset.cost = String(price * show);
+    b.replaceChildren(h('span', {}, `한꺼번에 ${show}회`, h('small', {}, `${fmt(price * show)}코인`)));
+  }
+  private bulkBtn(price: number, go: (n: number) => void) {
+    const b = this.costBtn('', price * 2, () => { const n = this.bulkN(price); if (n >= 2) go(n); }, '', false, true);
+    b.dataset.bulk = String(price);
+    this.setBulk(b, price);
+    b.disabled = this.bulkN(price) < 2;
+    return b;
   }
   private costBtn(label: Node | string, cost: number, onclick: () => void, extraClass = '', locked = false, tokens = false) {
     const b = h('button', { class: `btn ${extraClass}`, 'data-cost': cost, 'data-lock': locked ? '1' : '0', 'data-cur': tokens ? 't' : 'c', onclick }, label) as HTMLButtonElement;
@@ -217,7 +234,7 @@ export class Panel {
       free,
       h('div', { class: 'draw-btns two' },
         this.costBtn(h('span', {}, '1회', h('small', {}, `${fmt(price)}코인`)), price, () => doDraw(1), '', false, true),
-        this.costBtn(h('span', {}, '10회', h('small', {}, `${fmt(price * 10)}코인`)), price * 10, () => doDraw(10), '', false, true)),
+        this.bulkBtn(price, (n) => doDraw(n))),
       s.tickets > 0 ? h('button', { class: 'btn big ticket', onclick: () => { const before = s.dex.slice(); const out = ticketDraw(s); if (out) this.reveal(out, before); } }, `무료 뽑기권 사용 (${s.tickets}장 남음)`) : null,
       h('details', { class: 'odds-box' }, h('summary', {}, '확률 보기'), grid, h('p', { class: 'sub' }, `기계는 지금 계절 기계가 기본이고, 가끔 특별한 기계가 나와요: ${MACHINE_TIERS.slice(1).map((m) => `${m.name} ${+(m.chance * 100).toFixed(1)}% (영웅 · 전설 +${Math.round(m.luck * 100)}%p${m.shiny > 1 ? ', 반짝이 2배' : ''})`).join(' · ')}`)),
       h('p', { class: 'hint' }, '코인은 관객 길의 동전을 주워 모아요 · 돈(입장료)은 건물 · 확장 · 업그레이드에.'));

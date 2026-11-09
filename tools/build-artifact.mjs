@@ -16,7 +16,8 @@ if (js.length !== 1) throw new Error('JS 파일이 하나가 아닙니다: ' + j
 
 // </script> 문자열이 코드 안에 있으면 HTML이 끊기므로 이스케이프
 const script = js[0].replace(/<\/script/gi, '<\\/script');
-const html = `<title>뽑ZOO</title>
+const html = `<meta charset="utf-8" />
+<title>뽑ZOO</title>
 <meta name="robots" content="noindex" />
 <meta name="theme-color" content="#1f2a1c" />
 <style>${css.join('\n')}</style>
