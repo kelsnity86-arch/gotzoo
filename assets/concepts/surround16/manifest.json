@@ -1,0 +1,61 @@
+{
+  "project": "BbopZOO",
+  "kind": "concept_mockups",
+  "date": "2026-11-09",
+  "brief": "surround-concept16-request.txt",
+  "revision": "straight full-width front road; latest request (2)",
+  "game_integrated": false,
+  "engine_ready": false,
+  "notes": [
+    "Visual composition concepts, not runtime sprite sheets or tile maps.",
+    "Generated PNGs preserved without resampling or recoloring.",
+    "No claim of exact native pixel-grid or palette compliance."
+  ],
+  "images": [
+    {
+      "stage": 1,
+      "description": "숲 속 작은 동물원",
+      "file": "surround_stage1.png",
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 3240091,
+      "sha256": "dc6c988cfd8ad300c290ef60d27d7f628c53ad3ef9751e437e6b079bcba92980"
+    },
+    {
+      "stage": 5,
+      "description": "상점가와 놀이시설이 있는 테마 동물원",
+      "file": "surround_stage5.png",
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 3499778,
+      "sha256": "b4e278f629b070ecdf743d2f0f284e802253fa43ccc6c1299d6d4146ebb50672"
+    },
+    {
+      "stage": 8,
+      "description": "대도시 속 녹지와 세계 동물원",
+      "file": "surround_stage8.png",
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 3569631,
+      "sha256": "b3d22c5bcd17437258a62a2f59a4076a7f29b9ca35f3b49762cc1d0498137832"
+    }
+  ]
+}
