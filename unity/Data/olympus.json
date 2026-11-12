@@ -227,8 +227,8 @@
    "ability": "lucky",
    "value": 0.5,
    "color": "#41a6f6",
-   "descNormal": "행운의 동전 +50% · 줍는 범위 +50%",
-   "descAwake": "행운의 동전 +75% · 줍는 범위 +75%"
+   "descNormal": "행운의 동전 +50% · 황금 동전 +50%",
+   "descAwake": "행운의 동전 +75% · 황금 동전 +75%"
   },
   {
    "id": 4,
