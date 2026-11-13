@@ -1,0 +1,44 @@
+{
+  "project": "BbopZOO",
+  "collection": "ui-wood16",
+  "date": "2026-11-13",
+  "status": "generated_sources_HOLD",
+  "engine_ready": false,
+  "source_brief": "docs/briefs/gpt_ui_wood16_request.txt",
+  "audit": "reports/UI_WOOD16_SOURCE_AUDIT.json",
+  "sheets": [
+    {
+      "file": "ui_wood16.png",
+      "path": "assets/spritesheets16/ui-wood/ui_wood16.png",
+      "description": "패널·종이 카드·숫자 슬롯·나무 타일·장식 띠",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 1250960,
+      "sha256": "e529934ce032f209ef88f001944afa01b702c8d328dad1333a41172ee5bc98c3"
+    },
+    {
+      "file": "ui_buttons16.png",
+      "path": "assets/spritesheets16/ui-wood/ui_buttons16.png",
+      "description": "일반·눌림·비활성 버튼, 탭과 배지",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 1265488,
+      "sha256": "a39f50b526ecde2f377e6f0b4fee8fe564b2832a680a33a7bed846325df97b74"
+    },
+    {
+      "file": "ui_bits16.png",
+      "path": "assets/spritesheets16/ui-wood/ui_bits16.png",
+      "description": "게이지·말풍선·칩·미션 점·작은 장식",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "bytes": 1280545,
+      "sha256": "acf49e8140b4404a61b8321ff142d796fd4e65b313ae765cbe02be233d3f188f"
+    }
+  ]
+}

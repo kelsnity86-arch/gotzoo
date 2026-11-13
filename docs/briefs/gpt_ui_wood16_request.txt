@@ -1,0 +1,70 @@
+You are drawing the USER INTERFACE kit for "BbopZOO", a cute, cozy top-down pixel-art zoo game. The world, animals, visitors, gate and icons already exist (chunky cute pixel sprites, soft dark-brown outline, 2-tone flat shading). The UI you draw now must look like it was hand-made by the SAME pixel artist for the SAME game: same pixel size, same outline, same light, same colors. Mood: FANCY + CUTE + CLEAN, built from LIGHT HONEY WOOD with CREAM PAPER and small pastel candy accents. Think of a tidy wooden zoo signboard with a cream paper notice pinned on it, not a glossy mobile game.
+
+Rules for EVERY image in this conversation:
+- True pixel art on an exact pixel grid. Each art pixel is one solid 6x6 square block in the image. No anti-aliasing, no gradients, no blur, no glow, no bloom, no soft or semi-transparent shadows, no painterly or noise texture.
+- It must NOT look AI-generated: limited palette, every pixel deliberate, clean 1-pixel outlines, flat 2-tone shading (one light tone on top-left edges, one dark tone on bottom-right edges). No glossy highlights, no shine streaks, no sparkle spam, no bevel/emboss effect, no 3D rendering, no fake depth, no random speckles, no over-ornamented swirls. Simple, readable shapes. Wood grain is drawn with a FEW short 1-pixel darker lines and plank seams, with slightly uneven plank lengths, never a photo texture.
+- Rounded corners are made of pixel STEPS (like 1-2-3 stair steps), never smooth curves.
+- Light comes from the TOP-LEFT. A UI piece may have a solid 1-2 pixel darker "bottom lip" under it (same hue, darker), never a soft shadow.
+- Outline color #5d3a24 (warm brown) for wood and paper; #2b1d14 only for the very darkest details.
+- Colors: only use these.
+  Wood: #5d3a24 #8a5a3b #b9773f #d39a5c #e8b47a #f6d3a3
+  Paper: #fffaf0 #f6e6c8 #e8c39e
+  Pink: #f08cbe #ff8fb8 #ffb7d0 #ffc8dd
+  Honey yellow: #e0a526 #f7c948 #fff3a3
+  Mint: #45b57e #7fd6a8 #c9f0d8
+  Sky: #7fb5d6 #a9d4ff #e9f3ff
+  Lavender: #8e6fd0 #c9b6f0 #ece4ff
+  Coral (rival): #d83a3a #ff9a9a
+  Darks: #2b1d14 #1a1c2c   White: #f4f4f4
+- Solid flat magenta background (#FF00FF) everywhere outside the art. Never use magenta inside the art.
+- Lay items out on the requested invisible grid with clear magenta space between them, never touching. No grid lines.
+- Absolutely no text, numbers, letters, labels, icons-with-letters, watermarks or logos. Buttons and panels are EMPTY (we add our own text and icons in the game).
+
+I attached reference images from the same game (field screenshot, existing UI icons, and a UI layout mockup). The mockup only shows LAYOUT and COLOR DIRECTION; its smooth vector look is WRONG. Redraw everything as true pixel art that matches the field screenshot and the icons.
+
+Generate the following 3 images ONE BY ONE, in order. Make each one a separate image, 1536x1024. After each image, write only its file name and immediately continue with the next image without asking me. If you have to stop, continue from where you left off when I say "next".
+
+=== IMAGE 1 of 3: ui_wood16.png ===
+Panels and wood surfaces. 3 rows.
+Row 1 (3 items, each 48x48 art pixels):
+ 1. WOOD FRAME PANEL: a cream paper (#fffaf0) rectangle inside a 5-pixel light honey wood frame (#e8b47a, light edge #f6d3a3, dark edge #b9773f, outline #5d3a24). Stair-step rounded corners. One tiny round nail head in each corner of the frame. This will be 9-sliced, so the four sides must be plain and uniform (no decoration in the middle of any side).
+ 2. PAPER NOTE CARD: cream paper card with a 2-pixel warm brown border, a 2-pixel darker bottom lip, two tiny nail heads at the top-left and top-right corners. Uniform sides for 9-slice.
+ 3. NUMBER SLOT: a recessed groove carved into wood: inside is cream paper #fffaf0, the top inner edge is shadowed (#e8c39e), the frame is honey wood. Wide pill shape with stair-step ends. Uniform middle for 3-slice.
+Row 2 (3 items, each 48x48 art pixels, each must TILE SEAMLESSLY):
+ 4. LIGHT WOOD WALL, horizontal planks: honey planks #e8b47a, 12 pixels tall each, thin seam lines #d39a5c, a few short grain lines, plank end joints at uneven positions. Must tile left-right and up-down with no visible seam.
+ 5. LIGHT WOOD WALL, vertical planks: same wood, planks 12 pixels wide. Tiles both directions.
+ 6. WOOD TRIM BEAM: a 48x10 horizontal beam (top light edge, bottom dark lip) that tiles left-right; draw it centered in its 48x48 cell.
+Row 3 (4 items, each 48x16 art pixels, each tiles left-right):
+ 7. PINK SCALLOP AWNING EDGE: cream and pink (#ffc8dd / #ff8fb8) striped fabric with a scalloped bottom edge, like a cute shop awning. Tiles left-right.
+ 8. BUNTING GARLAND: a thin brown string with small triangle flags in pink, honey, mint, sky, lavender (repeat order). Tiles left-right.
+ 9. FLOWER VINE TRIM: a thin green vine with tiny pink and cream 3x3 flowers, very sparse and tidy. Tiles left-right.
+ 10. ROPE TRIM: a 2-pixel twisted honey rope. Tiles left-right.
+
+=== IMAGE 2 of 3: ui_buttons16.png ===
+Buttons and tabs. 4 rows.
+Row 1-3: candy PILL BUTTONS, each 48x20 art pixels, stair-step rounded ends, 1-pixel #5d3a24 outline, a 1-pixel light top band and a 3-pixel darker bottom lip. EMPTY, no text.
+ Row 1 = NORMAL state, Row 2 = PRESSED state (the button moves 2 pixels down, bottom lip almost gone, colors one step darker), Row 3 = DISABLED state (flattened, faded beige #f6e6c8 / #e8c39e, outline lighter #b9773f).
+ Each row has 4 colors left to right: PINK (#ff8fb8 body, #ffc8dd top band, #f08cbe lip), HONEY (#f7c948 body, #fff3a3 top band, #e0a526 lip), MINT (#7fd6a8 body, #c9f0d8 top band, #45b57e lip), CREAM WOOD (#f6d3a3 body, #fffaf0 top band, #d39a5c lip).
+Row 4 (6 items):
+ 1. SQUARE WOOD BUTTON 20x20, normal.
+ 2. SQUARE WOOD BUTTON 20x20, pressed.
+ 3. WOOD TAB 28x32: a small honey wood signboard tile with stair-step rounded corners and a slightly darker bottom lip, empty center.
+ 4. WOOD TAB 28x32 SELECTED: the same tab but cream paper face, with a 2-pixel pink (#ff8fb8) outline and one tiny white highlight pixel row on top.
+ 5. ICON BADGE CIRCLES: five 16x16 pixel circles in a row, pastel fills pink #ffc8dd, mint #c9f0d8, sky #a9d4ff, honey #fff3a3, lavender #ece4ff, each with a 1-pixel slightly darker ring. (Draw these five touching nothing, small gaps between.)
+ 6. NOTIFICATION BADGE 12x12: coral red #d83a3a pixel circle with a 1-pixel white #f4f4f4 ring, empty center.
+
+=== IMAGE 3 of 3: ui_bits16.png ===
+Gauges, speech bubbles and tiny decorations. 3 rows.
+Row 1 (gauges):
+ 1. GAUGE FRAME 64x10: empty groove, honey wood frame with stair-step ends, inside dark brown #8a5a3b. 3-slice friendly (uniform middle).
+ 2. GAUGE FILL pieces, each 16x6, tileable left-right: PINK, HONEY-ORANGE (#f7c948 with a #fff3a3 top pixel row), MINT, CORAL #ff9a9a. Plus one rounded END cap for each color (6x6).
+ 3. RIVAL CENTER MARKER: 4x16 cream-white post with brown outline and a tiny heart on top.
+Row 2 (bubbles and chips):
+ 4. TOAST SPEECH BUBBLE 64x20: cream paper body, 2-pixel honey wood border, stair-step rounded ends, a small tail at the bottom-left, 2-pixel darker bottom lip. Uniform middle for 3-slice.
+ 5. SMALL CHIP 40x14: cream paper pill with honey border, uniform middle.
+ 6. MISSION DOTS 8x8: three versions in a row: empty (beige), filled mint, filled pink. Each a tiny round pixel dot with outline.
+Row 3 (decorations, small, cute, simple):
+ 7. PANEL CORNER ORNAMENT 12x12: a tiny pink flower with two little leaves, sits on a panel corner. Draw 4 copies rotated for each corner.
+ 8. NAIL HEAD 4x4 (brass #e0a526), 3 copies.
+ 9. TINY HEART 7x6 pink, TINY STAR 7x7 honey, TINY PAW STAMP 8x8 brown, TINY SPARKLE 5x5 white-cream (plus shape, not a glow).
+ 10. HANGING WOOD SIGN 40x24: a small blank honey wood sign hanging from two short ropes, empty face (for zoo name or season), stair-step corners.

@@ -1,0 +1,119 @@
+{
+  "status": "HOLD",
+  "engine_ready": false,
+  "date": "2026-11-13",
+  "sheets": [
+    {
+      "file": "ui_wood16.png",
+      "generation_source": "exec-f019c91a-efb4-4864-8f2a-484b7d7adf6c.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "sha256": "e529934ce032f209ef88f001944afa01b702c8d328dad1333a41172ee5bc98c3",
+      "bytes": 1250960,
+      "png_decodes": true,
+      "unique_rgb_colors": 65562,
+      "pixels_outside_allowed_palette": 1572846,
+      "palette_pass": false,
+      "grid_audit_origin": [
+        0,
+        0
+      ],
+      "tested_6x6_blocks": 43520,
+      "nonuniform_6x6_blocks": 43520,
+      "six_pixel_grid_pass": false,
+      "unvalidated": [
+        "native component dimensions",
+        "9-slice and 3-slice behavior",
+        "seamless tiling",
+        "normal/pressed anchor alignment",
+        "engine integration"
+      ],
+      "path": "assets/spritesheets16/ui-wood/ui_wood16.png",
+      "description": "패널·종이 카드·숫자 슬롯·나무 타일·장식 띠",
+      "dimensions_match": true
+    },
+    {
+      "file": "ui_buttons16.png",
+      "generation_source": "exec-227e399f-9525-47d7-89f1-9b830a28f5f7.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "sha256": "a39f50b526ecde2f377e6f0b4fee8fe564b2832a680a33a7bed846325df97b74",
+      "bytes": 1265488,
+      "png_decodes": true,
+      "unique_rgb_colors": 78768,
+      "pixels_outside_allowed_palette": 1572832,
+      "palette_pass": false,
+      "grid_audit_origin": [
+        0,
+        0
+      ],
+      "tested_6x6_blocks": 43520,
+      "nonuniform_6x6_blocks": 43520,
+      "six_pixel_grid_pass": false,
+      "unvalidated": [
+        "native component dimensions",
+        "9-slice and 3-slice behavior",
+        "seamless tiling",
+        "normal/pressed anchor alignment",
+        "engine integration"
+      ],
+      "path": "assets/spritesheets16/ui-wood/ui_buttons16.png",
+      "description": "일반·눌림·비활성 버튼, 탭과 배지",
+      "dimensions_match": true
+    },
+    {
+      "file": "ui_bits16.png",
+      "generation_source": "exec-668c5b96-fd1f-4071-9351-3a175b9c3485.png",
+      "actual_size": [
+        1536,
+        1024
+      ],
+      "requested_size": [
+        1536,
+        1024
+      ],
+      "sha256": "acf49e8140b4404a61b8321ff142d796fd4e65b313ae765cbe02be233d3f188f",
+      "bytes": 1280545,
+      "png_decodes": true,
+      "unique_rgb_colors": 71118,
+      "pixels_outside_allowed_palette": 1572856,
+      "palette_pass": false,
+      "grid_audit_origin": [
+        0,
+        0
+      ],
+      "tested_6x6_blocks": 43520,
+      "nonuniform_6x6_blocks": 43520,
+      "six_pixel_grid_pass": false,
+      "unvalidated": [
+        "native component dimensions",
+        "9-slice and 3-slice behavior",
+        "seamless tiling",
+        "normal/pressed anchor alignment",
+        "engine integration"
+      ],
+      "path": "assets/spritesheets16/ui-wood/ui_bits16.png",
+      "description": "게이지·말풍선·칩·미션 점·작은 장식",
+      "dimensions_match": true
+    }
+  ],
+  "project": "BbopZOO",
+  "collection": "Honey wood UI kit",
+  "requested_art_pixel_scale": 6,
+  "requested_background": "#FF00FF",
+  "grid_audit_notes": "Tests all complete 6x6 RGB blocks from origin (0,0). The final 4 canvas rows are not included. Any nonuniform block fails the exact square-block check.",
+  "palette_audit_notes": "Checks exact RGB against the user-provided colors plus #FF00FF background. Small generated color deviations also count as mismatches.",
+  "source_brief": "docs/briefs/gpt_ui_wood16_request.txt"
+}
